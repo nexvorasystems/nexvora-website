@@ -482,11 +482,12 @@ function renderCTA(d){
 
 function startCountdown(){
   const OFFER_END=new Date('2026-05-01T00:00:00');
+  let handle;
   function update(){
     const el=document.getElementById('countdown');
-    if(!el)return;
+    if(!el){clearInterval(handle);return;}
     const diff=OFFER_END-new Date();
-    if(diff<=0){el.innerHTML='<span style="color:#44CAA2;font-size:14px;">Offer has ended</span>';return;}
+    if(diff<=0){el.innerHTML='<span style="color:#44CAA2;font-size:14px;">Offer has ended</span>';clearInterval(handle);return;}
     const d=Math.floor(diff/86400000);
     const h=Math.floor((diff%86400000)/3600000);
     const m=Math.floor((diff%3600000)/60000);
@@ -498,7 +499,7 @@ function startCountdown(){
       <div class="cd-unit"><div class="cd-n">${String(s).padStart(2,'0')}</div><div class="cd-l">sec</div></div>`;
   }
   update();
-  setInterval(update, 1000);
+  handle=setInterval(update,1000);
 }
 
 /* ═══════════════════════════════════════════════════════
@@ -528,7 +529,11 @@ function main(){
       </div>`;
     return;
   }
-  const d=JSON.parse(raw);
+  let d;
+  try{d=JSON.parse(raw);}catch(e){
+    document.getElementById('reportWrap').innerHTML=`<div style="text-align:center;padding:80px 20px;"><h2 style="font-size:20px;font-weight:700;margin-bottom:12px;">Report data is corrupted</h2><p style="color:#718096;margin-bottom:24px;">Something went wrong loading your results. Please retake the assessment.</p><a href="assessment.html" style="padding:12px 28px;background:#0D9488;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;">Retake Assessment</a></div>`;
+    return;
+  }
   const scores=computeScores(d);
   const econ=computeOwnerEcon(d);
 
@@ -540,7 +545,7 @@ function main(){
 
   // Animate bars after short delay
   setTimeout(()=>{
-    document.querySelectorAll('.area-bar,.rc-bar').forEach(bar=>{
+    document.querySelectorAll('.area-bar').forEach(bar=>{
       const w=bar.style.width;
       bar.style.width='0';
       setTimeout(()=>bar.style.width=w,100);
@@ -548,7 +553,11 @@ function main(){
   },300);
 
   // Send email
-  sendEmail(d);
+  if(!d.email_sent){
+    sendEmail(d);
+    d.email_sent=true;
+    localStorage.setItem('nexvora_assessment',JSON.stringify(d));
+  }
 }
 
 main();
