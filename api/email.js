@@ -1,23 +1,40 @@
+function escHtml(str) {
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader('Access-Control-Allow-Origin', 'https://nexvorasystems.us');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
 
   const { to, name, bizName } = req.body;
-  if (!to || !name) return res.status(400).json({ error: 'to and name required' });
 
-  const first = name.split(' ')[0];
-  const reportUrl = `https://nexvorasystems.us/report.html`;
+  const trimmedName = (name || '').trim();
+  if (!to || !trimmedName) return res.status(400).json({ error: 'to and name required' });
+  if (!emailRe.test(to)) return res.status(400).json({ error: 'Invalid email address' });
+  if (trimmedName.length > 200 || (bizName && bizName.length > 200)) {
+    return res.status(400).json({ error: 'Input too long' });
+  }
 
-  // If Resend API key is set, use it. Otherwise log and return success.
-  if (process.env.RESEND_API_KEY) {
+  const first = escHtml(trimmedName.split(/\s+/)[0]);
+  const safeBizName = escHtml(bizName || trimmedName);
+  const reportUrl = 'https://nexvorasystems.us/report.html';
+
+  if (process.env.RESEND_API_KEY?.trim()) {
     try {
       const response = await fetch('https://api.resend.com/emails', {
         method: 'POST',
         headers: {
-          'Authorization': `Bearer ${process.env.RESEND_API_KEY}`,
+          'Authorization': `Bearer ${process.env.RESEND_API_KEY.trim()}`,
           'Content-Type': 'application/json'
         },
         body: JSON.stringify({
@@ -39,7 +56,7 @@ module.exports = async function handler(req, res) {
       });
       if (!response.ok) {
         const err = await response.json().catch(() => ({}));
-        console.error('Resend error:', err);
+        console.error('Resend error:', response.status, err);
         return res.status(500).json({ error: 'Email failed to send' });
       }
       return res.json({ success: true });
@@ -49,7 +66,7 @@ module.exports = async function handler(req, res) {
     }
   }
 
-  // No Resend key — log and return success (email silently skipped)
-  console.log(`[EMAIL SKIPPED — no RESEND_API_KEY] To: ${to}, Name: ${name}, Biz: ${bizName}`);
+  // No Resend key — silently skip
+  console.log(`[EMAIL SKIPPED — no RESEND_API_KEY] To: ${to.substring(0,5)}..., Name: ${trimmedName.substring(0,20)}`);
   return res.json({ success: true, note: 'Email skipped — no API key configured' });
 };
