@@ -34,7 +34,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .chat-input-area{border-top:1px solid var(--border);background:var(--bg-card);padding:16px;flex-shrink:0;}
 .input-inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
 .input-row{display:flex;gap:10px;align-items:flex-end;}
-.chat-input{flex:1;padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;color:var(--text);background:var(--bg);font-family:inherit;outline:none;transition:border-color .15s;-webkit-appearance:none;}
+.chat-input{flex:1;padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;color:var(--text);background:var(--bg);font-family:inherit;outline:none;transition:border-color .15s;-webkit-appearance:none;}
 .chat-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-lt);}
 .chat-input.err{border-color:var(--red);}
 .send-btn{width:44px;height:44px;min-width:44px;border-radius:11px;background:var(--teal);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;}
@@ -44,15 +44,20 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .err-msg.show{display:block;}
 .chips{display:flex;flex-wrap:wrap;gap:9px;padding-top:4px;}
 .chip{padding:10px 18px;border-radius:99px;border:1.5px solid var(--border);background:var(--bg-card);font-size:14px;color:var(--muted);font-weight:500;cursor:pointer;transition:all .15s;user-select:none;min-height:44px;display:inline-flex;align-items:center;touch-action:manipulation;}
-.chip:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-lt);}
 .chip.on{border-color:var(--teal);background:var(--teal);color:#fff;}
+@media(hover:hover){.chip:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-lt);}}
 .multi-confirm{margin-top:8px;}
 .multi-confirm button{padding:10px 22px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all .18s;}
 .multi-confirm button:disabled{opacity:.35;cursor:not-allowed;}
-.states-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:7px;max-height:220px;overflow-y:auto;padding:4px 0 8px;}
-.state-chip{padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg-card);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;text-align:center;user-select:none;min-height:44px;display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
-.state-chip:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-lt);}
-.state-chip.on{border-color:var(--teal);background:var(--teal);color:#fff;}
+.state-search-wrap{display:flex;flex-direction:column;gap:0;}
+.state-search-input{padding:12px 14px;border:1.5px solid var(--border);border-radius:10px 10px 0 0;font-size:16px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;transition:border-color .15s;-webkit-appearance:none;}
+.state-search-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-lt);}
+.state-list{max-height:210px;overflow-y:auto;border:1.5px solid var(--border);border-top:none;border-radius:0 0 10px 10px;background:var(--bg-card);}
+.state-list-item{display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s;touch-action:manipulation;}
+.state-list-item:last-child{border-bottom:none;}
+@media(hover:hover){.state-list-item:hover{background:var(--teal-lt);}}
+.state-abbr{font-size:12px;font-weight:800;color:var(--teal);min-width:26px;}
+.state-name{font-size:14px;color:var(--text);}
 .num-wrap{display:flex;align-items:center;gap:12px;}
 .num-input{width:120px;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:18px;font-weight:700;color:var(--text);background:var(--bg);font-family:inherit;outline:none;text-align:center;-webkit-appearance:none;-moz-appearance:textfield;}
 .num-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-lt);}
@@ -264,27 +269,43 @@ function askMultiChips(options, minSelect=1) {
   });
 }
 
-/* ── STATE GRID ──────────────────────────────────────── */
+/* ── STATE SEARCH PICKER ─────────────────────────────── */
+const ALL_STATES = [
+  {abbr:'AL',name:'Alabama'},{abbr:'AK',name:'Alaska'},{abbr:'AZ',name:'Arizona'},{abbr:'AR',name:'Arkansas'},{abbr:'CA',name:'California'},{abbr:'CO',name:'Colorado'},{abbr:'CT',name:'Connecticut'},{abbr:'DE',name:'Delaware'},{abbr:'FL',name:'Florida'},{abbr:'GA',name:'Georgia'},{abbr:'HI',name:'Hawaii'},{abbr:'ID',name:'Idaho'},{abbr:'IL',name:'Illinois'},{abbr:'IN',name:'Indiana'},{abbr:'IA',name:'Iowa'},{abbr:'KS',name:'Kansas'},{abbr:'KY',name:'Kentucky'},{abbr:'LA',name:'Louisiana'},{abbr:'ME',name:'Maine'},{abbr:'MD',name:'Maryland'},{abbr:'MA',name:'Massachusetts'},{abbr:'MI',name:'Michigan'},{abbr:'MN',name:'Minnesota'},{abbr:'MS',name:'Mississippi'},{abbr:'MO',name:'Missouri'},{abbr:'MT',name:'Montana'},{abbr:'NE',name:'Nebraska'},{abbr:'NV',name:'Nevada'},{abbr:'NH',name:'New Hampshire'},{abbr:'NJ',name:'New Jersey'},{abbr:'NM',name:'New Mexico'},{abbr:'NY',name:'New York'},{abbr:'NC',name:'North Carolina'},{abbr:'ND',name:'North Dakota'},{abbr:'OH',name:'Ohio'},{abbr:'OK',name:'Oklahoma'},{abbr:'OR',name:'Oregon'},{abbr:'PA',name:'Pennsylvania'},{abbr:'RI',name:'Rhode Island'},{abbr:'SC',name:'South Carolina'},{abbr:'SD',name:'South Dakota'},{abbr:'TN',name:'Tennessee'},{abbr:'TX',name:'Texas'},{abbr:'UT',name:'Utah'},{abbr:'VT',name:'Vermont'},{abbr:'VA',name:'Virginia'},{abbr:'WA',name:'Washington'},{abbr:'WV',name:'West Virginia'},{abbr:'WI',name:'Wisconsin'},{abbr:'WY',name:'Wyoming'}
+];
+
 function askState() {
-  const states = [
-    {label:'AL',value:'AL'},{label:'AK',value:'AK'},{label:'AZ',value:'AZ'},{label:'AR',value:'AR'},{label:'CA',value:'CA'},{label:'CO',value:'CO'},{label:'CT',value:'CT'},{label:'DE',value:'DE'},{label:'FL',value:'FL'},{label:'GA',value:'GA'},{label:'HI',value:'HI'},{label:'ID',value:'ID'},{label:'IL',value:'IL'},{label:'IN',value:'IN'},{label:'IA',value:'IA'},{label:'KS',value:'KS'},{label:'KY',value:'KY'},{label:'LA',value:'LA'},{label:'ME',value:'ME'},{label:'MD',value:'MD'},{label:'MA',value:'MA'},{label:'MI',value:'MI'},{label:'MN',value:'MN'},{label:'MS',value:'MS'},{label:'MO',value:'MO'},{label:'MT',value:'MT'},{label:'NE',value:'NE'},{label:'NV',value:'NV'},{label:'NH',value:'NH'},{label:'NJ',value:'NJ'},{label:'NM',value:'NM'},{label:'NY',value:'NY'},{label:'NC',value:'NC'},{label:'ND',value:'ND'},{label:'OH',value:'OH'},{label:'OK',value:'OK'},{label:'OR',value:'OR'},{label:'PA',value:'PA'},{label:'RI',value:'RI'},{label:'SC',value:'SC'},{label:'SD',value:'SD'},{label:'TN',value:'TN'},{label:'TX',value:'TX'},{label:'UT',value:'UT'},{label:'VT',value:'VT'},{label:'VA',value:'VA'},{label:'WA',value:'WA'},{label:'WV',value:'WV'},{label:'WI',value:'WI'},{label:'WY',value:'WY'}
-  ];
   return new Promise(resolve => {
     const area = document.getElementById('inputArea');
     const inner = document.getElementById('inputInner');
-    const grid = document.createElement('div');
-    grid.className = 'states-grid';
-    states.forEach(s => {
-      const chip = document.createElement('div');
-      chip.className = 'state-chip';
-      chip.textContent = s.label;
-      chip.onclick = () => { clearInput(); resolve(s.value); };
-      grid.appendChild(chip);
-    });
-    inner.innerHTML = '';
-    inner.appendChild(grid);
+    inner.innerHTML = `
+      <div class="state-search-wrap">
+        <input class="state-search-input" id="stateSearch" type="text" placeholder="Search state..." autocomplete="off"/>
+        <div class="state-list" id="stateList"></div>
+      </div>`;
     area.style.display = '';
-    setTimeout(() => scrollToLast(), 80);
+
+    const searchEl = document.getElementById('stateSearch');
+    const listEl = document.getElementById('stateList');
+
+    function renderList(filter) {
+      const q = (filter||'').toLowerCase().trim();
+      const filtered = q
+        ? ALL_STATES.filter(s => s.name.toLowerCase().includes(q) || s.abbr.toLowerCase().startsWith(q))
+        : ALL_STATES;
+      listEl.innerHTML = '';
+      filtered.forEach(s => {
+        const item = document.createElement('div');
+        item.className = 'state-list-item';
+        item.innerHTML = `<span class="state-abbr">${s.abbr}</span><span class="state-name">${s.name}</span>`;
+        item.onclick = () => { clearInput(); resolve(s.abbr); };
+        listEl.appendChild(item);
+      });
+    }
+
+    renderList();
+    searchEl.addEventListener('input', () => renderList(searchEl.value));
+    setTimeout(() => { searchEl.focus(); scrollToLast(); }, 80);
   });
 }
 
@@ -348,7 +369,7 @@ async function main() {
   setProgress(6);
   await speak("What state is your business based in?", 600);
   A.q2 = await askState();
-  addBubble(A.q2, 'user');
+  addBubble((ALL_STATES.find(s=>s.abbr===A.q2)||{name:A.q2}).name, 'user');
 
   setProgress(7);
   await speak("How long has your business been operating?", 600);
@@ -387,15 +408,16 @@ async function main() {
   setProgress(10, 'Business health');
   await speak("Now let's look at how your business actually runs. There are no right or wrong answers — just be honest.", 900);
 
-  await speak("Do you have documented processes for how your business runs?", 700);
-  A.q6 = await askChips([
+  await speak("Do you have documented processes for how your business runs? Select all that apply.", 700);
+  A.q6 = await askMultiChips([
     {label:'Nothing documented',value:'nothing'},
     {label:'Key steps in my head',value:'head'},
     {label:'Some basic notes',value:'notes'},
     {label:'Written SOPs exist',value:'sops'},
     {label:'Full SOPs + trained team',value:'full-sops'},
-  ]);
-  addBubble({'nothing':'Nothing documented','head':'Key steps in my head','notes':'Some basic notes','sops':'Written SOPs exist','full-sops':'Full SOPs + trained team'}[A.q6], 'user');
+  ], 1);
+  const q6Labels = {'nothing':'Nothing documented','head':'Key steps in my head','notes':'Some basic notes','sops':'Written SOPs exist','full-sops':'Full SOPs + trained team'};
+  addBubble(A.q6.map(v=>q6Labels[v]||v).join(', '), 'user');
 
   setProgress(11);
   await speak("Do you have repeat customers — people who come back to use your business more than once?", 700);
@@ -541,9 +563,15 @@ async function main() {
   A.q17_slots = slotHrs;
 
   setProgress(22);
-  await speak("Including all your hours — regular business hours plus everything you just mentioned — how many total hours per week do you work in the business?", 700);
-  A.q17 = await askNumber('hrs/week', 1, 120);
-  addBubble(A.q17 + ' hours/week', 'user');
+  await speak("How many hours do you work on regular weekdays (Monday–Friday, during standard business hours)?", 700);
+  const q17Regular = await askNumber('hrs/week', 0, 80);
+  addBubble(q17Regular + ' hrs on weekdays', 'user');
+  A.q17_regular = q17Regular;
+
+  // Auto-compute total hours
+  const slotTotal = Object.values(slotHrs).reduce((s,h)=>s+(Number(h)||0),0);
+  A.q17 = q17Regular + slotTotal;
+  await speak(`Got it — that's ${A.q17} hours per week total.`, 500);
 
   setProgress(23);
   await speak("What do your team members earn on average per month? Enter the approximate amount.", 700);
@@ -605,7 +633,7 @@ JSON format:
   hideTyping();
 
   // Store everything
-  const payload = { contact: A.contact, q1:A.q1, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  const payload = { contact: A.contact, q1:A.q1, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
   document.getElementById('progFill').style.width = '100%';

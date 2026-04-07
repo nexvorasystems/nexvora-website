@@ -170,7 +170,11 @@ footer{background:var(--navy);color:#FAF8F5;padding:48px 28px 28px;margin-top:0;
 /* ═══════════════════════════════════════════════════════
    SCORING ENGINE
 ═══════════════════════════════════════════════════════ */
-function scoreQ6(v){return{nothing:10,head:25,notes:50,sops:75,'full-sops':95}[v]||50;}
+function scoreQ6(v){
+  const map={nothing:10,head:25,notes:50,sops:75,'full-sops':95};
+  if(Array.isArray(v)){if(!v.length)return 50;return Math.max(...v.map(x=>map[x]||50));}
+  return map[v]||50;
+}
 function scoreQ7(v){
   if(v==='none')return 5;
   if(v==='dont-know')return 30;
@@ -393,8 +397,10 @@ function renderOwnerEcon(d,econ){
   // Build slot breakdown if available
   let slotDetail='';
   const slots=d.q17_slots||{};
-  const slotParts=Object.entries(slots).filter(([,h])=>h>0).map(([s,h])=>`${h} hrs ${timeSlots[s]||s}`);
-  if(slotParts.length){slotDetail=`<br/><span style="font-size:11px;color:var(--muted);">${slotParts.join(' · ')}</span>`;}
+  const parts=[];
+  if(d.q17_regular>0) parts.push(`${d.q17_regular} hrs weekdays`);
+  Object.entries(slots).filter(([,h])=>h>0).forEach(([s,h])=>parts.push(`${h} hrs ${timeSlots[s]||s}`));
+  if(parts.length){slotDetail=`<br/><span style="font-size:11px;color:var(--muted);">${parts.join(' · ')}</span>`;}
 
   let comparisonHtml='';
   if(econ.ownerPay===0){
@@ -519,7 +525,7 @@ function renderCTA(d){
     ${offerHtml}
     <a href="contact.html" class="cta-btn-primary">Schedule Your ${offerActive?'Complimentary':'Strategy'} Call</a>
     <div class="cta-actions">
-      <button class="cta-btn-secondary" onclick="window.print()">Download PDF</button>
+      <button class="cta-btn-secondary" id="pdfBtn" onclick="downloadPDF(this)">Download PDF</button>
       <a href="index.html" class="cta-btn-secondary">Back to Home</a>
     </div>
     <div class="email-confirm" id="emailConfirm">Report sent to ${esc(d.contact.email)} · Not seeing it? Check your spam folder.</div>
@@ -611,6 +617,59 @@ function main(){
 }
 
 main();
+
+/* ═══════════════════════════════════════════════════════
+   PDF DOWNLOAD
+═══════════════════════════════════════════════════════ */
+async function downloadPDF(btn) {
+  if (!window.html2pdf) {
+    btn.textContent = 'Loading...';
+    await new Promise((res, rej) => {
+      const s = document.createElement('script');
+      s.src = 'https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js';
+      s.onload = res; s.onerror = rej;
+      document.head.appendChild(s);
+    });
+  }
+  btn.textContent = 'Generating...';
+  btn.disabled = true;
+
+  const wrap = document.getElementById('reportWrap');
+  const cta = wrap.querySelector('.cta-section');
+  const nav = document.querySelector('nav');
+  const footer = document.querySelector('footer');
+  const origPad = wrap.style.padding;
+
+  // Hide UI elements not relevant to the report
+  if(cta) cta.style.display = 'none';
+  if(nav) nav.style.display = 'none';
+  if(footer) footer.style.display = 'none';
+  wrap.style.paddingTop = '20px';
+
+  const raw = localStorage.getItem('nexvora_assessment');
+  let fname = 'Nexvora-Business-Health-Report';
+  try { const d = JSON.parse(raw); if(d.contact?.name) fname = 'Nexvora-Report-' + d.contact.name.replace(/\s+/g,'-'); } catch(e){}
+
+  const opt = {
+    margin: [6, 6, 6, 6],
+    filename: fname + '.pdf',
+    image: { type: 'jpeg', quality: 0.95 },
+    html2canvas: { scale: 2, useCORS: true, logging: false, scrollY: 0 },
+    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+    pagebreak: { mode: ['avoid-all', 'css'] }
+  };
+
+  try {
+    await html2pdf().set(opt).from(wrap).save();
+  } finally {
+    if(cta) cta.style.display = '';
+    if(nav) nav.style.display = '';
+    if(footer) footer.style.display = '';
+    wrap.style.paddingTop = origPad;
+    btn.textContent = 'Download PDF';
+    btn.disabled = false;
+  }
+}
 </script>
 </body>
 </html>
