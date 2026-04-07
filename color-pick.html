@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Color Picker — Nexvora</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif;
+      background: #09090B; color: #FAFAFA;
+      padding: 40px 32px 160px;
+    }
+    h1 { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .subtitle { font-size: 14px; color: rgba(255,255,255,0.4); margin-bottom: 40px; }
+
+    .group-title {
+      font-size: 10px; font-weight: 800; letter-spacing: 3px;
+      text-transform: uppercase; color: rgba(255,255,255,0.25);
+      margin: 36px 0 16px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 12px;
+    }
+
+    /* ── SWATCH CARD ── */
+    .swatch {
+      border-radius: 14px; overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.06);
+      cursor: pointer;
+      transition: border-color 0.15s, transform 0.15s;
+      user-select: none;
+      position: relative;
+    }
+    .swatch:hover { transform: translateY(-2px); border-color: rgba(255,255,255,0.2); }
+    .swatch.picked { border-color: #fff; }
+
+    /* colour preview area */
+    .swatch-preview {
+      height: 100px;
+      display: flex; align-items: flex-end; justify-content: flex-start;
+      padding: 10px; gap: 6px; position: relative;
+    }
+    .accent-dot {
+      width: 22px; height: 22px; border-radius: 50%;
+      border: 2px solid rgba(255,255,255,0.3); flex-shrink: 0;
+    }
+    .sample-text {
+      font-size: 11px; font-weight: 700; line-height: 1.3; opacity: 0.85;
+    }
+
+    /* check badge */
+    .check-badge {
+      position: absolute; top: 8px; right: 8px;
+      width: 24px; height: 24px; border-radius: 50%;
+      background: #fff; display: none;
+      align-items: center; justify-content: center;
+    }
+    .check-badge svg { display: block; }
+    .swatch.picked .check-badge { display: flex; }
+
+    /* label area */
+    .swatch-label {
+      padding: 10px 12px 12px;
+      background: rgba(0,0,0,0.35);
+    }
+    .swatch-name { font-size: 12px; font-weight: 700; margin-bottom: 2px; }
+    .swatch-hex { font-size: 10px; color: rgba(255,255,255,0.35); font-family: monospace; }
+
+    /* ── PICKS SUMMARY ── */
+    .summary-bar {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: rgba(9,9,11,0.97);
+      backdrop-filter: blur(16px);
+      border-top: 1px solid rgba(255,255,255,0.1);
+      padding: 16px 32px;
+      z-index: 100;
+    }
+    .summary-title {
+      font-size: 10px; font-weight: 800; letter-spacing: 2px;
+      text-transform: uppercase; color: rgba(255,255,255,0.3); margin-bottom: 8px;
+    }
+    .summary-chips { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; min-height: 28px; }
+    .summary-chip {
+      display: flex; align-items: center; gap: 6px;
+      padding: 5px 12px 5px 8px; border-radius: 100px;
+      font-size: 12px; font-weight: 600;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .summary-chip-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+    .empty-msg { font-size: 13px; color: rgba(255,255,255,0.2); }
+    .clear-btn {
+      margin-left: auto; font-size: 12px; color: rgba(255,255,255,0.25);
+      background: none; border: none; cursor: pointer; transition: color 0.15s;
+      white-space: nowrap; align-self: center;
+    }
+    .clear-btn:hover { color: rgba(255,255,255,0.6); }
+  </style>
+</head>
+<body>
+
+  <h1>Pick Your Colors</h1>
+  <p class="subtitle">Click any palette card to check it. Your picks show at the bottom — screenshot and share.</p>
+
+  <!-- DARK BACKGROUNDS -->
+  <div class="group-title">Dark Backgrounds</div>
+  <div class="grid" id="darkGrid"></div>
+
+  <!-- LIGHT BACKGROUNDS -->
+  <div class="group-title">Light Backgrounds</div>
+  <div class="grid" id="lightGrid"></div>
+
+  <!-- SUMMARY BAR -->
+  <div class="summary-bar">
+    <div class="summary-title">Your Picks</div>
+    <div class="summary-chips" id="summaryChips">
+      <span class="empty-msg" id="emptyMsg">None selected yet — click cards above</span>
+    </div>
+    <button class="clear-btn" onclick="clearAll()">Clear all</button>
+  </div>
+
+  <script>
+    const DARK = [
+      { name: 'Midnight Teal',    bg: '#05080F', accent: '#44CAA2', text: '#e0f5ef', tag: 'existing' },
+      { name: 'Midnight Blue',    bg: '#06091A', accent: '#4D9EF7', text: '#ddeeff', tag: '' },
+      { name: 'Midnight Green',   bg: '#060D0A', accent: '#3DD68C', text: '#dcf5e8', tag: '' },
+      { name: 'Midnight Purple',  bg: '#07050F', accent: '#A855F7', text: '#ede8ff', tag: '' },
+      { name: 'Ember Dark',       bg: '#100C06', accent: '#FB923C', text: '#F5EDD8', tag: 'new' },
+      { name: 'Crimson Black',    bg: '#0C0608', accent: '#F43F5E', text: '#F8F0F2', tag: 'new' },
+      { name: 'Obsidian Gold',    bg: '#0D0B08', accent: '#F59E0B', text: '#FEF3C7', tag: '' },
+      { name: 'Carbon Teal',      bg: '#141920', accent: '#0D9488', text: '#e8f4f0', tag: 'existing' },
+      { name: 'Forest Green',     bg: '#0A1F15', accent: '#14B8A6', text: '#dcf5ee', tag: 'existing' },
+      { name: 'Pure Carbon',      bg: '#09090B', accent: '#FAFAFA', text: '#FAFAFA', tag: '' },
+      { name: 'Apple Dark',       bg: '#000000', accent: '#0A84FF', text: '#F5F5F7', tag: 'existing' },
+      { name: 'Indigo Night',     bg: '#0A0818', accent: '#6366F1', text: '#e0e0ff', tag: '' },
+    ];
+
+    const LIGHT = [
+      { name: 'Chalk White',      bg: '#FFFFFF', accent: '#2563EB', text: '#09090B', tag: 'new' },
+      { name: 'Pure + Black',     bg: '#FFFFFF', accent: '#09090B', text: '#09090B', tag: '' },
+      { name: 'Cream Teal',       bg: '#FAF8F5', accent: '#0D9488', text: '#1A1A2E', tag: 'existing' },
+      { name: 'Cream Navy',       bg: '#FAF8F5', accent: '#1E3A5F', text: '#1A1A2E', tag: '' },
+      { name: 'Titanium Amber',   bg: '#F8F7F4', accent: '#D97706', text: '#1A2332', tag: 'existing' },
+      { name: 'Apple Light',      bg: '#FBFBFD', accent: '#007AFF', text: '#1D1D1F', tag: 'existing' },
+      { name: 'Warm Rose',        bg: '#FDF5F5', accent: '#E11D48', text: '#1A0C10', tag: '' },
+      { name: 'Slate + Indigo',   bg: '#F4F4F5', accent: '#4F46E5', text: '#18181B', tag: '' },
+      { name: 'Sand + Orange',    bg: '#FBF7F0', accent: '#EA580C', text: '#1C1008', tag: '' },
+      { name: 'Ice + Teal',       bg: '#F0FDFB', accent: '#0D9488', text: '#0F2B4C', tag: '' },
+      { name: 'Stone + Purple',   bg: '#FAFAF9', accent: '#7C3AED', text: '#1C1917', tag: '' },
+      { name: 'Warm + Gold',      bg: '#FFFBEB', accent: '#B45309', text: '#1A1208', tag: '' },
+    ];
+
+    const picked = new Set();
+
+    function renderGrid(items, containerId) {
+      const el = document.getElementById(containerId);
+      items.forEach((p, i) => {
+        const id = containerId + '_' + i;
+        const card = document.createElement('div');
+        card.className = 'swatch';
+        card.id = id;
+        card.dataset.name = p.name;
+        card.dataset.accent = p.accent;
+        card.dataset.bg = p.bg;
+
+        // Tag badge
+        let tagHtml = '';
+        if (p.tag === 'existing') tagHtml = `<div style="position:absolute;top:8px;left:8px;background:rgba(0,0,0,0.5);color:rgba(255,255,255,0.5);font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;">existing</div>`;
+        if (p.tag === 'new') tagHtml = `<div style="position:absolute;top:8px;left:8px;background:rgba(255,255,255,0.15);color:#fff;font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:2px 6px;border-radius:4px;">new</div>`;
+
+        card.innerHTML = `
+          <div class="swatch-preview" style="background:${p.bg};">
+            ${tagHtml}
+            <div class="check-badge">
+              <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+                <path d="M2.5 7L5.5 10L11.5 4" stroke="#09090B" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+            <div class="accent-dot" style="background:${p.accent};"></div>
+            <div class="sample-text" style="color:${p.text};">Aa Bb</div>
+          </div>
+          <div class="swatch-label" style="background:${p.bg}; border-top:1px solid rgba(128,128,128,0.15);">
+            <div class="swatch-name" style="color:${p.text};">${p.name}</div>
+            <div class="swatch-hex" style="color:${p.text};opacity:0.4;">${p.bg} · ${p.accent}</div>
+          </div>`;
+
+        card.addEventListener('click', () => toggle(id, p.name, p.accent, p.bg));
+        el.appendChild(card);
+      });
+    }
+
+    function toggle(id, name, accent, bg) {
+      const card = document.getElementById(id);
+      if (picked.has(id)) {
+        picked.delete(id);
+        card.classList.remove('picked');
+      } else {
+        picked.add(id);
+        card.classList.add('picked');
+      }
+      updateSummary();
+    }
+
+    function updateSummary() {
+      const chips = document.getElementById('summaryChips');
+      const empty = document.getElementById('emptyMsg');
+      chips.querySelectorAll('.summary-chip').forEach(c => c.remove());
+      if (picked.size === 0) { empty.style.display = 'inline'; return; }
+      empty.style.display = 'none';
+      picked.forEach(id => {
+        const card = document.getElementById(id);
+        const chip = document.createElement('div');
+        chip.className = 'summary-chip';
+        chip.innerHTML = `<div class="summary-chip-dot" style="background:${card.dataset.accent};"></div>${card.dataset.name}`;
+        chips.insertBefore(chip, null);
+      });
+    }
+
+    function clearAll() {
+      picked.forEach(id => document.getElementById(id)?.classList.remove('picked'));
+      picked.clear();
+      updateSummary();
+    }
+
+    renderGrid(DARK, 'darkGrid');
+    renderGrid(LIGHT, 'lightGrid');
+  </script>
+</body>
+</html>

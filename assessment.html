@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Free Assessment — Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
+  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
+  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.12);
+  --navy:#0F2B4C;--red:#EF4444;--nav-h:64px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);height:100%;overflow:hidden;}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.96);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px;gap:16px;}
+.logo{font-size:18px;font-weight:800;letter-spacing:-0.5px;color:var(--text);text-decoration:none;white-space:nowrap;}
+.logo span{color:var(--teal);}
+.prog-wrap{flex:1;display:flex;align-items:center;gap:10px;max-width:360px;margin:0 auto;}
+.prog-label{font-size:11px;color:var(--dim);white-space:nowrap;}
+.prog-bar{flex:1;height:4px;background:var(--border);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--teal);border-radius:99px;transition:width .5s ease;width:0%;}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:color .15s;}
+.nav-back:hover{color:var(--teal);}
+
+.chat-wrap{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;display:flex;flex-direction:column;}
+.chat-scroll{flex:1;overflow-y:auto;padding:28px 16px 16px;scroll-behavior:smooth;}
+.chat-inner{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+
+.brow{display:flex;align-items:flex-end;gap:9px;}
+.brow.bot{justify-content:flex-start;}
+.brow.user{justify-content:flex-end;}
+.avatar{width:30px;height:30px;min-width:30px;border-radius:50%;background:linear-gradient(135deg,#0F2B4C,#0D9488);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;}
+.bbl{max-width:82%;padding:12px 16px;border-radius:18px;font-size:15px;line-height:1.6;}
+.bbl.bot{background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text);}
+.bbl.bot a{color:var(--teal);text-decoration:none;border-bottom:1px solid rgba(13,148,136,0.3);}
+.bbl.user{background:var(--teal);color:#fff;border-bottom-right-radius:4px;}
+
+.typing-dots{display:flex;gap:5px;align-items:center;padding:4px 2px;}
+.typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--dim);animation:td 1.4s ease-in-out infinite;}
+.typing-dots span:nth-child(2){animation-delay:.2s;}
+.typing-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes td{0%,60%,100%{transform:translateY(0);opacity:.35;}30%{transform:translateY(-7px);opacity:1;}}
+
+.search-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;max-width:380px;}
+.sc-searching{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);}
+.sc-spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.sc-result{display:flex;flex-direction:column;gap:10px;}
+.sc-biz-name{font-size:16px;font-weight:700;color:var(--text);}
+.sc-biz-loc{font-size:13px;color:var(--muted);}
+.sc-links{display:flex;gap:10px;flex-wrap:wrap;}
+.sc-link{font-size:12px;font-weight:600;color:var(--teal);text-decoration:none;padding:5px 10px;border:1px solid rgba(13,148,136,0.25);border-radius:6px;transition:all .15s;}
+.sc-link:hover{background:var(--teal-lt);}
+
+.report-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:520px;}
+.rc-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.rc-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
+.rc-dims{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.rc-dim{display:flex;align-items:center;gap:10px;}
+.rc-dim-name{font-size:13px;font-weight:600;color:var(--text);min-width:158px;}
+.rc-bar-wrap{flex:1;height:6px;background:var(--bg-surface);border-radius:99px;overflow:hidden;}
+.rc-bar{height:100%;border-radius:99px;transition:width 1.2s ease;}
+.rc-bar.green{background:#10B981;}.rc-bar.yellow{background:#F59E0B;}.rc-bar.red{background:#EF4444;}
+.rc-score{font-size:11px;font-weight:700;min-width:52px;text-align:right;}
+.rc-score.green{color:#10B981;}.rc-score.yellow{color:#F59E0B;}.rc-score.red{color:#EF4444;}
+.rc-recs{border-top:1px solid var(--border);padding-top:16px;counter-reset:rec;}
+.rc-recs-title{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:12px;}
+.rc-rec{display:flex;gap:10px;margin-bottom:10px;font-size:13px;color:var(--muted);line-height:1.6;}
+.rc-rec::before{content:counter(rec);counter-increment:rec;min-width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px;flex-shrink:0;}
+.rc-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.rc-btn{padding:10px 20px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .18s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.rc-btn.primary{background:var(--teal);color:#fff;}
+.rc-btn.primary:hover{filter:brightness(1.08);}
+.rc-btn.secondary{background:transparent;border:1.5px solid var(--border);color:var(--muted);}
+.rc-btn.secondary:hover{border-color:var(--teal);color:var(--teal);}
+
+.chat-input-area{border-top:1px solid var(--border);background:var(--bg-card);padding:14px 16px;flex-shrink:0;}
+.input-inner{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
+.input-row{display:flex;gap:9px;align-items:flex-end;}
+.chat-input{flex:1;padding:12px 15px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;color:var(--text);background:var(--bg);font-family:inherit;outline:none;resize:none;transition:border-color .15s;line-height:1.5;-webkit-appearance:none;}
+.chat-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,0.1);}
+.chat-input.err{border-color:var(--red);}
+.send-btn{width:42px;height:42px;min-width:42px;border-radius:11px;background:var(--teal);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;align-self:flex-end;}
+.send-btn:hover{filter:brightness(1.1);}
+.send-btn:disabled{opacity:.35;cursor:not-allowed;}
+.err-msg{font-size:12px;color:var(--red);display:none;}
+.err-msg.show{display:block;}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;padding-top:4px;}
+.chip{padding:9px 16px;border-radius:99px;border:1.5px solid var(--border);background:var(--bg-card);font-size:14px;color:var(--muted);font-weight:500;cursor:pointer;transition:all .15s;user-select:none;}
+.chip:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-lt);}
+.chip.on{border-color:var(--teal);background:var(--teal);color:#fff;}
+
+.api-error{background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px 16px;font-size:13px;color:#DC2626;max-width:400px;}
+
+@media print{nav,.chat-input-area,.brow.user{display:none!important;}.chat-scroll{overflow:visible;position:static;}.chat-wrap{position:static;}.report-card{max-width:100%;}}
+@media(max-width:600px){nav{padding:0 14px;}.prog-label{display:none;}.bbl{font-size:14px;max-width:90%;}.chat-input-area{padding:10px 12px;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html"><img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:48px;width:auto;display:block;"/></a>
+  <div class="prog-wrap">
+    <span class="prog-label" id="progLabel">Getting started</span>
+    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+  </div>
+  <a href="index.html" class="nav-back">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Back
+  </a>
+</nav>
+
+<div class="chat-wrap">
+  <div class="chat-scroll" id="chatScroll">
+    <div class="chat-inner" id="chatInner"></div>
+  </div>
+  <div class="chat-input-area" id="inputArea" style="display:none;">
+    <div class="input-inner" id="inputInner"></div>
+  </div>
+</div>
+
+<script>
+// ── CONFIG ────────────────────────────────────────────────────
+const API_ENDPOINT = '/api/chat';
+const A = {}; // collected answers
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+// ── PROGRESS ──────────────────────────────────────────────────
+function setProgress(pct, label) {
+  document.getElementById('progFill').style.width = Math.min(pct, 99) + '%';
+  if(label) document.getElementById('progLabel').textContent = label;
+}
+
+// ── SCROLL ────────────────────────────────────────────────────
+function scrollToBottom() {
+  const el = document.getElementById('chatScroll');
+  el.scrollTop = el.scrollHeight;
+}
+function scrollToLastQuestion() {
+  const el = document.getElementById('chatScroll');
+  const bots = el.querySelectorAll('.brow.bot');
+  if(bots.length) {
+    const last = bots[bots.length - 1];
+    el.scrollTo({ top: Math.max(0, last.offsetTop - 24), behavior: 'smooth' });
+  }
+}
+
+// ── BUBBLE HELPERS ────────────────────────────────────────────
+function addBubble(text, type, isHtml = false) {
+  const inner = document.getElementById('chatInner');
+  const row = document.createElement('div');
+  row.className = `brow ${type}`;
+  const content = isHtml ? text : escHtml(text);
+  if(type === 'bot') {
+    row.innerHTML = `<div class="avatar">NX</div><div class="bbl bot">${content}</div>`;
+  } else {
+    row.innerHTML = `<div class="bbl user">${content}</div>`;
+  }
+  inner.appendChild(row);
+  scrollToBottom();
+  return row;
+}
+
+function addCard(html) {
+  const inner = document.getElementById('chatInner');
+  const row = document.createElement('div');
+  row.className = 'brow bot';
+  row.innerHTML = `<div class="avatar">NX</div><div>${html}</div>`;
+  inner.appendChild(row);
+  scrollToBottom();
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── TYPING ────────────────────────────────────────────────────
+let typingEl = null;
+function showTyping() {
+  if(typingEl) return;
+  const inner = document.getElementById('chatInner');
+  typingEl = document.createElement('div');
+  typingEl.className = 'brow bot';
+  typingEl.innerHTML = `<div class="avatar">NX</div><div class="bbl bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  inner.appendChild(typingEl);
+  scrollToBottom();
+}
+function hideTyping() {
+  if(typingEl) { typingEl.remove(); typingEl = null; }
+}
+
+// ── SPEAK (bot message with typing delay) ────────────────────
+async function speak(text, delayMs = 900, isHtml = false) {
+  showTyping();
+  await sleep(delayMs);
+  hideTyping();
+  addBubble(text, 'bot', isHtml);
+}
+
+// ── INPUT HELPERS ─────────────────────────────────────────────
+function clearInput() {
+  document.getElementById('inputInner').innerHTML = '';
+  document.getElementById('inputArea').style.display = 'none';
+}
+
+function askText(placeholder, validate, inputType = 'text') {
+  return new Promise(resolve => {
+    const area = document.getElementById('inputArea');
+    const inner = document.getElementById('inputInner');
+    inner.innerHTML = `
+      <div class="input-row">
+        <input class="chat-input" id="ci" type="${inputType}" placeholder="${placeholder}" autocomplete="off"/>
+        <button class="send-btn" id="csend" disabled>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="err-msg" id="cerr"></div>`;
+    area.style.display = '';
+
+    const inp = document.getElementById('ci');
+    const btn = document.getElementById('csend');
+    const err = document.getElementById('cerr');
+
+    inp.addEventListener('input', () => {
+      btn.disabled = !inp.value.trim();
+      inp.classList.remove('err'); err.classList.remove('show');
+    });
+    const submit = () => {
+      const val = inp.value.trim();
+      if(!val) return;
+      if(validate) {
+        const e = validate(val);
+        if(e) { inp.classList.add('err'); err.textContent = e; err.classList.add('show'); return; }
+      }
+      clearInput();
+      resolve(val);
+    };
+    inp.addEventListener('keydown', e => { if(e.key === 'Enter') submit(); });
+    btn.addEventListener('click', submit);
+    setTimeout(() => { inp.focus(); scrollToLastQuestion(); }, 80);
+  });
+}
+
+function askChips(options) {
+  return new Promise(resolve => {
+    const area = document.getElementById('inputArea');
+    const inner = document.getElementById('inputInner');
+    inner.innerHTML = `<div class="chips" id="chipsWrap"></div>`;
+    area.style.display = '';
+    const wrap = document.getElementById('chipsWrap');
+    options.forEach(opt => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = opt;
+      chip.onclick = () => { clearInput(); resolve(opt); };
+      wrap.appendChild(chip);
+    });
+    setTimeout(() => scrollToLastQuestion(), 80);
+  });
+}
+
+// ── OPENAI API CALL ───────────────────────────────────────────
+async function callAI(messages, maxTokens = 400) {
+  const res = await fetch(API_ENDPOINT, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ messages, max_tokens: maxTokens })
+  });
+  if(!res.ok) {
+    const err = await res.json().catch(() => ({}));
+    throw new Error(err.error || `HTTP ${res.status}`);
+  }
+  const data = await res.json();
+  if(data.error) throw new Error(data.error);
+  return data.reply;
+}
+
+// ── SYSTEM PROMPT ─────────────────────────────────────────────
+function buildSystemPrompt() {
+  return `You are Nex, a warm and friendly business advisor at Nexvora Systems. You are having a natural one-on-one chat conversation with a business owner named ${A.full_name} to understand their business and prepare a personalized assessment.
+
+Your goal: collect information naturally through genuine conversation, then signal when you have enough.
+
+Information to collect (ask naturally, not like a form):
+- Business location (city/state or city/country)
+- Business name and exactly what they do
+- Team size (exact numbers, who does what)
+- Approximate revenue
+- Biggest current challenges (dig in, ask follow-ups)
+- Current technology and AI usage
+- Goals for the next 12 months
+
+Conversation rules:
+- Ask ONLY ONE question per message
+- Keep messages short: 1-3 sentences maximum
+- Be genuinely warm and human, not corporate
+- Do NOT use em-dashes (use commas or periods instead)
+- Reference what they said to show you are listening
+- Adapt questions to their situation:
+  * Solo operator: focus on time, what they handle alone, marketing approach
+  * 2-5 people: ask who handles marketing and sales, main time wasters
+  * 6-20 people: ask about team structure, reporting, who owns what
+  * 20+ people: ask about departments, cross-team communication, reporting systems
+- Ask smart industry-specific follow-ups based on what they tell you
+- If they mention a problem, dig into it before moving on
+- Show genuine interest and occasional encouragement
+
+After 8-14 exchanges (when you have collected enough on all topics), wrap up warmly and end your message with this exact marker on a new line: [REPORT_READY]
+Do not mention the marker to the user. Just say something like "I think I have a great picture of your business now" and then put [REPORT_READY] on the next line.`;
+}
+
+// ── AI CONVERSATION LOOP ──────────────────────────────────────
+let aiMessages = [];
+let exchangeCount = 0;
+
+async function startAIPhase() {
+  aiMessages = [{ role: 'system', content: buildSystemPrompt() }];
+  setProgress(25, 'Learning about your business');
+
+  showTyping();
+  await sleep(600);
+  let firstQ;
+  try {
+    firstQ = await callAI(aiMessages, 250);
+  } catch(e) {
+    hideTyping();
+    addBubble("I'm having trouble connecting right now. Please refresh and try again.", 'bot');
+    return;
+  }
+  hideTyping();
+  aiMessages.push({ role: 'assistant', content: firstQ });
+
+  const clean = firstQ.replace('[REPORT_READY]', '').trim();
+  addBubble(clean, 'bot');
+
+  await aiLoop();
+}
+
+async function aiLoop() {
+  const answer = await askText("Type your answer...", null);
+  addBubble(answer, 'user');
+  exchangeCount++;
+  aiMessages.push({ role: 'user', content: answer });
+
+  const pct = Math.min(25 + exchangeCount * 5, 85);
+  setProgress(pct);
+
+  showTyping();
+  await sleep(400);
+
+  let reply;
+  try {
+    reply = await callAI(aiMessages);
+  } catch(e) {
+    hideTyping();
+    addBubble("Sorry, I lost connection for a moment. Can you repeat that?", 'bot');
+    await aiLoop();
+    return;
+  }
+
+  hideTyping();
+  aiMessages.push({ role: 'assistant', content: reply });
+
+  if(reply.includes('[REPORT_READY]')) {
+    const clean = reply.replace('[REPORT_READY]', '').trim();
+    if(clean) addBubble(clean, 'bot');
+    await sleep(600);
+    await generateReport();
+  } else {
+    addBubble(reply, 'bot');
+    await aiLoop();
+  }
+}
+
+// ── REPORT GENERATION ─────────────────────────────────────────
+async function generateReport() {
+  clearInput();
+  setProgress(90, 'Generating your report');
+  showTyping();
+  await sleep(500);
+  addBubble("Give me just a moment to put your report together...", 'bot');
+  showTyping();
+  await sleep(2000);
+  hideTyping();
+
+  // Ask AI to generate JSON report based on full conversation
+  const reportPrompt = [
+    ...aiMessages,
+    {
+      role: 'user',
+      content: 'Please generate the assessment report now.'
+    },
+    {
+      role: 'system',
+      content: `Based on the entire conversation, generate a detailed assessment report as JSON. Respond with ONLY valid JSON, no other text, no markdown code blocks.
+
+Use this exact structure:
+{
+  "biz_name": "exact business name from conversation",
+  "location": "city and state/country",
+  "summary": "2-sentence summary of their business and situation",
+  "scores": {
+    "operations": <0-100 integer>,
+    "ai_automation": <0-100 integer>,
+    "reporting": <0-100 integer>,
+    "sales": <0-100 integer>,
+    "marketing": <0-100 integer>,
+    "customer": <0-100 integer>,
+    "team_hr": <0-100 integer>,
+    "financial": <0-100 integer>,
+    "growth": <0-100 integer>
+  },
+  "recommendations": [
+    "Specific actionable recommendation 1 tailored to their situation",
+    "Specific actionable recommendation 2 tailored to their situation",
+    "Specific actionable recommendation 3 tailored to their situation"
+  ]
+}
+
+Score each dimension honestly based on what they told you. Lower scores = bigger problem areas. Be specific in recommendations, referencing their actual business and what they said.`
+    }
+  ];
+
+  let reportData = null;
+  try {
+    const raw = await callAI(reportPrompt, 900);
+    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    if(jsonMatch) reportData = JSON.parse(jsonMatch[0]);
+  } catch(e) {
+    console.error('Report generation error:', e);
+  }
+
+  displayReport(reportData);
+}
+
+function scoreColor(n) {
+  if(n >= 70) return 'green';
+  if(n >= 45) return 'yellow';
+  return 'red';
+}
+function scoreLabel(n) {
+  if(n >= 70) return 'Strong';
+  if(n >= 45) return 'Needs Work';
+  return 'Priority Fix';
+}
+
+function displayReport(data) {
+  const first = A.full_name.split(' ')[0];
+  const bizName = (data && data.biz_name) ? data.biz_name : (A.biz_name || 'Your Business');
+  const location = (data && data.location) ? data.location : '';
+
+  const dims = [
+    { key:'operations',    label:'Operations' },
+    { key:'ai_automation', label:'AI & Automation' },
+    { key:'reporting',     label:'Reporting & Analytics' },
+    { key:'sales',         label:'Sales Systems' },
+    { key:'marketing',     label:'Marketing' },
+    { key:'customer',      label:'Customer Experience' },
+    { key:'team_hr',       label:'Team & HR' },
+    { key:'financial',     label:'Financial Efficiency' },
+    { key:'growth',        label:'Growth & Scaling' },
+  ];
+
+  // Use AI scores if available, otherwise fallback
+  const fallbackScores = { operations:60, ai_automation:45, reporting:50, sales:60, marketing:55, customer:65, team_hr:60, financial:55, growth:50 };
+  const scores = (data && data.scores) ? data.scores : fallbackScores;
+
+  const dimRows = dims.map(d => {
+    const sc = Math.max(0, Math.min(100, parseInt(scores[d.key]) || 50));
+    const col = scoreColor(sc);
+    return `<div class="rc-dim">
+      <div class="rc-dim-name">${d.label}</div>
+      <div class="rc-bar-wrap"><div class="rc-bar ${col}" style="width:${sc}%"></div></div>
+      <div class="rc-score ${col}">${scoreLabel(sc)}</div>
+    </div>`;
+  }).join('');
+
+  const recs = (data && data.recommendations && data.recommendations.length)
+    ? data.recommendations
+    : ["Review your core operational processes and document the top 3 that need improvement.",
+       "Identify one repetitive task your team does daily and automate it this month.",
+       "Set up a simple weekly review of your key business numbers."];
+
+  const recItems = recs.map(r => `<div class="rc-rec">${escHtml(r)}</div>`).join('');
+
+  const summaryHtml = (data && data.summary)
+    ? `<div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;padding:12px 14px;background:var(--bg-surface);border-radius:8px;">${escHtml(data.summary)}</div>`
+    : '';
+
+  addCard(`
+    <div class="report-card" id="reportCard">
+      <div class="rc-title">Business Assessment Report</div>
+      <div class="rc-sub">${escHtml(bizName)}${location ? ' · ' + escHtml(location) : ''} · Prepared for ${escHtml(first)}</div>
+      ${summaryHtml}
+      <div class="rc-dims">${dimRows}</div>
+      <div class="rc-recs">
+        <div class="rc-recs-title">Top Recommendations</div>
+        ${recItems}
+      </div>
+      <div class="rc-actions">
+        <button class="rc-btn primary" onclick="window.print()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF
+        </button>
+        <a href="index.html" class="rc-btn secondary">Back to Home</a>
+      </div>
+    </div>`);
+
+  setProgress(100, 'Complete');
+  scrollToBottom();
+
+  setTimeout(async () => {
+    await speak(`Your report is ready, ${first}! We have also sent a copy to <strong>${escHtml(A.email)}</strong>. If you do not see it within a few minutes, please check your spam folder.`, 800, true);
+    await sleep(400);
+    await speak('If you have any questions or want to talk through the results, just <a href="contact.html">get in touch</a> and we will be happy to help.', 700, true);
+  }, 600);
+}
+
+// ── BUSINESS SEARCH ───────────────────────────────────────────
+async function doBusinessSearch(bizName, location) {
+  const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(bizName + ' ' + location)}`;
+  const reviewsUrl = `https://www.google.com/search?q=${encodeURIComponent(bizName + ' ' + location + ' reviews')}`;
+  const yelpUrl = `https://www.yelp.com/search?find_desc=${encodeURIComponent(bizName)}&find_loc=${encodeURIComponent(location)}`;
+
+  addCard(`<div class="search-card">
+    <div class="sc-searching" id="scStatus">
+      <div class="sc-spinner"></div>
+      <span>Searching for "${escHtml(bizName)}"...</span>
+    </div>
+  </div>`);
+
+  await sleep(2000);
+
+  document.getElementById('scStatus').closest('.search-card').innerHTML = `
+    <div class="sc-result">
+      <div class="sc-biz-name">${escHtml(bizName)}</div>
+      <div class="sc-biz-loc">${escHtml(location)}</div>
+      <div class="sc-links">
+        <a class="sc-link" href="${mapsUrl}" target="_blank">Google Maps</a>
+        <a class="sc-link" href="${reviewsUrl}" target="_blank">Reviews</a>
+        <a class="sc-link" href="${yelpUrl}" target="_blank">Yelp</a>
+      </div>
+    </div>`;
+  scrollToBottom();
+}
+
+// ── MAIN FLOW ─────────────────────────────────────────────────
+async function main() {
+  setProgress(2, 'Getting started');
+  await sleep(500);
+
+  await speak("Hi! I'm Nex, your Nexvora advisor. I'll have a quick conversation with you to understand your business and put together a free personalized report.", 1000);
+  await sleep(200);
+  await speak("Let's start. What's your full name?", 700);
+
+  const name = await askText("Your full name", v => v.trim().length >= 2 ? null : "Please enter your full name");
+  addBubble(name, 'user');
+  A.full_name = name;
+  const first = name.split(' ')[0];
+
+  setProgress(8, 'Contact info');
+  await speak(`Great to meet you, ${first}! What's the best email to send your report to?`);
+
+  const email = await askText("your@email.com", v =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? null : "Please enter a valid email (e.g. name@company.com)",
+    'email'
+  );
+  addBubble(email, 'user');
+  A.email = email;
+
+  setProgress(14);
+  await speak("Got it. And your phone number? Optional, type 'skip' if you prefer.", 800);
+
+  const phone = await askText("+1 (555) 000-0000", v => {
+    if(v.toLowerCase() === 'skip' || !v.trim()) return null;
+    return v.replace(/\D/g,'').length >= 7 ? null : "Please enter a valid number or type 'skip'";
+  }, 'tel');
+  addBubble(phone.toLowerCase() === 'skip' ? '(skipped)' : phone, 'user');
+  A.phone = phone.toLowerCase() === 'skip' ? '' : phone;
+
+  setProgress(18);
+  await speak("How did you hear about us?", 700);
+  const referral = await askChips(['Google Search','Social Media','Referral','Online ad','Other']);
+  addBubble(referral, 'user');
+  A.referral = referral;
+
+  setProgress(22, 'Your business');
+
+  // Hand off to AI
+  await startAIPhase();
+}
+
+main();
+</script>
+</body>
+</html>

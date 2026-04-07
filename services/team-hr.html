@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Team and HR systems consulting for small businesses in Tampa Bay, Florida and across the USA. Role clarity, accountability systems, hiring and onboarding processes, and performance tracking that builds high-functioning teams."/>
+<meta name="keywords" content="team management consulting Florida, HR systems small business Tampa, hiring process consultant Tampa Bay, accountability systems small business Florida, employee performance tracking USA"/>
+<title>Team &amp; HR Systems — Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
+  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
+  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.1);--teal-mid:rgba(13,148,136,0.2);
+  --navy:#0F2B4C;--radius:12px;--nav-h:68px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 44px;}
+.nav-inner{display:flex;align-items:center;width:100%;}
+.nav-links{display:flex;gap:28px;list-style:none;margin:0 auto;}
+.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+.nav-cta{padding:9px 22px;border-radius:9px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;white-space:nowrap;}
+.nav-cta:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:12px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;background:var(--bg);border-bottom:1px solid var(--border);padding:20px 20px 24px;flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);}
+.mobile-menu a.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff;font-weight:700;text-align:center;border-radius:10px;border-bottom:none;font-size:14px;}
+
+.page-hero{padding:calc(var(--nav-h) + 72px) 44px 64px;max-width:860px;margin:0 auto;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:20px;transition:color .15s;}
+.back-link:hover{color:var(--teal);}
+.back-link::before{content:'←';}
+.sec-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.page-hero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-1.2px;color:var(--text);margin-bottom:18px;line-height:1.1;}
+.page-hero h1 strong{background:linear-gradient(90deg,#0F2B4C,#0D9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.page-hero .subtitle{font-size:18px;color:var(--muted);line-height:1.7;max-width:640px;}
+
+.section{padding:72px 0;}
+.section-alt{padding:72px 0;background:var(--bg-surface);}
+.container{max-width:900px;margin:0 auto;padding:0 44px;}
+.sec-title{font-size:clamp(1.5rem,2.5vw,2rem);font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:24px;}
+
+.prose p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:20px;}
+.prose p:last-child{margin-bottom:0;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+.bullet-list{display:flex;flex-direction:column;gap:12px;list-style:none;}
+.bullet-list li{display:flex;align-items:flex-start;gap:10px;font-size:15px;color:var(--muted);line-height:1.6;}
+.bullet-list li::before{content:'';display:block;min-width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:7px;}
+
+.deliverables-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.deliverable-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;}
+.deliverable-card h4{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.deliverable-card p{font-size:13.5px;color:var(--muted);line-height:1.65;}
+
+.why-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:40px;}
+.why-box p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:16px;}
+.why-box p:last-child{margin-bottom:0;}
+
+.cta-block{border-radius:20px;padding:72px 56px;text-align:center;background:linear-gradient(135deg,#0F2B4C,#0D3330);position:relative;overflow:hidden;}
+.cta-block::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% -10%,rgba(13,148,136,0.3),transparent);pointer-events:none;}
+.cta-block .sec-label{color:rgba(68,202,162,0.8);}
+.cta-block h2{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-0.5px;color:#FAF8F5;margin-bottom:12px;position:relative;}
+.cta-block h2 strong{color:#44CAA2;}
+.cta-block p{font-size:16px;color:rgba(250,248,245,0.6);margin-bottom:28px;position:relative;}
+.btn-p{padding:15px 30px;border-radius:10px;background:var(--teal);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-block;}
+.btn-p:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,148,136,0.3);}
+
+footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65);}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1160px;margin:0 auto 40px;}
+.footer-brand p{font-size:13px;margin-top:10px;color:rgba(250,248,245,0.5);}
+.footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:14px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:#FAF8F5;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;max-width:1160px;margin:0 auto;flex-wrap:wrap;gap:12px;}
+
+@media(max-width:768px){
+  :root{--nav-h:56px;}
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .nav-cta{display:none;}
+  .hamburger{display:flex;}
+  .page-hero,.container{padding-left:20px;padding-right:20px;}
+  .page-hero{padding-top:calc(var(--nav-h) + 40px);}
+  .two-col{grid-template-columns:1fr;}
+  .deliverables-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;gap:28px;}
+  footer{padding:40px 20px 24px;}
+  .cta-block{padding:48px 24px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:48px;width:auto;display:block;"/></a>
+    <ul class="nav-links">
+      <li><a href="../about.html">About</a></li>
+      <li><a href="../services.html" class="active">Services</a></li>
+      <li><a href="../blog.html">Insights</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+    <a href="../assessment.html" class="nav-cta">Free Assessment</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../about.html">About</a>
+  <a href="../services.html">Services</a>
+  <a href="../blog.html">Insights</a>
+  <a href="../contact.html">Contact</a>
+  <a href="../assessment.html" class="mobile-cta">Free Assessment</a>
+</div>
+
+<div class="page-hero">
+  <a href="../services.html" class="back-link">Services</a>
+  <div class="sec-label">Services</div>
+  <h1>Team &amp;<br><strong>HR Systems</strong></h1>
+  <p class="subtitle">We build the people infrastructure that turns a group of employees into a functioning team — with clear roles, real accountability, structured hiring, and performance management that actually works.</p>
+</div>
+
+<div class="section">
+  <div class="container">
+    <div class="sec-title">What We Do</div>
+    <div class="prose">
+      <p>People problems in small businesses are almost always systems problems. When a team member is not performing, the root cause is usually one of three things: they do not understand exactly what they are supposed to do and what good looks like, they do not have a clear way to be held accountable for their results, or they were hired and onboarded in a way that set them up to struggle from the start. The fix for each of these is not more management intervention — it is better structure.</p>
+      <p>Role clarity is the foundation. We work with business owners to define every role in the business with precision — not vague job descriptions, but specific outcome statements that tell each person what they are responsible for producing, how that will be measured, and how their role connects to the business's overall goals. When every person on your team knows exactly what success looks like in their role, management becomes easier and accountability becomes natural rather than confrontational.</p>
+      <p>Accountability systems give role clarity its teeth. We build lightweight but consistent accountability frameworks appropriate for small business teams — weekly check-ins with a standard format, scorecard reviews that track the specific metrics each role is responsible for, and a culture of addressing performance gaps early rather than letting them accumulate. These systems do not require HR software or formal performance management infrastructure. They require clear expectations, consistent measurement, and the discipline to have honest conversations when standards are not being met.</p>
+      <p>Hiring and onboarding processes are where many small businesses lose significant value without realizing it. A poor hire costs time, money, team morale, and often clients. Most small businesses hire reactively — when they need someone, they post a job, review applications quickly, and make a decision under pressure. We build structured hiring processes that include clearly defined role profiles, competency-based interview frameworks, practical assessment components, and reference check systems that actually produce useful information. When a hire is made, a structured onboarding process ensures they become productive quickly and understand the culture, expectations, and systems they are operating within.</p>
+      <p>Performance tracking closes the loop. We build the metrics and review cadences that allow managers to identify performance issues early, recognize and reinforce strong performance, and make promotion and compensation decisions based on objective evidence rather than gut feel or political dynamics. For small businesses, this does not need to be complex — it needs to be consistent.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-alt">
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <div class="sec-title">Who This Is For</div>
+        <ul class="bullet-list">
+          <li>Owners frustrated that their team does not operate at the standard they expect</li>
+          <li>Businesses where the owner is still making decisions that their team should be handling</li>
+          <li>Companies that have made bad hires recently and want a better process going forward</li>
+          <li>Teams where accountability is unclear or uncomfortable to enforce</li>
+          <li>Businesses preparing to hire their first few employees and wanting to get the process right</li>
+          <li>Growing companies that need to scale their team without sacrificing quality</li>
+          <li>Owners who want to step back from daily management by installing better systems</li>
+        </ul>
+      </div>
+      <div>
+        <div class="sec-title">What You Get</div>
+        <div class="deliverables-grid">
+          <div class="deliverable-card">
+            <h4>Role Profiles and Scorecards</h4>
+            <p>Clear, outcome-oriented definitions for every role in your business with measurable performance standards attached.</p>
+          </div>
+          <div class="deliverable-card">
+            <h4>Accountability Framework</h4>
+            <p>A weekly rhythm of check-ins, metrics reviews, and performance conversations that keep the team aligned without micromanagement.</p>
+          </div>
+          <div class="deliverable-card">
+            <h4>Hiring Process</h4>
+            <p>A structured hiring system with role profiles, interview guides, assessment components, and a consistent evaluation process.</p>
+          </div>
+          <div class="deliverable-card">
+            <h4>Onboarding System</h4>
+            <p>A documented onboarding process that gets new hires productive quickly and aligned with your standards from day one.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    <div class="sec-title">Why Nexvora</div>
+    <div class="why-box">
+      <p>Nexvora Systems was founded by Murat Zhandaurov in Tampa Bay, Florida with a clear focus on the operational challenges that are specific to small businesses. Team and HR systems for a 10-person company look very different from the HR function of a 500-person organization. We do not bring enterprise-scale complexity to small business team challenges. We bring practical, lightweight systems that work at your scale and fit the way small businesses actually operate.</p>
+      <p>We work with businesses across all 50 states. Team and HR systems engagements happen through video calls and collaborative working sessions on Zoom — reviewing current team structures, building role profiles and accountability frameworks, and training managers on how to run effective check-ins and performance conversations. Florida-based clients can also schedule in-person working sessions, which can be particularly effective for team workshops and culture-setting conversations.</p>
+      <p>The outcome we are building toward is an owner who can step back from daily people management because the structure of the team — clear roles, accountability cadences, and strong hiring and onboarding — makes the business self-managing at the operational level. That is what organizational clarity looks like at the small business scale.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-alt">
+  <div class="container">
+    <div class="cta-block">
+      <div class="sec-label">Get Started</div>
+      <h2>Start With a <strong>Free Assessment</strong></h2>
+      <p>Tell us about your current team structure and where you are struggling most. We will identify the highest-leverage fixes.</p>
+      <a href="../assessment.html" class="btn-p">Take the Free Assessment</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:40px;width:auto;display:block;margin-bottom:10px;"/></a>
+      <p>Operational clarity for small businesses across Florida and all 50 states.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Company</p>
+      <div class="footer-links">
+        <a href="../about.html">About</a>
+        <a href="../services.html">Services</a>
+        <a href="../blog.html">Insights</a>
+        <a href="../contact.html">Contact</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Services</p>
+      <div class="footer-links">
+        <a href="operations.html">Operations</a>
+        <a href="ai-automation.html">AI &amp; Automation</a>
+        <a href="reporting-analytics.html">Reporting &amp; Analytics</a>
+        <a href="sales-systems.html">Sales Systems</a>
+        <a href="marketing.html">Marketing</a>
+        <a href="customer-experience.html">Customer Experience</a>
+        <a href="team-hr.html">Team &amp; HR</a>
+        <a href="financial-efficiency.html">Financial Efficiency</a>
+        <a href="growth-scaling.html">Growth &amp; Scaling</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Contact</p>
+      <div class="footer-links">
+        <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a>
+        <a href="../assessment.html">Free Assessment</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Nexvora Systems LLC. All rights reserved.</span>
+    <span style="display:flex;gap:16px;flex-wrap:wrap;">
+      <a href="../legal/terms.html" style="color:inherit;text-decoration:none;">Terms &amp; Conditions</a>
+      <a href="../legal/privacy.html" style="color:inherit;text-decoration:none;">Privacy Policy</a>
+      <a href="../legal/cookies.html" style="color:inherit;text-decoration:none;">Cookie Policy</a>
+      <a href="../legal/disclaimer.html" style="color:inherit;text-decoration:none;">Disclaimer</a>
+    </span>
+  </div>
+</footer>
+<script>document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});</script>
+</body>
+</html>

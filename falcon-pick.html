@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Falcon Picker — Choose Your Style</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter',sans-serif;background:#FAF8F5;color:#1A1A2E;min-height:100vh;}
+
+/* ── TOP BAR ── */
+.bar{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:52px;display:flex;align-items:center;justify-content:space-between;
+  background:rgba(250,248,245,0.95);backdrop-filter:blur(12px);
+  border-bottom:1px solid #E2DDD5;padding:0 28px;
+}
+.bar h1{font-size:14px;font-weight:700;color:#1A1A2E;}
+.bar span{font-size:12px;color:#718096;}
+
+/* ── LARGE PREVIEW ── */
+.preview-zone{
+  margin-top:52px;
+  background:var(--prev-bg,#FAF8F5);
+  height:360px;
+  display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+  transition:background 0.4s;
+}
+.preview-label{
+  position:absolute;top:20px;left:28px;
+  font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
+  color:rgba(0,0,0,0.25);
+}
+.preview-name{
+  position:absolute;bottom:20px;left:28px;
+  font-size:22px;font-weight:800;color:var(--prev-text,#1A1A2E);
+  letter-spacing:-0.5px;opacity:0.7;
+}
+.preview-num{
+  position:absolute;bottom:20px;right:28px;
+  font-size:80px;font-weight:900;color:var(--prev-text,#1A1A2E);
+  opacity:0.05;line-height:1;
+}
+/* bg mode falcon (large, faded) */
+.preview-falcon-bg{
+  position:absolute;opacity:0.1;
+  width:420px;height:340px;
+}
+/* fg mode falcon (normal) */
+.preview-falcon-fg{
+  position:relative;z-index:2;
+  width:260px;height:210px;
+}
+
+/* ── BG / FG TOGGLE ── */
+.view-toggle{
+  display:flex;gap:0;
+  position:absolute;top:16px;right:20px;
+  background:rgba(0,0,0,0.08);border-radius:8px;overflow:hidden;
+}
+.view-btn{
+  padding:6px 14px;font-size:11px;font-weight:700;
+  background:transparent;border:none;cursor:pointer;
+  color:rgba(0,0,0,0.35);transition:all 0.15s;letter-spacing:0.5px;
+}
+.view-btn.active{background:#1A1A2E;color:#FAF8F5;}
+
+/* ── OPTION GRID ── */
+.grid-section{padding:32px 28px 120px;}
+.grid-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:#718096;margin-bottom:18px;}
+.options{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+
+.opt{
+  border-radius:16px;overflow:hidden;
+  border:2px solid #E2DDD5;
+  cursor:pointer;transition:all 0.2s;
+  position:relative;
+}
+.opt:hover{transform:translateY(-3px);border-color:#0D9488;}
+.opt.active{border-color:#0D9488;box-shadow:0 0 0 4px rgba(13,148,136,0.15);}
+
+.opt-canvas{
+  height:160px;display:flex;align-items:center;justify-content:center;
+  position:relative;overflow:hidden;
+}
+.opt-canvas svg{width:160px;height:130px;}
+
+.check{
+  position:absolute;top:10px;right:10px;
+  width:26px;height:26px;border-radius:50%;
+  background:#0D9488;display:none;
+  align-items:center;justify-content:center;
+}
+.check svg{display:block;}
+.opt.active .check{display:flex;}
+
+.opt-label{padding:12px 16px;background:#fff;border-top:1px solid #E2DDD5;}
+.opt-num{font-size:18px;font-weight:900;color:#0D9488;line-height:1;}
+.opt-name{font-size:12px;font-weight:700;color:#1A1A2E;margin-top:2px;}
+.opt-desc{font-size:11px;color:#718096;margin-top:3px;line-height:1.4;}
+
+/* ── PICK STRIP ── */
+.pick-strip{
+  position:fixed;bottom:0;left:0;right:0;
+  background:rgba(250,248,245,0.97);backdrop-filter:blur(12px);
+  border-top:1px solid #E2DDD5;
+  padding:12px 28px;
+  display:flex;align-items:center;gap:16px;
+}
+.pick-text{font-size:13px;color:#718096;}
+.pick-chosen{font-size:15px;font-weight:800;color:#0D9488;}
+
+/* ══════════════════════════════════
+   FALCON SVG + ANIMATION KEYFRAMES
+══════════════════════════════════ */
+
+/* 1 · FLOAT — clean teal lines, gentle float */
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-14px)}}
+@keyframes wingL{0%,100%{transform:rotate(0deg)}50%{transform:rotate(4deg)}}
+@keyframes wingR{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-4deg)}}
+.falcon-float{animation:float 3.5s ease-in-out infinite;}
+.falcon-float .wL{transform-origin:97px 52px;animation:wingL 3.5s ease-in-out infinite;}
+.falcon-float .wR{transform-origin:103px 52px;animation:wingR 3.5s ease-in-out infinite;}
+
+/* 2 · SWEEP — glides left to right */
+@keyframes sweep{0%{transform:translateX(-60px) rotate(-3deg)}50%{transform:translateX(60px) rotate(3deg)}100%{transform:translateX(-60px) rotate(-3deg)}}
+.falcon-sweep{animation:sweep 6s ease-in-out infinite;}
+
+/* 3 · HOVER — rapid wing flutter, stationary */
+@keyframes hoverFloat{0%,100%{transform:translateY(0)}25%{transform:translateY(-6px)}75%{transform:translateY(6px)}}
+@keyframes hoverWL{0%,100%{transform:rotate(0deg)}50%{transform:rotate(10deg)}}
+@keyframes hoverWR{0%,100%{transform:rotate(0deg)}50%{transform:rotate(-10deg)}}
+.falcon-hover{animation:hoverFloat 0.7s ease-in-out infinite;}
+.falcon-hover .wL{transform-origin:97px 52px;animation:hoverWL 0.35s ease-in-out infinite;}
+.falcon-hover .wR{transform-origin:103px 52px;animation:hoverWR 0.35s ease-in-out infinite;}
+
+/* 4 · NEON GLOW — dark bg, pulsing glow */
+@keyframes glowPulse{0%,100%{filter:drop-shadow(0 0 6px #44CAA2) drop-shadow(0 0 14px #44CAA2)}50%{filter:drop-shadow(0 0 12px #44CAA2) drop-shadow(0 0 28px #44CAA2) drop-shadow(0 0 48px rgba(68,202,162,0.5))}}
+@keyframes neonFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.falcon-neon{animation:neonFloat 4s ease-in-out infinite,glowPulse 2.5s ease-in-out infinite;}
+
+/* 5 · CRYSTAL — slow spin + scale pulse */
+@keyframes crystalSpin{0%{transform:rotate(-8deg)}50%{transform:rotate(8deg)}100%{transform:rotate(-8deg)}}
+@keyframes crystalPulse{0%,100%{transform:scale(1)}50%{transform:scale(1.06)}}
+.falcon-crystal{animation:crystalSpin 5s ease-in-out infinite,crystalPulse 3s ease-in-out infinite;}
+
+/* 6 · CONSTELLATION — dots pulse */
+@keyframes dotPulse{0%,100%{opacity:0.4;r:3}50%{opacity:1;r:5}}
+@keyframes linePulse{0%,100%{stroke-opacity:0.2}50%{stroke-opacity:0.7}}
+@keyframes conFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.falcon-constellation{animation:conFloat 4s ease-in-out infinite;}
+.falcon-constellation .dot{animation:dotPulse 2s ease-in-out infinite;}
+.falcon-constellation .dot:nth-child(2){animation-delay:0.3s;}
+.falcon-constellation .dot:nth-child(3){animation-delay:0.6s;}
+.falcon-constellation .dot:nth-child(4){animation-delay:0.9s;}
+.falcon-constellation .dot:nth-child(5){animation-delay:1.2s;}
+.falcon-constellation .dot:nth-child(6){animation-delay:0.15s;}
+.falcon-constellation .dot:nth-child(7){animation-delay:0.5s;}
+.falcon-constellation .conn{animation:linePulse 2s ease-in-out infinite;}
+
+@media(max-width:768px){
+  .options{grid-template-columns:repeat(2,1fr);}
+  .preview-zone{height:280px;}
+  .preview-falcon-fg{width:200px;height:160px;}
+}
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="bar">
+  <h1>Choose Your Falcon</h1>
+  <span>Click a style below → see it large above → tell me the number</span>
+</div>
+
+<!-- LARGE PREVIEW -->
+<div class="preview-zone" id="previewZone">
+  <div class="preview-label">PREVIEW</div>
+  <div class="view-toggle">
+    <button class="view-btn" onclick="setView('bg')">Background</button>
+    <button class="view-btn active" onclick="setView('fg')">Foreground</button>
+  </div>
+  <!-- bg version (faded, large) -->
+  <svg class="preview-falcon-bg" id="previewBg" viewBox="0 0 200 160" style="display:none"></svg>
+  <!-- fg version -->
+  <svg class="preview-falcon-fg" id="previewFg" viewBox="0 0 200 160"></svg>
+  <div class="preview-name" id="previewName">Select a style below</div>
+  <div class="preview-num" id="previewNum">?</div>
+</div>
+
+<!-- OPTION GRID -->
+<div class="grid-section">
+  <div class="grid-label">6 Falcon Styles — Click to Preview</div>
+  <div class="options" id="optGrid"></div>
+</div>
+
+<!-- PICK STRIP -->
+<div class="pick-strip">
+  <span class="pick-text">Your pick:</span>
+  <span class="pick-chosen" id="pickChosen">— none selected yet</span>
+</div>
+
+
+<script>
+/* ══════════════════════════════════════════════════
+   FALCON DEFINITIONS
+   Each returns SVG inner HTML (paths, groups, etc.)
+══════════════════════════════════════════════════ */
+
+// Base geometric falcon path data
+const BODY   = "M100,22 L107,46 L105,92 L100,108 L95,92 L93,46 Z";
+const BEAK   = "M100,22 L104,13 L100,6 L96,13 Z";
+const TAIL   = "M95,92 L87,128 L100,122 L113,128 L105,92 Z";
+const WING_L = "M93,52 C76,47 52,44 27,51 C12,57 5,70 9,80 L27,74 C50,67 74,64 92,68 L93,76";
+const WING_R = "M107,52 C124,47 148,44 173,51 C188,57 195,70 191,80 L173,74 C150,67 126,64 108,68 L107,76";
+// Feather tick marks
+const FL = [[9,80,15,91],[26,74,30,85],[44,69,47,80],[63,65,65,76]];
+const FR = [[191,80,185,91],[174,74,170,85],[156,69,153,80],[137,65,135,76]];
+
+function featherLines(pairs, color, w) {
+  return pairs.map(([x1,y1,x2,y2]) =>
+    `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${w}" stroke-linecap="round"/>`
+  ).join('');
+}
+
+const OPTIONS = [
+
+  // ── 1 · FLOAT (clean line art) ──
+  {
+    n:1, name:'Clean Float', desc:'Thin lines, gentle floating',
+    optBg:'#FAF8F5', darkBg:false,
+    svg(c='#0D9488', w=1.6, cls='falcon-float') {
+      return `<g class="${cls}">
+        <g class="wL"><path d="${WING_L}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        ${featherLines(FL,c,w)}</g>
+        <g class="wR"><path d="${WING_R}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        ${featherLines(FR,c,w)}</g>
+        <path d="${BODY}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="${BEAK}" fill="${c}" stroke="${c}" stroke-width="${w}"/>
+        <path d="${TAIL}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>`;
+    }
+  },
+
+  // ── 2 · SWEEP (glides across) ──
+  {
+    n:2, name:'Glide Sweep', desc:'Flies left to right, banking',
+    optBg:'#FAF8F5', darkBg:false,
+    svg(c='#0D9488', w=1.6, cls='falcon-sweep') {
+      return `<g class="${cls}">
+        <path d="${WING_L}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        ${featherLines(FL,c,w)}
+        <path d="${WING_R}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        ${featherLines(FR,c,w)}
+        <path d="${BODY}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="${BEAK}" fill="${c}" stroke="${c}" stroke-width="${w}"/>
+        <path d="${TAIL}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- speed lines -->
+        <line x1="30" y1="90" x2="0" y2="90" stroke="${c}" stroke-width="0.8" stroke-opacity="0.3"/>
+        <line x1="28" y1="96" x2="2" y2="100" stroke="${c}" stroke-width="0.5" stroke-opacity="0.2"/>
+        <line x1="32" y1="84" x2="4" y2="82" stroke="${c}" stroke-width="0.5" stroke-opacity="0.2"/>
+      </g>`;
+    }
+  },
+
+  // ── 3 · HOVER (rapid wing flutter) ──
+  {
+    n:3, name:'Hover Flutter', desc:'Rapid wing beat, like a kestrel',
+    optBg:'#FAF8F5', darkBg:false,
+    svg(c='#0D9488', w=1.6, cls='falcon-hover') {
+      return `<g class="${cls}">
+        <g class="wL"><path d="${WING_L}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        ${featherLines(FL,c,w)}</g>
+        <g class="wR"><path d="${WING_R}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        ${featherLines(FR,c,w)}</g>
+        <path d="${BODY}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="${BEAK}" fill="${c}" stroke="${c}" stroke-width="${w}"/>
+        <path d="${TAIL}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+      </g>`;
+    }
+  },
+
+  // ── 4 · NEON GLOW (dark background) ──
+  {
+    n:4, name:'Neon Glow', desc:'Dark bg, glowing teal lines',
+    optBg:'#05080F', darkBg:true,
+    svg(c='#44CAA2', w=1.5, cls='falcon-neon') {
+      return `<g class="${cls}">
+        <path d="${WING_L}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        ${featherLines(FL,c,w)}
+        <path d="${WING_R}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        ${featherLines(FR,c,w)}
+        <path d="${BODY}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="${BEAK}" fill="${c}" stroke="${c}" stroke-width="${w}"/>
+        <path d="${TAIL}" fill="none" stroke="${c}" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round"/>
+        <!-- inner double lines for glow effect -->
+        <path d="${WING_L}" fill="none" stroke="${c}" stroke-width="0.5" stroke-opacity="0.4" stroke-linecap="round"/>
+        <path d="${WING_R}" fill="none" stroke="${c}" stroke-width="0.5" stroke-opacity="0.4" stroke-linecap="round"/>
+        <path d="${BODY}" fill="rgba(68,202,162,0.06)" stroke="${c}" stroke-width="0.5"/>
+      </g>`;
+    }
+  },
+
+  // ── 5 · CRYSTAL (faceted fills) ──
+  {
+    n:5, name:'Crystal Facets', desc:'Geometric fills, slow pulse spin',
+    optBg:'#FAF8F5', darkBg:false,
+    svg(c='#0D9488', w=1.2, cls='falcon-crystal') {
+      const fill = 'rgba(13,148,136,0.08)';
+      const fill2 = 'rgba(13,148,136,0.15)';
+      return `<g class="${cls}">
+        <!-- Faceted left wing segments -->
+        <polygon points="93,52 76,47 60,58 75,68 93,68" fill="${fill}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <polygon points="76,47 52,44 38,56 60,58" fill="${fill2}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <polygon points="52,44 27,51 9,80 15,91 38,75 38,56" fill="${fill}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <polygon points="27,51 9,80 27,74 52,44" fill="${fill2}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <!-- Faceted right wing segments -->
+        <polygon points="107,52 124,47 140,58 125,68 107,68" fill="${fill}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <polygon points="124,47 148,44 162,56 140,58" fill="${fill2}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <polygon points="148,44 173,51 191,80 185,91 162,75 162,56" fill="${fill}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <polygon points="173,51 191,80 173,74 148,44" fill="${fill2}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <!-- Body facets -->
+        <polygon points="100,22 107,46 100,75 93,46" fill="${fill2}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <polygon points="107,46 105,92 100,75" fill="${fill}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <polygon points="93,46 95,92 100,75" fill="${fill}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <!-- Beak -->
+        <polygon points="100,22 104,13 100,6 96,13" fill="${c}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <!-- Tail -->
+        <polygon points="95,92 87,128 100,122" fill="${fill2}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+        <polygon points="105,92 113,128 100,122" fill="${fill}" stroke="${c}" stroke-width="${w}" stroke-linejoin="round"/>
+      </g>`;
+    }
+  },
+
+  // ── 6 · CONSTELLATION (dots + lines) ──
+  {
+    n:6, name:'Constellation', desc:'Star-map dots + connection lines',
+    optBg:'#05080F', darkBg:true,
+    svg(c='#44CAA2', w=1, cls='falcon-constellation') {
+      // Key points of the falcon
+      const pts = [
+        [100,6],   // 0 beak
+        [100,22],  // 1 head
+        [100,64],  // 2 body center
+        [100,108], // 3 tail base
+        [100,122], // 4 tail tip
+        [27,51],   // 5 left wing inner
+        [9,80],    // 6 left wing tip
+        [173,51],  // 7 right wing inner
+        [191,80],  // 8 right wing tip
+        [52,44],   // 9 left wing mid
+        [148,44],  // 10 right wing mid
+        [93,68],   // 11 left elbow
+        [107,68],  // 12 right elbow
+      ];
+      // Connections
+      const conns = [[0,1],[1,2],[2,3],[3,4],[1,5],[5,6],[1,9],[9,5],[1,11],[11,6],[1,7],[7,8],[1,10],[10,7],[1,12],[12,8],[5,9],[7,10],[11,2],[12,2]];
+      const lines = conns.map(([a,b]) =>
+        `<line class="conn" x1="${pts[a][0]}" y1="${pts[a][1]}" x2="${pts[b][0]}" y2="${pts[b][1]}" stroke="${c}" stroke-width="${w}" stroke-opacity="0.35"/>`
+      ).join('');
+      const dots = pts.map(([x,y],i) =>
+        `<circle class="dot" cx="${x}" cy="${y}" r="3" fill="${c}" style="animation-delay:${i*0.18}s"/>`
+      ).join('');
+      return `<g class="${cls}">${lines}${dots}</g>`;
+    }
+  },
+];
+
+/* ══════════════════════════════════════════════════
+   RENDER OPTION CARDS
+══════════════════════════════════════════════════ */
+let selected = null;
+let viewMode = 'fg';
+
+const grid = document.getElementById('optGrid');
+OPTIONS.forEach(opt => {
+  const card = document.createElement('div');
+  card.className = 'opt';
+  card.id = 'opt'+opt.n;
+  const c = opt.darkBg ? '#44CAA2' : '#0D9488';
+  card.innerHTML = `
+    <div class="opt-canvas" style="background:${opt.optBg};">
+      <svg viewBox="0 0 200 160">${opt.svg(c)}</svg>
+      <div class="check">
+        <svg width="13" height="13" viewBox="0 0 14 14" fill="none">
+          <path d="M2.5 7L5.5 10L11.5 4" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
+    </div>
+    <div class="opt-label">
+      <div class="opt-num">${opt.n}</div>
+      <div class="opt-name">${opt.name}</div>
+      <div class="opt-desc">${opt.desc}</div>
+    </div>`;
+  card.addEventListener('click', () => pick(opt.n));
+  grid.appendChild(card);
+});
+
+/* ══════════════════════════════════════════════════
+   PICK + PREVIEW
+══════════════════════════════════════════════════ */
+function pick(n) {
+  selected = n;
+  // Update grid
+  document.querySelectorAll('.opt').forEach(c => c.classList.remove('active'));
+  document.getElementById('opt'+n).classList.add('active');
+  // Update preview
+  updatePreview();
+  // Update pick strip
+  document.getElementById('pickChosen').textContent = `${n} · ${OPTIONS[n-1].name}`;
+}
+
+function setView(mode) {
+  viewMode = mode;
+  document.querySelectorAll('.view-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+  updatePreview();
+}
+
+function updatePreview() {
+  if (!selected) return;
+  const opt = OPTIONS[selected-1];
+  const zone = document.getElementById('previewZone');
+  const pfg = document.getElementById('previewFg');
+  const pbg = document.getElementById('previewBg');
+  const pname = document.getElementById('previewName');
+  const pnum = document.getElementById('previewNum');
+  const c = opt.darkBg ? '#44CAA2' : '#0D9488';
+  const textC = opt.darkBg ? '#e0f5ef' : '#1A1A2E';
+
+  zone.style.setProperty('--prev-bg', opt.optBg);
+  zone.style.setProperty('--prev-text', textC);
+  pname.textContent = opt.name;
+  pnum.textContent = selected;
+
+  if (viewMode === 'bg') {
+    pbg.style.display = 'block';
+    pfg.style.display = 'none';
+    pbg.innerHTML = opt.svg(c);
+  } else {
+    pbg.style.display = 'none';
+    pfg.style.display = 'block';
+    pfg.innerHTML = opt.svg(c);
+  }
+}
+
+// Auto-select first on load
+pick(1);
+</script>
+</body>
+</html>

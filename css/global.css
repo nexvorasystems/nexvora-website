@@ -1,0 +1,205 @@
+/* ============================================================
+   NEXVORA SYSTEMS — Global CSS
+   Design tokens, reset, typography, layout utilities
+   The Nexvora Falcon System — 2026
+   OLD_APRIL5: Previous dark-only tokens replaced by theme-aware system
+   ============================================================ */
+
+/* ── Google Fonts: Inter ── */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* ── Default tokens (overridden by data-theme in themes.css) ── */
+:root {
+  /* These are fallbacks — actual values come from [data-theme] in themes.css */
+  --bg-base:         #FAF8F5;
+  --bg-surface:      #F0EDE8;
+  --bg-deep:         #E8E4DE;
+  --bg-card:         rgba(255,255,255,0.75);
+  --bg-card-hover:   rgba(255,255,255,0.95);
+  --bg-dark:         #0F2B4C;
+  --bg-dark-surface: #091D33;
+
+  --gradient-primary: linear-gradient(135deg, #0F2B4C, #0D9488);
+  --gradient-text:    linear-gradient(90deg, #0F2B4C, #0D9488);
+  --gradient-hero:    linear-gradient(135deg, #0F2B4C, #1E3A5F);
+
+  --teal:            #0D9488;
+  --teal-dark:       #0A7B71;
+  --teal-light:      #CCFBF1;
+  --blue:            #1E3A5F;
+  --green:           #10B981;
+  --amber:           #D97706;
+  --gold:            #B45309;
+  --red:             #DC2626;
+  --purple:          #7C3AED;
+
+  --text-primary:    #1A1A2E;
+  --text-muted:      #4A5568;
+  --text-dim:        #718096;
+  --text-faint:      #A0AEC0;
+  --text-on-dark:    #FAF8F5;
+  --text-on-dark-muted: rgba(250,248,245,0.65);
+
+  --border:          #E2DDD5;
+  --border-hover:    rgba(13,148,136,0.4);
+  --border-glow:     rgba(13,148,136,0.15);
+
+  --nav-bg:          rgba(250,248,245,0.88);
+  --nav-border:      #E2DDD5;
+  --mobile-menu-bg:  rgba(250,248,245,0.98);
+  --footer-bg:       #0F2B4C;
+  --footer-text:     rgba(250,248,245,0.7);
+
+  --shadow-glow-teal: 0 0 28px rgba(13,148,136,0.2);
+  --shadow-glow-blue: 0 0 28px rgba(15,43,76,0.15);
+  --glow-card:        0 2px 24px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+
+  --section-bg-alt:  #F0EDE8;
+  --trust-strip-bg:  #E8E4DE;
+
+  /* Spacing */
+  --section-gap:     104px;
+  --section-gap-sm:  64px;
+  --card-gap:        16px;
+
+  /* Radius */
+  --radius-sm:   7px;
+  --radius-md:   12px;
+  --radius-lg:   18px;
+  --radius-xl:   24px;
+  --radius-full: 999px;
+
+  /* Nav */
+  --nav-height: 68px;
+}
+
+/* ── Reset ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+img { display: block; max-width: 100%; }
+a { color: inherit; text-decoration: none; }
+button { cursor: pointer; border: none; background: none; font-family: inherit; }
+input, textarea, select { font-family: inherit; }
+
+/* ── Typography ── */
+h1 {
+  font-size: clamp(36px, 5.5vw, 60px);
+  font-weight: 300;
+  line-height: 1.08;
+  letter-spacing: -1.5px;
+}
+h2 {
+  font-size: clamp(26px, 3.5vw, 42px);
+  font-weight: 300;
+  line-height: 1.16;
+  letter-spacing: -0.5px;
+}
+h3 { font-size: clamp(17px, 2vw, 22px); font-weight: 600; line-height: 1.3; }
+h4 { font-size: 15px; font-weight: 600; }
+p { color: var(--text-muted); line-height: 1.72; }
+
+/* ── Gradient text utility ── */
+.text-gradient {
+  background: var(--gradient-text);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ── Label / eyebrow ── */
+.label {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+.label-accent {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--teal);
+}
+
+/* ── Layout ── */
+.container { max-width: 1160px; margin: 0 auto; padding: 0 28px; }
+.section { padding: var(--section-gap) 0; }
+.section-sm { padding: var(--section-gap-sm) 0; }
+
+/* ── Grids ── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: var(--card-gap); }
+.grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--card-gap); }
+.grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--card-gap); }
+
+/* ── Glass card utility ── */
+.glass {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+/* ── Divider ── */
+.divider { width: 100%; height: 1px; background: var(--border); }
+
+/* ── Alternate section background ── */
+.section-alt { background: var(--section-bg-alt); }
+
+/* ── Screen reader only ── */
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0,0,0,0); }
+
+/* ── Light theme text overrides ── */
+/* In light themes, headings use --text-primary (dark), not white */
+[data-theme="cream"] h1,
+[data-theme="cream"] h2,
+[data-theme="cream"] h3,
+[data-theme="apple-light"] h1,
+[data-theme="apple-light"] h2,
+[data-theme="apple-light"] h3,
+[data-theme="titanium"] h1,
+[data-theme="titanium"] h2,
+[data-theme="titanium"] h3 {
+  color: var(--text-primary);
+}
+
+/* Dark themes: headings are near-white */
+[data-theme="space"] h1,
+[data-theme="space"] h2,
+[data-theme="space"] h3,
+[data-theme="apple-dark"] h1,
+[data-theme="apple-dark"] h2,
+[data-theme="apple-dark"] h3,
+[data-theme="carbon"] h1,
+[data-theme="carbon"] h2,
+[data-theme="carbon"] h3,
+[data-theme="forest"] h1,
+[data-theme="forest"] h2,
+[data-theme="forest"] h3 {
+  color: var(--text-primary);
+}
+
+/* ── Responsive ── */
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 768px) {
+  :root { --section-gap: 72px; --section-gap-sm: 48px; }
+  .grid-2, .grid-3, .grid-4 { grid-template-columns: 1fr; }
+}
+@media (max-width: 480px) {
+  :root { --section-gap: 52px; --section-gap-sm: 36px; }
+  .container { padding: 0 18px; }
+}

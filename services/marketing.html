@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Marketing systems consulting for small businesses in Tampa Bay, Florida and across the USA. Lead generation systems, campaign tracking, marketing performance measurement, and scalable outreach for consistent growth."/>
+<meta name="keywords" content="marketing systems small business Florida, lead generation Tampa, marketing consultant Tampa Bay Florida, small business marketing USA, marketing performance consulting Florida"/>
+<title>Marketing Systems — Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
+  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
+  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.1);--teal-mid:rgba(13,148,136,0.2);
+  --navy:#0F2B4C;--radius:12px;--nav-h:68px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 44px;}
+.nav-inner{display:flex;align-items:center;width:100%;}
+.nav-links{display:flex;gap:28px;list-style:none;margin:0 auto;}
+.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+.nav-cta{padding:9px 22px;border-radius:9px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;white-space:nowrap;}
+.nav-cta:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:12px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;background:var(--bg);border-bottom:1px solid var(--border);padding:20px 20px 24px;flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);}
+.mobile-menu a.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff;font-weight:700;text-align:center;border-radius:10px;border-bottom:none;font-size:14px;}
+
+.page-hero{padding:calc(var(--nav-h) + 72px) 44px 64px;max-width:860px;margin:0 auto;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:20px;transition:color .15s;}
+.back-link:hover{color:var(--teal);}
+.back-link::before{content:'←';}
+.sec-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.page-hero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-1.2px;color:var(--text);margin-bottom:18px;line-height:1.1;}
+.page-hero h1 strong{background:linear-gradient(90deg,#0F2B4C,#0D9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.page-hero .subtitle{font-size:18px;color:var(--muted);line-height:1.7;max-width:640px;}
+
+.section{padding:72px 0;}
+.section-alt{padding:72px 0;background:var(--bg-surface);}
+.container{max-width:900px;margin:0 auto;padding:0 44px;}
+.sec-title{font-size:clamp(1.5rem,2.5vw,2rem);font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:24px;}
+
+.prose p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:20px;}
+.prose p:last-child{margin-bottom:0;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+.bullet-list{display:flex;flex-direction:column;gap:12px;list-style:none;}
+.bullet-list li{display:flex;align-items:flex-start;gap:10px;font-size:15px;color:var(--muted);line-height:1.6;}
+.bullet-list li::before{content:'';display:block;min-width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:7px;}
+
+.deliverables-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.deliverable-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;}
+.deliverable-card h4{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.deliverable-card p{font-size:13.5px;color:var(--muted);line-height:1.65;}
+
+.why-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:40px;}
+.why-box p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:16px;}
+.why-box p:last-child{margin-bottom:0;}
+
+.cta-block{border-radius:20px;padding:72px 56px;text-align:center;background:linear-gradient(135deg,#0F2B4C,#0D3330);position:relative;overflow:hidden;}
+.cta-block::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% -10%,rgba(13,148,136,0.3),transparent);pointer-events:none;}
+.cta-block .sec-label{color:rgba(68,202,162,0.8);}
+.cta-block h2{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-0.5px;color:#FAF8F5;margin-bottom:12px;position:relative;}
+.cta-block h2 strong{color:#44CAA2;}
+.cta-block p{font-size:16px;color:rgba(250,248,245,0.6);margin-bottom:28px;position:relative;}
+.btn-p{padding:15px 30px;border-radius:10px;background:var(--teal);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-block;}
+.btn-p:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,148,136,0.3);}
+
+footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65);}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1160px;margin:0 auto 40px;}
+.footer-brand p{font-size:13px;margin-top:10px;color:rgba(250,248,245,0.5);}
+.footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:14px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:#FAF8F5;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;max-width:1160px;margin:0 auto;flex-wrap:wrap;gap:12px;}
+
+@media(max-width:768px){
+  :root{--nav-h:56px;}
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .nav-cta{display:none;}
+  .hamburger{display:flex;}
+  .page-hero,.container{padding-left:20px;padding-right:20px;}
+  .page-hero{padding-top:calc(var(--nav-h) + 40px);}
+  .two-col{grid-template-columns:1fr;}
+  .deliverables-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;gap:28px;}
+  footer{padding:40px 20px 24px;}
+  .cta-block{padding:48px 24px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:48px;width:auto;display:block;"/></a>
+    <ul class="nav-links">
+      <li><a href="../about.html">About</a></li>
+      <li><a href="../services.html" class="active">Services</a></li>
+      <li><a href="../blog.html">Insights</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+    <a href="../assessment.html" class="nav-cta">Free Assessment</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../about.html">About</a>
+  <a href="../services.html">Services</a>
+  <a href="../blog.html">Insights</a>
+  <a href="../contact.html">Contact</a>
+  <a href="../assessment.html" class="mobile-cta">Free Assessment</a>
+</div>
+
+<div class="page-hero">
+  <a href="../services.html" class="back-link">Services</a>
+  <div class="sec-label">Services</div>
+  <h1>Marketing<br><strong>Systems</strong></h1>
+  <p class="subtitle">We build the lead generation and marketing performance infrastructure that makes your outreach consistent, measurable, and scalable — not dependent on random bursts of activity.</p>
+</div>
+
+<div class="section">
+  <div class="container">
+    <div class="sec-title">What We Do</div>
+    <div class="prose">
+      <p>Marketing for most small businesses is reactive. When business is slow, the owner starts posting on social media, sends a few emails, or calls some old contacts. When things pick up, marketing stops. This feast-and-famine cycle is one of the most common and most preventable growth problems in small business. The fix is not more marketing activity — it is a consistent, systematized approach that generates leads predictably, regardless of how busy the business is at any given moment.</p>
+      <p>Nexvora approaches marketing as a system problem first. Before recommending any specific channels or tactics, we look at how your current marketing actually works: where leads come from, what the conversion path looks like from first touch to client, what your cost per lead is across different sources, and which marketing activities have historically produced the best return. This gives us an honest baseline and prevents the common mistake of layering more tactics on top of a foundation that is not working.</p>
+      <p>Lead generation systems are the core of what we build. These are structured, repeatable processes for attracting and capturing qualified prospects. Depending on your business model, this might involve an optimized referral process that systematically asks for introductions at the right moment in the client lifecycle, a content strategy designed to attract search traffic from your target customers, a targeted outreach sequence for specific prospect segments, or a combination of paid and organic channels tracked against clear cost and conversion benchmarks. Whatever the mix, it is built to run consistently — not just when someone has time to think about marketing.</p>
+      <p>Campaign tracking and performance measurement close the loop between marketing activity and business outcomes. Many small businesses invest in marketing without knowing whether it is working. We build the tracking infrastructure to answer that question clearly — which channels are producing leads, what those leads cost, how they convert compared to leads from other sources, and what the revenue return on each channel looks like over time. This makes marketing budget decisions rational rather than intuitive.</p>
+      <p>Scalable outreach covers the email, content, and direct outreach strategies that can grow with your business. We build these with repeatability and measurement baked in — template libraries, sequenced campaigns, and content calendars that give your team a clear path to follow rather than reinventing the approach each month. The goal is a marketing function that generates leads at a predictable cost and volume that you can plan around.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-alt">
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <div class="sec-title">Who This Is For</div>
+        <ul class="bullet-list">
+          <li>Business owners whose lead flow is inconsistent and unpredictable month to month</li>
+          <li>Companies that rely heavily on word of mouth but have no system to generate referrals consistently</li>
+          <li>Businesses spending money on marketing without clear data on what is working</li>
+          <li>Owners who have tried various tactics but cannot connect marketing activity to revenue results</li>
+          <li>Service businesses looking to reduce dependence on one lead source</li>
+          <li>Companies preparing to scale that need a repeatable demand generation engine</li>
+          <li>Operators who want to hand marketing responsibilities to a team member but have no documented system to hand over</li>
+        </ul>
+      </div>
+      <div>
+        <div class="sec-title">What You Get</div>
+        <div class="deliverables-grid">
+          <div class="deliverable-card">
+            <h4>Lead Generation System</h4>
+            <p>A documented, channel-specific system for consistently generating qualified leads — built to run without constant owner involvement.</p>
+          </div>
+          <div class="deliverable-card">
+            <h4>Campaign Tracking Setup</h4>
+            <p>Attribution and performance tracking across your active channels so you know exactly which marketing spend is generating returns.</p>
+          </div>
+          <div class="deliverable-card">
+            <h4>Outreach Templates and Sequences</h4>
+            <p>Ready-to-use outreach sequences, email templates, and content frameworks your team can execute consistently.</p>
+          </div>
+          <div class="deliverable-card">
+            <h4>Marketing Performance Dashboard</h4>
+            <p>A monthly view of marketing metrics — leads by source, conversion rates, cost per acquisition, and revenue by channel.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    <div class="sec-title">Why Nexvora</div>
+    <div class="why-box">
+      <p>Nexvora Systems was founded by Murat Zhandaurov in Tampa Bay, Florida to help small businesses build the operational and commercial infrastructure that supports real, sustained growth. Marketing systems are one of the most high-leverage investments a small business can make — but only when they are built on a clear understanding of the target customer, a realistic view of what the business can execute consistently, and a measurement framework that connects activity to outcomes.</p>
+      <p>We work with clients across all 50 states. Marketing systems engagements are conducted primarily through video calls and shared working sessions on Zoom, which allows us to build campaign frameworks, configure tracking, and train your team collaboratively without being in the same room. Florida-based clients can also choose in-person sessions for workshops and strategy alignment.</p>
+      <p>We do not run campaigns for you or manage your ad spend. Our role is to build the system, define the strategy, and make sure your team has the tools and processes to execute it. The result is a marketing operation that continues to generate results long after our engagement ends — not one that collapses when a consultant stops showing up.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-alt">
+  <div class="container">
+    <div class="cta-block">
+      <div class="sec-label">Get Started</div>
+      <h2>Start With a <strong>Free Assessment</strong></h2>
+      <p>Tell us where your leads come from today and how consistent that flow is. We will show you where to build a more reliable system.</p>
+      <a href="../assessment.html" class="btn-p">Take the Free Assessment</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:40px;width:auto;display:block;margin-bottom:10px;"/></a>
+      <p>Operational clarity for small businesses across Florida and all 50 states.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Company</p>
+      <div class="footer-links">
+        <a href="../about.html">About</a>
+        <a href="../services.html">Services</a>
+        <a href="../blog.html">Insights</a>
+        <a href="../contact.html">Contact</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Services</p>
+      <div class="footer-links">
+        <a href="operations.html">Operations</a>
+        <a href="ai-automation.html">AI &amp; Automation</a>
+        <a href="reporting-analytics.html">Reporting &amp; Analytics</a>
+        <a href="sales-systems.html">Sales Systems</a>
+        <a href="marketing.html">Marketing</a>
+        <a href="customer-experience.html">Customer Experience</a>
+        <a href="team-hr.html">Team &amp; HR</a>
+        <a href="financial-efficiency.html">Financial Efficiency</a>
+        <a href="growth-scaling.html">Growth &amp; Scaling</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Contact</p>
+      <div class="footer-links">
+        <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a>
+        <a href="../assessment.html">Free Assessment</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Nexvora Systems LLC. All rights reserved.</span>
+    <span style="display:flex;gap:16px;flex-wrap:wrap;">
+      <a href="../legal/terms.html" style="color:inherit;text-decoration:none;">Terms &amp; Conditions</a>
+      <a href="../legal/privacy.html" style="color:inherit;text-decoration:none;">Privacy Policy</a>
+      <a href="../legal/cookies.html" style="color:inherit;text-decoration:none;">Cookie Policy</a>
+      <a href="../legal/disclaimer.html" style="color:inherit;text-decoration:none;">Disclaimer</a>
+    </span>
+  </div>
+</footer>
+<script>document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});</script>
+</body>
+</html>

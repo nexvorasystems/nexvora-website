@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Contact — Nexvora Systems</title>
+  <meta name="description" content="Get in touch with Nexvora Systems. Book a strategy call, ask a question, or start with your free business assessment." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/falcon.css" />
+  <style>
+    .page-hero {
+      padding: calc(var(--nav-height) + 80px) 0 72px;
+      text-align: center;
+    }
+    .page-hero h1 { margin-bottom: 16px; }
+    .page-hero p { max-width: 520px; margin: 0 auto; font-size: 17px; color: var(--text-muted); }
+
+    .contact-section { padding: 0 0 var(--section-gap); }
+    .contact-grid { display: grid; grid-template-columns: 1fr 1.4fr; gap: 48px; align-items: start; }
+
+    /* Info side */
+    .contact-info { display: flex; flex-direction: column; gap: 28px; }
+    .contact-info-item {
+      display: flex;
+      gap: 16px;
+      align-items: flex-start;
+      padding: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      transition: border-color 0.2s;
+    }
+    .contact-info-item:hover { border-color: var(--border-hover); }
+    .contact-info-icon { font-size: 22px; flex-shrink: 0; }
+    .contact-info-label { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px; }
+    .contact-info-value { font-size: 14px; color: var(--text-primary); }
+    .contact-info-note { font-size: 12px; color: var(--text-dim); margin-top: 3px; }
+
+    .contact-assessment-card {
+      background: linear-gradient(135deg, rgba(49,130,206,0.08), rgba(47,133,90,0.08));
+      border: 1px solid rgba(104,211,145,0.2);
+      border-radius: var(--radius-md);
+      padding: 24px;
+    }
+    .contact-assessment-card h4 { margin-bottom: 8px; }
+    .contact-assessment-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.65; }
+
+    /* Form side */
+    .contact-form-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 40px;
+    }
+    .contact-form-card h2 { margin-bottom: 6px; }
+    .contact-form-card > p { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; }
+    .contact-form { display: flex; flex-direction: column; gap: 16px; }
+    .form-success {
+      display: none;
+      text-align: center;
+      padding: 32px;
+    }
+    .form-success .success-icon { font-size: 48px; margin-bottom: 16px; }
+    .form-success h3 { margin-bottom: 8px; }
+    .form-success p { font-size: 14px; color: var(--text-muted); }
+    .form-success.visible { display: block; }
+
+    @media (max-width: 768px) {
+      .contact-grid { grid-template-columns: 1fr; gap: 32px; }
+      .contact-form-card { padding: 28px 20px; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="blog.html">Insights</a></li>
+        <li><a href="contact.html" class="nav-active">Contact</a></li>
+      </ul>
+      <a href="assessment.html" class="btn btn-primary btn-sm nav-cta">Free Assessment</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a>
+    <a href="blog.html">Insights</a>
+    <a href="contact.html">Contact</a>
+    <a href="assessment.html" class="btn btn-primary">Free Assessment</a>
+  </div>
+
+  <div class="page-hero">
+    <div class="container">
+      <p class="label fade-in">Let's Connect</p>
+      <h1 class="fade-in">Talk to Our Team</h1>
+      <p class="fade-in">Have questions? Ready to book a strategy session? Or just want to know if we're a fit? We respond within one business day.</p>
+    </div>
+  </div>
+
+  <section class="contact-section">
+    <div class="container">
+      <div class="contact-grid">
+        <!-- Info -->
+        <div class="contact-info reveal">
+          <div class="contact-info-item">
+            <span class="contact-info-icon">✉</span>
+            <div>
+              <p class="contact-info-label">Email</p>
+              <p class="contact-info-value">hello@nexvorasystems.com</p>
+              <p class="contact-info-note">We respond within one business day</p>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <span class="contact-info-icon">⏱</span>
+            <div>
+              <p class="contact-info-label">Response Time</p>
+              <p class="contact-info-value">Within 1 business day</p>
+              <p class="contact-info-note">Usually much faster</p>
+            </div>
+          </div>
+
+          <div class="contact-assessment-card">
+            <h4>Not sure what to ask? Start with the assessment.</h4>
+            <p>The free assessment takes 10 minutes and gives you a personalized picture of what's holding your business back — before we even talk.</p>
+            <a href="assessment.html" class="btn btn-primary btn-sm">Take Free Assessment →</a>
+          </div>
+        </div>
+
+        <!-- Form -->
+        <div class="contact-form-card reveal">
+          <h2>Send Us a Message</h2>
+          <p>Tell us a bit about your business and what you're looking for. We'll route your message to the right person.</p>
+
+          <div class="contact-form" id="contactForm">
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label">First Name *</label>
+                <input type="text" class="form-input" id="cf-first" placeholder="John" />
+                <span class="form-error" id="cf-first-err">Required</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label">Last Name *</label>
+                <input type="text" class="form-input" id="cf-last" placeholder="Smith" />
+                <span class="form-error" id="cf-last-err">Required</span>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Company Name *</label>
+              <input type="text" class="form-input" id="cf-company" placeholder="Acme Corp" />
+              <span class="form-error" id="cf-company-err">Required</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Business Email *</label>
+              <input type="email" class="form-input" id="cf-email" placeholder="john@acmecorp.com" />
+              <span class="form-error" id="cf-email-err">Valid email required</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Phone Number</label>
+              <input type="tel" class="form-input" id="cf-phone" placeholder="(555) 000-0000" />
+            </div>
+            <div class="form-group">
+              <label class="form-label">What can we help you with? *</label>
+              <select class="form-input" id="cf-topic">
+                <option value="">Select a topic...</option>
+                <option value="assessment">Understanding my assessment results</option>
+                <option value="strategy">Book a strategy session</option>
+                <option value="services">Learn about services</option>
+                <option value="partnership">Partnership inquiry</option>
+                <option value="other">Something else</option>
+              </select>
+              <span class="form-error" id="cf-topic-err">Please select a topic</span>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Message *</label>
+              <textarea class="form-textarea" id="cf-message" placeholder="Tell us about your business and what you're working through..."></textarea>
+              <span class="form-error" id="cf-message-err">Please include a message</span>
+            </div>
+            <button class="btn btn-primary btn-block" id="cf-submit" onclick="submitContactForm()">Send Message →</button>
+          </div>
+
+          <div class="form-success" id="formSuccess">
+            <div class="success-icon">✅</div>
+            <h3>Message Received</h3>
+            <p>Thanks for reaching out. We'll respond within one business day — usually much faster.</p>
+            <p style="margin-top: 16px;"><a href="assessment.html" class="btn btn-primary btn-sm">Take the Free Assessment →</a></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo"><img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" /></a>
+          <p>Operational intelligence for mid-market businesses.</p>
+          <p class="footer-location">📍 Serving businesses nationwide</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Company</p>
+          <div class="footer-links">
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="blog.html">Insights</a>
+            <a href="contact.html">Contact</a>
+            <a href="assessment.html" class="highlight">Free Assessment →</a>
+          </div>
+        </div>
+        <div>
+          <p class="footer-col-title">Services</p>
+          <div class="footer-links">
+            <a href="services.html">Operations Consulting</a>
+            <a href="services.html">Revenue Optimization</a>
+            <a href="services.html">Team Alignment</a>
+            <a href="services.html">Technology Audit</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-bottom-left">© 2026 Nexvora Systems LLC. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="legal/terms.html">Terms & Conditions</a>
+          <a href="legal/privacy.html">Privacy Policy</a>
+          <a href="legal/disclaimer.html">Disclaimer</a>
+          <a href="legal/cookies.html">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/falcon.js"></script>
+  <script>
+    // GHL webhook — replace with your actual GHL webhook URL
+    const CONTACT_WEBHOOK_URL = 'REPLACE_WITH_YOUR_GHL_WEBHOOK';
+
+    // Phone formatting
+    document.getElementById('cf-phone').addEventListener('input', function() {
+      Nexvora.formatPhone(this);
+    });
+
+    async function submitContactForm() {
+      let valid = true;
+      const fields = [
+        { id: 'cf-first', errId: 'cf-first-err', check: v => v.trim().length > 0 },
+        { id: 'cf-last', errId: 'cf-last-err', check: v => v.trim().length > 0 },
+        { id: 'cf-company', errId: 'cf-company-err', check: v => v.trim().length > 0 },
+        { id: 'cf-email', errId: 'cf-email-err', check: v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) },
+        { id: 'cf-topic', errId: 'cf-topic-err', check: v => v.length > 0 },
+        { id: 'cf-message', errId: 'cf-message-err', check: v => v.trim().length > 10 },
+      ];
+      fields.forEach(f => {
+        const el = document.getElementById(f.id);
+        const err = document.getElementById(f.errId);
+        if (!f.check(el.value)) {
+          err.classList.add('visible');
+          valid = false;
+        } else {
+          err.classList.remove('visible');
+        }
+      });
+      if (!valid) return;
+
+      const btn = document.getElementById('cf-submit');
+      btn.textContent = 'Sending...';
+      btn.disabled = true;
+
+      const payload = {
+        first_name: document.getElementById('cf-first').value.trim(),
+        last_name:  document.getElementById('cf-last').value.trim(),
+        company:    document.getElementById('cf-company').value.trim(),
+        email:      document.getElementById('cf-email').value.trim(),
+        phone:      document.getElementById('cf-phone').value.trim(),
+        topic:      document.getElementById('cf-topic').value,
+        message:    document.getElementById('cf-message').value.trim(),
+        source:     'contact_form',
+        timestamp:  new Date().toISOString(),
+      };
+
+      try {
+        if (CONTACT_WEBHOOK_URL !== 'REPLACE_WITH_YOUR_GHL_WEBHOOK') {
+          await fetch(CONTACT_WEBHOOK_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+        }
+      } catch (e) {
+        console.warn('Webhook delivery failed:', e);
+      }
+
+      document.getElementById('contactForm').style.display = 'none';
+      document.getElementById('formSuccess').classList.add('visible');
+    }
+  </script>
+</body>
+</html>

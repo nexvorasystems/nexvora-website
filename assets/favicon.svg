@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Simplified falcon for favicon — recognizable at 16-32px -->
+  <rect width="32" height="32" rx="6" fill="#0F2B4C"/>
+  <!-- Body -->
+  <polygon points="16,5 20,13 16,17 12,13" fill="#0D9488"/>
+  <!-- Wings -->
+  <polygon points="12,13 5,19 8,24 12,20" fill="#14B8A6" opacity="0.85"/>
+  <polygon points="20,13 27,19 24,24 20,20" fill="#14B8A6" opacity="0.85"/>
+  <!-- Tail -->
+  <polygon points="16,17 12,20 16,27 20,20" fill="#0D9488" opacity="0.8"/>
+  <!-- Beak -->
+  <polygon points="16,5 18,3 16,8" fill="#C9A84C"/>
+  <!-- Eye -->
+  <circle cx="18" cy="9" r="1.5" fill="white" opacity="0.9"/>
+  <circle cx="18.5" cy="9" r="0.8" fill="#0F2B4C"/>
+</svg>

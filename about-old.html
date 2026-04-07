@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About — Nexvora Systems</title>
+  <meta name="description" content="Learn about Nexvora Systems — the team behind the operational intelligence platform helping businesses find and fix hidden revenue leaks." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <!-- Theme engine — loads before paint to prevent flash -->
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/falcon.css" />
+  <style>
+    .page-hero {
+      padding: calc(var(--nav-height) + 80px) 0 80px;
+      text-align: center;
+    }
+    .page-hero h1 { margin-bottom: 16px; }
+    .page-hero p { max-width: 580px; margin: 0 auto; font-size: 17px; color: var(--text-muted); }
+
+    .mission-section { padding: var(--section-gap) 0; }
+    .mission-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .mission-content h2 { margin-bottom: 20px; }
+    .mission-content p { color: var(--text-muted); line-height: 1.75; margin-bottom: 16px; font-size: 15px; }
+    .mission-visual {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    .mission-stat { text-align: center; padding: 20px; background: var(--bg-deep); border-radius: var(--radius-sm); }
+    .mission-stat-num { font-size: 2.2rem; font-weight: 700; background: var(--gradient-primary); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+    .mission-stat-label { font-size: 12px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; margin-top: 4px; }
+    .mission-stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    .values-section { padding: var(--section-gap) 0; }
+    .values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .value-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      transition: border-color 0.2s;
+    }
+    .value-card:hover { border-color: var(--border-hover); }
+    .value-icon { font-size: 26px; margin-bottom: 14px; display: block; }
+    .value-card h3 { font-size: 16px; margin-bottom: 8px; }
+    .value-card p { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+
+    .story-section { padding: var(--section-gap) 0; }
+    .story-content { max-width: 720px; margin: 0 auto; }
+    .story-content h2 { margin-bottom: 24px; }
+    .story-content p { font-size: 15px; color: var(--text-muted); line-height: 1.8; margin-bottom: 18px; }
+    .story-content blockquote {
+      border-left: 3px solid var(--blue);
+      padding: 16px 24px;
+      margin: 32px 0;
+      background: rgba(99,179,237,0.04);
+      border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+    }
+    .story-content blockquote p { color: var(--text-primary); font-size: 16px; font-style: italic; margin: 0; }
+
+    .team-section { padding: var(--section-gap) 0; }
+    .team-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .team-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      text-align: center;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .team-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+    .team-avatar {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 22px; font-weight: 700; color: #fff;
+      margin: 0 auto 16px;
+    }
+    .team-name { font-size: 15px; font-weight: 600; color: var(--text-primary); margin-bottom: 4px; }
+    .team-role { font-size: 12px; color: var(--blue); letter-spacing: 0.5px; margin-bottom: 10px; }
+    .team-bio { font-size: 13px; color: var(--text-muted); line-height: 1.6; }
+
+    @media (max-width: 768px) {
+      .mission-grid { grid-template-columns: 1fr; gap: 32px; }
+      .values-grid { grid-template-columns: 1fr; }
+      .team-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="about.html" class="nav-active">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="blog.html">Insights</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <a href="assessment.html" class="btn btn-primary btn-sm nav-cta">Free Assessment</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a>
+    <a href="blog.html">Insights</a>
+    <a href="contact.html">Contact</a>
+    <a href="assessment.html" class="btn btn-primary">Free Assessment</a>
+  </div>
+
+  <!-- Page Hero -->
+  <div class="page-hero">
+    <div class="container">
+      <p class="label fade-in">Who We Are</p>
+      <h1 class="fade-in">Built to Find What<br>Most Miss</h1>
+      <p class="fade-in">Nexvora was founded on a single belief: most businesses are running below their potential — not because of bad strategy, but because of invisible operational gaps nobody has ever mapped.</p>
+    </div>
+  </div>
+
+  <!-- Mission -->
+  <section class="mission-section">
+    <div class="container">
+      <div class="mission-grid">
+        <div class="mission-content reveal">
+          <p class="label">Our Mission</p>
+          <h2>Make Operational Clarity Accessible to Every Business</h2>
+          <p>For decades, deep operational analysis was reserved for Fortune 500 companies with $200K consulting budgets. We changed that.</p>
+          <p>Nexvora's assessment platform delivers enterprise-grade operational intelligence to mid-market businesses in 10 minutes — for free. Because every business deserves to know what's costing it money.</p>
+          <p>We don't sell software. We don't sell templates. We sell clarity — and a clear path from where you are to where you should be.</p>
+        </div>
+        <div class="mission-visual reveal">
+          <div class="mission-stats-row">
+            <div class="mission-stat">
+              <div class="mission-stat-num">500+</div>
+              <div class="mission-stat-label">Businesses Assessed</div>
+            </div>
+            <div class="mission-stat">
+              <div class="mission-stat-num">$2.4M</div>
+              <div class="mission-stat-label">Avg. Annual Leak Found</div>
+            </div>
+            <div class="mission-stat">
+              <div class="mission-stat-num">8</div>
+              <div class="mission-stat-label">Operational Dimensions</div>
+            </div>
+            <div class="mission-stat">
+              <div class="mission-stat-num">10</div>
+              <div class="mission-stat-label">Minutes to Diagnosis</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Our Story -->
+  <section class="story-section">
+    <div class="container">
+      <div class="story-content reveal">
+        <p class="label">Our Story</p>
+        <h2>Why We Built This</h2>
+        <p>The idea behind Nexvora came from a frustration: watching great businesses fail for invisible reasons. Strong owners, loyal customers, capable teams — but silently hemorrhaging revenue through operational gaps nobody had ever pointed out.</p>
+        <p>We watched businesses spend $50K on marketing while losing $300K per year to process inefficiencies. We watched talented teams lose momentum because accountability structures were never built. We watched great products fail because the sales process had three broken steps nobody had named.</p>
+        <blockquote>
+          <p>"The most dangerous problems in business aren't the ones making noise — they're the ones nobody has given a name to yet."</p>
+        </blockquote>
+        <p>Nexvora was built to name those problems. To quantify them. And to make sure every business owner has a clear picture of what's actually happening — before it's too late to fix.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Values -->
+  <section class="values-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="label">What We Stand For</p>
+        <h2>Our Core Values</h2>
+      </div>
+      <div class="values-grid stagger">
+        <div class="value-card">
+          <span class="value-icon">🔍</span>
+          <h3>Radical Clarity</h3>
+          <p>We say what we see, even when it's uncomfortable. Our clients pay us to find the truth — not to validate what they already believe.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">📐</span>
+          <h3>Precision Over Volume</h3>
+          <p>We don't produce 80-page reports full of recommendations that never get acted on. We find the highest-impact gaps and focus there.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🤝</span>
+          <h3>Partnership, Not Prescription</h3>
+          <p>We're not here to tell you what to do. We're here to show you what we see — and help you decide what matters most to your business.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">⚡</span>
+          <h3>Speed to Insight</h3>
+          <p>Businesses can't afford to wait months for clarity. Our platform delivers meaningful analysis in minutes, not quarters.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🎯</span>
+          <h3>Results-First</h3>
+          <p>Our engagement model is structured around your outcomes. We succeed when you find and fix what's costing you money — not before.</p>
+        </div>
+        <div class="value-card">
+          <span class="value-icon">🔒</span>
+          <h3>Confidentiality</h3>
+          <p>Everything you share with us stays with us. Your assessment data is never shared, sold, or used for anything beyond helping your business.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Team -->
+  <section class="team-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="label">The People Behind It</p>
+        <h2>Leadership Team</h2>
+        <p>Operators, analysts, and strategists who've sat inside the businesses they now help fix.</p>
+      </div>
+      <div class="team-grid stagger">
+        <div class="team-card">
+          <div class="team-avatar">NX</div>
+          <div class="team-name">Alex Rivera</div>
+          <div class="team-role">Founder & CEO</div>
+          <p class="team-bio">15+ years in operational consulting. Previously helped scale 3 mid-market companies past $50M ARR by fixing the operational problems holding them back.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">SR</div>
+          <div class="team-name">Sarah Kim</div>
+          <div class="team-role">Chief of Analysis</div>
+          <p class="team-bio">Former McKinsey analyst. Built the proprietary scoring model behind Nexvora's 8-dimension assessment framework used across 500+ engagements.</p>
+        </div>
+        <div class="team-card">
+          <div class="team-avatar">DM</div>
+          <div class="team-name">David Moore</div>
+          <div class="team-role">Head of Client Success</div>
+          <p class="team-bio">Spent a decade inside operations roles at high-growth companies before joining Nexvora to lead post-assessment client implementation teams.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="padding: var(--section-gap) 0;">
+    <div class="container">
+      <div class="cta-block reveal">
+        <p class="label">Ready to Start?</p>
+        <h2>See What Your Business Is Missing</h2>
+        <p>The assessment takes 10 minutes and shows you more about your business than most owners learn in a decade.</p>
+        <a href="assessment.html" class="btn btn-primary btn-lg">Take the Free Assessment →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo"><img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" /></a>
+          <p>Operational intelligence for mid-market businesses.</p>
+          <p class="footer-location">📍 Serving businesses nationwide</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Company</p>
+          <div class="footer-links">
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="blog.html">Insights</a>
+            <a href="contact.html">Contact</a>
+            <a href="assessment.html" class="highlight">Free Assessment →</a>
+          </div>
+        </div>
+        <div>
+          <p class="footer-col-title">Services</p>
+          <div class="footer-links">
+            <a href="services.html">Operations Consulting</a>
+            <a href="services.html">Revenue Optimization</a>
+            <a href="services.html">Team Alignment</a>
+            <a href="services.html">Technology Audit</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-bottom-left">© 2026 Nexvora Systems LLC. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="legal/terms.html">Terms & Conditions</a>
+          <a href="legal/privacy.html">Privacy Policy</a>
+          <a href="legal/disclaimer.html">Disclaimer</a>
+          <a href="legal/cookies.html">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/falcon.js"></script>
+</body>
+</html>

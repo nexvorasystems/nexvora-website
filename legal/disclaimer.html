@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Disclaimer for Nexvora Systems. Important information about the nature of our consulting services and limitations of liability."/>
+<title>Disclaimer — Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#FAF8F5;--bg-surface:#F0EDE8;--text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;--teal:#0D9488;--teal-lt:rgba(13,148,136,0.1);--navy:#0F2B4C;--nav-h:68px;}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 44px;}
+.nav-inner{display:flex;align-items:center;width:100%;}
+.nav-links{display:flex;gap:28px;list-style:none;margin:0 auto;}
+.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s;}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{padding:9px 22px;border-radius:9px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:12px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;background:var(--bg);border-bottom:1px solid var(--border);padding:20px 20px 24px;flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);}
+.mobile-menu a.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff;font-weight:700;text-align:center;border-radius:10px;border-bottom:none;font-size:14px;}
+.page-hero{padding:calc(var(--nav-h) + 64px) 44px 48px;max-width:860px;margin:0 auto;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--teal);text-decoration:none;font-weight:600;margin-bottom:28px;}
+.sec-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:12px;}
+.page-hero h1{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-1px;margin-bottom:12px;}
+.page-hero .meta{font-size:13px;color:var(--dim);}
+.legal-body{max-width:860px;margin:0 auto;padding:0 44px 80px;}
+.legal-body h2{font-size:1.2rem;font-weight:700;color:var(--text);margin:36px 0 12px;padding-top:4px;border-top:1px solid var(--border);}
+.legal-body p{font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:16px;}
+.legal-body ul{padding-left:20px;margin-bottom:16px;}
+.legal-body li{font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:6px;}
+.legal-body strong{color:var(--text);}
+.legal-body a{color:var(--teal);text-decoration:none;}
+footer{background:var(--navy);color:#FAF8F5;padding:60px 44px 32px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px;}
+.footer-brand p{font-size:13px;margin-top:10px;color:rgba(250,248,245,0.5);}
+.footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:14px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;}
+.footer-links a:hover{color:#FAF8F5;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(250,248,245,0.35);flex-wrap:wrap;gap:10px;}
+@media(max-width:768px){:root{--nav-h:56px;}nav{padding:0 20px;}.nav-links{display:none;}.nav-cta{display:none;}.hamburger{display:flex;}.page-hero,.legal-body{padding-left:20px;padding-right:20px;}.footer-grid{grid-template-columns:1fr;gap:28px;}footer{padding:40px 20px 24px;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:48px;width:auto;display:block;"/></a>
+    <ul class="nav-links">
+      <li><a href="../about.html">About</a></li>
+      <li><a href="../services.html">Services</a></li>
+      <li><a href="../blog.html">Insights</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+    <a href="../assessment.html" class="nav-cta">Free Assessment</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../about.html">About</a>
+  <a href="../services.html">Services</a>
+  <a href="../blog.html">Insights</a>
+  <a href="../contact.html">Contact</a>
+  <a href="../assessment.html" class="mobile-cta">Free Assessment</a>
+</div>
+
+<div class="page-hero">
+  <a href="../index.html" class="back-link">← Back to Home</a>
+  <p class="sec-label">Legal</p>
+  <h1>Disclaimer</h1>
+  <p class="meta">Effective Date: March 3, 2026 &nbsp;|&nbsp; Website: www.nexvorasystems.us</p>
+</div>
+
+<div class="legal-body">
+
+  <h2>1. Nature of Services</h2>
+  <p>Nexvora Systems offers business consulting, strategic advisory, and operational guidance to business owners and organizations. All information provided through our website, communications, consultations, materials, and programs is for informational and strategic purposes only. Nothing provided by Nexvora Systems constitutes a guarantee, warranty, or assurance of specific outcomes.</p>
+
+  <h2>2. No Performance or Income Guarantees</h2>
+  <p>Business performance depends on numerous variables outside our control. Nexvora Systems does not guarantee revenue growth, profit increases, lead generation results, marketing performance, operational efficiency outcomes, return on investment, or business valuation increases. Any projections, examples, or case studies are illustrative only and should not be interpreted as promises of future results. Past performance does not guarantee future outcomes.</p>
+
+  <h2>3. Client Execution and Decision Responsibility</h2>
+  <p>All strategic recommendations are advisory in nature. Clients remain solely responsible for final business decisions, operational execution, hiring and personnel management, financial management, regulatory compliance, marketing claims, and industry licensing requirements. Implementation quality, timing, and internal business discipline significantly affect results. Nexvora Systems is not responsible for outcomes resulting from partial, improper, delayed, or modified implementation of recommendations.</p>
+
+  <h2>4. Regulatory and Legal Environment</h2>
+  <p>Clients are responsible for compliance with all applicable data privacy regulations, advertising laws, consumer protection statutes, licensing requirements, and industry-specific regulatory standards. Nexvora Systems does not provide legal advice and does not guarantee that any recommended strategy or third-party platform is compliant with evolving regulations. Clients should consult qualified legal and compliance professionals regarding their specific obligations.</p>
+
+  <h2>5. Third-Party Platforms and Services</h2>
+  <p>Nexvora Systems may recommend or assist with implementation of CRM systems, advertising platforms, automation software, email marketing providers, SMS tools, website hosting, analytics platforms, and payment processors. We do not own, control, or operate these platforms and make no representations regarding their compliance, security, reliability, uptime, or policy changes. Any claims or disputes related to third-party platforms must be directed to those providers.</p>
+
+  <h2>6. Market and Economic Conditions</h2>
+  <p>Business outcomes are influenced by macroeconomic conditions, industry competition, consumer demand, inflation, global events, supply chain disruptions, and technological changes. Nexvora Systems cannot predict or control market conditions and assumes no responsibility for performance impacted by external economic forces.</p>
+
+  <h2>7. No Professional Legal, Tax, or Financial Advice</h2>
+  <p>Nothing provided by Nexvora Systems constitutes legal advice, tax advice, accounting advice, investment advice, or regulatory certification. Clients should seek licensed professionals for specialized advice in these areas.</p>
+
+  <h2>8. Limitation of Liability</h2>
+  <p>To the maximum extent permitted by law, Nexvora Systems shall not be liable for direct, indirect, incidental, consequential, or special damages including lost profits, lost business opportunities, regulatory penalties, data loss, or reputational harm arising from use of our website, reliance on our information, our consulting services, implementation of recommendations, or use of third-party platforms. All services are provided on an "as-is" and "as-available" basis.</p>
+
+  <h2>9. Risk Acknowledgment</h2>
+  <p>By engaging Nexvora Systems, clients acknowledge that business carries inherent risk, no strategy eliminates uncertainty, external conditions may impact performance, and regulatory frameworks may evolve. Clients accept responsibility for evaluating and assuming business risks.</p>
+
+  <h2>10. Eligibility</h2>
+  <p>Our services are intended for business owners and professionals aged 18 and older. We do not knowingly provide services to minors.</p>
+
+  <h2>11. Acceptance</h2>
+  <p>By using this website or engaging Nexvora Systems, you acknowledge that you have read, understood, and agreed to this Disclaimer.</p>
+
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:40px;width:auto;display:block;margin-bottom:10px;"/></a>
+      <p>Operational clarity for small businesses across Florida and beyond.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Company</p>
+      <div class="footer-links">
+        <a href="../about.html">About</a>
+        <a href="../services.html">Services</a>
+        <a href="../blog.html">Insights</a>
+        <a href="../contact.html">Contact</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Legal</p>
+      <div class="footer-links">
+        <a href="terms.html">Terms &amp; Conditions</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="cookies.html">Cookie Policy</a>
+        <a href="disclaimer.html">Disclaimer</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Contact</p>
+      <div class="footer-links">
+        <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a>
+        <a href="../assessment.html">Free Assessment</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Nexvora Systems LLC. All rights reserved.</span>
+    <span style="display:flex;gap:16px;flex-wrap:wrap;">
+      <a href="terms.html" style="color:inherit;text-decoration:none;">Terms &amp; Conditions</a>
+      <a href="privacy.html" style="color:inherit;text-decoration:none;">Privacy Policy</a>
+      <a href="cookies.html" style="color:inherit;text-decoration:none;">Cookie Policy</a>
+      <a href="disclaimer.html" style="color:inherit;text-decoration:none;">Disclaimer</a>
+    </span>
+  </div>
+</footer>
+<script>document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});</script>
+</body>
+</html>

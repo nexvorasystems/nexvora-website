@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Business growth and scaling consulting for small businesses in Tampa Bay, Florida and across the USA. Scaling readiness assessment, systems before headcount, growth roadmap, and expansion planning for sustainable small business growth."/>
+<meta name="keywords" content="business growth consulting Florida, scaling small business Tampa Bay, growth roadmap consultant Florida, business expansion planning Tampa, scaling consultant small business USA"/>
+<title>Growth &amp; Scaling — Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
+  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
+  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.1);--teal-mid:rgba(13,148,136,0.2);
+  --navy:#0F2B4C;--radius:12px;--nav-h:68px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 44px;}
+.nav-inner{display:flex;align-items:center;width:100%;}
+.nav-links{display:flex;gap:28px;list-style:none;margin:0 auto;}
+.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+.nav-cta{padding:9px 22px;border-radius:9px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;white-space:nowrap;}
+.nav-cta:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:12px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;background:var(--bg);border-bottom:1px solid var(--border);padding:20px 20px 24px;flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);}
+.mobile-menu a.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff;font-weight:700;text-align:center;border-radius:10px;border-bottom:none;font-size:14px;}
+
+.page-hero{padding:calc(var(--nav-h) + 72px) 44px 64px;max-width:860px;margin:0 auto;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:20px;transition:color .15s;}
+.back-link:hover{color:var(--teal);}
+.back-link::before{content:'←';}
+.sec-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.page-hero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-1.2px;color:var(--text);margin-bottom:18px;line-height:1.1;}
+.page-hero h1 strong{background:linear-gradient(90deg,#0F2B4C,#0D9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.page-hero .subtitle{font-size:18px;color:var(--muted);line-height:1.7;max-width:640px;}
+
+.section{padding:72px 0;}
+.section-alt{padding:72px 0;background:var(--bg-surface);}
+.container{max-width:900px;margin:0 auto;padding:0 44px;}
+.sec-title{font-size:clamp(1.5rem,2.5vw,2rem);font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:24px;}
+
+.prose p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:20px;}
+.prose p:last-child{margin-bottom:0;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+.bullet-list{display:flex;flex-direction:column;gap:12px;list-style:none;}
+.bullet-list li{display:flex;align-items:flex-start;gap:10px;font-size:15px;color:var(--muted);line-height:1.6;}
+.bullet-list li::before{content:'';display:block;min-width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:7px;}
+
+.deliverables-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.deliverable-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;}
+.deliverable-card h4{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.deliverable-card p{font-size:13.5px;color:var(--muted);line-height:1.65;}
+
+.why-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:40px;}
+.why-box p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:16px;}
+.why-box p:last-child{margin-bottom:0;}
+
+.cta-block{border-radius:20px;padding:72px 56px;text-align:center;background:linear-gradient(135deg,#0F2B4C,#0D3330);position:relative;overflow:hidden;}
+.cta-block::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% -10%,rgba(13,148,136,0.3),transparent);pointer-events:none;}
+.cta-block .sec-label{color:rgba(68,202,162,0.8);}
+.cta-block h2{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-0.5px;color:#FAF8F5;margin-bottom:12px;position:relative;}
+.cta-block h2 strong{color:#44CAA2;}
+.cta-block p{font-size:16px;color:rgba(250,248,245,0.6);margin-bottom:28px;position:relative;}
+.btn-p{padding:15px 30px;border-radius:10px;background:var(--teal);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-block;}
+.btn-p:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,148,136,0.3);}
+
+footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65);}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1160px;margin:0 auto 40px;}
+.footer-brand p{font-size:13px;margin-top:10px;color:rgba(250,248,245,0.5);}
+.footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:14px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:#FAF8F5;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;max-width:1160px;margin:0 auto;flex-wrap:wrap;gap:12px;}
+
+@media(max-width:768px){
+  :root{--nav-h:56px;}
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .nav-cta{display:none;}
+  .hamburger{display:flex;}
+  .page-hero,.container{padding-left:20px;padding-right:20px;}
+  .page-hero{padding-top:calc(var(--nav-h) + 40px);}
+  .two-col{grid-template-columns:1fr;}
+  .deliverables-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;gap:28px;}
+  footer{padding:40px 20px 24px;}
+  .cta-block{padding:48px 24px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:48px;width:auto;display:block;"/></a>
+    <ul class="nav-links">
+      <li><a href="../about.html">About</a></li>
+      <li><a href="../services.html" class="active">Services</a></li>
+      <li><a href="../blog.html">Insights</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+    <a href="../assessment.html" class="nav-cta">Free Assessment</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../about.html">About</a>
+  <a href="../services.html">Services</a>
+  <a href="../blog.html">Insights</a>
+  <a href="../contact.html">Contact</a>
+  <a href="../assessment.html" class="mobile-cta">Free Assessment</a>
+</div>
+
+<div class="page-hero">
+  <a href="../services.html" class="back-link">Services</a>
+  <div class="sec-label">Services</div>
+  <h1>Growth &amp;<br><strong>Scaling</strong></h1>
+  <p class="subtitle">We help small businesses grow deliberately — building the systems, structure, and roadmap that allow you to scale revenue and capacity without the chaos that takes down businesses that grow too fast without the right foundation.</p>
+</div>
+
+<div class="section">
+  <div class="container">
+    <div class="sec-title">What We Do</div>
+    <div class="prose">
+      <p>Growth is not the same as scaling. A business can grow by adding more of everything — more clients, more staff, more costs, more complexity — and still end up in a worse position than when it started. Scaling is growth that improves the underlying economics of the business: more revenue, maintained or improved margins, and a team and infrastructure that can handle increased volume without proportional increases in cost or owner involvement. Getting there requires building the right foundation before adding the next layer.</p>
+      <p>Scaling readiness assessment is how we start. Before recommending any growth strategy, we evaluate the current state of your business across eight dimensions: operational processes, sales infrastructure, marketing systems, team structure, financial visibility, technology stack, customer experience, and leadership capacity. This tells us which areas are ready to support growth and which would become critical constraints if volume increased. Growth without this assessment often produces the painful pattern where a business grows past its infrastructure and then has to choose between expensive chaos and painful contraction.</p>
+      <p>Systems before headcount is one of the most important principles we work with. The instinct when growing is to hire — more salespeople, more delivery staff, more administrators. In many cases, the right first move is to build better systems. A well-designed process or automation can multiply the output of your existing team before you take on the cost and complexity of additional headcount. We help business owners identify where the constraint is genuinely a capacity problem versus a systems problem, and in most cases we find a significant amount of headroom available through systems improvement before new hires become necessary.</p>
+      <p>Growth roadmap development translates the vision for where the business is going into a sequenced, practical plan. We work with owners to define what growth looks like in concrete terms — what revenue, what team size, what service mix, what client profile — and then work backward to identify the specific operational, commercial, and financial milestones required to get there. The roadmap is not a strategic document that sits on a shelf; it is an operational guide that tells the team what to build, in what order, to support the next phase of growth.</p>
+      <p>Expansion planning covers the tactical questions that come with specific growth decisions — entering a new market, adding a new service line, expanding geographically, or building a team capable of delivering without the owner's direct involvement. Each of these decisions has operational, financial, and organizational implications that need to be thought through before execution. We help business owners model out those implications clearly and design the implementation approach that manages risk while capturing the growth opportunity.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-alt">
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <div class="sec-title">Who This Is For</div>
+        <ul class="bullet-list">
+          <li>Businesses that have proven their model and are ready to grow intentionally</li>
+          <li>Owners who have tried to grow before but found that scaling created more problems than it solved</li>
+          <li>Companies preparing to make their first significant hires and wanting to get the infrastructure right first</li>
+          <li>Businesses exploring new markets or service lines and needing a structured approach to evaluation</li>
+          <li>Owners who want to eventually step back from daily operations and need to build the team and systems to support that</li>
+          <li>Companies where growth has been organic and unplanned and now need to bring structure to the next phase</li>
+          <li>Businesses with strong demand but limited capacity who need to grow efficiently without losing quality</li>
+        </ul>
+      </div>
+      <div>
+        <div class="sec-title">What You Get</div>
+        <div class="deliverables-grid">
+          <div class="deliverable-card">
+            <h4>Scaling Readiness Assessment</h4>
+            <p>A structured evaluation of your business across eight operational dimensions — showing what is ready to scale and what needs work first.</p>
+          </div>
+          <div class="deliverable-card">
+            <h4>Growth Roadmap</h4>
+            <p>A sequenced, milestone-based plan translating your growth vision into specific operational and commercial steps with clear priorities.</p>
+          </div>
+          <div class="deliverable-card">
+            <h4>Systems Infrastructure Plan</h4>
+            <p>An identified set of processes, automations, and tools to build before adding headcount — maximizing the output of your current team first.</p>
+          </div>
+          <div class="deliverable-card">
+            <h4>Expansion Planning Support</h4>
+            <p>Structured analysis and planning for specific growth decisions — new markets, service lines, team expansion, or geographic reach.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    <div class="sec-title">Why Nexvora</div>
+    <div class="why-box">
+      <p>Nexvora Systems was founded by Murat Zhandaurov in Tampa Bay, Florida because the growth challenges facing small businesses are fundamentally different from those facing larger companies — and they deserve a different kind of support. Most growth consulting is built around enterprise frameworks that do not translate to a 10-person business. We work specifically with small business operators at the stage where getting the foundation right is the most important thing they can do to protect the growth they are building toward.</p>
+      <p>We work with businesses across all 50 states. Growth and scaling engagements are typically structured as a combination of discovery and diagnostic work — understanding the current state of the business — followed by roadmap development and implementation support. All of this is accessible through video calls and collaborative working sessions on Zoom, making it available to businesses anywhere in the country. Florida-based clients can also choose in-person sessions, which many owners prefer for the strategy and planning components of this work.</p>
+      <p>Our measure of success in growth consulting is not a plan — it is a business that is larger, more profitable, and more capable of sustaining that growth than it was when we started working together. The plan is the means, not the end. We stay engaged through the implementation phases to make sure the roadmap translates into real operational and commercial progress.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-alt">
+  <div class="container">
+    <div class="cta-block">
+      <div class="sec-label">Get Started</div>
+      <h2>Start With a <strong>Free Assessment</strong></h2>
+      <p>Tell us where your business is today and where you want to take it. We will show you what needs to be in place to get there sustainably.</p>
+      <a href="../assessment.html" class="btn-p">Take the Free Assessment</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:40px;width:auto;display:block;margin-bottom:10px;"/></a>
+      <p>Operational clarity for small businesses across Florida and all 50 states.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Company</p>
+      <div class="footer-links">
+        <a href="../about.html">About</a>
+        <a href="../services.html">Services</a>
+        <a href="../blog.html">Insights</a>
+        <a href="../contact.html">Contact</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Services</p>
+      <div class="footer-links">
+        <a href="operations.html">Operations</a>
+        <a href="ai-automation.html">AI &amp; Automation</a>
+        <a href="reporting-analytics.html">Reporting &amp; Analytics</a>
+        <a href="sales-systems.html">Sales Systems</a>
+        <a href="marketing.html">Marketing</a>
+        <a href="customer-experience.html">Customer Experience</a>
+        <a href="team-hr.html">Team &amp; HR</a>
+        <a href="financial-efficiency.html">Financial Efficiency</a>
+        <a href="growth-scaling.html">Growth &amp; Scaling</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Contact</p>
+      <div class="footer-links">
+        <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a>
+        <a href="../assessment.html">Free Assessment</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Nexvora Systems LLC. All rights reserved.</span>
+    <span style="display:flex;gap:16px;flex-wrap:wrap;">
+      <a href="../legal/terms.html" style="color:inherit;text-decoration:none;">Terms &amp; Conditions</a>
+      <a href="../legal/privacy.html" style="color:inherit;text-decoration:none;">Privacy Policy</a>
+      <a href="../legal/cookies.html" style="color:inherit;text-decoration:none;">Cookie Policy</a>
+      <a href="../legal/disclaimer.html" style="color:inherit;text-decoration:none;">Disclaimer</a>
+    </span>
+  </div>
+</footer>
+<script>document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});</script>
+</body>
+</html>

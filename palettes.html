@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>New Palette Concepts — Nexvora Systems</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', sans-serif; background: #09090B; color: #fff; }
+
+    /* ─── TOP BAR ─── */
+    .top-bar {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 200;
+      height: 56px;
+      background: rgba(9,9,11,0.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 28px; gap: 16px;
+    }
+    .top-bar-label { font-size: 12px; color: rgba(255,255,255,0.35); letter-spacing: 0.3px; white-space: nowrap; }
+    .top-tabs { display: flex; gap: 6px; }
+    .top-tab {
+      padding: 6px 18px; border-radius: 100px; border: 1px solid;
+      font-size: 13px; font-weight: 600; cursor: pointer;
+      transition: all 0.18s; white-space: nowrap; background: transparent;
+    }
+    .top-tab.t-ember { color: #fb923c; border-color: rgba(251,146,60,0.3); }
+    .top-tab.t-ember:hover, .top-tab.t-ember.active { background: rgba(251,146,60,0.12); border-color: #fb923c; }
+    .top-tab.t-chalk { color: #2563eb; border-color: rgba(37,99,235,0.3); }
+    .top-tab.t-chalk:hover, .top-tab.t-chalk.active { background: rgba(37,99,235,0.1); border-color: #2563eb; }
+    .top-tab.t-crimson { color: #f43f5e; border-color: rgba(244,63,94,0.3); }
+    .top-tab.t-crimson:hover, .top-tab.t-crimson.active { background: rgba(244,63,94,0.1); border-color: #f43f5e; }
+    .top-back { font-size: 13px; color: rgba(255,255,255,0.3); text-decoration: none; transition: color 0.15s; white-space: nowrap; }
+    .top-back:hover { color: rgba(255,255,255,0.7); }
+
+    /* ─── PANELS ─── */
+    .panel { display: none; padding-top: 56px; min-height: 100vh; }
+    .panel.active { display: block; }
+
+    /* ─── SHARED LAYOUT ─── */
+    .c { max-width: 1100px; margin: 0 auto; padding: 0 36px; }
+    .section { padding: 80px 0; }
+    .section-sm { padding: 0 0 72px; }
+
+    .label-tag {
+      display: inline-block; font-size: 10px; font-weight: 800;
+      letter-spacing: 2.5px; text-transform: uppercase;
+      padding: 5px 13px; border-radius: 100px; margin-bottom: 18px;
+    }
+    h1.hero-title {
+      font-size: clamp(2.6rem, 5vw, 4rem); font-weight: 800;
+      line-height: 1.08; letter-spacing: -1.5px; margin-bottom: 20px;
+    }
+    .hero-sub { font-size: 17px; line-height: 1.65; max-width: 520px; margin-bottom: 36px; }
+    .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+    .btn-p {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 9px; font-size: 15px; font-weight: 700;
+      border: none; cursor: pointer; text-decoration: none; transition: all 0.18s;
+    }
+    .btn-p:hover { transform: translateY(-2px); filter: brightness(1.08); }
+    .btn-g {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 14px 28px; border-radius: 9px; font-size: 15px; font-weight: 600;
+      cursor: pointer; text-decoration: none; transition: all 0.18s;
+    }
+    .btn-g:hover { transform: translateY(-1px); }
+
+    /* Stats */
+    .stats-row {
+      display: grid; grid-template-columns: repeat(4, 1fr);
+      border-top: 1px solid; border-bottom: 1px solid;
+    }
+    .stat-cell { padding: 28px 24px; text-align: center; border-right: 1px solid; }
+    .stat-cell:last-child { border-right: none; }
+    .stat-n { font-size: 2rem; font-weight: 800; letter-spacing: -1px; line-height: 1; margin-bottom: 5px; }
+    .stat-l { font-size: 11px; font-weight: 600; letter-spacing: 0.5px; }
+
+    /* Steps */
+    .steps-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; border-radius: 14px; overflow: hidden; }
+    .step-cell { padding: 34px 28px; }
+    .step-num { font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 18px; opacity: 0.35; }
+    .step-icon { width: 42px; height: 42px; border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+    .step-cell h3 { font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+    .step-cell p { font-size: 13.5px; line-height: 1.6; opacity: 0.55; }
+
+    /* Cards */
+    .cards-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+    .card { padding: 26px; border-radius: 12px; border: 1px solid; transition: transform 0.18s; }
+    .card:hover { transform: translateY(-3px); }
+    .card-icon { width: 34px; height: 34px; border-radius: 8px; display: flex; align-items: center; justify-content: center; margin-bottom: 12px; }
+    .card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 7px; }
+    .card p { font-size: 13px; line-height: 1.6; opacity: 0.52; }
+
+    /* CTA block */
+    .cta-block {
+      border-radius: 18px; padding: 60px 48px; text-align: center;
+      border: 1px solid; position: relative; overflow: hidden;
+    }
+    .cta-block h2 { font-size: clamp(1.4rem, 3vw, 2rem); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 12px; }
+    .cta-block p { font-size: 16px; margin-bottom: 28px; opacity: 0.55; }
+
+    /* Color chips */
+    .chips { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-top: 44px; }
+    .chip {
+      display: flex; align-items: center; gap: 7px;
+      padding: 7px 14px; border-radius: 100px; font-size: 11.5px; font-weight: 600;
+    }
+    .chip-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+
+    /* nav preview */
+    .fake-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 40px; height: 66px; border-bottom: 1px solid;
+    }
+    .fake-nav-logo { font-size: 18px; font-weight: 800; letter-spacing: -0.5px; }
+    .fake-nav-links { display: flex; gap: 28px; list-style: none; }
+    .fake-nav-links a { font-size: 14px; text-decoration: none; opacity: 0.55; transition: opacity 0.15s; }
+    .fake-nav-links a:hover { opacity: 1; }
+    .fake-nav-cta { padding: 9px 20px; border-radius: 8px; font-size: 13px; font-weight: 700; border: none; cursor: pointer; }
+
+    /* Section header */
+    .sh { margin-bottom: 40px; }
+    .sh .section-title { font-size: clamp(1.5rem, 2.5vw, 2.2rem); font-weight: 800; letter-spacing: -0.5px; margin-bottom: 0; }
+
+    /* Vote */
+    .vote-strip {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 300;
+      background: rgba(9,9,11,0.95); backdrop-filter: blur(16px);
+      border: 1px solid rgba(255,255,255,0.1); border-radius: 100px;
+      padding: 10px 22px; display: flex; align-items: center; gap: 14px;
+      font-size: 13px; color: rgba(255,255,255,0.5);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.6); white-space: nowrap;
+    }
+    .vote-btn {
+      padding: 6px 16px; border-radius: 100px; border: none;
+      font-size: 12px; font-weight: 700; cursor: pointer; transition: all 0.2s;
+    }
+    .vote-btn:hover { transform: scale(1.06); }
+    .vb-e { background: rgba(251,146,60,0.15); color: #fb923c; }
+    .vb-c { background: rgba(37,99,235,0.12); color: #2563eb; }
+    .vb-r { background: rgba(244,63,94,0.12); color: #f43f5e; }
+    .voted-msg { color: #4ade80; font-weight: 600; display: none; }
+
+    @media (max-width: 768px) {
+      .steps-3, .cards-3 { grid-template-columns: 1fr; }
+      .stats-row { grid-template-columns: repeat(2, 1fr); }
+      .fake-nav-links { display: none; }
+      .fake-nav { padding: 0 20px; }
+      .cta-block { padding: 40px 24px; }
+      .top-bar { padding: 0 16px; }
+      .top-tab { padding: 5px 12px; font-size: 12px; }
+      .vote-strip { flex-wrap: wrap; border-radius: 16px; width: calc(100% - 32px); justify-content: center; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- TOP BAR -->
+  <div class="top-bar">
+    <span class="top-bar-label">3 New Concepts</span>
+    <div class="top-tabs">
+      <button class="top-tab t-ember active" onclick="show('ember')">A · Ember Dark</button>
+      <button class="top-tab t-chalk" onclick="show('chalk')">B · Chalk White</button>
+      <button class="top-tab t-crimson" onclick="show('crimson')">C · Crimson Black</button>
+    </div>
+    <a href="index.html" class="top-back">← Back</a>
+  </div>
+
+
+  <!-- ══════════════════════════════
+       A — EMBER DARK
+       What's different: WARM dark.
+       All 7 existing themes are either
+       light OR cool-toned dark.
+       This is dark + amber/orange fire.
+  ══════════════════════════════ -->
+  <div class="panel active" id="panel-ember" style="background:#100C06; color:#F5EDD8;">
+
+    <!-- Nav -->
+    <div class="fake-nav" style="border-color:rgba(251,146,60,0.12); background:#100C06;">
+      <div class="fake-nav-logo" style="color:#F5EDD8;">Nexvora<span style="color:#fb923c;">.</span></div>
+      <ul class="fake-nav-links" style="color:#F5EDD8;">
+        <li><a href="#" style="color:#F5EDD8;">About</a></li>
+        <li><a href="#" style="color:#F5EDD8;">Services</a></li>
+        <li><a href="#" style="color:#F5EDD8;">Insights</a></li>
+        <li><a href="#" style="color:#F5EDD8;">Contact</a></li>
+      </ul>
+      <button class="fake-nav-cta" style="background:#fb923c; color:#100C06;">Free Assessment</button>
+    </div>
+
+    <!-- Hero -->
+    <div class="section" style="background:radial-gradient(ellipse 65% 50% at 50% 0%, rgba(251,146,60,0.13), transparent); text-align:center;">
+      <div class="c">
+        <div class="label-tag" style="background:rgba(251,146,60,0.12); color:#fb923c; border:1px solid rgba(251,146,60,0.22);">Operational Intelligence</div>
+        <h1 class="hero-title" style="color:#F5EDD8;">Find the Revenue Gaps<br><span style="color:#fb923c;">Inside Your Business</span></h1>
+        <p class="hero-sub" style="color:rgba(240,220,185,0.65); margin:0 auto 36px;">We analyze your operations and identify exactly where you're losing money — then give you a clear path to fix it.</p>
+        <div class="btn-row" style="justify-content:center;">
+          <a href="#" class="btn-p" style="background:#fb923c; color:#100C06;">Find My Revenue Gaps →</a>
+          <a href="#" class="btn-g" style="color:#F5EDD8; border:1px solid rgba(251,146,60,0.25);">View Services</a>
+        </div>
+
+        <!-- Chips -->
+        <div class="chips">
+          <div class="chip" style="background:rgba(16,12,6,0.9); border:1px solid rgba(251,146,60,0.2); color:#F5EDD8;"><div class="chip-dot" style="background:#100C06; border:1px solid rgba(255,255,255,0.2);"></div>#100C06 — Background</div>
+          <div class="chip" style="background:rgba(16,12,6,0.9); border:1px solid rgba(251,146,60,0.2); color:#F5EDD8;"><div class="chip-dot" style="background:#1E1508;"></div>#1E1508 — Card</div>
+          <div class="chip" style="background:rgba(16,12,6,0.9); border:1px solid rgba(251,146,60,0.2); color:#F5EDD8;"><div class="chip-dot" style="background:#fb923c;"></div>#FB923C — Amber</div>
+          <div class="chip" style="background:rgba(16,12,6,0.9); border:1px solid rgba(251,146,60,0.2); color:#F5EDD8;"><div class="chip-dot" style="background:#fbbf24;"></div>#FBBF24 — Gold</div>
+          <div class="chip" style="background:rgba(16,12,6,0.9); border:1px solid rgba(251,146,60,0.2); color:#F5EDD8;"><div class="chip-dot" style="background:#F5EDD8;"></div>#F5EDD8 — Text</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" style="border-color:rgba(251,146,60,0.1); background:#1E1508;">
+      <div class="stat-cell" style="border-color:rgba(251,146,60,0.1);">
+        <div class="stat-n" style="color:#fb923c;">$2.4M</div>
+        <div class="stat-l" style="color:rgba(240,220,185,0.4);">Avg. recoverable revenue</div>
+      </div>
+      <div class="stat-cell" style="border-color:rgba(251,146,60,0.1);">
+        <div class="stat-n" style="color:#fb923c;">500+</div>
+        <div class="stat-l" style="color:rgba(240,220,185,0.4);">Businesses assessed</div>
+      </div>
+      <div class="stat-cell" style="border-color:rgba(251,146,60,0.1);">
+        <div class="stat-n" style="color:#fb923c;">14</div>
+        <div class="stat-l" style="color:rgba(240,220,185,0.4);">Operational dimensions</div>
+      </div>
+      <div class="stat-cell" style="border-color:rgba(251,146,60,0.1);">
+        <div class="stat-n" style="color:#fb923c;">10 min</div>
+        <div class="stat-l" style="color:rgba(240,220,185,0.4);">Free assessment</div>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="section">
+      <div class="c">
+        <div class="sh">
+          <div class="label-tag" style="background:rgba(251,146,60,0.1); color:#fb923c; border:1px solid rgba(251,146,60,0.2); margin-bottom:10px;">How It Works</div>
+          <div class="section-title" style="color:#F5EDD8;">Three Steps to Clarity</div>
+        </div>
+        <div class="steps-3" style="background:rgba(251,146,60,0.06);">
+          <div class="step-cell" style="background:#1E1508;">
+            <div class="step-num" style="color:#F5EDD8;">Step 01</div>
+            <div class="step-icon" style="background:rgba(251,146,60,0.12);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            </div>
+            <h3 style="color:#F5EDD8;">Take the Assessment</h3>
+            <p style="color:rgba(240,220,185,0.55);">Answer 8–12 questions about your operations. 10 minutes, no fluff.</p>
+          </div>
+          <div class="step-cell" style="background:#1E1508;">
+            <div class="step-num" style="color:#F5EDD8;">Step 02</div>
+            <div class="step-icon" style="background:rgba(251,146,60,0.12);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            </div>
+            <h3 style="color:#F5EDD8;">Get Your Report</h3>
+            <p style="color:rgba(240,220,185,0.55);">14 operational dimensions analyzed. A personalized report with your specific gaps.</p>
+          </div>
+          <div class="step-cell" style="background:#1E1508;">
+            <div class="step-num" style="color:#F5EDD8;">Step 03</div>
+            <div class="step-icon" style="background:rgba(251,146,60,0.12);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <h3 style="color:#F5EDD8;">Build Your Plan</h3>
+            <p style="color:rgba(240,220,185,0.55);">Highest-impact fixes identified. We work with you to implement them.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="section-sm">
+      <div class="c">
+        <div class="sh">
+          <div class="label-tag" style="background:rgba(251,146,60,0.1); color:#fb923c; border:1px solid rgba(251,146,60,0.2); margin-bottom:10px;">What We Fix</div>
+          <div class="section-title" style="color:#F5EDD8;">Where Businesses Leak Money</div>
+        </div>
+        <div class="cards-3">
+          <div class="card" style="background:#1E1508; border-color:rgba(251,146,60,0.12);">
+            <div class="card-icon" style="background:rgba(251,146,60,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <h3 style="color:#F5EDD8;">Revenue Leakage</h3>
+            <p style="color:rgba(240,220,185,0.5);">Mispriced deals, lost follow-ups, billing errors draining your top line.</p>
+          </div>
+          <div class="card" style="background:#1E1508; border-color:rgba(251,146,60,0.12);">
+            <div class="card-icon" style="background:rgba(251,146,60,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <h3 style="color:#F5EDD8;">Team Friction</h3>
+            <p style="color:rgba(240,220,185,0.5);">Unclear ownership, duplicate work, misaligned incentives.</p>
+          </div>
+          <div class="card" style="background:#1E1508; border-color:rgba(251,146,60,0.12);">
+            <div class="card-icon" style="background:rgba(251,146,60,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fb923c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <h3 style="color:#F5EDD8;">Tech Waste</h3>
+            <p style="color:rgba(240,220,185,0.5);">Overlapping tools and manual processes costing margin.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="section-sm">
+      <div class="c">
+        <div class="cta-block" style="background:linear-gradient(135deg,#1E1508,#271A09); border-color:rgba(251,146,60,0.2);">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 50% 0%,rgba(251,146,60,0.1),transparent);border-radius:18px;pointer-events:none;"></div>
+          <div style="position:relative;">
+            <div class="label-tag" style="background:rgba(251,146,60,0.1);color:#fb923c;border:1px solid rgba(251,146,60,0.22);margin-bottom:16px;">Ready?</div>
+            <h2 style="color:#F5EDD8;">Find Your Revenue Gaps<br>in 10 Minutes</h2>
+            <p style="color:rgba(240,220,185,0.55);">Free. No credit card. Results the same day.</p>
+            <a href="#" class="btn-p" style="background:#fb923c;color:#100C06;">Find My Revenue Gaps →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /ember -->
+
+
+  <!-- ══════════════════════════════
+       B — CHALK WHITE
+       What's different: Pure white,
+       ultra-minimal. Not warm like Cream,
+       not iOS like Apple Light.
+       Think Linear / Vercel / Stripe.
+       Cobalt blue accent, tight borders.
+  ══════════════════════════════ -->
+  <div class="panel" id="panel-chalk" style="background:#FFFFFF; color:#09090B;">
+
+    <!-- Nav -->
+    <div class="fake-nav" style="border-color:#E4E4E7; background:#FFFFFF;">
+      <div class="fake-nav-logo" style="color:#09090B;">Nexvora<span style="color:#2563eb;">.</span></div>
+      <ul class="fake-nav-links" style="color:#09090B;">
+        <li><a href="#" style="color:#09090B;">About</a></li>
+        <li><a href="#" style="color:#09090B;">Services</a></li>
+        <li><a href="#" style="color:#09090B;">Insights</a></li>
+        <li><a href="#" style="color:#09090B;">Contact</a></li>
+      </ul>
+      <button class="fake-nav-cta" style="background:#09090B; color:#FFFFFF;">Free Assessment</button>
+    </div>
+
+    <!-- Hero -->
+    <div class="section" style="text-align:center;">
+      <div class="c">
+        <div class="label-tag" style="background:#EFF6FF; color:#2563eb; border:1px solid #BFDBFE;">Operational Intelligence</div>
+        <h1 class="hero-title" style="color:#09090B;">Find the Revenue Gaps<br><span style="color:#2563eb;">Inside Your Business</span></h1>
+        <p class="hero-sub" style="color:#52525B; margin:0 auto 36px;">We analyze your operations and identify exactly where you're losing money — then give you a clear path to fix it.</p>
+        <div class="btn-row" style="justify-content:center;">
+          <a href="#" class="btn-p" style="background:#09090B; color:#FFFFFF;">Find My Revenue Gaps →</a>
+          <a href="#" class="btn-g" style="color:#09090B; border:1px solid #E4E4E7;">View Services</a>
+        </div>
+
+        <!-- Chips -->
+        <div class="chips">
+          <div class="chip" style="background:#F4F4F5; border:1px solid #E4E4E7; color:#09090B;"><div class="chip-dot" style="background:#FFFFFF; border:1px solid #D4D4D8;"></div>#FFFFFF — Background</div>
+          <div class="chip" style="background:#F4F4F5; border:1px solid #E4E4E7; color:#09090B;"><div class="chip-dot" style="background:#F4F4F5; border:1px solid #D4D4D8;"></div>#F4F4F5 — Surface</div>
+          <div class="chip" style="background:#F4F4F5; border:1px solid #E4E4E7; color:#09090B;"><div class="chip-dot" style="background:#2563eb;"></div>#2563EB — Cobalt</div>
+          <div class="chip" style="background:#F4F4F5; border:1px solid #E4E4E7; color:#09090B;"><div class="chip-dot" style="background:#09090B;"></div>#09090B — Text</div>
+          <div class="chip" style="background:#F4F4F5; border:1px solid #E4E4E7; color:#09090B;"><div class="chip-dot" style="background:#71717A;"></div>#71717A — Muted</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" style="border-color:#E4E4E7; background:#F4F4F5;">
+      <div class="stat-cell" style="border-color:#E4E4E7;">
+        <div class="stat-n" style="color:#09090B;">$2.4M</div>
+        <div class="stat-l" style="color:#71717A;">Avg. recoverable revenue</div>
+      </div>
+      <div class="stat-cell" style="border-color:#E4E4E7;">
+        <div class="stat-n" style="color:#09090B;">500+</div>
+        <div class="stat-l" style="color:#71717A;">Businesses assessed</div>
+      </div>
+      <div class="stat-cell" style="border-color:#E4E4E7;">
+        <div class="stat-n" style="color:#09090B;">14</div>
+        <div class="stat-l" style="color:#71717A;">Operational dimensions</div>
+      </div>
+      <div class="stat-cell" style="border-color:#E4E4E7;">
+        <div class="stat-n" style="color:#09090B;">10 min</div>
+        <div class="stat-l" style="color:#71717A;">Free assessment</div>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="section">
+      <div class="c">
+        <div class="sh">
+          <div class="label-tag" style="background:#EFF6FF; color:#2563eb; border:1px solid #BFDBFE; margin-bottom:10px;">How It Works</div>
+          <div class="section-title" style="color:#09090B;">Three Steps to Clarity</div>
+        </div>
+        <div class="steps-3" style="background:#E4E4E7; border-radius:14px;">
+          <div class="step-cell" style="background:#FFFFFF;">
+            <div class="step-num" style="color:#09090B;">Step 01</div>
+            <div class="step-icon" style="background:#EFF6FF;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            </div>
+            <h3 style="color:#09090B;">Take the Assessment</h3>
+            <p style="color:#71717A;">Answer 8–12 questions about your operations. 10 minutes, no fluff.</p>
+          </div>
+          <div class="step-cell" style="background:#FFFFFF;">
+            <div class="step-num" style="color:#09090B;">Step 02</div>
+            <div class="step-icon" style="background:#EFF6FF;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            </div>
+            <h3 style="color:#09090B;">Get Your Report</h3>
+            <p style="color:#71717A;">14 operational dimensions analyzed. A personalized report with your specific gaps.</p>
+          </div>
+          <div class="step-cell" style="background:#FFFFFF;">
+            <div class="step-num" style="color:#09090B;">Step 03</div>
+            <div class="step-icon" style="background:#EFF6FF;">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <h3 style="color:#09090B;">Build Your Plan</h3>
+            <p style="color:#71717A;">Highest-impact fixes identified. We work with you to implement them.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="section-sm">
+      <div class="c">
+        <div class="sh">
+          <div class="label-tag" style="background:#EFF6FF; color:#2563eb; border:1px solid #BFDBFE; margin-bottom:10px;">What We Fix</div>
+          <div class="section-title" style="color:#09090B;">Where Businesses Leak Money</div>
+        </div>
+        <div class="cards-3">
+          <div class="card" style="background:#FFFFFF; border-color:#E4E4E7;">
+            <div class="card-icon" style="background:#EFF6FF;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <h3 style="color:#09090B;">Revenue Leakage</h3>
+            <p style="color:#71717A;">Mispriced deals, lost follow-ups, billing errors draining your top line.</p>
+          </div>
+          <div class="card" style="background:#FFFFFF; border-color:#E4E4E7;">
+            <div class="card-icon" style="background:#EFF6FF;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <h3 style="color:#09090B;">Team Friction</h3>
+            <p style="color:#71717A;">Unclear ownership, duplicate work, misaligned incentives.</p>
+          </div>
+          <div class="card" style="background:#FFFFFF; border-color:#E4E4E7;">
+            <div class="card-icon" style="background:#EFF6FF;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <h3 style="color:#09090B;">Tech Waste</h3>
+            <p style="color:#71717A;">Overlapping tools and manual processes costing margin.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="section-sm">
+      <div class="c">
+        <div class="cta-block" style="background:#09090B; border-color:#27272A;">
+          <div style="position:relative;">
+            <div class="label-tag" style="background:rgba(37,99,235,0.15);color:#60A5FA;border:1px solid rgba(37,99,235,0.3);margin-bottom:16px;">Ready?</div>
+            <h2 style="color:#FAFAFA;">Find Your Revenue Gaps<br>in 10 Minutes</h2>
+            <p style="color:#71717A;">Free. No credit card. Results the same day.</p>
+            <a href="#" class="btn-p" style="background:#FAFAFA; color:#09090B;">Find My Revenue Gaps →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /chalk -->
+
+
+  <!-- ══════════════════════════════
+       C — CRIMSON BLACK
+       What's different: Dark bg with
+       red/rose family accent.
+       None of 7 existing themes use red.
+       Premium, bold, results-obsessed.
+  ══════════════════════════════ -->
+  <div class="panel" id="panel-crimson" style="background:#0C0608; color:#F8F0F2;">
+
+    <!-- Nav -->
+    <div class="fake-nav" style="border-color:rgba(244,63,94,0.1); background:#0C0608;">
+      <div class="fake-nav-logo" style="color:#F8F0F2;">Nexvora<span style="color:#f43f5e;">.</span></div>
+      <ul class="fake-nav-links" style="color:#F8F0F2;">
+        <li><a href="#" style="color:#F8F0F2;">About</a></li>
+        <li><a href="#" style="color:#F8F0F2;">Services</a></li>
+        <li><a href="#" style="color:#F8F0F2;">Insights</a></li>
+        <li><a href="#" style="color:#F8F0F2;">Contact</a></li>
+      </ul>
+      <button class="fake-nav-cta" style="background:#f43f5e; color:#FFFFFF;">Free Assessment</button>
+    </div>
+
+    <!-- Hero -->
+    <div class="section" style="background:radial-gradient(ellipse 65% 50% at 50% 0%, rgba(244,63,94,0.12), transparent); text-align:center;">
+      <div class="c">
+        <div class="label-tag" style="background:rgba(244,63,94,0.1); color:#f43f5e; border:1px solid rgba(244,63,94,0.22);">Operational Intelligence</div>
+        <h1 class="hero-title" style="color:#F8F0F2;">Find the Revenue Gaps<br><span style="color:#f43f5e;">Inside Your Business</span></h1>
+        <p class="hero-sub" style="color:rgba(245,220,225,0.6); margin:0 auto 36px;">We analyze your operations and identify exactly where you're losing money — then give you a clear path to fix it.</p>
+        <div class="btn-row" style="justify-content:center;">
+          <a href="#" class="btn-p" style="background:#f43f5e; color:#FFFFFF;">Find My Revenue Gaps →</a>
+          <a href="#" class="btn-g" style="color:#F8F0F2; border:1px solid rgba(244,63,94,0.22);">View Services</a>
+        </div>
+
+        <!-- Chips -->
+        <div class="chips">
+          <div class="chip" style="background:rgba(12,6,8,0.9); border:1px solid rgba(244,63,94,0.2); color:#F8F0F2;"><div class="chip-dot" style="background:#0C0608; border:1px solid rgba(255,255,255,0.2);"></div>#0C0608 — Background</div>
+          <div class="chip" style="background:rgba(12,6,8,0.9); border:1px solid rgba(244,63,94,0.2); color:#F8F0F2;"><div class="chip-dot" style="background:#1A0C10;"></div>#1A0C10 — Card</div>
+          <div class="chip" style="background:rgba(12,6,8,0.9); border:1px solid rgba(244,63,94,0.2); color:#F8F0F2;"><div class="chip-dot" style="background:#f43f5e;"></div>#F43F5E — Crimson</div>
+          <div class="chip" style="background:rgba(12,6,8,0.9); border:1px solid rgba(244,63,94,0.2); color:#F8F0F2;"><div class="chip-dot" style="background:#fb7185;"></div>#FB7185 — Rose</div>
+          <div class="chip" style="background:rgba(12,6,8,0.9); border:1px solid rgba(244,63,94,0.2); color:#F8F0F2;"><div class="chip-dot" style="background:#F8F0F2;"></div>#F8F0F2 — Text</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" style="border-color:rgba(244,63,94,0.1); background:#1A0C10;">
+      <div class="stat-cell" style="border-color:rgba(244,63,94,0.1);">
+        <div class="stat-n" style="color:#f43f5e;">$2.4M</div>
+        <div class="stat-l" style="color:rgba(245,220,225,0.4);">Avg. recoverable revenue</div>
+      </div>
+      <div class="stat-cell" style="border-color:rgba(244,63,94,0.1);">
+        <div class="stat-n" style="color:#f43f5e;">500+</div>
+        <div class="stat-l" style="color:rgba(245,220,225,0.4);">Businesses assessed</div>
+      </div>
+      <div class="stat-cell" style="border-color:rgba(244,63,94,0.1);">
+        <div class="stat-n" style="color:#f43f5e;">14</div>
+        <div class="stat-l" style="color:rgba(245,220,225,0.4);">Operational dimensions</div>
+      </div>
+      <div class="stat-cell" style="border-color:rgba(244,63,94,0.1);">
+        <div class="stat-n" style="color:#f43f5e;">10 min</div>
+        <div class="stat-l" style="color:rgba(245,220,225,0.4);">Free assessment</div>
+      </div>
+    </div>
+
+    <!-- Steps -->
+    <div class="section">
+      <div class="c">
+        <div class="sh">
+          <div class="label-tag" style="background:rgba(244,63,94,0.1); color:#f43f5e; border:1px solid rgba(244,63,94,0.22); margin-bottom:10px;">How It Works</div>
+          <div class="section-title" style="color:#F8F0F2;">Three Steps to Clarity</div>
+        </div>
+        <div class="steps-3" style="background:rgba(244,63,94,0.06);">
+          <div class="step-cell" style="background:#1A0C10;">
+            <div class="step-num" style="color:#F8F0F2;">Step 01</div>
+            <div class="step-icon" style="background:rgba(244,63,94,0.1);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+            </div>
+            <h3 style="color:#F8F0F2;">Take the Assessment</h3>
+            <p style="color:rgba(245,220,225,0.5);">Answer 8–12 questions about your operations. 10 minutes, no fluff.</p>
+          </div>
+          <div class="step-cell" style="background:#1A0C10;">
+            <div class="step-num" style="color:#F8F0F2;">Step 02</div>
+            <div class="step-icon" style="background:rgba(244,63,94,0.1);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+            </div>
+            <h3 style="color:#F8F0F2;">Get Your Report</h3>
+            <p style="color:rgba(245,220,225,0.5);">14 operational dimensions analyzed. A personalized report with your specific gaps.</p>
+          </div>
+          <div class="step-cell" style="background:#1A0C10;">
+            <div class="step-num" style="color:#F8F0F2;">Step 03</div>
+            <div class="step-icon" style="background:rgba(244,63,94,0.1);">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+            </div>
+            <h3 style="color:#F8F0F2;">Build Your Plan</h3>
+            <p style="color:rgba(245,220,225,0.5);">Highest-impact fixes identified. We work with you to implement them.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="section-sm">
+      <div class="c">
+        <div class="sh">
+          <div class="label-tag" style="background:rgba(244,63,94,0.1); color:#f43f5e; border:1px solid rgba(244,63,94,0.22); margin-bottom:10px;">What We Fix</div>
+          <div class="section-title" style="color:#F8F0F2;">Where Businesses Leak Money</div>
+        </div>
+        <div class="cards-3">
+          <div class="card" style="background:#1A0C10; border-color:rgba(244,63,94,0.12);">
+            <div class="card-icon" style="background:rgba(244,63,94,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg>
+            </div>
+            <h3 style="color:#F8F0F2;">Revenue Leakage</h3>
+            <p style="color:rgba(245,220,225,0.5);">Mispriced deals, lost follow-ups, billing errors draining your top line.</p>
+          </div>
+          <div class="card" style="background:#1A0C10; border-color:rgba(244,63,94,0.12);">
+            <div class="card-icon" style="background:rgba(244,63,94,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+            </div>
+            <h3 style="color:#F8F0F2;">Team Friction</h3>
+            <p style="color:rgba(245,220,225,0.5);">Unclear ownership, duplicate work, misaligned incentives.</p>
+          </div>
+          <div class="card" style="background:#1A0C10; border-color:rgba(244,63,94,0.12);">
+            <div class="card-icon" style="background:rgba(244,63,94,0.1);">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+            </div>
+            <h3 style="color:#F8F0F2;">Tech Waste</h3>
+            <p style="color:rgba(245,220,225,0.5);">Overlapping tools and manual processes costing margin.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="section-sm">
+      <div class="c">
+        <div class="cta-block" style="background:linear-gradient(135deg,#1A0C10,#220D13); border-color:rgba(244,63,94,0.2);">
+          <div style="position:absolute;inset:0;background:radial-gradient(ellipse 55% 45% at 50% 0%,rgba(244,63,94,0.1),transparent);border-radius:18px;pointer-events:none;"></div>
+          <div style="position:relative;">
+            <div class="label-tag" style="background:rgba(244,63,94,0.1);color:#f43f5e;border:1px solid rgba(244,63,94,0.25);margin-bottom:16px;">Ready?</div>
+            <h2 style="color:#F8F0F2;">Find Your Revenue Gaps<br>in 10 Minutes</h2>
+            <p style="color:rgba(245,220,225,0.5);">Free. No credit card. Results the same day.</p>
+            <a href="#" class="btn-p" style="background:#f43f5e;color:#FFFFFF;">Find My Revenue Gaps →</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /crimson -->
+
+
+  <!-- VOTE STRIP -->
+  <div class="vote-strip" id="voteStrip">
+    <span>Pick one to build:</span>
+    <button class="vote-btn vb-e" onclick="vote('A · Ember Dark', this)">A · Ember</button>
+    <button class="vote-btn vb-c" onclick="vote('B · Chalk White', this)">B · Chalk</button>
+    <button class="vote-btn vb-r" onclick="vote('C · Crimson Black', this)">C · Crimson</button>
+    <span class="voted-msg" id="vMsg"></span>
+  </div>
+
+  <script>
+    function show(id) {
+      document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.top-tab').forEach(t => t.classList.remove('active'));
+      document.getElementById('panel-' + id).classList.add('active');
+      const map = { ember: 0, chalk: 1, crimson: 2 };
+      document.querySelectorAll('.top-tab')[map[id]].classList.add('active');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+    function vote(name, btn) {
+      document.querySelectorAll('.vote-btn').forEach(b => { b.style.opacity='0.3'; b.style.transform=''; });
+      btn.style.opacity = '1'; btn.style.transform = 'scale(1.1)';
+      const m = document.getElementById('vMsg');
+      m.style.display = 'inline';
+      m.textContent = '✓ Chose: ' + name;
+    }
+  </script>
+</body>
+</html>

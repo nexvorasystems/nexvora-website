@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Services — Nexvora Systems</title>
+  <meta name="description" content="Nexvora's operational consulting services — from operations and sales to team alignment and technology audit. Find out what's costing your business money." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/falcon.css" />
+  <style>
+    .page-hero {
+      padding: calc(var(--nav-height) + 80px) 0 80px;
+      text-align: center;
+    }
+    .page-hero h1 { margin-bottom: 16px; }
+    .page-hero p { max-width: 580px; margin: 0 auto; font-size: 17px; color: var(--text-muted); }
+
+    /* Service detail cards */
+    .services-detail-section { padding: var(--section-gap) 0; }
+    .service-detail {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 56px;
+      align-items: start;
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .service-detail:last-child { border-bottom: none; }
+    .service-detail.reverse { direction: rtl; }
+    .service-detail.reverse > * { direction: ltr; }
+    .service-detail-content h2 { font-size: 1.8rem; margin-bottom: 14px; }
+    .service-detail-content .lead { font-size: 15px; color: var(--text-muted); line-height: 1.75; margin-bottom: 24px; }
+    .problem-list { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+    .problem-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 12px 14px;
+      background: rgba(252,129,129,0.04);
+      border: 1px solid rgba(252,129,129,0.12);
+      border-radius: var(--radius-sm);
+    }
+    .problem-item-icon { color: var(--red); font-size: 14px; margin-top: 1px; flex-shrink: 0; }
+    .problem-item p { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+    .service-detail-visual {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      position: sticky;
+      top: calc(var(--nav-height) + 20px);
+    }
+    .service-detail-visual .service-icon-lg { font-size: 40px; margin-bottom: 16px; display: block; }
+    .service-detail-visual h3 { font-size: 16px; margin-bottom: 8px; }
+    .service-detail-visual p { font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-bottom: 20px; }
+    .loss-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(252,129,129,0.08);
+      border: 1px solid rgba(252,129,129,0.2);
+      border-radius: var(--radius-sm);
+      padding: 10px 16px;
+      font-size: 13px;
+      color: var(--red);
+      font-weight: 600;
+      width: 100%;
+      margin-bottom: 8px;
+    }
+    .loss-chip span { color: var(--text-dim); font-weight: 400; font-size: 12px; margin-left: auto; }
+
+    /* Engagement section */
+    .engagement-section { padding: var(--section-gap) 0; background: var(--bg-deep); }
+    .engagement-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+    .engagement-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px;
+      text-align: center;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .engagement-card:hover { border-color: var(--border-hover); transform: translateY(-2px); }
+    .engagement-num {
+      width: 48px; height: 48px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: #fff;
+      margin: 0 auto 16px;
+    }
+    .engagement-card h3 { margin-bottom: 8px; }
+    .engagement-card p { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+
+    @media (max-width: 768px) {
+      .service-detail { grid-template-columns: 1fr; gap: 32px; }
+      .service-detail.reverse { direction: ltr; }
+      .service-detail-visual { position: static; }
+      .engagement-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html" class="nav-active">Services</a></li>
+        <li><a href="blog.html">Insights</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <a href="assessment.html" class="btn btn-primary btn-sm nav-cta">Free Assessment</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a>
+    <a href="blog.html">Insights</a>
+    <a href="contact.html">Contact</a>
+    <a href="assessment.html" class="btn btn-primary">Free Assessment</a>
+  </div>
+
+  <div class="page-hero">
+    <div class="container">
+      <p class="label fade-in">What We Do</p>
+      <h1 class="fade-in">Operational Services That<br>Find the Money You're Losing</h1>
+      <p class="fade-in">We diagnose the operational, financial, and structural problems silently draining your business — then show you exactly what they're costing you each year.</p>
+    </div>
+  </div>
+
+  <!-- Service Details -->
+  <section class="services-detail-section">
+    <div class="container">
+
+      <!-- Operations -->
+      <div class="service-detail reveal">
+        <div class="service-detail-content">
+          <p class="label">01 — Operations</p>
+          <h2>Operations & Workflow Optimization</h2>
+          <p class="lead">Most businesses have never mapped their core workflows end to end. The result: repeated mistakes, invisible bottlenecks, and a team that spends 30% of its time on rework.</p>
+          <div class="problem-list">
+            <div class="problem-item">
+              <span class="problem-item-icon">▲</span>
+              <p>No documented processes — every employee does it differently, creating quality inconsistency and training nightmares</p>
+            </div>
+            <div class="problem-item">
+              <span class="problem-item-icon">▲</span>
+              <p>Bottlenecks that nobody has named — work piling up at specific steps while the team blames each other</p>
+            </div>
+            <div class="problem-item">
+              <span class="problem-item-icon">▲</span>
+              <p>Manual tasks that consume 10–20 hours per week and could be automated for under $200/month</p>
+            </div>
+          </div>
+          <a href="assessment.html" class="btn btn-primary">Assess My Operations →</a>
+        </div>
+        <div class="service-detail-visual">
+          <span class="service-icon-lg">⚙️</span>
+          <h3>Common Annual Losses</h3>
+          <p>Across businesses we've analyzed, operational inefficiency accounts for the largest share of preventable loss:</p>
+          <div class="loss-chip">$85K – $340K <span>Rework & redundancy</span></div>
+          <div class="loss-chip">$60K – $180K <span>Bottleneck delays</span></div>
+          <div class="loss-chip">$40K – $120K <span>Manual process costs</span></div>
+        </div>
+      </div>
+
+      <!-- Sales -->
+      <div class="service-detail reverse reveal">
+        <div class="service-detail-content">
+          <p class="label">02 — Revenue</p>
+          <h2>Sales & Revenue System Analysis</h2>
+          <p class="lead">A leaky sales process costs more than most marketing budgets. We find where leads die, where deals stall, and where pricing is leaving margin on the table.</p>
+          <div class="problem-list">
+            <div class="problem-item">
+              <span class="problem-item-icon">▲</span>
+              <p>Leads going cold because follow-up sequences have gaps — revenue lost to timing, not competition</p>
+            </div>
+            <div class="problem-item">
+              <span class="problem-item-icon">▲</span>
+              <p>Pricing strategy not aligned with value delivery — discounting habits eroding margin at scale</p>
+            </div>
+            <div class="problem-item">
+              <span class="problem-item-icon">▲</span>
+              <p>CRM not in use or not used correctly — no visibility into pipeline health or conversion trends</p>
+            </div>
+          </div>
+          <a href="assessment.html" class="btn btn-primary">Assess My Revenue →</a>
+        </div>
+        <div class="service-detail-visual">
+          <span class="service-icon-lg">📊</span>
+          <h3>Common Annual Losses</h3>
+          <p>Sales system gaps compound quietly — often invisible until you compare conversion rates to industry benchmarks:</p>
+          <div class="loss-chip">$120K – $480K <span>Lost leads, poor follow-up</span></div>
+          <div class="loss-chip">$80K – $320K <span>Pricing/margin erosion</span></div>
+          <div class="loss-chip">$35K – $95K <span>CRM underutilization</span></div>
+        </div>
+      </div>
+
+      <!-- Team -->
+      <div class="service-detail reveal">
+        <div class="service-detail-content">
+          <p class="label">03 — People</p>
+          <h2>Team Alignment & Communication</h2>
+          <p class="lead">Misaligned teams move slowly, produce inconsistently, and burn out fast. We diagnose the structural communication failures that no performance review will surface.</p>
+          <div class="problem-list">
+            <div class="problem-item">
+              <span class="problem-item-icon">▲</span>
+              <p>Unclear accountability — everyone thinks someone else owns key outcomes, so nothing gets done</p>
+            </div>
+            <div class="problem-item">
+              <span class="problem-item-icon">▲</span>
+              <p>No meeting cadence or a meeting culture that wastes 6+ hours per person per week</p>
+            </div>
+            <div class="problem-item">
+              <span class="problem-item-icon">▲</span>
+              <p>High turnover driven by culture issues that leadership doesn't see — replacement costs averaging $15K per employee</p>
+            </div>
+          </div>
+          <a href="assessment.html" class="btn btn-primary">Assess My Team →</a>
+        </div>
+        <div class="service-detail-visual">
+          <span class="service-icon-lg">👥</span>
+          <h3>Common Annual Losses</h3>
+          <p>Team dysfunction is the hardest loss to see — but consistently the most expensive when quantified:</p>
+          <div class="loss-chip">$95K – $280K <span>Turnover & retraining</span></div>
+          <div class="loss-chip">$70K – $200K <span>Productivity loss</span></div>
+          <div class="loss-chip">$30K – $80K <span>Meeting inefficiency</span></div>
+        </div>
+      </div>
+
+      <!-- Technology -->
+      <div class="service-detail reverse reveal">
+        <div class="service-detail-content">
+          <p class="label">04 — Technology</p>
+          <h2>Technology & Systems Audit</h2>
+          <p class="lead">Most businesses are paying for tools they don't use, missing automations that would save 20+ hours a week, and running on disconnected software that creates manual work.</p>
+          <div class="problem-list">
+            <div class="problem-item">
+              <span class="problem-item-icon">▲</span>
+              <p>Paying for 8–14 software subscriptions with significant feature overlap or zero utilization</p>
+            </div>
+            <div class="problem-item">
+              <span class="problem-item-icon">▲</span>
+              <p>No automation between core tools — data manually entered into multiple systems daily</p>
+            </div>
+            <div class="problem-item">
+              <span class="problem-item-icon">▲</span>
+              <p>Critical business data living in spreadsheets or people's heads — zero redundancy or reporting capability</p>
+            </div>
+          </div>
+          <a href="assessment.html" class="btn btn-primary">Assess My Technology →</a>
+        </div>
+        <div class="service-detail-visual">
+          <span class="service-icon-lg">🔧</span>
+          <h3>Common Annual Losses</h3>
+          <p>Technology debt accumulates silently — the cost is paid in wasted hours and missed opportunities:</p>
+          <div class="loss-chip">$40K – $160K <span>Redundant subscriptions</span></div>
+          <div class="loss-chip">$55K – $180K <span>Manual data entry labor</span></div>
+          <div class="loss-chip">$25K – $90K <span>Missed automation ROI</span></div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Engagement Model -->
+  <section class="engagement-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="label">How We Work</p>
+        <h2>The Nexvora Engagement Model</h2>
+        <p>No long retainers. No vague deliverables. A clear, staged process tied to your outcomes.</p>
+      </div>
+      <div class="engagement-grid stagger">
+        <div class="engagement-card">
+          <div class="engagement-num">1</div>
+          <h3>Free Assessment</h3>
+          <p>10-minute conversational assessment across 8 dimensions. You get a full personalized report with dollar-loss estimates. Zero commitment required.</p>
+        </div>
+        <div class="engagement-card">
+          <div class="engagement-num">2</div>
+          <h3>Strategy Session</h3>
+          <p>90-minute deep-dive call with our team to walk through your report, validate our findings with your real-world context, and prioritize next steps.</p>
+        </div>
+        <div class="engagement-card">
+          <div class="engagement-num">3</div>
+          <h3>90-Day Roadmap</h3>
+          <p>A prioritized implementation plan with specific interventions, owners, timelines, and expected financial impact for each identified gap.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section style="padding: var(--section-gap) 0;">
+    <div class="container">
+      <div class="cta-block reveal">
+        <p class="label">Start Here</p>
+        <h2>The Assessment Comes First</h2>
+        <p>We can't tell you what your business needs until we know what's actually happening inside it. The assessment is where every engagement starts.</p>
+        <a href="assessment.html" class="btn btn-primary btn-lg">Take the Free Assessment →</a>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo"><img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" /></a>
+          <p>Operational intelligence for mid-market businesses.</p>
+          <p class="footer-location">📍 Serving businesses nationwide</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Company</p>
+          <div class="footer-links">
+            <a href="about.html">About</a>
+            <a href="services.html">Services</a>
+            <a href="blog.html">Insights</a>
+            <a href="contact.html">Contact</a>
+            <a href="assessment.html" class="highlight">Free Assessment →</a>
+          </div>
+        </div>
+        <div>
+          <p class="footer-col-title">Services</p>
+          <div class="footer-links">
+            <a href="services.html">Operations Consulting</a>
+            <a href="services.html">Revenue Optimization</a>
+            <a href="services.html">Team Alignment</a>
+            <a href="services.html">Technology Audit</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-bottom-left">© 2026 Nexvora Systems LLC. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="legal/terms.html">Terms & Conditions</a>
+          <a href="legal/privacy.html">Privacy Policy</a>
+          <a href="legal/disclaimer.html">Disclaimer</a>
+          <a href="legal/cookies.html">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="js/main.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/falcon.js"></script>
+</body>
+</html>

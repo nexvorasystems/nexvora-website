@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="About Nexvora Systems — founded by entrepreneurs who built a real business, solved real problems, and now help other small business owners do the same."/>
+<title>About — Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
+  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
+  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.1);--teal-mid:rgba(13,148,136,0.2);
+  --navy:#0F2B4C;--radius:12px;--nav-h:76px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 44px;}
+.nav-inner{display:flex;align-items:center;width:100%;}
+.logo{font-size:19px;font-weight:800;letter-spacing:-0.5px;color:var(--text);text-decoration:none;}
+.logo span{color:var(--teal);}
+.nav-links{display:flex;gap:28px;list-style:none;margin:0 auto;}
+.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+.nav-cta{padding:9px 22px;border-radius:9px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;white-space:nowrap;}
+.nav-cta:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.nav-has-dropdown{position:relative;}
+.nav-dropdown{display:none;position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px;min-width:240px;box-shadow:0 8px 32px rgba(0,0,0,0.1);z-index:300;}
+.nav-has-dropdown:hover .nav-dropdown{display:block;}
+.nav-dropdown a{display:block;padding:9px 14px;font-size:13px;color:var(--muted);text-decoration:none;border-radius:8px;transition:all .15s;}
+.nav-dropdown a:hover{background:var(--teal-lt);color:var(--teal);}
+
+/* PAGE HERO */
+.page-hero{padding:calc(var(--nav-h) + 80px) 44px 72px;text-align:center;}
+.sec-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.page-hero h1{font-size:clamp(2.2rem,4vw,3.4rem);font-weight:800;letter-spacing:-1.5px;color:var(--text);margin-bottom:16px;line-height:1.1;}
+.page-hero h1 strong{background:linear-gradient(90deg,#0F2B4C,#0D9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.page-hero p{max-width:560px;margin:0 auto;font-size:17px;color:var(--muted);line-height:1.7;}
+
+/* SECTIONS */
+.section{padding:80px 0;}.section-alt{padding:80px 0;background:var(--bg-surface);}
+.container{max-width:1160px;margin:0 auto;padding:0 44px;}
+.sec-title{font-size:clamp(1.6rem,2.8vw,2.4rem);font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:14px;}
+.sec-sub{font-size:16px;color:var(--muted);line-height:1.65;max-width:520px;margin-bottom:48px;}
+
+/* STORY */
+.story-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center;}
+.story-text p{font-size:15px;color:var(--muted);line-height:1.8;margin-bottom:18px;}
+.story-text p:last-child{margin-bottom:0;}
+.story-text p strong{color:var(--text);}
+.story-stats{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.s-stat{background:var(--bg-surface);border:1px solid var(--border);border-radius:14px;padding:24px;text-align:center;}
+.s-stat-n{font-size:2rem;font-weight:700;line-height:1;margin-bottom:6px;background:linear-gradient(90deg,#0F2B4C,#0D9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.s-stat-l{font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:1px;line-height:1.4;}
+
+/* LEADERSHIP */
+.team-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:24px;}
+.team-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:36px;transition:all .2s;}
+.team-card:hover{border-color:var(--teal-mid);box-shadow:0 8px 32px rgba(0,0,0,0.06);}
+.team-avatar{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#0F2B4C,#0D9488);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;margin-bottom:16px;}
+.team-name{font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.team-title{font-size:12px;font-weight:600;color:var(--teal);text-transform:uppercase;letter-spacing:1.5px;margin-bottom:16px;}
+.team-bio{font-size:14px;color:var(--muted);line-height:1.75;}
+
+/* CORE VALUES */
+.values-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;}
+.val-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:28px;transition:all .2s;}
+.val-card:hover{border-color:var(--teal-mid);transform:translateY(-2px);box-shadow:0 6px 24px rgba(0,0,0,0.05);}
+.val-icon{width:48px;height:48px;margin-bottom:16px;}
+.val-title{font-size:16px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.val-text{font-size:13px;color:var(--muted);line-height:1.7;}
+
+/* CTA */
+.cta-block{border-radius:20px;padding:72px 56px;text-align:center;background:linear-gradient(135deg,#0F2B4C,#0D3330);position:relative;overflow:hidden;}
+.cta-block::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% -10%,rgba(13,148,136,0.3),transparent);pointer-events:none;}
+.cta-block .sec-label{color:rgba(68,202,162,0.8);}
+.cta-block h2{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-0.5px;color:#FAF8F5;margin-bottom:12px;position:relative;}
+.cta-block h2 strong{color:#44CAA2;}
+.cta-block p{font-size:16px;color:rgba(250,248,245,0.6);margin-bottom:28px;position:relative;}
+.btn-p{padding:15px 30px;border-radius:10px;background:var(--teal);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-block;}
+.btn-p:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,148,136,0.3);}
+
+/* FOOTER */
+footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65);}
+.footer-inner{max-width:1160px;margin:0 auto;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:40px;}
+.footer-brand .logo{color:#FAF8F5;}
+.footer-brand p{font-size:13px;margin-top:10px;color:rgba(250,248,245,0.5);}
+.footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:14px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:#FAF8F5;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;}
+
+/* RESPONSIVE */
+@media(max-width:900px){.story-grid,.team-grid{grid-template-columns:1fr;}.values-grid{grid-template-columns:repeat(2,1fr);}}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:12px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;background:var(--bg);border-bottom:1px solid var(--border);padding:20px 20px 24px;flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);}
+.mobile-menu a.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff;font-weight:700;text-align:center;border-radius:10px;border-bottom:none;font-size:14px;}
+@media(max-width:768px){:root{--nav-h:56px;}nav{padding:0 20px;}.nav-links{display:none;}.nav-cta{display:none;}.hamburger{display:flex;}.page-hero,.container{padding-left:20px;padding-right:20px;}.footer-grid{grid-template-columns:1fr;gap:28px;}footer{padding:40px 20px 24px;}.cta-block{padding:48px 24px;}}
+@media(max-width:480px){.values-grid{grid-template-columns:1fr;}.story-stats{grid-template-columns:1fr;}}
+
+/* ANIMATED ICONS */
+@keyframes iconScan{0%,100%{transform:translate(0,0);}33%{transform:translate(3px,3px);}66%{transform:translate(-2px,2px);}}
+@keyframes iconBalance{0%,100%{transform:rotate(0deg);}30%{transform:rotate(-6deg);}70%{transform:rotate(6deg);}}
+@keyframes iconPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+@keyframes iconSpark{0%{opacity:1;transform:scale(1);}50%{opacity:0.5;transform:scale(1.2);}100%{opacity:1;transform:scale(1);}}
+@keyframes iconTarget{0%,100%{transform:scale(1) rotate(0deg);}50%{transform:scale(1.08) rotate(3deg);}}
+@keyframes iconLock{0%,100%{transform:translateY(0);}40%{transform:translateY(-3px);}60%{transform:translateY(-3px);}}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html"><img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:48px;width:auto;display:block;"/></a>
+    <ul class="nav-links">
+      <li><a href="about.html" class="active">About</a></li>
+      <li class="nav-has-dropdown">
+        <a href="services.html">Services</a>
+        <div class="nav-dropdown">
+          <a href="services/operations.html">Operations</a>
+          <a href="services/ai-automation.html">AI &amp; Automation</a>
+          <a href="services/reporting-analytics.html">Reporting &amp; Analytics</a>
+          <a href="services/sales-systems.html">Sales Systems</a>
+          <a href="services/marketing.html">Marketing</a>
+          <a href="services/customer-experience.html">Customer Experience</a>
+          <a href="services/team-hr.html">Team &amp; HR</a>
+          <a href="services/financial-efficiency.html">Financial Efficiency</a>
+          <a href="services/growth-scaling.html">Growth &amp; Scaling</a>
+        </div>
+      </li>
+      <li><a href="blog.html">Insights</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="assessment.html" class="nav-cta">Free Assessment</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="about.html">About</a>
+  <a href="services.html">Services</a>
+  <a href="blog.html">Insights</a>
+  <a href="contact.html">Contact</a>
+  <a href="assessment.html" class="mobile-cta">Free Assessment</a>
+</div>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="sec-label">Our Story</div>
+  <h1>Built by Business Owners<br><strong>Who Lived It First</strong></h1>
+  <p>Nexvora was not built in a boardroom. It was built by two entrepreneurs who ran a real business, felt the real pain, and decided to fix it for others.</p>
+</div>
+
+<!-- STORY -->
+<div class="section-alt">
+  <div class="container">
+    <div class="story-grid">
+      <div class="story-text">
+        <div class="sec-label">Where We Come From</div>
+        <div class="sec-title" style="margin-bottom:20px;">Started in Home Services. Built for Every Business.</div>
+        <p>Before Nexvora, our founders ran <strong>24 25 CLEANERS</strong> — a home service business that grew to serve over <strong>20,000 jobs</strong> and thousands of customers across the country. They know what it means to manage a real team, handle difficult customers, deal with cash flow, and try to grow without losing control.</p>
+        <p>They also know what it feels like to be the only person who knows how everything works — and what happens when you try to scale without systems. They lived through the chaos, made the mistakes, and eventually built the systems that saved them.</p>
+        <p>Along the way they implemented AI and automation tools inside their own company — not because it was trendy, but because they had no choice. It saved their time, reduced their costs, and gave them their lives back. That experience became the foundation of Nexvora.</p>
+        <p>They started Nexvora because they met too many small business owners going through the same stress they had been through — and realized most of them just needed someone who actually understood the problem, not a consultant who had only ever worked at a corporation.</p>
+      </div>
+      <div>
+        <div class="story-stats">
+          <div class="s-stat"><div class="s-stat-n">20K+</div><div class="s-stat-l">Jobs completed in founders' own business</div></div>
+          <div class="s-stat"><div class="s-stat-n">100+</div><div class="s-stat-l">Small businesses helped with Nexvora</div></div>
+          <div class="s-stat"><div class="s-stat-n">$240K+</div><div class="s-stat-l">Average annual savings vs. hiring in-house</div></div>
+          <div class="s-stat"><div class="s-stat-n">9</div><div class="s-stat-l">Business dimensions we assess and improve</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- LEADERSHIP -->
+<div class="section">
+  <div class="container">
+    <div class="sec-label">The People Behind It</div>
+    <div class="sec-title">Founded by Operators, Not Theorists</div>
+    <p class="sec-sub">Both founders came up through the home service industry. They understand what it is like to build something from nothing, serve demanding customers, manage a growing team, and try to make the numbers work every month.</p>
+    <div class="team-grid">
+      <a href="team/murat-zhandaurov.html" class="team-card" style="text-decoration:none;color:inherit;display:block;">
+        <div class="team-avatar">MZ</div>
+        <div class="team-name">Murat Zhandaurov</div>
+        <div class="team-title">Co-Founder</div>
+        <p class="team-bio">Co-founded 24 25 CLEANERS and helped grow it to over 20,000 completed jobs. Murat led the operational side of the business — managing teams, building processes, and eventually implementing AI systems that transformed how the company ran. He has worked with thousands of customers with different needs and knows firsthand how stressful it is to scale a service business without the right systems in place. He built Nexvora to give other owners access to the tools and thinking that changed everything for him.</p>
+        <p style="margin-top:16px;font-size:13px;color:#0D9488;font-weight:600;">View Profile →</p>
+      </a>
+      <a href="team/alexandr-godonvayuk.html" class="team-card" style="text-decoration:none;color:inherit;display:block;">
+        <div class="team-avatar">AG</div>
+        <div class="team-name">Alexandr Godonvayuk</div>
+        <div class="team-title">Co-Founder</div>
+        <p class="team-bio">Co-founded 24 25 CLEANERS alongside Murat. Alexandr focused on the business development and customer experience side — building the systems and processes that allowed the company to consistently deliver quality at scale. Having met hundreds of small business owners and seen the same patterns of stress, missed revenue, and operational chaos repeat across different industries, he co-founded Nexvora to help owners solve the problems he knows better than anyone. Real experience. Real solutions. No corporate fluff.</p>
+        <p style="margin-top:16px;font-size:13px;color:#0D9488;font-weight:600;">View Profile →</p>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- CORE VALUES -->
+<div class="section-alt">
+  <div class="container">
+    <div class="sec-label">What We Stand For</div>
+    <div class="sec-title" style="margin-bottom:36px;">Our Core Values</div>
+    <div class="values-grid">
+
+      <div class="val-card">
+        <svg class="val-icon" viewBox="0 0 48 48" fill="none" style="animation:iconScan 3s ease-in-out infinite;">
+          <circle cx="21" cy="21" r="13" stroke="#0D9488" stroke-width="2.5"/>
+          <line x1="30" y1="30" x2="42" y2="42" stroke="#0D9488" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="21" cy="21" r="7" stroke="rgba(13,148,136,0.3)" stroke-width="1.5"/>
+          <circle cx="21" cy="21" r="2" fill="#0D9488"/>
+        </svg>
+        <div class="val-title">Radical Clarity</div>
+        <p class="val-text">We say what we see, even when it is uncomfortable. Our clients pay us to find the truth, not to validate what they already believe.</p>
+      </div>
+
+      <div class="val-card">
+        <svg class="val-icon" viewBox="0 0 48 48" fill="none" style="animation:iconBalance 4s ease-in-out infinite;">
+          <line x1="24" y1="8" x2="24" y2="40" stroke="#0D9488" stroke-width="2.5" stroke-linecap="round"/>
+          <line x1="10" y1="16" x2="38" y2="16" stroke="#0D9488" stroke-width="2.5" stroke-linecap="round"/>
+          <circle cx="10" cy="24" r="5" stroke="#0D9488" stroke-width="2" fill="rgba(13,148,136,0.1)"/>
+          <circle cx="38" cy="24" r="5" stroke="#0D9488" stroke-width="2" fill="rgba(13,148,136,0.1)"/>
+          <line x1="10" y1="16" x2="10" y2="19" stroke="#0D9488" stroke-width="2" stroke-linecap="round"/>
+          <line x1="38" y1="16" x2="38" y2="19" stroke="#0D9488" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div class="val-title">Precision Over Volume</div>
+        <p class="val-text">We do not produce 80-page reports full of recommendations that never get acted on. We find the highest-impact gaps and focus there.</p>
+      </div>
+
+      <div class="val-card">
+        <svg class="val-icon" viewBox="0 0 48 48" fill="none" style="animation:iconPulse 2.5s ease-in-out infinite;">
+          <path d="M24 10 C18 10 10 16 10 24 C10 30 14 34 18 36 L24 40 L30 36 C34 34 38 30 38 24 C38 16 30 10 24 10Z" stroke="#0D9488" stroke-width="2.5" fill="rgba(13,148,136,0.08)"/>
+          <path d="M18 24 L22 28 L30 20" stroke="#0D9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="val-title">Partnership, Not Prescription</div>
+        <p class="val-text">We are not here to tell you what to do. We are here to show you what we see and help you decide what matters most to your business.</p>
+      </div>
+
+      <div class="val-card">
+        <svg class="val-icon" viewBox="0 0 48 48" fill="none" style="animation:iconSpark 2s ease-in-out infinite;">
+          <polygon points="24,6 28,20 42,20 31,29 35,43 24,34 13,43 17,29 6,20 20,20" stroke="#0D9488" stroke-width="2" fill="rgba(13,148,136,0.1)" stroke-linejoin="round"/>
+          <circle cx="24" cy="24" r="4" fill="#0D9488" opacity="0.6"/>
+        </svg>
+        <div class="val-title">Speed to Insight</div>
+        <p class="val-text">Small businesses cannot afford to wait months for clarity. We deliver meaningful analysis fast so you can act while the opportunity is still there.</p>
+      </div>
+
+      <div class="val-card">
+        <svg class="val-icon" viewBox="0 0 48 48" fill="none" style="animation:iconTarget 3.5s ease-in-out infinite;">
+          <circle cx="24" cy="24" r="18" stroke="#0D9488" stroke-width="2" fill="none"/>
+          <circle cx="24" cy="24" r="11" stroke="#0D9488" stroke-width="2" fill="rgba(13,148,136,0.06)"/>
+          <circle cx="24" cy="24" r="5" stroke="#0D9488" stroke-width="2" fill="rgba(13,148,136,0.15)"/>
+          <line x1="24" y1="6" x2="24" y2="12" stroke="#0D9488" stroke-width="2" stroke-linecap="round"/>
+          <line x1="42" y1="24" x2="36" y2="24" stroke="#0D9488" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div class="val-title">Results-First</div>
+        <p class="val-text">Our model is structured around your outcomes. We succeed when you find and fix what is costing your business money, not before.</p>
+      </div>
+
+      <div class="val-card">
+        <svg class="val-icon" viewBox="0 0 48 48" fill="none" style="animation:iconLock 3s ease-in-out infinite;">
+          <rect x="12" y="22" width="24" height="18" rx="3" stroke="#0D9488" stroke-width="2.5" fill="rgba(13,148,136,0.08)"/>
+          <path d="M17 22 V18 C17 13.6 20.6 10 25 10 V10 C29.4 10 33 13.6 33 18 V22" stroke="#0D9488" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+          <circle cx="24" cy="31" r="3" fill="#0D9488"/>
+          <line x1="24" y1="34" x2="24" y2="37" stroke="#0D9488" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <div class="val-title">Confidentiality</div>
+        <p class="val-text">Everything you share with us stays with us. Your assessment data is never shared, sold, or used for anything beyond helping your business.</p>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="section">
+  <div class="container">
+    <div class="cta-block">
+      <div class="sec-label">Ready to Start</div>
+      <h2>Find Out Where Your<br><strong>Business Can Improve</strong></h2>
+      <p>Free. No credit card. You will have your personalized report within 24 hours.</p>
+      <a href="assessment.html" class="btn-p">Start Free Assessment</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#FAF8F5;display:block;margin-bottom:10px;">Nexvora<span style="color:#44CAA2;">.</span></a>
+        <p>AI-powered operational consulting for small and growing businesses.</p>
+        <p style="margin-top:8px;font-size:13px;"><a href="mailto:info@nexvorasystems.us" style="color:rgba(250,248,245,0.5);text-decoration:none;">info@nexvorasystems.us</a></p>
+      </div>
+      <div>
+        <p class="footer-col-title">Company</p>
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <a href="services.html">Services</a>
+          <a href="blog.html">Insights</a>
+          <a href="contact.html">Contact</a>
+          <a href="assessment.html" style="color:#44CAA2;">Free Assessment</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Services</p>
+        <div class="footer-links">
+          <a href="services/operations.html">Operations</a>
+          <a href="services/ai-automation.html">AI &amp; Automation</a>
+          <a href="services/reporting-analytics.html">Reporting &amp; Analytics</a>
+          <a href="services/sales-systems.html">Sales Systems</a>
+          <a href="services/marketing.html">Marketing</a>
+          <a href="services/customer-experience.html">Customer Experience</a>
+          <a href="services/team-hr.html">Team &amp; HR</a>
+          <a href="services/financial-efficiency.html">Financial Efficiency</a>
+          <a href="services/growth-scaling.html">Growth &amp; Scaling</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span style="color:rgba(250,248,245,0.4);">© 2026 Nexvora Systems LLC. All rights reserved.</span>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <a href="legal/terms.html" style="color:rgba(250,248,245,0.4);text-decoration:none;font-size:12px;">Terms &amp; Conditions</a>
+        <a href="legal/privacy.html" style="color:rgba(250,248,245,0.4);text-decoration:none;font-size:12px;">Privacy Policy</a>
+        <a href="legal/cookies.html" style="color:rgba(250,248,245,0.4);text-decoration:none;font-size:12px;">Cookie Policy</a>
+        <a href="legal/disclaimer.html" style="color:rgba(250,248,245,0.4);text-decoration:none;font-size:12px;">Disclaimer</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script>
+document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});
+</script>
+</body>
+</html>

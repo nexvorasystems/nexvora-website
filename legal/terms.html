@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Terms and Conditions for Nexvora Systems. Read our terms of service, payment policies, and legal agreements."/>
+<title>Terms &amp; Conditions — Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
+  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
+  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.1);
+  --navy:#0F2B4C;--radius:12px;--nav-h:68px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 44px;}
+.nav-inner{display:flex;align-items:center;width:100%;}
+.nav-links{display:flex;gap:28px;list-style:none;margin:0 auto;}
+.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s;}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{padding:9px 22px;border-radius:9px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:12px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;background:var(--bg);border-bottom:1px solid var(--border);padding:20px 20px 24px;flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);}
+.mobile-menu a.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff;font-weight:700;text-align:center;border-radius:10px;border-bottom:none;font-size:14px;}
+.page-hero{padding:calc(var(--nav-h) + 64px) 44px 48px;max-width:860px;margin:0 auto;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--teal);text-decoration:none;font-weight:600;margin-bottom:28px;}
+.sec-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:12px;}
+.page-hero h1{font-size:clamp(1.8rem,3vw,2.6rem);font-weight:800;letter-spacing:-1px;margin-bottom:12px;}
+.page-hero .meta{font-size:13px;color:var(--dim);}
+.legal-body{max-width:860px;margin:0 auto;padding:0 44px 80px;}
+.legal-body h2{font-size:1.2rem;font-weight:700;color:var(--text);margin:36px 0 12px;padding-top:4px;border-top:1px solid var(--border);}
+.legal-body p{font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:16px;}
+.legal-body ul{padding-left:20px;margin-bottom:16px;}
+.legal-body li{font-size:15px;line-height:1.8;color:var(--muted);margin-bottom:6px;}
+.legal-body strong{color:var(--text);}
+.legal-body a{color:var(--teal);text-decoration:none;}
+footer{background:var(--navy);color:#FAF8F5;padding:60px 44px 32px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px;}
+.footer-brand .logo{font-size:20px;font-weight:800;letter-spacing:-0.5px;color:#FAF8F5;}
+.footer-brand p{font-size:13px;margin-top:10px;color:rgba(250,248,245,0.5);}
+.footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:14px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;}
+.footer-links a:hover{color:#FAF8F5;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(250,248,245,0.35);flex-wrap:wrap;gap:10px;}
+@media(max-width:768px){
+  :root{--nav-h:56px;}
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .nav-cta{display:none;}
+  .hamburger{display:flex;}
+  .page-hero,.legal-body{padding-left:20px;padding-right:20px;}
+  .footer-grid{grid-template-columns:1fr;gap:28px;}
+  footer{padding:40px 20px 24px;}
+}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:48px;width:auto;display:block;"/></a>
+    <ul class="nav-links">
+      <li><a href="../about.html">About</a></li>
+      <li><a href="../services.html">Services</a></li>
+      <li><a href="../blog.html">Insights</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+    <a href="../assessment.html" class="nav-cta">Free Assessment</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../about.html">About</a>
+  <a href="../services.html">Services</a>
+  <a href="../blog.html">Insights</a>
+  <a href="../contact.html">Contact</a>
+  <a href="../assessment.html" class="mobile-cta">Free Assessment</a>
+</div>
+
+<div class="page-hero">
+  <a href="../index.html" class="back-link">← Back to Home</a>
+  <p class="sec-label">Legal</p>
+  <h1>Terms &amp; Conditions</h1>
+  <p class="meta">Effective Date: March 4, 2026 &nbsp;|&nbsp; Website: www.nexvorasystems.us</p>
+</div>
+
+<div class="legal-body">
+
+  <h2>1. Acceptance of Terms</h2>
+  <p>By using this website, submitting any form, requesting a quote, or engaging Nexvora Systems for any service, you agree to be legally bound by these Terms and Conditions. If you do not agree, do not use this website or engage our services.</p>
+
+  <h2>2. Relationship Between Website Terms and Signed Agreements</h2>
+  <p>If a separate Consulting Agreement is signed between you and Nexvora Systems, that agreement governs the specific services and fees outlined therein. These Terms and Conditions apply to all website use and general engagements not otherwise covered by a signed agreement.</p>
+
+  <h2>3. 24-Hour Cancellation Policy</h2>
+  <p>Clients may cancel within 24 hours of initial payment if no services have commenced. Refunds issued under this policy will be subject to deduction of applicable payment processing and administrative fees. Cancellation requests must be submitted in writing to <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a>.</p>
+
+  <h2>4. Strict No Refund Policy</h2>
+  <p>After 24 hours from initial payment, or once any services have commenced (whichever occurs first), all payments are final and non-refundable. This applies to all service packages, consulting engagements, assessments, and deliverables regardless of project stage or outcome.</p>
+
+  <h2>5. Payment Terms and Default</h2>
+  <p>Payment is due as outlined in your service agreement or invoice. Late payments may result in suspension of active services. Unpaid balances outstanding for more than 30 days become immediately due in full. Accounts unpaid after 45 days may be referred to a collections process, and you may be responsible for associated costs.</p>
+
+  <h2>6. Chargebacks and Payment Disputes</h2>
+  <p>Before initiating any chargeback or payment dispute with your financial institution, you must provide written notice to Nexvora Systems at <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a> and allow a reasonable period to resolve the matter. Initiating a chargeback without prior written notice does not release you from liability for the full amount owed, plus any fees incurred by Nexvora Systems as a result of the dispute.</p>
+
+  <h2>7. No Guarantee of Results</h2>
+  <p>Nexvora Systems makes no guarantee of specific business outcomes, including but not limited to revenue growth, lead generation, profit increases, or operational improvements. Business results depend on numerous variables outside our control, including client execution, market conditions, and industry dynamics. Any projections or examples provided are illustrative only.</p>
+
+  <h2>8. Third-Party Platforms</h2>
+  <p>Nexvora Systems may recommend or assist in implementing third-party tools, platforms, or services. We are not responsible for changes to platform terms, pricing, account suspensions, compliance issues, data breaches, or service interruptions caused by third-party providers. All third-party relationships are governed by those providers' own terms and policies.</p>
+
+  <h2>9. Intellectual Property</h2>
+  <p>All materials, frameworks, templates, documents, and proprietary content provided by Nexvora Systems remain the intellectual property of Nexvora Systems LLC. Clients receive a limited, non-transferable license for internal use only. Materials may not be resold, redistributed, or used outside the client's own business without written permission.</p>
+
+  <h2>10. Limitation of Liability</h2>
+  <p>To the maximum extent permitted by law, Nexvora Systems' total liability to you for any claim arising from or related to these Terms or our services shall not exceed the total amounts paid by you to Nexvora Systems in the 90 days preceding the claim. We are not liable for indirect, incidental, consequential, or special damages.</p>
+
+  <h2>11. Indemnification</h2>
+  <p>You agree to indemnify, defend, and hold harmless Nexvora Systems LLC and its principals, employees, and contractors from any claims, damages, or expenses (including reasonable legal fees) arising from your use of our services, your business operations, or your violation of these Terms.</p>
+
+  <h2>12. Dispute Resolution</h2>
+  <p>Any disputes arising from these Terms or our services shall be resolved through binding arbitration in the State of Florida, in accordance with applicable arbitration rules. By agreeing to these Terms, you waive your right to a jury trial and your right to participate in any class action proceeding.</p>
+
+  <h2>13. Governing Law</h2>
+  <p>These Terms and Conditions are governed by the laws of the State of Florida, without regard to conflict of law principles.</p>
+
+  <h2>14. Changes to These Terms</h2>
+  <p>Nexvora Systems reserves the right to update these Terms at any time. Changes will be posted on this page with a revised effective date. Continued use of the website or services after changes constitutes acceptance of the updated Terms.</p>
+
+  <h2>15. Contact</h2>
+  <p>For questions about these Terms, contact us at <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a>.</p>
+
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:40px;width:auto;display:block;margin-bottom:10px;"/></a>
+      <p>Operational clarity for small businesses across Florida and beyond.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Company</p>
+      <div class="footer-links">
+        <a href="../about.html">About</a>
+        <a href="../services.html">Services</a>
+        <a href="../blog.html">Insights</a>
+        <a href="../contact.html">Contact</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Legal</p>
+      <div class="footer-links">
+        <a href="terms.html">Terms &amp; Conditions</a>
+        <a href="privacy.html">Privacy Policy</a>
+        <a href="cookies.html">Cookie Policy</a>
+        <a href="disclaimer.html">Disclaimer</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Contact</p>
+      <div class="footer-links">
+        <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a>
+        <a href="../assessment.html">Free Assessment</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Nexvora Systems LLC. All rights reserved.</span>
+    <span style="display:flex;gap:16px;flex-wrap:wrap;">
+      <a href="terms.html" style="color:inherit;text-decoration:none;">Terms &amp; Conditions</a>
+      <a href="privacy.html" style="color:inherit;text-decoration:none;">Privacy Policy</a>
+      <a href="cookies.html" style="color:inherit;text-decoration:none;">Cookie Policy</a>
+      <a href="disclaimer.html" style="color:inherit;text-decoration:none;">Disclaimer</a>
+    </span>
+  </div>
+</footer>
+<script>
+document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});
+</script>
+</body>
+</html>

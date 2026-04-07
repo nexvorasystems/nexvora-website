@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Nexvora helps small businesses grow without adding staff. We improve operations, sales, marketing and systems with AI and automation."/>
+<title>Nexvora Systems — Run a Bigger Business With the Same Team</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;
+  --bg-surface:#F0EDE8;
+  --bg-card:rgba(255,255,255,0.85);
+  --text:#1A1A2E;
+  --muted:#4A5568;
+  --dim:#718096;
+  --border:#E2DDD5;
+  --teal:#0D9488;
+  --teal-lt:rgba(13,148,136,0.1);
+  --navy:#0F2B4C;
+  --radius:12px;
+  --nav-h:76px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);scroll-behavior:smooth;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:var(--nav-h);display:flex;align-items:center;
+  background:rgba(250,248,245,0.92);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);padding:0 44px;
+}
+.nav-inner{display:flex;align-items:center;width:100%;}
+.logo{font-size:19px;font-weight:800;letter-spacing:-0.5px;color:var(--text);text-decoration:none;}
+.logo span{color:var(--teal);}
+.nav-links{display:flex;gap:28px;list-style:none;margin:0 auto;}
+.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s;}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{
+  padding:9px 22px;border-radius:9px;
+  background:var(--teal);color:#fff;
+  font-size:13px;font-weight:700;border:none;cursor:pointer;
+  transition:all .18s;text-decoration:none;white-space:nowrap;
+}
+.nav-cta:hover{filter:brightness(1.08);transform:translateY(-1px);}
+/* SERVICES DROPDOWN */
+.nav-has-dropdown{position:relative;}
+.nav-dropdown{display:none;position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px;min-width:240px;box-shadow:0 8px 32px rgba(0,0,0,0.1);z-index:300;}
+.nav-has-dropdown:hover .nav-dropdown{display:block;}
+.nav-dropdown a{display:block;padding:9px 14px;font-size:13px;color:var(--muted);text-decoration:none;border-radius:8px;transition:all .15s;}
+.nav-dropdown a:hover{background:var(--teal-lt);color:var(--teal);}
+
+
+/* HERO */
+.hero{
+  position:relative;min-height:100vh;
+  display:flex;align-items:center;
+  padding-top:var(--nav-h);padding-bottom:140px;
+  overflow:hidden;
+}
+#falconBgCanvas{position:absolute;inset:0;pointer-events:none;z-index:0;}
+.hero-mesh{
+  position:absolute;inset:-40%;width:180%;height:180%;
+  background:
+    radial-gradient(ellipse at 20% 60%,rgba(13,148,136,0.09) 0%,transparent 50%),
+    radial-gradient(ellipse at 80% 20%,rgba(15,43,76,0.06) 0%,transparent 50%);
+  filter:blur(48px);pointer-events:none;z-index:0;
+  animation:meshDrift 22s ease-in-out infinite alternate;
+}
+@keyframes meshDrift{0%{transform:translate(0,0) scale(1);}100%{transform:translate(-2%,2%) scale(0.98);}}
+
+.hero-content{
+  position:relative;z-index:2;
+  width:100%;max-width:1160px;margin:0 auto;padding:0 44px;
+  display:grid;grid-template-columns:1fr 460px;gap:48px;align-items:center;
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:6px 16px 6px 10px;
+  background:rgba(13,148,136,0.08);border:1px solid rgba(13,148,136,0.2);
+  border-radius:40px;margin-bottom:28px;
+}
+.badge-dot{width:8px;height:8px;border-radius:50%;background:var(--teal);position:relative;}
+.badge-dot::after{content:'';position:absolute;inset:-4px;border-radius:50%;background:rgba(13,148,136,0.22);animation:pulse 2.8s ease infinite;}
+@keyframes pulse{0%,100%{transform:scale(1);opacity:1;}50%{transform:scale(1.8);opacity:0;}}
+.badge-text{font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);}
+
+h1{
+  font-size:clamp(2.4rem,4.5vw,3.8rem);font-weight:800;
+  line-height:1.08;letter-spacing:-2px;color:var(--text);margin-bottom:20px;
+}
+h1 strong{
+  font-weight:800;
+  background:linear-gradient(90deg,#0F2B4C,#0D9488);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.hero-sub{font-size:17px;color:var(--muted);line-height:1.72;max-width:540px;margin-bottom:36px;}
+.hero-actions{display:flex;gap:12px;flex-wrap:wrap;align-items:center;}
+.btn-p{
+  padding:15px 30px;border-radius:10px;background:var(--teal);color:#fff;
+  font-size:15px;font-weight:700;border:none;cursor:pointer;
+  transition:all .18s;text-decoration:none;display:inline-block;
+}
+.btn-p:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,148,136,0.3);}
+.btn-g{
+  padding:15px 28px;border-radius:10px;background:transparent;
+  color:var(--text);border:1px solid var(--border);
+  font-size:15px;font-weight:600;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-block;
+}
+.btn-g:hover{border-color:var(--teal);color:var(--teal);transform:translateY(-1px);}
+
+.proof{display:flex;align-items:center;gap:14px;margin-top:32px;}
+.avatars{display:flex;}
+.av{
+  width:30px;height:30px;border-radius:50%;
+  border:2px solid var(--bg);background:linear-gradient(135deg,#0F2B4C,#0D9488);
+  display:flex;align-items:center;justify-content:center;
+  font-size:9px;font-weight:700;color:#fff;margin-left:-7px;
+}
+.av:first-child{margin-left:0;}
+.proof-text{font-size:12px;color:var(--muted);}
+.proof-text strong{color:var(--text);}
+
+/* Hero right */
+.hero-right{display:flex;align-items:center;justify-content:center;position:relative;}
+.falcon-frame{position:relative;width:340px;height:340px;}
+.f-ring{position:absolute;inset:-20px;border-radius:50%;border:1px solid rgba(13,148,136,0.15);animation:ringSpin 20s linear infinite;}
+.f-ring-2{position:absolute;inset:-44px;border-radius:50%;border:1px dashed rgba(13,148,136,0.08);animation:ringSpin 32s linear infinite reverse;}
+@keyframes ringSpin{to{transform:rotate(360deg);}}
+#falconColCanvas{width:100%;height:100%;}
+.bubble{
+  position:absolute;background:var(--bg-card);
+  border:1px solid var(--border);border-radius:var(--radius);
+  padding:12px 16px;-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);
+  white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.06);
+}
+.bubble.tl{top:20px;left:-50px;}
+.bubble.br{bottom:30px;right:-30px;}
+.b-num{font-size:20px;font-weight:700;color:var(--teal);line-height:1;}
+.b-lbl{font-size:10px;color:var(--dim);margin-top:2px;}
+
+/* Stats strip */
+.stats-wrap{position:absolute;bottom:0;left:0;right:0;z-index:2;padding:0 44px;}
+.stats{
+  display:grid;grid-template-columns:repeat(3,1fr);
+  gap:1px;background:var(--border);
+  border:1px solid var(--border);border-radius:var(--radius) var(--radius) 0 0;
+  overflow:hidden;max-width:1160px;margin:0 auto;
+}
+.stat-cell{background:var(--bg-surface);padding:24px;text-align:center;}
+.stat-n{
+  font-size:32px;font-weight:700;line-height:1;margin-bottom:6px;
+  background:linear-gradient(90deg,#0F2B4C,#0D9488);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.stat-l{font-size:12px;color:var(--dim);line-height:1.5;}
+
+/* Sections */
+.section{padding:88px 0;}
+.section-alt{padding:88px 0;background:var(--bg-surface);}
+.container{max-width:1160px;margin:0 auto;padding:0 44px;}
+.sec-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.sec-title{font-size:clamp(1.6rem,2.8vw,2.4rem);font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:14px;}
+.sec-sub{font-size:16px;color:var(--muted);line-height:1.65;max-width:520px;margin-bottom:48px;}
+
+/* How it works */
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:2px;background:var(--border);border:1px solid var(--border);border-radius:14px;overflow:hidden;}
+.step{background:var(--bg);padding:32px 28px;}
+.step-n{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--teal);opacity:0.5;margin-bottom:14px;}
+.step-icon{width:40px;height:40px;border-radius:10px;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.step h3{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:8px;}
+.step p{font-size:13.5px;color:var(--muted);line-height:1.65;}
+
+/* Services */
+.svc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.svc-card{
+  padding:28px;border-radius:14px;
+  background:var(--bg-card);border:1px solid var(--border);
+  transition:all .2s;
+}
+.svc-card:hover{transform:translateY(-3px);border-color:rgba(13,148,136,0.3);box-shadow:0 8px 28px rgba(0,0,0,0.06);}
+.svc-icon{width:38px;height:38px;border-radius:9px;background:var(--teal-lt);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.svc-card h3{font-size:1rem;font-weight:700;color:var(--text);margin-bottom:8px;}
+.svc-card p{font-size:13px;color:var(--muted);line-height:1.65;}
+
+/* CTA */
+.cta-block{
+  border-radius:20px;padding:72px 56px;text-align:center;
+  background:linear-gradient(135deg,#0F2B4C,#0D3330);
+  position:relative;overflow:hidden;
+}
+.cta-block::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 60% 55% at 50% -10%,rgba(13,148,136,0.3),transparent);
+  pointer-events:none;
+}
+.cta-block .sec-label{color:rgba(68,202,162,0.8);}
+.cta-block h2{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-0.5px;color:#FAF8F5;margin-bottom:12px;position:relative;}
+.cta-block h2 strong{color:#44CAA2;}
+.cta-block p{font-size:16px;color:rgba(250,248,245,0.6);margin-bottom:28px;position:relative;}
+
+/* Footer */
+footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65);}
+.footer-inner{max-width:1160px;margin:0 auto;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:40px;}
+.footer-brand .logo{color:#FAF8F5;}
+.footer-brand p{font-size:13px;margin-top:10px;color:rgba(250,248,245,0.5);}
+.footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:14px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:#FAF8F5;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;}
+
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:12px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;background:var(--bg);border-bottom:1px solid var(--border);padding:20px 20px 24px;flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);}
+.mobile-menu a.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff;font-weight:700;text-align:center;border-radius:10px;border-bottom:none;font-size:14px;}
+/* RESPONSIVE */
+@media(max-width:1060px){
+  .hero-content{grid-template-columns:1fr;}
+  .hero-right{display:none;}
+}
+@media(max-width:900px){
+  .svc-grid{grid-template-columns:repeat(2,1fr);}
+}
+@media(max-width:768px){
+  :root{--nav-h:56px;}
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .hero-content,.container,.stats-wrap{padding-left:20px;padding-right:20px;}
+  .steps{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;gap:28px;}
+  footer{padding:40px 20px 24px;}
+  .cta-block{padding:48px 24px;}
+  .stat-cell{padding:18px 16px;}
+  .nav-cta{display:none;}
+  .hamburger{display:flex;}
+}
+@media(max-width:480px){
+  .stats{grid-template-columns:1fr;}
+  .svc-grid{grid-template-columns:1fr;}
+  .hero-actions{flex-direction:column;align-items:flex-start;}
+  .btn-p,.btn-g{width:100%;text-align:center;}
+  .proof{flex-direction:column;align-items:flex-start;gap:8px;}
+  .section,.section-alt{padding:56px 0;}
+  .bubble{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html"><img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:56px;width:auto;display:block;"/></a>
+    <ul class="nav-links">
+      <li><a href="about.html">About</a></li>
+      <li class="nav-has-dropdown">
+        <a href="services.html">Services</a>
+        <div class="nav-dropdown">
+          <a href="services/operations.html">Operations</a>
+          <a href="services/ai-automation.html">AI &amp; Automation</a>
+          <a href="services/reporting-analytics.html">Reporting &amp; Analytics</a>
+          <a href="services/sales-systems.html">Sales Systems</a>
+          <a href="services/marketing.html">Marketing</a>
+          <a href="services/customer-experience.html">Customer Experience</a>
+          <a href="services/team-hr.html">Team &amp; HR</a>
+          <a href="services/financial-efficiency.html">Financial Efficiency</a>
+          <a href="services/growth-scaling.html">Growth &amp; Scaling</a>
+        </div>
+      </li>
+      <li><a href="blog.html">Insights</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="assessment.html" class="nav-cta">Free Assessment</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="about.html">About</a>
+  <a href="services.html">Services</a>
+  <a href="blog.html">Insights</a>
+  <a href="contact.html">Contact</a>
+  <a href="assessment.html" class="mobile-cta">Free Assessment</a>
+</div>
+
+<!-- HERO -->
+<div class="hero" id="heroSection">
+  <div class="hero-mesh"></div>
+  <canvas id="falconBgCanvas"></canvas>
+
+  <div class="hero-content">
+    <div class="hero-left">
+      <div class="hero-badge">
+        <div class="badge-dot"></div>
+        <span class="badge-text">100+ Businesses Helped</span>
+      </div>
+      <h1>Run a Bigger Business<br><strong>With the Same Team</strong></h1>
+      <p class="hero-sub">We improve your operations, sales, marketing, and systems with the right mix of strategy, automation, and AI so you grow without adding more staff, more chaos, or more overhead.</p>
+      <div class="hero-actions">
+        <a href="assessment.html" class="btn-p">Start Free Assessment</a>
+        <a href="services.html" class="btn-g">View Services</a>
+      </div>
+      <div class="proof">
+        <div class="avatars">
+          <div class="av">JR</div><div class="av">SM</div><div class="av">KL</div><div class="av">PD</div>
+        </div>
+        <p class="proof-text"><strong>100+ businesses</strong> improved their operations this year</p>
+      </div>
+    </div>
+
+    <div class="hero-right" id="heroRightCol">
+      <div class="falcon-frame">
+        <div class="f-ring"></div>
+        <div class="f-ring-2"></div>
+        <canvas id="falconColCanvas" width="340" height="340"></canvas>
+        <div class="bubble tl">
+          <div class="b-num">$240K+</div>
+          <div class="b-lbl">Avg. annual savings</div>
+        </div>
+        <div class="bubble br">
+          <div class="b-num">9</div>
+          <div class="b-lbl">Dimensions assessed</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="stats-wrap">
+    <div class="stats">
+      <div class="stat-cell"><div class="stat-n">$240K+</div><div class="stat-l">Average annual savings vs. hiring in-house</div></div>
+      <div class="stat-cell"><div class="stat-n">100+</div><div class="stat-l">Small businesses improved</div></div>
+      <div class="stat-cell"><div class="stat-n">10 min</div><div class="stat-l">Free assessment, report within 24 hours</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="section">
+  <div class="container">
+    <div class="sec-label">How It Works</div>
+    <div class="sec-title">Three Steps to a Smarter Business</div>
+    <p class="sec-sub">No long contracts, no generic advice. A clear picture of where you are and exactly what to fix first.</p>
+    <div class="steps">
+      <div class="step">
+        <div class="step-n">Step 01</div>
+        <div class="step-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
+        </div>
+        <h3>Take the Assessment</h3>
+        <p>Answer a few questions about your business. It takes about 10 minutes. The questions adapt based on your answers so you only see what is relevant to you.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">Step 02</div>
+        <div class="step-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+        </div>
+        <h3>Get Your Report</h3>
+        <p>We review your answers and send a personalized report within 24 hours showing exactly where your business has gaps and where the biggest opportunities are.</p>
+      </div>
+      <div class="step">
+        <div class="step-n">Step 03</div>
+        <div class="step-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+        </div>
+        <h3>Build Your Plan</h3>
+        <p>We show you the highest-impact fixes and work with you to put them in place, or hand you a clear roadmap you can act on immediately.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<div class="section-alt">
+  <div class="container">
+    <div class="sec-label">What We Do</div>
+    <div class="sec-title" style="margin-bottom:36px;">9 Areas We Improve in Your Business</div>
+    <div class="svc-grid">
+      <a href="services/operations.html" class="svc-card" style="text-decoration:none;color:inherit;">
+        <div class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v2"/></svg></div>
+        <h3>Operations</h3>
+        <p>We map how your business runs day to day and fix the gaps, bottlenecks, and inefficiencies slowing your team down.</p>
+      </a>
+      <a href="services/ai-automation.html" class="svc-card" style="text-decoration:none;color:inherit;">
+        <div class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg></div>
+        <h3>AI &amp; Automation</h3>
+        <p>We replace repetitive manual work with smart systems that run 24/7 so your team can focus on what actually grows the business.</p>
+      </a>
+      <a href="services/reporting-analytics.html" class="svc-card" style="text-decoration:none;color:inherit;">
+        <div class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+        <h3>Reporting &amp; Analytics</h3>
+        <p>We give you a clear view of your business with simple reports and dashboards so you can make decisions based on real numbers.</p>
+      </a>
+      <a href="services/sales-systems.html" class="svc-card" style="text-decoration:none;color:inherit;">
+        <div class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div>
+        <h3>Sales Systems</h3>
+        <p>We organize your pipeline, follow-ups, and sales process so fewer leads are lost and more opportunities turn into revenue.</p>
+      </a>
+      <a href="services/marketing.html" class="svc-card" style="text-decoration:none;color:inherit;">
+        <div class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
+        <h3>Marketing</h3>
+        <p>We build systems that generate leads, track results, and show what is actually working so your marketing becomes predictable and scalable.</p>
+      </a>
+      <a href="services/customer-experience.html" class="svc-card" style="text-decoration:none;color:inherit;">
+        <div class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg></div>
+        <h3>Customer Experience</h3>
+        <p>We improve every step of the customer journey from first contact to repeat business so clients stay longer and refer more.</p>
+      </a>
+      <a href="services/team-hr.html" class="svc-card" style="text-decoration:none;color:inherit;">
+        <div class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></svg></div>
+        <h3>Team &amp; HR</h3>
+        <p>We help you create clear roles, workflows, and accountability so your team works better without constant oversight.</p>
+      </a>
+      <a href="services/financial-efficiency.html" class="svc-card" style="text-decoration:none;color:inherit;">
+        <div class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 000 7h5a3.5 3.5 0 010 7H6"/></svg></div>
+        <h3>Financial Efficiency</h3>
+        <p>We identify where money, time, and resources are being wasted then help you improve profitability without hurting growth.</p>
+      </a>
+      <a href="services/growth-scaling.html" class="svc-card" style="text-decoration:none;color:inherit;">
+        <div class="svc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></div>
+        <h3>Growth &amp; Scaling</h3>
+        <p>We build the structure, systems, and processes your business needs to grow without more chaos, burnout, or loss of control.</p>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="section">
+  <div class="container">
+    <div class="cta-block">
+      <div class="sec-label">Ready to Start</div>
+      <h2>Find Out Where Your<br><strong>Business Can Improve</strong></h2>
+      <p>Free. No credit card. You will have your personalized report within 24 hours.</p>
+      <a href="assessment.html" class="btn-p" style="display:inline-block;position:relative;">Start Free Assessment</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo" style="color:#FAF8F5;display:block;margin-bottom:10px;">Nexvora<span style="color:#44CAA2;">.</span></a>
+        <p>AI-powered operational consulting for small and growing businesses.</p>
+        <p style="margin-top:8px;font-size:13px;"><a href="mailto:info@nexvorasystems.us" style="color:rgba(250,248,245,0.5);text-decoration:none;">info@nexvorasystems.us</a></p>
+      </div>
+      <div>
+        <p class="footer-col-title">Company</p>
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <a href="services.html">Services</a>
+          <a href="blog.html">Insights</a>
+          <a href="contact.html">Contact</a>
+          <a href="assessment.html" style="color:#44CAA2;">Free Assessment</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Services</p>
+        <div class="footer-links">
+          <a href="services/operations.html">Operations</a>
+          <a href="services/ai-automation.html">AI &amp; Automation</a>
+          <a href="services/reporting-analytics.html">Reporting &amp; Analytics</a>
+          <a href="services/sales-systems.html">Sales Systems</a>
+          <a href="services/marketing.html">Marketing</a>
+          <a href="services/customer-experience.html">Customer Experience</a>
+          <a href="services/team-hr.html">Team &amp; HR</a>
+          <a href="services/financial-efficiency.html">Financial Efficiency</a>
+          <a href="services/growth-scaling.html">Growth &amp; Scaling</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span style="color:rgba(250,248,245,0.4);">© 2026 Nexvora Systems LLC. All rights reserved.</span>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <a href="legal/terms.html" style="color:rgba(250,248,245,0.4);text-decoration:none;font-size:12px;">Terms &amp; Conditions</a>
+        <a href="legal/privacy.html" style="color:rgba(250,248,245,0.4);text-decoration:none;font-size:12px;">Privacy Policy</a>
+        <a href="legal/cookies.html" style="color:rgba(250,248,245,0.4);text-decoration:none;font-size:12px;">Cookie Policy</a>
+        <a href="legal/disclaimer.html" style="color:rgba(250,248,245,0.4);text-decoration:none;font-size:12px;">Disclaimer</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- FALCON ENGINE -->
+<script>
+const v3={
+  add:(a,b)=>[a[0]+b[0],a[1]+b[1],a[2]+b[2]],
+  sub:(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]],
+  mul:(v,s)=>[v[0]*s,v[1]*s,v[2]*s],
+  dot:(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2],
+  crs:(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],
+  nrm:v=>{const l=Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);return l>.001?[v[0]/l,v[1]/l,v[2]/l]:[0,1,0];}
+};
+const mxv=(m,v)=>[m[0]*v[0]+m[1]*v[1]+m[2]*v[2],m[3]*v[0]+m[4]*v[1]+m[5]*v[2],m[6]*v[0]+m[7]*v[1]+m[8]*v[2]];
+function mkProj(W,H,FOV,CAM){return p=>{const z=p[2]+CAM;if(z<.8)return null;return[W/2+p[0]*FOV/z,H/2+p[1]*FOV/z,z];};}
+function flap(base,section,phase){
+  const AMP=[0.2,1.8,3.8,6.2,5.0],LAG=[0,.22,.44,.68,.56];
+  const p=phase-LAG[section],raw=Math.sin(p);
+  return base+(raw>0?raw*1.25:raw*0.78)*AMP[section];
+}
+function buildVerts(fp){
+  return[
+    [0,-9.5,2.2],[0.4,-8,1.2],[-0.4,-8,1.2],[0,-7.2,0],[0,-5.5,-.3],
+    [0,-3,-.5],[0,-.5,-.4],[0,2.8,0],[0,6.2,.3],[0,9,.3],
+    [-1.8,13.8,-.9],[1.8,13.8,-.9],
+    [-2.8,flap(-1.4,0,fp),0],[-6,flap(-.2,1,fp),.5],[-9.5,flap(1,1,fp),.9],
+    [-13.5,flap(2.2,2,fp),1.5],[-17,flap(3.6,3,fp),2],[-14.8,flap(7.8,4,fp),.9],
+    [-10.5,flap(6.2,2,fp)*.52+1.3,.6],[-6,flap(4.8,1,fp)*.38+.7,.35],[-2.5,flap(3.2,0,fp)*.14+.5,0],
+    [2.8,flap(-1.4,0,fp),0],[6,flap(-.2,1,fp),.5],[9.5,flap(1,1,fp),.9],
+    [13.5,flap(2.2,2,fp),1.5],[17,flap(3.6,3,fp),2],[14.8,flap(7.8,4,fp),.9],
+    [10.5,flap(6.2,2,fp)*.52+1.3,.6],[6,flap(4.8,1,fp)*.38+.7,.35],[2.5,flap(3.2,0,fp)*.14+.5,0],
+  ];
+}
+const FACES=[
+  [0,1,3,4],[0,2,3,4],[1,2,3,4],
+  [3,4,5,0],[4,5,6,0],[5,6,12,0],[5,6,21,0],
+  [6,7,20,0],[6,7,29,0],[7,8,20,0],[7,8,29,0],[7,8,9,0],
+  [9,10,11,3],[8,9,10,3],[8,9,11,3],
+  [12,13,20,1],[13,14,19,1],[14,15,18,1],[15,16,18,1],
+  [13,19,20,1],[14,18,19,1],[15,16,17,1],[16,17,18,1],
+  [12,13,14,2],[12,14,15,2],[12,15,16,2],
+  [6,12,20,1],[7,12,20,1],
+  [21,22,29,1],[22,23,28,1],[23,24,27,1],[24,25,27,1],
+  [22,28,29,1],[23,27,28,1],[24,25,26,1],[25,26,27,1],
+  [21,22,23,2],[21,23,24,2],[21,24,25,2],
+  [6,21,29,1],[7,21,29,1],
+];
+const LIGHT=v3.nrm([.35,-.68,.65]);
+function faceLighting(w0,w1,w2){
+  const n=v3.nrm(v3.crs(v3.sub(w1,w0),v3.sub(w2,w0)));
+  return Math.max(.05,Math.min(1,v3.dot(n,LIGHT)*.8+.45));
+}
+function flightPath(t,sx,sy){
+  return[sx*.95*Math.sin(t),sy*.22*Math.sin(2.4*t+.5)+sy*.08*Math.sin(t*.65),sy*.25*Math.sin(2*t+1.3)*.5];
+}
+function drawFalcon(ctx,W,H,T,sc,alpha,isLight){
+  const pj=mkProj(W,H,420,65);
+  const pos=flightPath(T,W*.5,H*.5);
+  const posF=flightPath(T+.045,W*.5,H*.5);
+  const posB=flightPath(T-.045,W*.5,H*.5);
+  const tang=v3.nrm(v3.sub(posF,pos));
+  const lat=(posF[0]-posB[0])*.85;
+  const fwd=tang,wUp=[0,-1,0];
+  const r0=v3.nrm(v3.crs(fwd,wUp)),u0=v3.nrm(v3.crs(r0,fwd));
+  const bk=-lat*.52;
+  const cB=Math.cos(bk),sB=Math.sin(bk);
+  const rgt=v3.add(v3.mul(r0,cB),v3.mul(u0,-sB));
+  const up=v3.add(v3.mul(r0,sB),v3.mul(u0,cB));
+  const M=[rgt[0],rgt[1],rgt[2],up[0],up[1],up[2],fwd[0],fwd[1],fwd[2]];
+  const fp=T*(3+Math.abs(tang[1])*3.5);
+  const localV=buildVerts(fp);
+  const worldV=localV.map(v=>{const s=v3.mul(v,sc/17);return v3.add(mxv(M,s),pos);});
+  const scrV=worldV.map(pj);
+  const [fr,fg,fb]=isLight?[13,148,136]:[45,212,191];
+  const [hr,hg,hb]=isLight?[0,90,80]:[153,246,228];
+  const ready=FACES.map(([i0,i1,i2,cg])=>{
+    const s0=scrV[i0],s1=scrV[i1],s2=scrV[i2];
+    if(!s0||!s1||!s2)return null;
+    const avgZ=(s0[2]+s1[2]+s2[2])/3;
+    const shade=faceLighting(worldV[i0],worldV[i1],worldV[i2]);
+    const depth=Math.max(0,Math.min(1,(avgZ-30)/140));
+    return{s0,s1,s2,cg,shade,depth,avgZ};
+  }).filter(Boolean);
+  ready.sort((a,b)=>b.avgZ-a.avgZ);
+  ctx.save();
+  ctx.globalAlpha=alpha;
+  ready.forEach(({s0,s1,s2,cg,shade,depth})=>{
+    const da=Math.max(0,1-depth*.45);
+    ctx.beginPath();
+    ctx.moveTo(s0[0],s0[1]);ctx.lineTo(s1[0],s1[1]);ctx.lineTo(s2[0],s2[1]);ctx.closePath();
+    if(cg===4){
+      ctx.save();ctx.shadowBlur=16*shade;ctx.shadowColor=`rgba(${fr},${fg},${fb},.8)`;
+      ctx.fillStyle=`rgb(${fr},${fg},${fb})`;ctx.globalAlpha=alpha*da;ctx.fill();ctx.restore();
+      return;
+    }
+    const fcx=(s0[0]+s1[0]+s2[0])/3,fcy=(s0[1]+s1[1]+s2[1])/3;
+    const gl=38*shade;
+    const grd=ctx.createLinearGradient(fcx-gl*.3,fcy-.5*gl,fcx+gl*.3,fcy+gl*.5);
+    const baseA=([.12,.2,.09,.16])[cg]||.12;
+    const hiA=baseA+shade*([.2,.3,.14,.24])[cg];
+    grd.addColorStop(0,`rgba(${hr},${hg},${hb},${(hiA*da).toFixed(3)})`);
+    grd.addColorStop(.5,`rgba(${fr},${fg},${fb},${(hiA*.7*da).toFixed(3)})`);
+    grd.addColorStop(1,`rgba(${fr},${fg},${fb},${(baseA*.25*da).toFixed(3)})`);
+    ctx.save();
+    ctx.shadowBlur=24*shade;ctx.shadowColor=`rgba(${fr},${fg},${fb},${(.5*shade*da).toFixed(3)})`;
+    ctx.fillStyle=`rgba(${fr},${fg},${fb},${(baseA*.15*da).toFixed(3)})`;ctx.fill();ctx.restore();
+    ctx.save();ctx.fillStyle=grd;ctx.fill();ctx.restore();
+    ctx.strokeStyle=`rgba(${hr},${hg},${hb},${((0.2+shade*.5)*da).toFixed(3)})`;
+    ctx.lineWidth=.65;ctx.stroke();
+  });
+  const bc=scrV[7];
+  if(bc){
+    ctx.save();ctx.shadowBlur=18;ctx.shadowColor=`rgba(${fr},${fg},${fb},.9)`;
+    ctx.beginPath();ctx.arc(bc[0],bc[1],1.4,0,Math.PI*2);
+    ctx.fillStyle=`rgba(${hr},${hg},${hb},.95)`;ctx.fill();ctx.restore();
+  }
+  ctx.restore();
+}
+
+const bgCvs=document.getElementById('falconBgCanvas');
+const colCvs=document.getElementById('falconColCanvas');
+const bgCtx=bgCvs.getContext('2d');
+const colCtx=colCvs?colCvs.getContext('2d'):null;
+
+function resizeBg(){
+  const hero=document.getElementById('heroSection');
+  bgCvs.width=hero.offsetWidth;
+  bgCvs.height=hero.offsetHeight;
+}
+resizeBg();
+window.addEventListener('resize',resizeBg);
+
+let T=0;
+(function loop(){
+  requestAnimationFrame(loop);
+  T+=0.0028;
+  bgCtx.clearRect(0,0,bgCvs.width,bgCvs.height);
+  drawFalcon(bgCtx,bgCvs.width,bgCvs.height,T,Math.min(bgCvs.width,bgCvs.height)/40,0.12,true);
+  if(colCtx){colCtx.clearRect(0,0,340,340);drawFalcon(colCtx,340,340,T*1.05,340/52,0.85,true);}
+})();
+document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});
+</script>
+</body>
+</html>

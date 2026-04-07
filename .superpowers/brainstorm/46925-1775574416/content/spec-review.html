@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Assessment Redesign — Spec Review</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:#FAF8F5;color:#1A1A2E;padding:40px 20px;}
+.wrap{max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:24px;}
+.header{background:linear-gradient(135deg,#0F2B4C,#0D9488);border-radius:16px;padding:28px 32px;color:#fff;}
+.header h1{font-size:22px;font-weight:800;margin-bottom:6px;}
+.header p{font-size:13px;color:rgba(255,255,255,0.6);}
+.section{background:#fff;border:1px solid #E2DDD5;border-radius:14px;padding:24px 28px;}
+.section-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#0D9488;margin-bottom:16px;}
+h3{font-size:14px;font-weight:700;color:#1A1A2E;margin-bottom:10px;margin-top:18px;}
+h3:first-child{margin-top:0;}
+table{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:12px;}
+th{text-align:left;padding:8px 10px;background:#F0EDE8;color:#1A1A2E;font-weight:700;font-size:11px;text-transform:uppercase;letter-spacing:0.5px;}
+td{padding:8px 10px;border-bottom:1px solid #F0EDE8;color:#4A5568;vertical-align:top;}
+tr:last-child td{border-bottom:none;}
+td:first-child{font-weight:600;color:#1A1A2E;white-space:nowrap;}
+.badge{display:inline-block;padding:3px 9px;border-radius:99px;font-size:11px;font-weight:700;}
+.badge.req{background:#FEE2E2;color:#DC2626;}
+.badge.opt{background:#F0EDE8;color:#718096;}
+.badge.red{background:#FEE2E2;color:#DC2626;}
+.badge.yellow{background:#FEF3C7;color:#D97706;}
+.badge.green{background:#D1FAE5;color:#059669;}
+.badge.chip{background:#EFF6FF;color:#2563EB;}
+.badge.num{background:#F5F3FF;color:#7C3AED;}
+.badge.multi{background:#FDF4FF;color:#9333EA;}
+.flow{display:flex;align-items:center;gap:0;flex-wrap:wrap;margin-bottom:16px;}
+.flow-step{background:#0D9488;color:#fff;font-size:12px;font-weight:700;padding:8px 16px;border-radius:8px;}
+.flow-arrow{font-size:18px;color:#A0ADB8;padding:0 8px;}
+.score-row{display:flex;align-items:center;gap:12px;margin-bottom:8px;}
+.score-label{font-size:13px;font-weight:600;min-width:200px;color:#1A1A2E;}
+.score-bar-wrap{flex:1;height:7px;background:#F0EDE8;border-radius:99px;overflow:hidden;}
+.score-bar{height:100%;border-radius:99px;}
+.score-tag{font-size:11px;font-weight:700;min-width:90px;text-align:right;}
+.formula{background:#1A1A2E;color:#A3E635;font-family:'Courier New',monospace;font-size:12px;border-radius:8px;padding:14px 16px;line-height:1.7;margin:10px 0;}
+.note{background:#F0F9FF;border-left:3px solid #0D9488;border-radius:0 8px 8px 0;padding:12px 16px;font-size:13px;color:#0F2B4C;margin:12px 0;}
+p{font-size:13px;color:#4A5568;line-height:1.7;margin-bottom:10px;}
+ul{padding-left:18px;margin-bottom:10px;}
+li{font-size:13px;color:#4A5568;line-height:1.8;margin-bottom:4px;}
+li strong{color:#1A1A2E;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<div class="header">
+  <h1>Assessment Redesign — Full Spec</h1>
+  <p>Nexvora Systems · nexvorasystems.us · Spec date: April 7, 2026</p>
+</div>
+
+<!-- FLOW -->
+<div class="section">
+  <div class="section-title">Assessment Flow</div>
+  <div class="flow">
+    <div class="flow-step">Contact Info</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">5 Profile Qs</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">10 Diagnostic Qs</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">4 Owner Economics Qs</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">AI generates summary</div>
+    <div class="flow-arrow">→</div>
+    <div class="flow-step">Full Report Page</div>
+  </div>
+  <p>One question at a time. Chip selectors + number inputs. No open-ended text. Each answer is stored in localStorage and passed to the report page on completion.</p>
+</div>
+
+<!-- CONTACT INFO -->
+<div class="section">
+  <div class="section-title">Step 0 — Contact Info</div>
+  <table>
+    <tr><th>Field</th><th>Type</th><th>Required?</th></tr>
+    <tr><td>Full name</td><td>Text</td><td><span class="badge req">Required</span></td></tr>
+    <tr><td>Email address</td><td>Email</td><td><span class="badge req">Required</span></td></tr>
+    <tr><td>Phone number</td><td>Tel</td><td><span class="badge req">Required</span></td></tr>
+    <tr><td>Company name</td><td>Text</td><td><span class="badge opt">Optional</span></td></tr>
+  </table>
+</div>
+
+<!-- PROFILE QUESTIONS -->
+<div class="section">
+  <div class="section-title">Questions 1–5 — Profile (sets up benchmarks)</div>
+  <table>
+    <tr><th>#</th><th>Question</th><th>Input</th></tr>
+    <tr><td>Q1</td><td>What industry is your business in?</td><td><span class="badge chip">Chips ×8</span></td></tr>
+    <tr><td>Q2</td><td>What state is your business based in?</td><td><span class="badge chip">Chips ×50</span></td></tr>
+    <tr><td>Q3</td><td>How long has your business been operating?</td><td><span class="badge chip">Chips ×5</span></td></tr>
+    <tr><td>Q4</td><td>What is your approximate annual revenue?</td><td><span class="badge chip">Chips ×5</span></td></tr>
+    <tr><td>Q5</td><td>How many people work in your business (including you)?</td><td><span class="badge chip">Chips ×5</span></td></tr>
+  </table>
+  <p><strong>Industries supported:</strong> Home Services · Construction · Food & Beverage · Retail · Health & Wellness · Professional Services · Auto Services · Real Estate</p>
+</div>
+
+<!-- DIAGNOSTIC QUESTIONS -->
+<div class="section">
+  <div class="section-title">Questions 6–15 — Diagnostic (scores 9 business areas)</div>
+  <table>
+    <tr><th>#</th><th>Area</th><th>Question</th><th>Input</th></tr>
+    <tr><td>Q6</td><td>Operations</td><td>Do you have documented processes for how your business runs?</td><td><span class="badge chip">Chips ×5</span></td></tr>
+    <tr><td>Q7</td><td>Customer Exp. (½)</td><td>What % of your revenue comes from repeat customers?</td><td><span class="badge num">Number %</span></td></tr>
+    <tr><td>Q8</td><td>Sales</td><td>What happens after someone shows interest but doesn't buy immediately?</td><td><span class="badge chip">Chips ×4</span></td></tr>
+    <tr><td>Q9</td><td>Marketing</td><td>How do most new customers find you?</td><td><span class="badge chip">Chips ×5</span></td></tr>
+    <tr><td>Q10</td><td>Customer Exp. (½)</td><td>What is your average online review rating?</td><td><span class="badge chip">Chips ×5</span></td></tr>
+    <tr><td>Q11</td><td>AI & Automation</td><td>Which tasks does your team still do manually every week?</td><td><span class="badge multi">Multi-select</span></td></tr>
+    <tr><td>Q12</td><td>Team & HR</td><td>How do you manage team performance?</td><td><span class="badge chip">Chips ×5</span></td></tr>
+    <tr><td>Q13</td><td>Financial</td><td>How often do you review your business financials?</td><td><span class="badge chip">Chips ×5</span></td></tr>
+    <tr><td>Q14</td><td>Reporting</td><td>Do you track key business numbers in a dashboard or report?</td><td><span class="badge chip">Chips ×5</span></td></tr>
+    <tr><td>Q15</td><td>Growth (context)</td><td>What is your primary goal for the next 12 months?</td><td><span class="badge chip">Chips ×6</span></td></tr>
+  </table>
+  <div class="note">Customer Experience score = average of Q7 score + Q10 score. Growth (Q15) is not scored — it personalises the recommendations.</div>
+</div>
+
+<!-- OWNER ECONOMICS -->
+<div class="section">
+  <div class="section-title">Questions 16–19 — Owner Economics</div>
+  <table>
+    <tr><th>#</th><th>Question</th><th>Input</th></tr>
+    <tr><td>Q16</td><td>How much do you pay yourself per month?</td><td><span class="badge chip">Chips ×6</span></td></tr>
+    <tr><td>Q17</td><td>How many hours per week do you personally work in the business?</td><td><span class="badge num">Number</span></td></tr>
+    <tr><td>Q18</td><td>When do you typically work?</td><td><span class="badge multi">Multi-select</span></td></tr>
+    <tr><td>Q19</td><td>What do your team members earn on average per month?</td><td><span class="badge chip">Chips ×5</span></td></tr>
+  </table>
+  <div class="formula">owner_hourly = owner_monthly_pay ÷ (weekly_hours × 4.33)
+team_hourly  = team_monthly_pay ÷ (45 × 4.33)
+difference   = ((team_hourly - owner_hourly) / owner_hourly) × 100%</div>
+  <p>Result shown as: <em>"Your team earns X% more per hour than you — with zero risk, zero liability, and no weekends."</em> Always ends with the "this is just the math" closing paragraph.</p>
+</div>
+
+<!-- SCORES -->
+<div class="section">
+  <div class="section-title">Score Thresholds</div>
+  <div style="display:flex;gap:12px;margin-bottom:16px;flex-wrap:wrap;">
+    <div style="flex:1;min-width:160px;background:#D1FAE5;border-radius:10px;padding:14px;text-align:center;">
+      <div style="font-size:20px;font-weight:800;color:#059669;">70–100</div>
+      <div style="font-size:12px;font-weight:700;color:#059669;margin-top:4px;">STRONG</div>
+      <div style="font-size:12px;color:#4A5568;margin-top:4px;">Positive note only. No deep analysis.</div>
+    </div>
+    <div style="flex:1;min-width:160px;background:#FEF3C7;border-radius:10px;padding:14px;text-align:center;">
+      <div style="font-size:20px;font-weight:800;color:#D97706;">45–69</div>
+      <div style="font-size:12px;font-weight:700;color:#D97706;margin-top:4px;">NEEDS WORK</div>
+      <div style="font-size:12px;color:#4A5568;margin-top:4px;">Issue + why it matters + 2 fix paths.</div>
+    </div>
+    <div style="flex:1;min-width:160px;background:#FEE2E2;border-radius:10px;padding:14px;text-align:center;">
+      <div style="font-size:20px;font-weight:800;color:#DC2626;">0–44</div>
+      <div style="font-size:12px;font-weight:700;color:#DC2626;margin-top:4px;">FIX FIRST</div>
+      <div style="font-size:12px;color:#4A5568;margin-top:4px;">Issue + why + 3 fix paths (time/money/scale).</div>
+    </div>
+  </div>
+  <p>Areas sorted in report: red first → yellow → green. ALL areas shown. No area is hidden.</p>
+</div>
+
+<!-- REPORT SECTIONS -->
+<div class="section">
+  <div class="section-title">Report Page — 6 Sections</div>
+  <table>
+    <tr><th>#</th><th>Section</th><th>Contents</th></tr>
+    <tr><td>1</td><td>Header</td><td>Business name, state, industry, team size · Overall score · Industry ranking badge · Priority count</td></tr>
+    <tr><td>2</td><td>Industry Benchmarks</td><td>5-year failure rate · Avg revenue for their size · Avg net margin · AI-generated motivational blockquote</td></tr>
+    <tr><td>3</td><td>Owner Economics</td><td>Owner $/hr vs team $/hr · Hours worked context · % difference · "This is just the math" paragraph</td></tr>
+    <tr><td>4</td><td>Full Area Analysis</td><td>All 9 areas · Red/yellow get deep analysis + fix paths · Green get positive note · AI executive summary at top</td></tr>
+    <tr><td>5</td><td>CTA</td><td>~~$899~~ Complimentary · Countdown to May 1 2026 · Schedule call button · PDF download · Back to home</td></tr>
+    <tr><td>6</td><td>Email confirmation</td><td>"Report sent to [email] · Check your spam folder"</td></tr>
+  </table>
+</div>
+
+<!-- AI + EMAIL + PDF -->
+<div class="section">
+  <div class="section-title">AI · Email · PDF</div>
+  <h3>AI (1 call per assessment)</h3>
+  <ul>
+    <li><strong>Benchmark narrative:</strong> 2–3 sentence motivational blockquote in Section 2</li>
+    <li><strong>Executive summary:</strong> 3–4 sentences at top of Section 4 — what's strong, what's the main risk, what's the priority</li>
+    <li><strong>Fallback:</strong> If AI fails, template text is shown. Report still fully works.</li>
+  </ul>
+  <h3>Email</h3>
+  <ul>
+    <li>Sent automatically when report page loads</li>
+    <li>Subject: "Your Nexvora Business Health Report — [Business Name]"</li>
+    <li>Footer: "Check your spam folder if you don't see this within 5 minutes."</li>
+    <li>API: Resend or SendGrid (confirmed during implementation)</li>
+  </ul>
+  <h3>PDF Download</h3>
+  <ul>
+    <li>Uses browser window.print() with print CSS</li>
+    <li>Hides nav, buttons, countdown timer in print view</li>
+    <li>Page breaks between sections · Footer with logo + date</li>
+  </ul>
+</div>
+
+<!-- CTA OFFER -->
+<div class="section">
+  <div class="section-title">Complimentary Call Offer</div>
+  <div style="background:#0F2B4C;border-radius:12px;padding:20px 24px;color:#fff;text-align:center;">
+    <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#44CAA2;margin-bottom:8px;">LIMITED TIME</div>
+    <div style="display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:6px;">
+      <div style="font-size:15px;color:rgba(255,255,255,0.35);text-decoration:line-through;">$899 / 60 min</div>
+      <div style="font-size:26px;font-weight:800;color:#44CAA2;">Complimentary</div>
+    </div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.5);margin-bottom:4px;">Countdown timer · Expires May 1, 2026</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.4);">After May 1: timer disappears, $899 standard rate shown</div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.4);margin-top:6px;">Call fee credited toward engagement if they sign up</div>
+  </div>
+  <div style="margin-top:12px;font-size:13px;color:#4A5568;">"Schedule Your Complimentary Call" button links to Calendly. URL to be provided — placeholder used until confirmed.</div>
+</div>
+
+</div>
+</body>
+</html>

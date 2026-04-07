@@ -1,0 +1,560 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Nexvora Falcon</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;height:100%;overflow:hidden;background:#04070F;}
+canvas{display:block;position:fixed;inset:0;}
+
+/* HUD */
+.hud{
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  pointer-events:none;z-index:10;
+}
+.maneuver{
+  position:fixed;top:28px;left:50%;transform:translateX(-50%);
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Display','Inter',sans-serif;
+  font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;
+  color:rgba(45,212,191,0.7);
+  padding:6px 20px;
+  border:1px solid rgba(45,212,191,0.15);
+  border-radius:100px;
+  background:rgba(4,7,15,0.6);
+  backdrop-filter:blur(12px);
+  transition:opacity 0.5s,color 0.4s;
+  pointer-events:none;
+}
+
+/* Controls */
+.controls{
+  position:fixed;bottom:28px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:10px;
+  pointer-events:all;
+  z-index:20;
+}
+.ctl{
+  display:flex;align-items:center;gap:7px;
+  font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Inter',sans-serif;
+  font-size:11px;font-weight:600;letter-spacing:0.4px;
+  color:rgba(255,255,255,0.45);
+  padding:7px 16px;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:100px;
+  background:rgba(4,7,15,0.7);
+  backdrop-filter:blur(16px);
+  cursor:pointer;
+  transition:all 0.2s;
+  user-select:none;
+}
+.ctl:hover{color:rgba(45,212,191,0.9);border-color:rgba(45,212,191,0.3);}
+.ctl.on{color:#2DD4BF;border-color:rgba(45,212,191,0.5);background:rgba(45,212,191,0.06);}
+.ctl-dot{width:6px;height:6px;border-radius:50%;background:rgba(45,212,191,0.5);}
+.ctl.on .ctl-dot{background:#2DD4BF;box-shadow:0 0 6px #2DD4BF;}
+
+.speed-row{
+  display:flex;align-items:center;gap:8px;
+  padding:7px 16px;
+  border:1px solid rgba(255,255,255,0.08);
+  border-radius:100px;
+  background:rgba(4,7,15,0.7);
+  backdrop-filter:blur(16px);
+}
+.speed-row label{font-family:-apple-system,BlinkMacSystemFont,sans-serif;font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.25);}
+input[type=range]{
+  width:72px;height:2px;appearance:none;background:rgba(255,255,255,0.1);
+  border-radius:2px;outline:none;cursor:pointer;
+}
+input[type=range]::-webkit-slider-thumb{appearance:none;width:12px;height:12px;border-radius:50%;background:#2DD4BF;box-shadow:0 0 8px rgba(45,212,191,0.6);}
+
+/* Light mode overrides */
+body.light{background:#F5F5F7;}
+body.light .maneuver{color:rgba(13,148,136,0.8);border-color:rgba(13,148,136,0.2);background:rgba(245,245,247,0.75);}
+body.light .ctl{color:rgba(0,0,0,0.45);border-color:rgba(0,0,0,0.1);background:rgba(245,245,247,0.8);}
+body.light .ctl:hover{color:#0D9488;border-color:rgba(13,148,136,0.35);}
+body.light .ctl.on{color:#0D9488;border-color:rgba(13,148,136,0.4);background:rgba(13,148,136,0.06);}
+body.light .speed-row{background:rgba(245,245,247,0.8);border-color:rgba(0,0,0,0.1);}
+body.light .speed-row label{color:rgba(0,0,0,0.3);}
+body.light input[type=range]{background:rgba(0,0,0,0.1);}
+body.light input[type=range]::-webkit-slider-thumb{background:#0D9488;box-shadow:0 0 8px rgba(13,148,136,0.5);}
+</style>
+</head>
+<body>
+
+<canvas id="c"></canvas>
+
+<div class="maneuver" id="mvLabel">Soaring</div>
+
+<div class="controls">
+  <div class="ctl" id="ctlBg" onclick="toggleBg()">
+    <div class="ctl-dot"></div>Dark
+  </div>
+  <div class="ctl" id="ctlTrail" onclick="toggleTrail()">
+    <div class="ctl-dot"></div>Trail
+  </div>
+  <div class="ctl" id="ctlParticles" onclick="toggleParticles()">
+    <div class="ctl-dot"></div>Particles
+  </div>
+  <div class="ctl" id="ctlSize" onclick="toggleSize()">
+    <div class="ctl-dot"></div>Size
+  </div>
+  <div class="speed-row">
+    <label>Speed</label>
+    <input type="range" id="spd" min="15" max="220" value="75"
+      oninput="speed=this.value/100"/>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════════════
+//  NEXVORA FALCON — Premium 3D Crystal Flight Renderer
+//  Apple-quality lighting · Gradient facets · Glow · Particles
+// ═══════════════════════════════════════════════════════════════
+
+const C  = document.getElementById('c');
+const cx = C.getContext('2d');
+let W, H;
+const rsz = () => { W = C.width = innerWidth; H = C.height = innerHeight; };
+rsz(); addEventListener('resize', rsz);
+
+// ── PALETTE ──────────────────────────────────────────────────
+const P = {
+  dark: {
+    bg:     '#04070F',
+    fill:   [45, 212, 191],   // #2DD4BF
+    hi:     [153, 246, 228],  // #99F6E4 bright edge
+    shadow: [13, 94, 84],     // deep teal
+    glow:   'rgba(45,212,191,',
+    stroke: 'rgba(153,246,228,',
+    beak:   '#2DD4BF',
+  },
+  light: {
+    bg:     '#F5F5F7',
+    fill:   [13, 148, 136],   // #0D9488
+    hi:     [2, 82, 75],      // dark teal
+    shadow: [1, 50, 46],
+    glow:   'rgba(13,148,136,',
+    stroke: 'rgba(0,100,90,',
+    beak:   '#0D9488',
+  }
+};
+let isDark=true, trail=false, particles=true, bigMode=false, speed=0.75;
+
+// ── 3D MATH ──────────────────────────────────────────────────
+const v3 = {
+  add:  (a,b) => [a[0]+b[0],a[1]+b[1],a[2]+b[2]],
+  sub:  (a,b) => [a[0]-b[0],a[1]-b[1],a[2]-b[2]],
+  mul:  (v,s) => [v[0]*s,v[1]*s,v[2]*s],
+  dot:  (a,b) => a[0]*b[0]+a[1]*b[1]+a[2]*b[2],
+  crs:  (a,b) => [a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]],
+  len:  v => Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]),
+  nrm:  v => { const l=Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]); return l>.001?[v[0]/l,v[1]/l,v[2]/l]:[0,1,0]; },
+};
+// Apply row-major 3×3 matrix to vec3
+const mxv = (m,v) => [
+  m[0]*v[0]+m[1]*v[1]+m[2]*v[2],
+  m[3]*v[0]+m[4]*v[1]+m[5]*v[2],
+  m[6]*v[0]+m[7]*v[1]+m[8]*v[2]
+];
+// Perspective projection
+function pj(p) {
+  const FOV=440, CAM=68;
+  const z = p[2]+CAM; if(z<.8) return null;
+  return [W/2+p[0]*FOV/z, H/2+p[1]*FOV/z, z];
+}
+
+// ── FALCON GEOMETRY ──────────────────────────────────────────
+// Realistic wing flap: asymmetric (down=power, up=recovery)
+// section: 0=shoulder 1=elbow 2=wrist 3=primary-tip 4=secondary-tip
+function flap(base, section, phase) {
+  const AMP = [0.2, 1.8, 3.8, 6.2, 5.0];
+  const LAG = [0.0, 0.22, 0.44, 0.68, 0.56];
+  const p   = phase - LAG[section];
+  const raw = Math.sin(p);
+  // Downstroke slightly stronger
+  const pw  = raw > 0 ? raw * 1.25 : raw * 0.78;
+  return base + pw * AMP[section];
+}
+
+function buildVerts(fp) {
+  return [
+    // ── BODY (0-11) ──
+    [ 0.0, -9.5,  2.2],  // 0  beak-point
+    [ 0.4, -8.0,  1.2],  // 1  beak-r
+    [-0.4, -8.0,  1.2],  // 2  beak-l
+    [ 0.0, -7.2,  0.0],  // 3  forehead
+    [ 0.0, -5.5, -0.3],  // 4  crown
+    [ 0.0, -3.0, -0.5],  // 5  nape
+    [ 0.0, -0.5, -0.4],  // 6  upper-back
+    [ 0.0,  2.8,  0.0],  // 7  mid-body
+    [ 0.0,  6.2,  0.3],  // 8  lower-body
+    [ 0.0,  9.0,  0.3],  // 9  rump
+    [-1.8, 13.8, -0.9],  // 10 tail-L
+    [ 1.8, 13.8, -0.9],  // 11 tail-R
+
+    // ── LEFT WING (12-20) ──
+    [-2.8, flap(-1.4,0,fp), 0.0],               // 12 L-shoulder-front
+    [-6.0, flap(-0.2,1,fp), 0.5],               // 13 L-inner-elbow
+    [-9.5, flap( 1.0,1,fp), 0.9],               // 14 L-elbow
+    [-13.5,flap( 2.2,2,fp), 1.5],               // 15 L-wrist
+    [-17.0,flap( 3.6,3,fp), 2.0],               // 16 L-primary-tip
+    [-14.8,flap( 7.8,4,fp), 0.9],               // 17 L-secondary-tip
+    [-10.5,flap( 6.2,2,fp)*0.52+1.3, 0.6],      // 18 L-trailing-outer
+    [- 6.0,flap( 4.8,1,fp)*0.38+0.7, 0.35],     // 19 L-trailing-inner
+    [- 2.5,flap( 3.2,0,fp)*0.14+0.5, 0.0],      // 20 L-wing-root-back
+
+    // ── RIGHT WING (21-29, mirror of left) ──
+    [ 2.8, flap(-1.4,0,fp), 0.0],               // 21 R-shoulder-front
+    [ 6.0, flap(-0.2,1,fp), 0.5],               // 22 R-inner-elbow
+    [ 9.5, flap( 1.0,1,fp), 0.9],               // 23 R-elbow
+    [13.5, flap( 2.2,2,fp), 1.5],               // 24 R-wrist
+    [17.0, flap( 3.6,3,fp), 2.0],               // 25 R-primary-tip
+    [14.8, flap( 7.8,4,fp), 0.9],               // 26 R-secondary-tip
+    [10.5, flap( 6.2,2,fp)*0.52+1.3, 0.6],      // 27 R-trailing-outer
+    [ 6.0, flap( 4.8,1,fp)*0.38+0.7, 0.35],     // 28 R-trailing-inner
+    [ 2.5, flap( 3.2,0,fp)*0.14+0.5, 0.0],      // 29 R-wing-root-back
+  ];
+}
+
+// Faces: [v0,v1,v2, group]
+// Group: 0=body  1=wing-upper  2=wing-lower  3=tail  4=beak
+const FACES = [
+  // Beak
+  [0,1,3,4],[0,2,3,4],[1,2,3,4],
+  // Head → neck
+  [3,4,5,0],[4,5,6,0],
+  // Neck → shoulders
+  [5,6,12,0],[5,6,21,0],
+  // Upper back → wing roots
+  [6,7,20,0],[6,7,29,0],
+  // Mid body
+  [7,8,20,0],[7,8,29,0],
+  [8,9,20,0],[8,9,29,0],
+  [7,8,9,0],
+  // Tail
+  [9,10,11,3],[8,9,10,3],[8,9,11,3],
+  // Left wing upper — 8 facets
+  [12,13,20,1],[13,14,19,1],[14,15,18,1],[15,16,18,1],
+  [13,19,20,1],[14,18,19,1],[15,16,17,1],[16,17,18,1],
+  // Left wing lower (slight underside tilt)
+  [12,13,14,2],[12,14,15,2],[12,15,16,2],
+  // Left wing root to body
+  [6,12,20,1],[7,12,20,1],
+  // Right wing upper — mirror
+  [21,22,29,1],[22,23,28,1],[23,24,27,1],[24,25,27,1],
+  [22,28,29,1],[23,27,28,1],[24,25,26,1],[25,26,27,1],
+  // Right wing lower
+  [21,22,23,2],[21,23,24,2],[21,24,25,2],
+  // Right wing root to body
+  [6,21,29,1],[7,21,29,1],
+];
+
+// ── LIGHT ────────────────────────────────────────────────────
+const LIGHT = v3.nrm([0.35, -0.68, 0.65]);
+
+function faceLighting(w0,w1,w2) {
+  const n = v3.nrm(v3.crs(v3.sub(w1,w0),v3.sub(w2,w0)));
+  const d = v3.dot(n, LIGHT);
+  return { shade: Math.max(0.05, Math.min(1, d*0.8+0.45)), front: d > 0 };
+}
+
+// ── FLIGHT PATH ──────────────────────────────────────────────
+function path(t) {
+  const s = Math.min(W,H) * 0.25;
+  return [
+    s * 1.05 * Math.sin(t),
+    s * 0.25 * Math.sin(2.4*t + 0.5) + s*0.10*Math.sin(t*0.65),
+    s * 0.28 * Math.sin(2.0*t + 1.3) * 0.55,
+  ];
+}
+
+// ── PARTICLE SYSTEM ──────────────────────────────────────────
+const PARTS = [];
+function spawnParticle(sx, sy, color) {
+  PARTS.push({
+    x:sx, y:sy,
+    vx:(Math.random()-.5)*1.8,
+    vy:(Math.random()-.5)*1.8,
+    r: Math.random()*1.8+0.4,
+    life:1.0, color
+  });
+}
+function tickParticles(ctx, isDark) {
+  for(let i=PARTS.length-1;i>=0;i--) {
+    const p=PARTS[i];
+    p.x+=p.vx; p.y+=p.vy;
+    p.vx*=0.94; p.vy*=0.94;
+    p.life-=0.032;
+    if(p.life<=0){PARTS.splice(i,1);continue;}
+    const a = p.life*0.75;
+    cx.beginPath();
+    cx.arc(p.x, p.y, p.r*p.life, 0, Math.PI*2);
+    cx.fillStyle = isDark?`rgba(153,246,228,${a})`:`rgba(13,148,136,${a})`;
+    cx.fill();
+  }
+  if(PARTS.length>320) PARTS.splice(0, PARTS.length-320);
+}
+
+// ── RENDER HELPERS ───────────────────────────────────────────
+// Draw a triangle with premium gradient fill + glow + crisp edge
+function drawFace(s0,s1,s2, group, shade, depth, pal, isBeak) {
+  const alpha = Math.max(0, 1 - depth*0.45);
+
+  cx.beginPath();
+  cx.moveTo(s0[0],s0[1]);
+  cx.lineTo(s1[0],s1[1]);
+  cx.lineTo(s2[0],s2[1]);
+  cx.closePath();
+
+  if(isBeak) {
+    // Solid beak: metallic teal
+    cx.save();
+    cx.shadowBlur = 18*shade;
+    cx.shadowColor = pal.glow+'0.8)';
+    cx.fillStyle = pal.beak;
+    cx.globalAlpha = alpha;
+    cx.fill();
+    cx.restore();
+    return;
+  }
+
+  // ── Gradient fill (light corner → shadow corner) ──
+  const fcx = (s0[0]+s1[0]+s2[0])/3;
+  const fcy = (s0[1]+s1[1]+s2[1])/3;
+  const gl  = 40 * shade;
+  const grd = cx.createLinearGradient(fcx-gl*.35, fcy-gl*.55, fcx+gl*.35, fcy+gl*.55);
+
+  const [fr,fg,fb] = pal.fill;
+  const [hr,hg,hb] = pal.hi;
+
+  // Group-dependent base opacity
+  const baseA = ([0.14,0.22,0.10,0.18])[group] || 0.14;
+  const hiA   = baseA + shade * ([0.22,0.32,0.16,0.26])[group];
+
+  grd.addColorStop(0, `rgba(${hr},${hg},${hb},${(hiA*alpha).toFixed(3)})`);
+  grd.addColorStop(0.5,`rgba(${fr},${fg},${fb},${(hiA*0.75*alpha).toFixed(3)})`);
+  grd.addColorStop(1, `rgba(${fr},${fg},${fb},${(baseA*0.3*alpha).toFixed(3)})`);
+
+  // ── Bloom / glow pass ──
+  cx.save();
+  cx.shadowBlur  = 28 * shade;
+  cx.shadowColor = pal.glow + (shade*0.55*alpha).toFixed(3) + ')';
+  cx.fillStyle   = `rgba(${fr},${fg},${fb},${(baseA*0.18*alpha).toFixed(3)})`;
+  cx.fill();
+  cx.restore();
+
+  // ── Main fill ──
+  cx.fillStyle = grd;
+  cx.fill();
+
+  // ── Crisp bright edge stroke ──
+  const edgeA = (0.22 + shade*0.55) * alpha;
+  cx.strokeStyle = pal.stroke + edgeA.toFixed(3) + ')';
+  cx.lineWidth   = isDark ? 0.55 : 0.7;
+  cx.stroke();
+}
+
+// ── BACKGROUND ───────────────────────────────────────────────
+function drawBg(pal) {
+  cx.fillStyle = pal.bg;
+  cx.fillRect(0,0,W,H);
+  // Radial glow at center
+  const gr = cx.createRadialGradient(W/2,H/2,0, W/2,H/2, Math.min(W,H)*0.62);
+  gr.addColorStop(0,   isDark?'rgba(45,212,191,0.055)':'rgba(13,148,136,0.055)');
+  gr.addColorStop(0.5, isDark?'rgba(45,212,191,0.018)':'rgba(13,148,136,0.018)');
+  gr.addColorStop(1, 'transparent');
+  cx.fillStyle = gr;
+  cx.fillRect(0,0,W,H);
+  // Concentric rings (very subtle)
+  const ringC = isDark?'rgba(45,212,191,0.018)':'rgba(13,148,136,0.035)';
+  for(let r=100; r<Math.max(W,H)*0.9; r+=110) {
+    cx.beginPath();
+    cx.arc(W/2,H/2,r,0,Math.PI*2);
+    cx.strokeStyle = ringC;
+    cx.lineWidth   = 0.5;
+    cx.stroke();
+  }
+}
+
+// ── TRAIL ────────────────────────────────────────────────────
+const GHOST = []; const GHOST_N = 7;
+
+// ── SMOOTH STATE ─────────────────────────────────────────────
+let sBank=0, sPitch=0;
+
+// ── MANEUVER ─────────────────────────────────────────────────
+let prevMv='', mvTimeout=null;
+function setMv(mv) {
+  if(mv===prevMv) return;
+  prevMv=mv;
+  const el=document.getElementById('mvLabel');
+  el.textContent=mv;
+  el.style.opacity='0';
+  requestAnimationFrame(()=>{ el.style.opacity='1'; });
+}
+function getMv(bank,pitch) {
+  const b=bank*180/Math.PI, p=pitch*180/Math.PI;
+  if(p<-24) return 'Attack Dive';
+  if(p<-11) return 'Diving';
+  if(p> 15) return 'Climbing';
+  if(b<-20) return 'Banking Left';
+  if(b> 20) return 'Banking Right';
+  if(Math.abs(b)<6&&Math.abs(p)<6) return 'Level Flight';
+  return 'Soaring';
+}
+
+// ── MAIN LOOP ────────────────────────────────────────────────
+let T=0;
+function frame() {
+  requestAnimationFrame(frame);
+  T += 0.010 * speed;
+
+  const pal = isDark ? P.dark : P.light;
+  const sc  = (bigMode?1.6:1.0) * Math.min(W,H)/52;
+
+  // ── BG ──
+  if(trail) {
+    cx.fillStyle = isDark?'rgba(4,7,15,0.15)':'rgba(245,245,247,0.15)';
+    cx.fillRect(0,0,W,H);
+    // Re-draw rings at lower opacity
+    const rc=isDark?'rgba(45,212,191,0.01)':'rgba(13,148,136,0.018)';
+    for(let r=100;r<Math.max(W,H)*0.9;r+=110){
+      cx.beginPath();cx.arc(W/2,H/2,r,0,Math.PI*2);
+      cx.strokeStyle=rc;cx.lineWidth=0.5;cx.stroke();
+    }
+  } else {
+    drawBg(pal);
+  }
+
+  // ── FLIGHT STATE ──
+  const pos   = path(T);
+  const posF  = path(T+0.045);
+  const posB  = path(T-0.045);
+  const tang  = v3.nrm(v3.sub(posF,pos));
+  const lat   = (posF[0]-posB[0])*0.85;
+  const vert  = tang[1];
+
+  sBank  += ((-lat*0.52)   - sBank)  * 0.07;
+  sPitch += ((-vert*0.48)  - sPitch) * 0.07;
+
+  // Orientation matrix
+  const fwd = tang;
+  const wUp = [0,-1,0];
+  const r0  = v3.nrm(v3.crs(fwd,wUp));
+  const u0  = v3.nrm(v3.crs(r0,fwd));
+  const cB  = Math.cos(sBank), sB=Math.sin(sBank);
+  const rgt = v3.add(v3.mul(r0,cB), v3.mul(u0,-sB));
+  const up  = v3.add(v3.mul(r0,sB), v3.mul(u0, cB));
+  const M   = [rgt[0],rgt[1],rgt[2], up[0],up[1],up[2], fwd[0],fwd[1],fwd[2]];
+
+  const flapSpd = 3.0 + Math.abs(vert)*3.5;
+  const fp = T * flapSpd;
+
+  // ── VERTICES ──
+  const localV = buildVerts(fp);
+  const worldV = localV.map(v => {
+    const s = v3.mul(v, sc/17);
+    return v3.add(mxv(M,s), pos);
+  });
+  const scrV = worldV.map(pj);
+
+  // ── GHOST TRAIL ──
+  if(trail) {
+    GHOST.push(localV.map((v,i) => scrV[i]));
+    if(GHOST.length>GHOST_N) GHOST.shift();
+    GHOST.forEach((gv,gi) => {
+      const a = (gi/GHOST_N)*0.07;
+      FACES.forEach(([i0,i1,i2]) => {
+        const s0=gv[i0],s1=gv[i1],s2=gv[i2];
+        if(!s0||!s1||!s2) return;
+        cx.beginPath();cx.moveTo(s0[0],s0[1]);cx.lineTo(s1[0],s1[1]);cx.lineTo(s2[0],s2[1]);cx.closePath();
+        cx.strokeStyle=isDark?`rgba(45,212,191,${a})`:`rgba(13,148,136,${a})`;
+        cx.lineWidth=0.4; cx.stroke();
+      });
+    });
+  }
+
+  // ── PARTICLES at wing tips ──
+  if(particles) {
+    const ltip=scrV[16], rtip=scrV[25];
+    const pc=isDark?'rgba(153,246,228,':'rgba(13,148,136,';
+    if(ltip && Math.random()<0.55) spawnParticle(ltip[0],ltip[1],pc);
+    if(rtip && Math.random()<0.55) spawnParticle(rtip[0],rtip[1],pc);
+    // secondary tip particles
+    const ls=scrV[17], rs=scrV[26];
+    if(ls && Math.random()<0.30) spawnParticle(ls[0],ls[1],pc);
+    if(rs && Math.random()<0.30) spawnParticle(rs[0],rs[1],pc);
+    tickParticles(cx, isDark);
+  }
+
+  // ── Z-SORT FACES ──
+  const ready = FACES.map(([i0,i1,i2,cg]) => {
+    const s0=scrV[i0], s1=scrV[i1], s2=scrV[i2];
+    if(!s0||!s1||!s2) return null;
+    const avgZ  = (s0[2]+s1[2]+s2[2])/3;
+    const { shade } = faceLighting(worldV[i0],worldV[i1],worldV[i2]);
+    // Depth factor (0=close, 1=far) for atmospheric fade
+    const depth = Math.max(0, Math.min(1, (avgZ-30)/140));
+    return { s0,s1,s2, cg, shade, depth, isBeak: cg===4 };
+  }).filter(Boolean);
+
+  ready.sort((a,b) => b.avgZ-a.avgZ); // back-to-front
+
+  // ── DRAW ──
+  ready.forEach(({s0,s1,s2,cg,shade,depth,isBeak}) => {
+    drawFace(s0,s1,s2,cg,shade,depth,pal,isBeak);
+  });
+
+  // ── Center body highlight (small glowing dot) ──
+  const bodyPt = scrV[7];
+  if(bodyPt) {
+    cx.save();
+    cx.shadowBlur  = 20;
+    cx.shadowColor = isDark?'rgba(153,246,228,0.8)':'rgba(13,148,136,0.6)';
+    cx.beginPath();
+    cx.arc(bodyPt[0],bodyPt[1], 1.5, 0, Math.PI*2);
+    cx.fillStyle = isDark?'rgba(153,246,228,0.9)':'rgba(13,148,136,0.8)';
+    cx.fill();
+    cx.restore();
+  }
+
+  // ── MANEUVER LABEL ──
+  setMv(getMv(sBank, sPitch));
+}
+
+// ── UI ────────────────────────────────────────────────────────
+function toggleBg() {
+  isDark=!isDark;
+  document.body.classList.toggle('light', !isDark);
+  const b=document.getElementById('ctlBg');
+  b.querySelector('.ctl-dot').style.background=isDark?'':'#0D9488';
+  b.querySelector('.ctl-dot').style.boxShadow=isDark?'':'0 0 6px #0D9488';
+  b.textContent=''; const d=document.createElement('div');
+  d.className='ctl-dot';
+  d.style.background=isDark?'rgba(45,212,191,0.5)':'rgba(13,148,136,0.5)';
+  b.appendChild(d);
+  b.appendChild(document.createTextNode(isDark?'Dark':'Light'));
+  if(!trail) drawBg(isDark?P.dark:P.light);
+}
+function toggleTrail() {
+  trail=!trail;
+  const b=document.getElementById('ctlTrail');
+  b.classList.toggle('on',trail);
+  if(!trail){ GHOST.length=0; }
+}
+function toggleParticles(){
+  particles=!particles;
+  document.getElementById('ctlParticles').classList.toggle('on',particles);
+  if(!particles) PARTS.length=0;
+}
+function toggleSize(){
+  bigMode=!bigMode;
+  document.getElementById('ctlSize').classList.toggle('on',bigMode);
+}
+
+requestAnimationFrame(frame);
+</script>
+</body>
+</html>

@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Alexandr Godonvayuk — Co-Founder of Nexvora Systems. Business development and customer experience consultant based in Tampa Bay, Florida."/>
+<meta name="keywords" content="Alexandr Godonvayuk, Nexvora Systems founder, business consultant Tampa Florida, customer experience consultant"/>
+<title>Alexandr Godonvayuk — Co-Founder, Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;--text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;--teal:#0D9488;--teal-lt:rgba(13,148,136,0.1);--teal-mid:rgba(13,148,136,0.2);--navy:#0F2B4C;--radius:12px;--nav-h:68px;}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 44px;}
+.nav-inner{display:flex;align-items:center;width:100%;}
+.nav-links{display:flex;gap:28px;list-style:none;margin:0 auto;}
+.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s;}
+.nav-links a:hover{color:var(--text);}
+.nav-cta{padding:9px 22px;border-radius:9px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;text-decoration:none;white-space:nowrap;}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:12px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;background:var(--bg);border-bottom:1px solid var(--border);padding:20px 20px 24px;flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);}
+.mobile-menu a.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff;font-weight:700;text-align:center;border-radius:10px;border-bottom:none;font-size:14px;}
+.profile-hero{padding:calc(var(--nav-h) + 64px) 44px 60px;max-width:900px;margin:0 auto;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--teal);text-decoration:none;font-weight:600;margin-bottom:36px;}
+.profile-top{display:grid;grid-template-columns:auto 1fr;gap:40px;align-items:start;}
+.profile-avatar{width:120px;height:120px;border-radius:50%;background:linear-gradient(135deg,#0D9488,#0F2B4C);display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:800;color:#fff;flex-shrink:0;}
+.profile-name{font-size:clamp(2rem,4vw,2.8rem);font-weight:800;letter-spacing:-1px;color:var(--text);margin-bottom:6px;}
+.profile-title{font-size:13px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:2px;margin-bottom:16px;}
+.profile-location{font-size:14px;color:var(--muted);display:flex;gap:20px;flex-wrap:wrap;}
+.profile-body{max-width:900px;margin:0 auto;padding:0 44px 80px;}
+.profile-body h2{font-size:1.3rem;font-weight:700;color:var(--text);margin:40px 0 14px;padding-top:4px;border-top:1px solid var(--border);}
+.profile-body p{font-size:16px;line-height:1.8;color:var(--muted);margin-bottom:20px;}
+.profile-body ul{padding-left:20px;margin-bottom:20px;}
+.profile-body li{font-size:16px;line-height:1.8;color:var(--muted);margin-bottom:8px;}
+.profile-body strong{color:var(--text);}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin:32px 0;}
+.stat-box{background:var(--bg-surface);border-radius:12px;padding:24px;text-align:center;}
+.stat-n{font-size:2rem;font-weight:800;color:var(--teal);letter-spacing:-1px;}
+.stat-l{font-size:12px;color:var(--muted);margin-top:4px;}
+.cta-block{background:var(--navy);border-radius:16px;padding:48px 40px;text-align:center;color:#fff;margin-bottom:80px;}
+.cta-block h2{font-size:1.6rem;font-weight:800;margin-bottom:12px;}
+.cta-block h2 strong{color:#44CAA2;}
+.cta-block p{color:rgba(255,255,255,0.65);margin-bottom:28px;font-size:15px;}
+.cta-block a{display:inline-block;padding:14px 32px;background:var(--teal);color:#fff;font-weight:700;font-size:14px;border-radius:10px;text-decoration:none;}
+footer{background:var(--navy);color:#FAF8F5;padding:60px 44px 32px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;margin-bottom:48px;}
+.footer-brand p{font-size:13px;margin-top:10px;color:rgba(250,248,245,0.5);}
+.footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:14px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;}
+.footer-links a:hover{color:#FAF8F5;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(250,248,245,0.35);flex-wrap:wrap;gap:10px;}
+@media(max-width:768px){:root{--nav-h:56px;}nav{padding:0 20px;}.nav-links{display:none;}.nav-cta{display:none;}.hamburger{display:flex;}.profile-hero,.profile-body{padding-left:20px;padding-right:20px;}.profile-top{grid-template-columns:1fr;gap:20px;}.stat-row{grid-template-columns:1fr;}.cta-block{padding:36px 24px;}.footer-grid{grid-template-columns:1fr;gap:28px;}footer{padding:40px 20px 24px;}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:48px;width:auto;display:block;"/></a>
+    <ul class="nav-links">
+      <li><a href="../about.html" class="active">About</a></li>
+      <li><a href="../services.html">Services</a></li>
+      <li><a href="../blog.html">Insights</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+    <a href="../assessment.html" class="nav-cta">Free Assessment</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../about.html">About</a>
+  <a href="../services.html">Services</a>
+  <a href="../blog.html">Insights</a>
+  <a href="../contact.html">Contact</a>
+  <a href="../assessment.html" class="mobile-cta">Free Assessment</a>
+</div>
+
+<div class="profile-hero">
+  <a href="../about.html" class="back-link">← Back to About</a>
+  <div class="profile-top">
+    <div class="profile-avatar">AG</div>
+    <div>
+      <div class="profile-name">Alexandr Godonvayuk</div>
+      <div class="profile-title">Co-Founder &amp; Business Development Consultant</div>
+      <div class="profile-location">
+        <span>Tampa Bay, Florida</span>
+        <span>Serving all 50 states</span>
+        <span>Online &amp; In-Person Consultations</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="profile-body">
+
+  <div class="stat-row">
+    <div class="stat-box"><div class="stat-n">20K+</div><div class="stat-l">Jobs completed in founders' own business</div></div>
+    <div class="stat-box"><div class="stat-n">50</div><div class="stat-l">States Nexvora serves across the USA</div></div>
+    <div class="stat-box"><div class="stat-n">1000s</div><div class="stat-l">Customers served across multiple markets</div></div>
+  </div>
+
+  <h2>About Alexandr</h2>
+  <p>Alexandr Godonvayuk is the Co-Founder of Nexvora Systems and a business development and customer experience consultant based in Tampa Bay, Florida. His work is grounded in the practical experience of building a real business from the ground up — not in theory, and not from the outside looking in.</p>
+  <p>Before Nexvora, Alexandr co-founded <strong>24 25 CLEANERS</strong> alongside Murat Zhandaurov. While Murat focused on the operational and systems side, Alexandr built the business development and customer experience infrastructure that allowed the company to grow to over 20,000 completed jobs. He was responsible for the client-facing side of the business — acquisition, retention, quality standards, and the systems that kept customers coming back.</p>
+  <p>That experience gave him a deep understanding of how small businesses live or die by the quality of their customer relationships — and how hard it is to maintain consistency when the team grows and the owner can no longer be involved in every interaction.</p>
+
+  <h2>What He Does at Nexvora</h2>
+  <p>At Nexvora Systems, Alexandr focuses on the business development and customer experience side of consulting. He works with small business owners to identify where customers are being lost, where revenue opportunities are being missed, and how to build systems that create consistent, repeatable customer experiences at scale.</p>
+  <p>His work spans sales system design, customer journey mapping, retention and referral program development, onboarding improvement, and growth strategy. He also advises on marketing systems and lead generation processes — drawing on direct experience building and running campaigns for a service business.</p>
+  <p>Like Murat, Alexandr works with clients across all 50 states. Consultations are available online and in person for clients in the Tampa Bay area and Florida.</p>
+
+  <h2>His Approach</h2>
+  <p>Alexandr's approach to consulting is built on one principle: the best system is the one that actually gets used. He does not build complexity for its own sake. He builds what the business needs to operate without the owner having to personally manage every customer relationship.</p>
+  <ul>
+    <li>He focuses on the customer experience gaps that are costing the business repeat business and referrals</li>
+    <li>He designs sales and follow-up systems that work even when the owner is not personally involved</li>
+    <li>He builds retention programs that make existing customers more valuable without requiring more marketing spend</li>
+    <li>He creates onboarding processes that set the right expectations from day one</li>
+  </ul>
+
+  <h2>Background</h2>
+  <p>Alexandr's background in the home services industry gave him exposure to one of the most customer-intensive business environments that exists. Managing customer expectations, handling complaints, building loyalty in a competitive market, and scaling quality across a growing team — these are skills that translate directly to the small businesses Nexvora serves.</p>
+  <p>Having met hundreds of small business owners across different industries and markets, Alexandr has seen the same patterns repeat consistently: most businesses are not losing because of bad products or bad service. They are losing because they have no system for turning a first customer into a long-term relationship.</p>
+
+  <h2>Working With Alexandr</h2>
+  <p>If your business is struggling with customer retention, inconsistent sales processes, or a customer experience that depends entirely on you being personally involved, Alexandr can help you build the systems to fix it. Start with a free 30-minute assessment — no commitment required.</p>
+  <p>Nexvora serves small businesses in every state. In-person meetings are available in the Tampa Bay area and surrounding Florida markets.</p>
+
+</div>
+
+<div class="cta-block" style="max-width:860px;margin:0 44px 80px;">
+  <h2>Work With<br><strong>Alexandr Directly</strong></h2>
+  <p>Start with a free assessment. Get a personalized report within 24 hours.</p>
+  <a href="../assessment.html">Get Your Free Assessment</a>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:40px;width:auto;display:block;margin-bottom:10px;"/></a>
+      <p>Operational clarity for small businesses across Florida and all 50 states.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Company</p>
+      <div class="footer-links">
+        <a href="../about.html">About</a>
+        <a href="../services.html">Services</a>
+        <a href="../blog.html">Insights</a>
+        <a href="../contact.html">Contact</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Team</p>
+      <div class="footer-links">
+        <a href="murat-zhandaurov.html">Murat Zhandaurov</a>
+        <a href="alexandr-godonvayuk.html">Alexandr Godonvayuk</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Contact</p>
+      <div class="footer-links">
+        <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a>
+        <a href="../assessment.html">Free Assessment</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Nexvora Systems LLC. All rights reserved.</span>
+    <span style="display:flex;gap:16px;flex-wrap:wrap;">
+      <a href="../legal/terms.html" style="color:inherit;text-decoration:none;">Terms &amp; Conditions</a>
+      <a href="../legal/privacy.html" style="color:inherit;text-decoration:none;">Privacy Policy</a>
+      <a href="../legal/cookies.html" style="color:inherit;text-decoration:none;">Cookie Policy</a>
+      <a href="../legal/disclaimer.html" style="color:inherit;text-decoration:none;">Disclaimer</a>
+    </span>
+  </div>
+</footer>
+<script>document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});</script>
+</body>
+</html>

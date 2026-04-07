@@ -1,0 +1,213 @@
+/* ============================================================
+   NEXVORA SYSTEMS — falcon.css
+   Geometric Falcon mascot animations
+   The Nexvora Falcon System — 2026
+   ============================================================ */
+
+/* ── Falcon Float — hero levitation ── */
+@keyframes falconFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  25%       { transform: translateY(-10px) rotate(1deg); }
+  50%       { transform: translateY(-14px) rotate(0deg); }
+  75%       { transform: translateY(-6px) rotate(-1deg); }
+}
+
+/* ── Falcon Flap — wing beat on click ── */
+@keyframes falconFlapLeft {
+  0%   { transform: scaleX(1) skewY(0deg); }
+  25%  { transform: scaleX(0.6) skewY(-8deg); }
+  50%  { transform: scaleX(0.3) skewY(-15deg); }
+  75%  { transform: scaleX(0.6) skewY(-5deg); }
+  100% { transform: scaleX(1) skewY(0deg); }
+}
+@keyframes falconFlapRight {
+  0%   { transform: scaleX(1) skewY(0deg); }
+  25%  { transform: scaleX(0.6) skewY(8deg); }
+  50%  { transform: scaleX(0.3) skewY(15deg); }
+  75%  { transform: scaleX(0.6) skewY(5deg); }
+  100% { transform: scaleX(1) skewY(0deg); }
+}
+
+/* ── Falcon Sweep — entry from off-screen ── */
+@keyframes falconSweep {
+  0%   { transform: translateX(120px) translateY(-40px) rotate(-20deg); opacity: 0; }
+  60%  { transform: translateX(-8px) translateY(4px) rotate(2deg); opacity: 1; }
+  80%  { transform: translateX(4px) translateY(-2px) rotate(-1deg); opacity: 1; }
+  100% { transform: translateX(0) translateY(0) rotate(0deg); opacity: 1; }
+}
+
+/* ── Falcon Scan — analysis rotation ── */
+@keyframes falconScan {
+  0%   { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ── Falcon Land — drop and settle ── */
+@keyframes falconLand {
+  0%   { transform: translateY(-60px) scale(1.1); opacity: 0; }
+  55%  { transform: translateY(6px) scale(0.98); opacity: 1; }
+  75%  { transform: translateY(-3px) scale(1.01); opacity: 1; }
+  90%  { transform: translateY(2px) scale(0.995); opacity: 1; }
+  100% { transform: translateY(0) scale(1); opacity: 1; }
+}
+
+/* ── Falcon Path — SVG stroke draw-on ── */
+@keyframes falconPathDraw {
+  from { stroke-dashoffset: 800; opacity: 0.3; }
+  to   { stroke-dashoffset: 0; opacity: 1; }
+}
+
+/* ── Falcon Pulse — glow emanation ── */
+@keyframes falconPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0.4); }
+  70%  { box-shadow: 0 0 0 16px rgba(13, 148, 136, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(13, 148, 136, 0); }
+}
+
+/* ── Falcon Entry — page load entrance ── */
+@keyframes falconEntry {
+  0%   { opacity: 0; transform: translateY(-20px) scale(0.9); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+/* ══════════════════════════════════════
+   Utility Classes
+══════════════════════════════════════ */
+
+/* Hero falcon — floating display */
+.falcon-hero {
+  animation: falconFloat 7s ease-in-out infinite;
+  transform-origin: center bottom;
+  filter: drop-shadow(0 8px 24px rgba(13,148,136,0.25));
+  transition: filter 0.3s;
+}
+.falcon-hero:hover {
+  filter: drop-shadow(0 12px 32px rgba(13,148,136,0.45));
+}
+
+/* Scanning state */
+.falcon-scanning {
+  animation: falconScan 3s linear infinite;
+  transform-origin: center;
+}
+
+/* Landing state */
+.falcon-landing {
+  animation: falconLand 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Sweep entry */
+.falcon-sweep {
+  animation: falconSweep 0.85s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Entry from top */
+.falcon-entry {
+  animation: falconEntry 0.6s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Pulse glow */
+.falcon-pulse {
+  animation: falconPulse 2.5s ease infinite;
+}
+
+/* ── Falcon inline icon (20px button icon) ── */
+.falcon-icon {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+  flex-shrink: 0;
+  transition: transform 0.2s;
+}
+.falcon-icon.sm { width: 16px; height: 16px; }
+.falcon-icon.md { width: 28px; height: 28px; }
+.falcon-icon.lg { width: 48px; height: 48px; }
+.falcon-icon.xl { width: 80px; height: 80px; }
+.falcon-icon.hero { width: 160px; height: 160px; }
+
+/* Flap on parent button press */
+.btn:active .falcon-icon,
+.btn-primary:active .falcon-icon {
+  animation: falconFlapLeft 0.35s ease forwards;
+}
+
+/* ── Falcon card badge — appears on card hover ── */
+.falcon-card-badge {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 28px;
+  height: 28px;
+  opacity: 0;
+  transform: scale(0.6) rotate(-15deg);
+  transition: opacity 0.25s, transform 0.3s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.card:hover .falcon-card-badge,
+.service-card:hover .falcon-card-badge,
+.step-card:hover .falcon-card-badge {
+  opacity: 0.7;
+  transform: scale(1) rotate(0deg);
+}
+
+/* ── Falcon scan ring — analysis phase ── */
+.falcon-scan-ring {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  margin: 0 auto 24px;
+}
+.falcon-scan-ring::before,
+.falcon-scan-ring::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+}
+.falcon-scan-ring::before {
+  border: 2px solid var(--border);
+}
+.falcon-scan-ring::after {
+  border: 2px solid var(--teal);
+  border-top-color: transparent;
+  border-right-color: transparent;
+  animation: falconScan 1.2s linear infinite;
+}
+.falcon-scan-ring .falcon-icon {
+  position: absolute;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: 40px; height: 40px;
+}
+
+/* ── Theme adaptations for falcon ── */
+/* Light themes: falcon uses navy tones */
+[data-theme="cream"] .falcon-hero,
+[data-theme="apple-light"] .falcon-hero,
+[data-theme="titanium"] .falcon-hero {
+  filter: drop-shadow(0 8px 24px rgba(15,43,76,0.15));
+}
+
+/* Space/carbon/forest: keep teal glow */
+[data-theme="space"] .falcon-hero,
+[data-theme="carbon"] .falcon-hero,
+[data-theme="forest"] .falcon-hero {
+  filter: drop-shadow(0 8px 24px rgba(13,148,136,0.3));
+}
+
+/* Apple themes: use blue glow */
+[data-theme="apple-light"] .falcon-hero,
+[data-theme="apple-dark"] .falcon-hero {
+  filter: drop-shadow(0 8px 24px rgba(0,122,255,0.2));
+}
+
+/* ── Reduced motion ── */
+@media (prefers-reduced-motion: reduce) {
+  .falcon-hero { animation: none; }
+  .falcon-scanning { animation: none; }
+  .falcon-landing { animation: none; opacity: 1; transform: none; }
+  .falcon-sweep { animation: none; opacity: 1; transform: none; }
+  .falcon-entry { animation: none; opacity: 1; transform: none; }
+  .falcon-pulse { animation: none; }
+  .btn:active .falcon-icon { animation: none; }
+}

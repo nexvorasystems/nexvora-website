@@ -1,0 +1,740 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Free Assessment — Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
+  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
+  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.12);--teal-dark:#0a7a70;
+  --navy:#0F2B4C;--red:#EF4444;--nav-h:64px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);height:100%;overflow:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.96);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px;gap:16px;}
+.logo{font-size:18px;font-weight:800;letter-spacing:-0.5px;color:var(--text);text-decoration:none;white-space:nowrap;}
+.logo span{color:var(--teal);}
+.prog-wrap{flex:1;display:flex;align-items:center;gap:10px;max-width:360px;margin:0 auto;}
+.prog-label{font-size:11px;color:var(--dim);white-space:nowrap;}
+.prog-bar{flex:1;height:4px;background:var(--border);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--teal);border-radius:99px;transition:width .5s ease;width:0%;}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:color .15s;}
+.nav-back:hover{color:var(--teal);}
+
+/* CHAT LAYOUT */
+.chat-wrap{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;display:flex;flex-direction:column;}
+.chat-scroll{flex:1;overflow-y:auto;padding:28px 16px 16px;scroll-behavior:smooth;}
+.chat-inner{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
+
+/* BUBBLES */
+.brow{display:flex;align-items:flex-end;gap:9px;}
+.brow.bot{justify-content:flex-start;}
+.brow.user{justify-content:flex-end;}
+.avatar{width:30px;height:30px;min-width:30px;border-radius:50%;background:linear-gradient(135deg,#0F2B4C,#0D9488);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;align-self:flex-end;}
+.bbl{max-width:82%;padding:12px 16px;border-radius:18px;font-size:15px;line-height:1.6;}
+.bbl.bot{background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text);}
+.bbl.bot a{color:var(--teal);text-decoration:none;border-bottom:1px solid rgba(13,148,136,0.3);}
+.bbl.bot a:hover{border-bottom-color:var(--teal);}
+.bbl.user{background:var(--teal);color:#fff;border-bottom-right-radius:4px;}
+
+/* TYPING */
+.typing-dots{display:flex;gap:5px;align-items:center;padding:4px 2px;}
+.typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--dim);animation:td 1.4s ease-in-out infinite;}
+.typing-dots span:nth-child(2){animation-delay:.2s;}
+.typing-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes td{0%,60%,100%{transform:translateY(0);opacity:.35;}30%{transform:translateY(-7px);opacity:1;}}
+
+/* SEARCH CARD */
+.search-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;max-width:380px;}
+.sc-searching{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);}
+.sc-spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.sc-result{display:flex;flex-direction:column;gap:10px;}
+.sc-biz-name{font-size:16px;font-weight:700;color:var(--text);}
+.sc-biz-loc{font-size:13px;color:var(--muted);}
+.sc-links{display:flex;gap:10px;flex-wrap:wrap;}
+.sc-link{font-size:12px;font-weight:600;color:var(--teal);text-decoration:none;padding:5px 10px;border:1px solid rgba(13,148,136,0.25);border-radius:6px;transition:all .15s;}
+.sc-link:hover{background:var(--teal-lt);}
+
+/* REPORT CARD */
+.report-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:520px;}
+.rc-header{margin-bottom:20px;}
+.rc-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.rc-sub{font-size:13px;color:var(--muted);}
+.rc-dims{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
+.rc-dim{display:flex;align-items:center;gap:10px;}
+.rc-dim-name{font-size:13px;font-weight:600;color:var(--text);min-width:160px;}
+.rc-bar-wrap{flex:1;height:6px;background:var(--bg-surface);border-radius:99px;overflow:hidden;}
+.rc-bar{height:100%;border-radius:99px;transition:width 1s ease;}
+.rc-bar.green{background:#10B981;}
+.rc-bar.yellow{background:#F59E0B;}
+.rc-bar.red{background:#EF4444;}
+.rc-score{font-size:12px;font-weight:700;min-width:28px;text-align:right;}
+.rc-score.green{color:#10B981;}.rc-score.yellow{color:#F59E0B;}.rc-score.red{color:#EF4444;}
+.rc-recs{margin-top:16px;border-top:1px solid var(--border);padding-top:16px;}
+.rc-recs-title{font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:12px;}
+.rc-rec{display:flex;gap:10px;margin-bottom:10px;font-size:13px;color:var(--muted);line-height:1.6;}
+.rc-rec::before{content:counter(rec);counter-increment:rec;min-width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px;}
+.rc-recs{counter-reset:rec;}
+.rc-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
+.rc-btn{padding:10px 20px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .18s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
+.rc-btn.primary{background:var(--teal);color:#fff;}
+.rc-btn.primary:hover{filter:brightness(1.08);}
+.rc-btn.secondary{background:transparent;border:1.5px solid var(--border);color:var(--muted);}
+.rc-btn.secondary:hover{border-color:var(--teal);color:var(--teal);}
+
+/* PRINT styles for PDF */
+@media print{
+  nav,.chat-scroll::-webkit-scrollbar,.brow.user,.chat-input-area,#inputArea{display:none!important;}
+  .bbl.bot{box-shadow:none;border:1px solid #ddd;}
+  .report-card{max-width:100%;border:none;padding:0;}
+  body{overflow:auto;}
+}
+
+/* INPUT AREA */
+.chat-input-area{border-top:1px solid var(--border);background:var(--bg-card);padding:14px 16px;flex-shrink:0;}
+.input-inner{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
+.input-row{display:flex;gap:9px;align-items:flex-end;}
+.chat-input{
+  flex:1;padding:12px 15px;
+  border:1.5px solid var(--border);border-radius:12px;
+  font-size:15px;color:var(--text);background:var(--bg);
+  font-family:inherit;outline:none;resize:none;transition:border-color .15s;
+  line-height:1.5;-webkit-appearance:none;
+}
+.chat-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,0.1);}
+.chat-input.err{border-color:var(--red);}
+.send-btn{width:42px;height:42px;min-width:42px;border-radius:11px;background:var(--teal);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;align-self:flex-end;}
+.send-btn:hover{filter:brightness(1.1);}
+.send-btn:disabled{opacity:.35;cursor:not-allowed;}
+.err-msg{font-size:12px;color:var(--red);display:none;}
+.err-msg.show{display:block;}
+
+/* CHIPS */
+.chips{display:flex;flex-wrap:wrap;gap:8px;}
+.chip{padding:9px 16px;border-radius:99px;border:1.5px solid var(--border);background:var(--bg-card);font-size:14px;color:var(--muted);font-weight:500;cursor:pointer;transition:all .15s;user-select:none;}
+.chip:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-lt);}
+.chip.on{border-color:var(--teal);background:var(--teal);color:#fff;}
+.confirm-chip{padding:9px 20px;border-radius:99px;background:var(--teal);color:#fff;font-size:14px;font-weight:700;border:none;cursor:pointer;display:none;}
+.confirm-chip.show{display:inline-block;}
+
+@media(max-width:600px){nav{padding:0 14px;}.prog-label{display:none;}.bbl{font-size:14px;max-width:88%;}.chat-input-area{padding:10px 12px;}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">Nexvora<span>.</span></a>
+  <div class="prog-wrap">
+    <span class="prog-label" id="progLabel">Getting started</span>
+    <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
+  </div>
+  <a href="index.html" class="nav-back">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Back
+  </a>
+</nav>
+
+<div class="chat-wrap">
+  <div class="chat-scroll" id="chatScroll">
+    <div class="chat-inner" id="chatInner"></div>
+  </div>
+  <div class="chat-input-area" id="inputArea" style="display:none;">
+    <div class="input-inner" id="inputInner"></div>
+  </div>
+</div>
+
+<script>
+// ── STATE ────────────────────────────────────────────────────
+const A = {};
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+let totalSteps = 14; // estimated, updates as we go
+
+// ── PROGRESS ─────────────────────────────────────────────────
+let stepNum = 0;
+function setProgress(n, label) {
+  stepNum = n;
+  const pct = Math.min(Math.round(n / totalSteps * 100), 99);
+  document.getElementById('progFill').style.width = pct + '%';
+  if(label) document.getElementById('progLabel').textContent = label;
+}
+
+// ── SCROLL ───────────────────────────────────────────────────
+function scrollToBottom() {
+  const el = document.getElementById('chatScroll');
+  el.scrollTop = el.scrollHeight;
+}
+function scrollToLastBot() {
+  const el = document.getElementById('chatScroll');
+  const bots = el.querySelectorAll('.brow.bot');
+  if(bots.length) {
+    const last = bots[bots.length - 1];
+    // scroll so last bot bubble is near top of view
+    const offset = last.offsetTop - 20;
+    el.scrollTo({top: offset, behavior: 'smooth'});
+  }
+}
+
+// ── ADD BUBBLES ───────────────────────────────────────────────
+function addBubble(text, type, html = false) {
+  const inner = document.getElementById('chatInner');
+  const row = document.createElement('div');
+  row.className = `brow ${type}`;
+  if(type === 'bot') {
+    row.innerHTML = `<div class="avatar">NX</div><div class="bbl bot">${html ? text : escHtml(text)}</div>`;
+  } else {
+    row.innerHTML = `<div class="bbl user">${escHtml(text)}</div>`;
+  }
+  inner.appendChild(row);
+  scrollToBottom();
+  return row;
+}
+
+function addCard(html) {
+  const inner = document.getElementById('chatInner');
+  const row = document.createElement('div');
+  row.className = 'brow bot';
+  row.innerHTML = `<div class="avatar">NX</div><div>${html}</div>`;
+  inner.appendChild(row);
+  scrollToBottom();
+  return row;
+}
+
+function escHtml(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ── TYPING INDICATOR ─────────────────────────────────────────
+let typingEl = null;
+function showTyping() {
+  if(typingEl) return;
+  const inner = document.getElementById('chatInner');
+  typingEl = document.createElement('div');
+  typingEl.className = 'brow bot';
+  typingEl.id = 'typing';
+  typingEl.innerHTML = `<div class="avatar">NX</div><div class="bbl bot typing"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  inner.appendChild(typingEl);
+  scrollToBottom();
+}
+function hideTyping() {
+  if(typingEl) { typingEl.remove(); typingEl = null; }
+}
+
+// ── BOT SAY ─────────────────────────────────────────────────
+async function bot(text, typingMs = 900, html = false) {
+  showTyping();
+  await sleep(typingMs);
+  hideTyping();
+  addBubble(text, 'bot', html);
+}
+
+// ── INPUT HELPERS ─────────────────────────────────────────────
+function clearInput() {
+  document.getElementById('inputInner').innerHTML = '';
+  document.getElementById('inputArea').style.display = 'none';
+}
+
+function showInput(html) {
+  const area = document.getElementById('inputArea');
+  const inner = document.getElementById('inputInner');
+  inner.innerHTML = html;
+  area.style.display = '';
+}
+
+// Text input — returns promise resolving to trimmed string
+function askText(placeholder, validate, inputType = 'text') {
+  return new Promise(resolve => {
+    showInput(`
+      <div class="input-row">
+        <input class="chat-input" id="ci" type="${inputType}" placeholder="${placeholder}" autocomplete="off"/>
+        <button class="send-btn" id="csend" disabled>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="err-msg" id="cerr"></div>
+    `);
+    const inp = document.getElementById('ci');
+    const btn = document.getElementById('csend');
+    const err = document.getElementById('cerr');
+
+    inp.addEventListener('input', () => {
+      btn.disabled = !inp.value.trim();
+      inp.classList.remove('err');
+      err.classList.remove('show');
+    });
+
+    const submit = () => {
+      const val = inp.value.trim();
+      if(!val) return;
+      if(validate) {
+        const e = validate(val);
+        if(e) { inp.classList.add('err'); err.textContent = e; err.classList.add('show'); return; }
+      }
+      clearInput();
+      resolve(val);
+    };
+
+    inp.addEventListener('keydown', e => { if(e.key === 'Enter') submit(); });
+    btn.addEventListener('click', submit);
+    setTimeout(() => inp.focus(), 100);
+    scrollToLastBot();
+  });
+}
+
+// Chips — single select, auto-resolves on pick
+function askChips(options) {
+  return new Promise(resolve => {
+    showInput(`<div class="chips" id="chipsWrap"></div>`);
+    const wrap = document.getElementById('chipsWrap');
+    options.forEach(opt => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = opt;
+      chip.onclick = () => { clearInput(); resolve(opt); };
+      wrap.appendChild(chip);
+    });
+    scrollToLastBot();
+  });
+}
+
+// ── CONVERSATION FLOW ─────────────────────────────────────────
+async function startConversation() {
+  setProgress(0, 'Getting started');
+  await sleep(600);
+
+  await bot("Hi! I'm Nex — your Nexvora advisor. I'll ask you a few questions about your business to put together a personalized report.", 1000);
+  await sleep(300);
+  await bot("The conversation adapts based on what you tell me, so every assessment is different. Takes about 10 minutes.", 900);
+  await sleep(300);
+  await bot("Let's start — what's your full name?", 700);
+
+  const name = await askText("Your full name", v => v.length >= 2 ? null : "Please enter your full name");
+  addBubble(name, 'user');
+  A.full_name = name;
+  const first = name.split(' ')[0];
+
+  setProgress(1, 'Contact info');
+  await bot(`Nice to meet you, ${first}! What's the best email address to send your report to?`);
+
+  const email = await askText("your@email.com", v =>
+    /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? null : "Please enter a valid email address (e.g. name@company.com)",
+    'email'
+  );
+  addBubble(email, 'user');
+  A.email = email;
+
+  setProgress(2);
+  await bot("Got it. What's your phone number? (Optional — type 'skip' to skip)", 800);
+
+  const phone = await askText("+1 (555) 000-0000", v => {
+    if(v.toLowerCase() === 'skip' || v === '') return null;
+    const d = v.replace(/\D/g,'');
+    return d.length >= 7 ? null : "Please enter a valid phone number, or type 'skip'";
+  }, 'tel');
+  addBubble(phone.toLowerCase() === 'skip' ? '(skipped)' : phone, 'user');
+  A.phone = phone.toLowerCase() === 'skip' ? '' : phone;
+
+  setProgress(3);
+  await bot("How did you hear about us?", 700);
+  const referral = await askChips(['Google Search','Social Media','Referral from someone','Online ad','Other']);
+  addBubble(referral, 'user');
+  A.referral = referral;
+
+  await turnLocation();
+}
+
+async function turnLocation() {
+  setProgress(4, 'Your business');
+  await bot("Great. Where is your business located? City and state is fine.", 800);
+
+  const location = await askText("e.g. Miami, FL", v => v.trim().length >= 2 ? null : "Please enter your city or location");
+  addBubble(location, 'user');
+  A.location = location;
+
+  await bot(`And what is the exact name of your business in ${location}?`, 800);
+
+  const bizName = await askText("Business name", v => v.trim().length >= 1 ? null : "Please enter your business name");
+  addBubble(bizName, 'user');
+  A.biz_name = bizName;
+
+  await turnBusinessSearch();
+}
+
+async function turnBusinessSearch() {
+  // Search simulation
+  showTyping();
+  await sleep(400);
+  hideTyping();
+
+  const searchCard = addCard(`
+    <div class="search-card">
+      <div class="sc-searching" id="scStatus">
+        <div class="sc-spinner"></div>
+        <span>Searching Google, Yelp, and Thumbtack for "${escHtml(A.biz_name)}"...</span>
+      </div>
+    </div>
+  `);
+
+  await sleep(2200);
+
+  const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(A.biz_name + ' ' + A.location)}`;
+  const reviewsUrl = `https://www.google.com/search?q=${encodeURIComponent(A.biz_name + ' ' + A.location + ' reviews')}`;
+  const yelpUrl = `https://www.yelp.com/search?find_desc=${encodeURIComponent(A.biz_name)}&find_loc=${encodeURIComponent(A.location)}`;
+
+  document.getElementById('scStatus').closest('.search-card').innerHTML = `
+    <div class="sc-result">
+      <div class="sc-biz-name">${escHtml(A.biz_name)}</div>
+      <div class="sc-biz-loc">${escHtml(A.location)}</div>
+      <div class="sc-links">
+        <a class="sc-link" href="${mapsUrl}" target="_blank">Google Maps →</a>
+        <a class="sc-link" href="${reviewsUrl}" target="_blank">Google Reviews →</a>
+        <a class="sc-link" href="${yelpUrl}" target="_blank">Yelp →</a>
+      </div>
+    </div>
+  `;
+  scrollToBottom();
+
+  await sleep(600);
+  await bot("Does this look like your business? You can click the links above to verify.", 900);
+
+  const confirm = await askChips(["Yes, that's my business!", "No, different business"]);
+  addBubble(confirm, 'user');
+  A.biz_confirmed = confirm.startsWith('Yes');
+
+  if(A.biz_confirmed) {
+    await bot("Great! We found your listing online. Your customers are already talking about you — that's a strong foundation to build on.", 1000);
+    await sleep(200);
+    await bot(`Check out your reviews here: <a href="${reviewsUrl}" target="_blank">See what customers are saying →</a>`, 600, true);
+    await sleep(400);
+  } else {
+    await bot("No problem! We'll work with the information you give us directly.", 800);
+  }
+
+  await turnBizType();
+}
+
+async function turnBizType() {
+  setProgress(5, 'Business details');
+  await bot("Tell me about your business — what exactly do you do? Describe it in your own words.", 900);
+
+  const bizType = await askText("e.g. We do residential and commercial cleaning in Miami...", v =>
+    v.trim().length >= 5 ? null : "Tell us a bit more about what your business does"
+  );
+  addBubble(bizType, 'user');
+  A.biz_type = bizType;
+
+  await turnTeamSize();
+}
+
+async function turnTeamSize() {
+  setProgress(6, 'Your team');
+  await bot("How many people are on your team right now? Give me an exact number — include full-time, part-time, and regular contractors.", 1000);
+
+  const sizeRaw = await askText("e.g. 8", v => {
+    const n = parseInt(v.replace(/\D/g,''));
+    if(isNaN(n) || n < 1) return "Please enter the number of people on your team";
+    return null;
+  });
+  addBubble(sizeRaw, 'user');
+  A.team_size_raw = sizeRaw;
+  // Sum all numbers in the answer so "9 back office and 25 cleaners" = 34
+  const _nums = sizeRaw.match(/\d+/g);
+  A.team_size = _nums ? _nums.reduce((s,n) => s + parseInt(n), 0) : 1;
+
+  await turnAdaptiveTeam();
+}
+
+async function turnAdaptiveTeam() {
+  const n = A.team_size;
+  setProgress(7, 'Understanding your team');
+
+  if(n === 1) {
+    // Solo
+    await bot("Got it — you're running this solo right now. That's impressive. Are you handling everything yourself — sales, operations, and marketing too?", 1000);
+    const solo = await askText("e.g. Yes, mostly me, I have an accountant though...", null);
+    addBubble(solo, 'user');
+    A.team_structure = solo;
+
+    await sleep(300);
+    await bot("What takes up most of your time each week — the things you wish you could get off your plate?", 900);
+    const timeWaste = await askText("e.g. Scheduling, reports, chasing invoices...", null);
+    addBubble(timeWaste, 'user');
+    A.time_wasters = timeWaste;
+
+  } else if(n >= 2 && n <= 5) {
+    // Micro team
+    await bot(`A team of ${n} — good. Who handles marketing and sales on your team, or is that mostly you?`, 1000);
+    const mktg = await askText("e.g. I handle sales, we use an agency for marketing...", null);
+    addBubble(mktg, 'user');
+    A.team_structure = mktg;
+
+    await sleep(300);
+    await bot("What's the main thing pulling your attention away from actually growing the business?", 900);
+    const distract = await askText("e.g. Too much admin, team management, customer issues...", null);
+    addBubble(distract, 'user');
+    A.time_wasters = distract;
+
+  } else if(n >= 6 && n <= 20) {
+    // Small team
+    await bot(`${n} people — you're in the growth phase. Do you have dedicated people for sales, marketing, and operations, or does everyone wear multiple hats?`, 1100);
+    const structure = await askText("e.g. We have a sales person, everyone else does a bit of everything...", null);
+    addBubble(structure, 'user');
+    A.team_structure = structure;
+
+    await sleep(300);
+    await bot("How do you currently track your business performance — do you have regular reporting or dashboards?", 900);
+    const reporting = await askText("e.g. Weekly spreadsheets, QuickBooks, mostly gut feel...", null);
+    addBubble(reporting, 'user');
+    A.reporting = reporting;
+
+  } else {
+    // Larger org (21+)
+    await bot(`${n} people — that's a real organization. How is your team structured — do you have department heads or managers for different areas?`, 1100);
+    const structure = await askText("e.g. We have a sales manager, ops manager, and I oversee marketing...", null);
+    addBubble(structure, 'user');
+    A.team_structure = structure;
+
+    await sleep(300);
+    await bot("How does information flow between teams right now — are departments working well together or are there silos?", 900);
+    const flow = await askText("e.g. We have weekly meetings but ops and sales often don't talk...", null);
+    addBubble(flow, 'user');
+    A.reporting = flow;
+  }
+
+  await turnRevenue();
+}
+
+async function turnRevenue() {
+  setProgress(8, 'Business health');
+
+  if(A.team_size === 1) {
+    await bot("What's your approximate monthly revenue right now? Ballpark is fine.", 800);
+    const rev = await askText("e.g. Around $15K/month, or $180K/year...", null);
+    addBubble(rev, 'user');
+    A.revenue = rev;
+  } else {
+    await bot("What's your approximate annual revenue? Ballpark is completely fine.", 800);
+    const rev = await askText("e.g. Around $500K/year, or $1.2M...", null);
+    addBubble(rev, 'user');
+    A.revenue = rev;
+  }
+
+  await turnChallenge();
+}
+
+async function turnChallenge() {
+  setProgress(9, 'Your challenges');
+  await bot("What's the biggest thing holding your business back right now? Be as specific as you can — the more detail, the better your report.", 1100);
+  await sleep(200);
+  await bot("For example: not enough leads, team doesn't follow processes, hard to track what's working, cash flow is unpredictable, can't find good staff...", 700);
+
+  const challenge = await askText("Describe your biggest challenge...", v =>
+    v.trim().length >= 10 ? null : "Tell us a bit more — what specifically is the problem?"
+  );
+  addBubble(challenge, 'user');
+  A.main_challenge = challenge;
+
+  await turnChallengeFollowUp();
+}
+
+async function turnChallengeFollowUp() {
+  setProgress(10, 'Digging deeper');
+  const c = A.main_challenge.toLowerCase();
+
+  let followUpQ = null;
+
+  if(c.match(/lead|sale|client|customer|revenue|close|deal|prospect/)) {
+    followUpQ = "When you do get a lead — are you losing them before closing, or is it hard to get leads in the first place?";
+  } else if(c.match(/team|staff|hire|employee|people|manage|keep/)) {
+    followUpQ = "Is the bigger issue finding the right people, or managing and keeping the ones you have?";
+  } else if(c.match(/time|overwhelm|busy|admin|manual|track|report/)) {
+    followUpQ = "If you could free up 10 hours a week, what would you use that time for?";
+  } else if(c.match(/money|cash|profit|cost|expense|margin|pay/)) {
+    followUpQ = "Is the issue more about not bringing in enough, or money going out faster than it comes in?";
+  } else if(c.match(/market|brand|visible|social|ads|google|seo/)) {
+    followUpQ = "Are you currently spending money on marketing, or is it mostly organic and word of mouth?";
+  } else if(c.match(/system|process|tool|software|tech|automat|ai/)) {
+    followUpQ = "What's the most painful manual task your team does every week that you wish could just happen automatically?";
+  } else if(c.match(/grow|scale|expand|bigger|next level/)) {
+    followUpQ = "What's the one thing that feels like it needs to be in place before you can really grow?";
+  } else {
+    followUpQ = "If you could fix just one thing in the next 90 days, what would have the biggest impact?";
+  }
+
+  await bot(followUpQ, 900);
+  const followUp = await askText("Your answer...", null);
+  addBubble(followUp, 'user');
+  A.challenge_detail = followUp;
+
+  await turnAI();
+}
+
+async function turnAI() {
+  setProgress(11, 'Technology');
+  await bot("Are you currently using any AI or automation tools in your business? If yes, which ones?", 800);
+  await sleep(100);
+  await bot("For example: ChatGPT, Zapier, automated emails, scheduling software, reporting bots...", 600);
+
+  const ai = await askText("e.g. We use ChatGPT for content, Zapier for some automations...", null);
+  addBubble(ai, 'user');
+  A.ai_tools = ai;
+
+  await turnGoal();
+}
+
+async function turnGoal() {
+  setProgress(12, 'Your goals');
+  await bot("Last few questions. What does success look like for your business in the next 12 months? Paint me a picture.", 900);
+
+  const goal = await askText("e.g. Double revenue, hire 3 more people, finally take a real vacation...", null);
+  addBubble(goal, 'user');
+  A.goal = goal;
+
+  await bot("Is there anything else you want us to know about your situation — anything important we haven't covered?", 800);
+
+  const extra = await askText("Optional — type 'skip' to skip", v => null);
+  addBubble(extra.toLowerCase() === 'skip' ? '(nothing to add)' : extra, 'user');
+  A.notes = extra.toLowerCase() === 'skip' ? '' : extra;
+
+  setProgress(13, 'Generating your report');
+  await generateReport();
+}
+
+// ── REPORT GENERATION ──────────────────────────────────────────
+async function generateReport() {
+  clearInput();
+
+  showTyping();
+  await sleep(500);
+  hideTyping();
+  addBubble("One moment — I'm analyzing everything you told me and putting together your report.", 'bot');
+  showTyping();
+  await sleep(2800);
+  hideTyping();
+
+  // Score each dimension based on answers
+  const scores = scoreReport();
+
+  const first = A.full_name.split(' ')[0];
+  const reportHtml = buildReportHtml(scores, first);
+
+  addCard(reportHtml);
+  scrollToBottom();
+
+  await sleep(500);
+  await bot(`${first}, your report is ready above. We've also sent it to <strong>${escHtml(A.email)}</strong> — if you don't see it in a few minutes, check your spam folder.`, 800, true);
+  await sleep(400);
+  await bot("If you have questions or want to talk through any of this, just reach out through our <a href='contact.html'>contact page</a>. We're here to help.", 800, true);
+
+  document.getElementById('progFill').style.width = '100%';
+  document.getElementById('progLabel').textContent = 'Complete';
+}
+
+function scoreReport() {
+  const c = (A.main_challenge + ' ' + A.challenge_detail + ' ' + (A.time_wasters||'')).toLowerCase();
+  const ai = A.ai_tools.toLowerCase();
+  const n = A.team_size;
+
+  const scores = {
+    operations:   c.match(/process|chaos|unclear|repeat|mistake|broken|manual/) ? 35 : c.match(/operation/) ? 45 : 72,
+    ai_automation: ai.match(/zapier|make|automat|bot|script/) ? 78 : ai.match(/chatgpt|ai|claude|gpt/) ? 62 : ai.match(/no|nothing|none|not/) ? 22 : 48,
+    reporting:    (A.reporting||'').toLowerCase().match(/no|gut|nothing|spread/) ? 28 : (A.reporting||'').toLowerCase().match(/dashboard|automat/) ? 82 : 55,
+    sales:        c.match(/lead|sale|close|pipeline|crm|client/) ? 32 : 68,
+    marketing:    c.match(/market|brand|lead|ads|google|social/) ? 30 : 65,
+    customer:     A.biz_confirmed ? 74 : 60,
+    team_hr:      n <= 2 ? 58 : c.match(/team|staff|hire|manage/) ? 34 : n > 15 ? 62 : 70,
+    financial:    c.match(/cash|money|profit|margin|cost|expense/) ? 30 : 65,
+    growth:       c.match(/grow|scale|expand/) ? 42 : 70,
+  };
+
+  return scores;
+}
+
+function scoreColor(n) {
+  if(n >= 70) return 'green';
+  if(n >= 45) return 'yellow';
+  return 'red';
+}
+
+function scoreLabel(n) {
+  if(n >= 70) return 'Strong';
+  if(n >= 45) return 'Needs Attention';
+  return 'Priority Fix';
+}
+
+function buildReportHtml(scores, name) {
+  const dims = [
+    {key:'operations',    label:'Operations'},
+    {key:'ai_automation', label:'AI & Automation'},
+    {key:'reporting',     label:'Reporting & Analytics'},
+    {key:'sales',         label:'Sales Systems'},
+    {key:'marketing',     label:'Marketing'},
+    {key:'customer',      label:'Customer Experience'},
+    {key:'team_hr',       label:'Team & HR'},
+    {key:'financial',     label:'Financial Efficiency'},
+    {key:'growth',        label:'Growth & Scaling'},
+  ];
+
+  // Top 3 lowest = priorities
+  const sorted = [...dims].sort((a,b) => scores[a.key] - scores[b.key]);
+  const top3 = sorted.slice(0,3);
+
+  const recs = {
+    operations:    "Map and document your core processes. Identify the top 3 steps your team repeats manually and automate or systematize them.",
+    ai_automation: "You have room to deploy AI and automation. Start with your most repetitive task — scheduling, reporting, or follow-ups — and build from there.",
+    reporting:     "Set up a weekly business dashboard. Even a simple Google Sheet with 5 key numbers gives you more clarity than running on gut feel.",
+    sales:         "Build a simple CRM or pipeline tracker. Make sure every lead has a follow-up date and someone owns each deal.",
+    marketing:     "Create one consistent lead generation channel and track it weekly. You don't need many channels — just one that works reliably.",
+    customer:      "Document your customer journey from first contact to repeat purchase. Find the step where clients drop off and fix that first.",
+    team_hr:       "Define roles clearly in writing. Each person should know exactly what they own and how success is measured for their role.",
+    financial:     "Set up a simple weekly cash flow tracker. Know your top 5 expenses and which ones are growing.",
+    growth:        "Before scaling, document what works so it can be replicated without you. Systems first, then headcount.",
+  };
+
+  const dimRows = dims.map(d => {
+    const sc = scores[d.key];
+    const col = scoreColor(sc);
+    return `
+      <div class="rc-dim">
+        <div class="rc-dim-name">${d.label}</div>
+        <div class="rc-bar-wrap"><div class="rc-bar ${col}" style="width:${sc}%"></div></div>
+        <div class="rc-score ${col}">${scoreLabel(sc)}</div>
+      </div>`;
+  }).join('');
+
+  const recItems = top3.map(d => `<div class="rc-rec">${recs[d.key]}</div>`).join('');
+
+  return `
+    <div class="report-card" id="reportCard">
+      <div class="rc-header">
+        <div class="rc-title">Business Assessment Report</div>
+        <div class="rc-sub">${escHtml(A.biz_name)} · ${escHtml(A.location)} · Prepared for ${escHtml(name)}</div>
+      </div>
+      <div class="rc-dims">${dimRows}</div>
+      <div class="rc-recs">
+        <div class="rc-recs-title">Top 3 Priorities</div>
+        ${recItems}
+      </div>
+      <div class="rc-actions">
+        <button class="rc-btn primary" onclick="downloadReport()">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+          Download PDF
+        </button>
+        <a href="index.html" class="rc-btn secondary">Back to Home</a>
+      </div>
+    </div>`;
+}
+
+function downloadReport() {
+  window.print();
+}
+
+// ── START ─────────────────────────────────────────────────────
+startConversation();
+</script>
+</body>
+</html>

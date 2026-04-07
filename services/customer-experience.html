@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Customer experience consulting for small businesses in Tampa Bay, Florida and across the USA. Customer journey mapping, onboarding improvement, retention systems, and referral programs that keep clients and grow your reputation."/>
+<meta name="keywords" content="customer experience consulting Florida, customer retention Tampa Bay, client onboarding consulting Tampa, customer journey mapping Florida, referral system small business USA"/>
+<title>Customer Experience — Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
+  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
+  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.1);--teal-mid:rgba(13,148,136,0.2);
+  --navy:#0F2B4C;--radius:12px;--nav-h:68px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 44px;}
+.nav-inner{display:flex;align-items:center;width:100%;}
+.nav-links{display:flex;gap:28px;list-style:none;margin:0 auto;}
+.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+.nav-cta{padding:9px 22px;border-radius:9px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;white-space:nowrap;}
+.nav-cta:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:12px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;background:var(--bg);border-bottom:1px solid var(--border);padding:20px 20px 24px;flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);}
+.mobile-menu a.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff;font-weight:700;text-align:center;border-radius:10px;border-bottom:none;font-size:14px;}
+
+.page-hero{padding:calc(var(--nav-h) + 72px) 44px 64px;max-width:860px;margin:0 auto;}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted);text-decoration:none;margin-bottom:20px;transition:color .15s;}
+.back-link:hover{color:var(--teal);}
+.back-link::before{content:'←';}
+.sec-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.page-hero h1{font-size:clamp(2rem,4vw,3.2rem);font-weight:800;letter-spacing:-1.2px;color:var(--text);margin-bottom:18px;line-height:1.1;}
+.page-hero h1 strong{background:linear-gradient(90deg,#0F2B4C,#0D9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.page-hero .subtitle{font-size:18px;color:var(--muted);line-height:1.7;max-width:640px;}
+
+.section{padding:72px 0;}
+.section-alt{padding:72px 0;background:var(--bg-surface);}
+.container{max-width:900px;margin:0 auto;padding:0 44px;}
+.sec-title{font-size:clamp(1.5rem,2.5vw,2rem);font-weight:800;letter-spacing:-0.5px;color:var(--text);margin-bottom:24px;}
+
+.prose p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:20px;}
+.prose p:last-child{margin-bottom:0;}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
+.bullet-list{display:flex;flex-direction:column;gap:12px;list-style:none;}
+.bullet-list li{display:flex;align-items:flex-start;gap:10px;font-size:15px;color:var(--muted);line-height:1.6;}
+.bullet-list li::before{content:'';display:block;min-width:6px;height:6px;border-radius:50%;background:var(--teal);margin-top:7px;}
+
+.deliverables-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.deliverable-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;}
+.deliverable-card h4{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.deliverable-card p{font-size:13.5px;color:var(--muted);line-height:1.65;}
+
+.why-box{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:40px;}
+.why-box p{font-size:16px;color:var(--muted);line-height:1.8;margin-bottom:16px;}
+.why-box p:last-child{margin-bottom:0;}
+
+.cta-block{border-radius:20px;padding:72px 56px;text-align:center;background:linear-gradient(135deg,#0F2B4C,#0D3330);position:relative;overflow:hidden;}
+.cta-block::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% -10%,rgba(13,148,136,0.3),transparent);pointer-events:none;}
+.cta-block .sec-label{color:rgba(68,202,162,0.8);}
+.cta-block h2{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-0.5px;color:#FAF8F5;margin-bottom:12px;position:relative;}
+.cta-block h2 strong{color:#44CAA2;}
+.cta-block p{font-size:16px;color:rgba(250,248,245,0.6);margin-bottom:28px;position:relative;}
+.btn-p{padding:15px 30px;border-radius:10px;background:var(--teal);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-block;}
+.btn-p:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,148,136,0.3);}
+
+footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65);}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:40px;max-width:1160px;margin:0 auto 40px;}
+.footer-brand p{font-size:13px;margin-top:10px;color:rgba(250,248,245,0.5);}
+.footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:14px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:#FAF8F5;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;max-width:1160px;margin:0 auto;flex-wrap:wrap;gap:12px;}
+
+@media(max-width:768px){
+  :root{--nav-h:56px;}
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .nav-cta{display:none;}
+  .hamburger{display:flex;}
+  .page-hero,.container{padding-left:20px;padding-right:20px;}
+  .page-hero{padding-top:calc(var(--nav-h) + 40px);}
+  .two-col{grid-template-columns:1fr;}
+  .deliverables-grid{grid-template-columns:1fr;}
+  .footer-grid{grid-template-columns:1fr;gap:28px;}
+  footer{padding:40px 20px 24px;}
+  .cta-block{padding:48px 24px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:48px;width:auto;display:block;"/></a>
+    <ul class="nav-links">
+      <li><a href="../about.html">About</a></li>
+      <li><a href="../services.html" class="active">Services</a></li>
+      <li><a href="../blog.html">Insights</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+    <a href="../assessment.html" class="nav-cta">Free Assessment</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="../about.html">About</a>
+  <a href="../services.html">Services</a>
+  <a href="../blog.html">Insights</a>
+  <a href="../contact.html">Contact</a>
+  <a href="../assessment.html" class="mobile-cta">Free Assessment</a>
+</div>
+
+<div class="page-hero">
+  <a href="../services.html" class="back-link">Services</a>
+  <div class="sec-label">Services</div>
+  <h1>Customer<br><strong>Experience</strong></h1>
+  <p class="subtitle">We design the client journey from first contact to loyal advocate — improving every touchpoint so clients stay longer, refer more often, and tell others about you without being asked.</p>
+</div>
+
+<div class="section">
+  <div class="container">
+    <div class="sec-title">What We Do</div>
+    <div class="prose">
+      <p>Acquiring a new customer costs significantly more than retaining an existing one. Most small businesses understand this intellectually but invest the majority of their energy in acquisition and very little in the deliberate design of what happens after someone becomes a client. The result is a business that works hard to fill the top of the funnel while quietly losing ground at the bottom through inconsistent delivery, poor onboarding, and missed opportunities to strengthen the relationship over time.</p>
+      <p>Customer journey mapping is where we start. We document every interaction a customer has with your business — from the moment they first hear about you through the entire lifecycle of the relationship. We look at what the experience feels like from the customer's perspective at each stage, where expectations are not met, where communication falls through, and where the business has opportunities to create memorable moments that generate loyalty and referrals. Most businesses are surprised by what this exercise reveals.</p>
+      <p>Onboarding improvement is often one of the highest-return investments a service business can make. The first 30 to 60 days of a client relationship set the tone for everything that follows. A structured, proactive onboarding process that sets clear expectations, delivers early wins, communicates regularly, and makes the client feel informed and valued dramatically reduces early churn and increases lifetime value. We design onboarding sequences that are both systematic enough to run consistently and personal enough to make clients feel genuinely cared for.</p>
+      <p>Retention systems address what happens in the middle and later stages of the client relationship. Many businesses do a reasonable job onboarding but then go quiet — clients hear from them only when there is a problem or a renewal conversation. We build proactive retention systems that include regular check-ins, milestone recognition, value delivery touchpoints, and early warning signals that tell you when a client's engagement is declining before it becomes a cancellation conversation.</p>
+      <p>Referral systems are among the most cost-effective growth levers available to small businesses, and yet most businesses leave referrals entirely to chance. We build structured referral programs that identify the right moment to ask, make the ask easy and natural, provide clients with the language and materials they need to refer effectively, and track the results so you can optimize the program over time. A well-designed referral system turns satisfied clients into an active growth channel without requiring additional marketing spend.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-alt">
+  <div class="container">
+    <div class="two-col">
+      <div>
+        <div class="sec-title">Who This Is For</div>
+        <ul class="bullet-list">
+          <li>Service businesses with high client acquisition cost that need longer client lifetimes to be profitable</li>
+          <li>Companies experiencing churn they cannot fully explain — clients leaving without a clear reason</li>
+          <li>Businesses that rely on word of mouth but have no structured process for generating referrals</li>
+          <li>Owners whose onboarding is inconsistent depending on who is handling the new client</li>
+          <li>Companies that have received negative feedback about the client experience but are not sure where to fix it</li>
+          <li>Businesses with good service delivery but weak communication between delivery milestones</li>
+          <li>Growing companies that need to maintain service quality as client volume increases</li>
+        </ul>
+      </div>
+      <div>
+        <div class="sec-title">What You Get</div>
+        <div class="deliverables-grid">
+          <div class="deliverable-card">
+            <h4>Customer Journey Map</h4>
+            <p>A full diagram of the client experience from first contact to advocacy — with friction points and opportunity areas identified.</p>
+          </div>
+          <div class="deliverable-card">
+            <h4>Onboarding Sequence</h4>
+            <p>A structured, documented onboarding process that sets expectations, delivers early value, and reduces early churn systematically.</p>
+          </div>
+          <div class="deliverable-card">
+            <h4>Retention System</h4>
+            <p>Proactive touchpoints, check-in cadences, and early warning indicators that keep client relationships strong over time.</p>
+          </div>
+          <div class="deliverable-card">
+            <h4>Referral Program</h4>
+            <p>A repeatable referral system with defined trigger moments, outreach templates, and tracking so referrals happen systematically.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section">
+  <div class="container">
+    <div class="sec-title">Why Nexvora</div>
+    <div class="why-box">
+      <p>Nexvora Systems was founded by Murat Zhandaurov in Tampa Bay, Florida with a belief that small businesses compete and win primarily through the quality and consistency of the experience they deliver — not through having the biggest marketing budget or the lowest price. Customer experience consulting is therefore not a peripheral service for us; it is central to what we believe drives lasting business success for small operators.</p>
+      <p>We work with clients across all 50 states. Customer experience engagements involve a combination of discovery calls to understand your current client journey, working sessions to redesign and document the improved process, and implementation support to make sure the new systems are actually embedded in how your team operates. All of this happens through video calls and collaborative tools, making it accessible to businesses anywhere in the country. Florida-based clients can arrange in-person sessions where that format adds value.</p>
+      <p>Our success metric in this work is straightforward: clients should be more likely to stay, more likely to refer, and less likely to have a negative experience than they were before we started. We track those outcomes and adjust our recommendations until they are reliably producing the right results.</p>
+    </div>
+  </div>
+</div>
+
+<div class="section-alt">
+  <div class="container">
+    <div class="cta-block">
+      <div class="sec-label">Get Started</div>
+      <h2>Start With a <strong>Free Assessment</strong></h2>
+      <p>Tell us about your current client retention rate and onboarding process. We will identify the gaps that are costing you the most.</p>
+      <a href="../assessment.html" class="btn-p">Take the Free Assessment</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:40px;width:auto;display:block;margin-bottom:10px;"/></a>
+      <p>Operational clarity for small businesses across Florida and all 50 states.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Company</p>
+      <div class="footer-links">
+        <a href="../about.html">About</a>
+        <a href="../services.html">Services</a>
+        <a href="../blog.html">Insights</a>
+        <a href="../contact.html">Contact</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Services</p>
+      <div class="footer-links">
+        <a href="operations.html">Operations</a>
+        <a href="ai-automation.html">AI &amp; Automation</a>
+        <a href="reporting-analytics.html">Reporting &amp; Analytics</a>
+        <a href="sales-systems.html">Sales Systems</a>
+        <a href="marketing.html">Marketing</a>
+        <a href="customer-experience.html">Customer Experience</a>
+        <a href="team-hr.html">Team &amp; HR</a>
+        <a href="financial-efficiency.html">Financial Efficiency</a>
+        <a href="growth-scaling.html">Growth &amp; Scaling</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Contact</p>
+      <div class="footer-links">
+        <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a>
+        <a href="../assessment.html">Free Assessment</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Nexvora Systems LLC. All rights reserved.</span>
+    <span style="display:flex;gap:16px;flex-wrap:wrap;">
+      <a href="../legal/terms.html" style="color:inherit;text-decoration:none;">Terms &amp; Conditions</a>
+      <a href="../legal/privacy.html" style="color:inherit;text-decoration:none;">Privacy Policy</a>
+      <a href="../legal/cookies.html" style="color:inherit;text-decoration:none;">Cookie Policy</a>
+      <a href="../legal/disclaimer.html" style="color:inherit;text-decoration:none;">Disclaimer</a>
+    </span>
+  </div>
+</footer>
+<script>document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});</script>
+</body>
+</html>

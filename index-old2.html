@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexvora Systems — Operational Intelligence for Mid-Market Businesses</title>
+  <meta name="description" content="Nexvora Systems finds the operational gaps costing your business $2.4M a year. Free 10-minute assessment. Real results." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/falcon.css" />
+  <style>
+    /* ─── Hero ─── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+      padding-top: var(--nav-height);
+    }
+    .hero-mesh {
+      position: absolute;
+      inset: -40%;
+      width: 180%; height: 180%;
+      background:
+        radial-gradient(ellipse at 15% 55%, rgba(13,148,136,0.12) 0%, transparent 55%),
+        radial-gradient(ellipse at 85% 25%, rgba(15,43,76,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 55% 85%, rgba(201,168,76,0.06) 0%, transparent 50%);
+      filter: blur(52px);
+      animation: meshDrift 24s ease-in-out infinite alternate;
+      will-change: transform;
+      pointer-events: none;
+    }
+    @keyframes meshDrift {
+      0%   { transform: translate(0,0) scale(1); }
+      50%  { transform: translate(3%,-2%) scale(1.03); }
+      100% { transform: translate(-2%,2%) scale(0.97); }
+    }
+    #neural-canvas {
+      position: absolute; inset: 0;
+      z-index: 0; pointer-events: none;
+    }
+    .hero-layout {
+      position: relative; z-index: 1;
+      display: grid;
+      grid-template-columns: 1fr 420px;
+      gap: 40px;
+      align-items: center;
+      width: 100%;
+    }
+    @media (max-width: 1060px) {
+      .hero-layout { grid-template-columns: 1fr; }
+      .hero-visual-col { display: none; }
+    }
+
+    /* Badge */
+    .hero-badge {
+      display: inline-flex; align-items: center; gap: 10px;
+      padding: 6px 16px 6px 10px;
+      background: rgba(13,148,136,0.08);
+      border: 1px solid rgba(13,148,136,0.2);
+      border-radius: 40px;
+      margin-bottom: 28px;
+    }
+    .hero-badge-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--teal);
+      position: relative;
+    }
+    .hero-badge-dot::after {
+      content: '';
+      position: absolute; inset: -4px;
+      border-radius: 50%;
+      background: rgba(13,148,136,0.22);
+      animation: pulseRing 2.8s ease infinite;
+    }
+    .hero-badge-text {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 1.5px; text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 5vw, 4rem);
+      font-weight: 260; line-height: 1.08;
+      letter-spacing: -2.5px;
+      color: var(--text-primary);
+      margin-bottom: 22px;
+    }
+    .hero h1 em {
+      font-style: normal; font-weight: 200;
+      color: var(--text-dim);
+    }
+    .hero h1 strong {
+      font-weight: 600;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .hero-sub {
+      font-size: 17px; color: var(--text-muted);
+      line-height: 1.72; max-width: 520px;
+      margin-bottom: 38px;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+    .hero-proof {
+      display: flex; align-items: center; gap: 14px;
+      margin-top: 36px; flex-wrap: wrap;
+    }
+    .hero-proof-avatars { display: flex; }
+    .hero-proof-avatar {
+      width: 32px; height: 32px; border-radius: 50%;
+      border: 2px solid var(--bg-base);
+      background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 9px; font-weight: 700; color: #fff;
+      margin-left: -8px;
+    }
+    .hero-proof-avatar:first-child { margin-left: 0; }
+    .hero-proof-text { font-size: 12px; color: var(--text-muted); }
+    .hero-proof-text strong { color: var(--text-primary); font-weight: 600; }
+
+    /* Falcon visual column */
+    .hero-visual-col {
+      display: flex; align-items: center; justify-content: center;
+      position: relative;
+    }
+    .hero-falcon-block {
+      position: relative;
+      width: 300px; height: 300px;
+    }
+    .hero-falcon-block .falcon-hero-wrap {
+      width: 100%; height: 100%;
+    }
+    .hero-falcon-ring {
+      position: absolute; inset: -24px;
+      border-radius: 50%;
+      border: 1px solid rgba(13,148,136,0.15);
+      animation: falconRingSpin 18s linear infinite;
+    }
+    .hero-falcon-ring-2 {
+      position: absolute; inset: -48px;
+      border-radius: 50%;
+      border: 1px dashed rgba(13,148,136,0.08);
+      animation: falconRingSpin 28s linear infinite reverse;
+    }
+    @keyframes falconRingSpin {
+      to { transform: rotate(360deg); }
+    }
+    .hero-stat-bubble {
+      position: absolute;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      backdrop-filter: blur(12px);
+      white-space: nowrap;
+    }
+    .hero-stat-bubble.top-left { top: 10px; left: -60px; }
+    .hero-stat-bubble.bottom-right { bottom: 20px; right: -40px; }
+    .hero-stat-num { font-size: 22px; font-weight: 700; color: var(--teal); line-height: 1; }
+    .hero-stat-label { font-size: 10px; color: var(--text-dim); margin-top: 3px; }
+
+    /* ─── Metrics strip ─── */
+    .metrics-strip {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      gap: 1px;
+      margin: 56px 0 0;
+    }
+    .metric-cell {
+      background: var(--bg-surface);
+      padding: 28px 24px; text-align: center;
+    }
+    .metric-val {
+      font-size: 38px; font-weight: 700; line-height: 1; margin-bottom: 7px;
+      background: var(--gradient-text);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;
+    }
+    .metric-lbl { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+    @media (max-width: 600px) { .metrics-strip { grid-template-columns: 1fr; } }
+
+    /* ─── How it works ─── */
+    .how-section { padding: var(--section-gap) 0; }
+    .steps-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      overflow: hidden;
+      margin-top: 52px;
+    }
+    .step-block {
+      background: var(--bg-surface);
+      padding: 40px 32px;
+      position: relative;
+    }
+    .step-block::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: var(--gradient-primary);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.5s ease;
+    }
+    .step-block:hover::before { transform: scaleX(1); }
+    .step-num {
+      font-size: 11px; font-weight: 700; letter-spacing: 2px;
+      color: var(--teal); text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+    .step-block h3 { font-size: 17px; margin-bottom: 12px; }
+    .step-block p { font-size: 13px; color: var(--text-muted); line-height: 1.7; }
+    @media (max-width: 768px) { .steps-row { grid-template-columns: 1fr; } }
+
+    /* ─── Services ─── */
+    .services-section { padding: var(--section-gap) 0; background: var(--section-bg-alt); }
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-top: 52px;
+    }
+    .svc-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px 24px 24px;
+      transition: border-color 0.25s, transform 0.28s cubic-bezier(0.25,0.46,0.45,0.94), background 0.25s;
+      position: relative; overflow: hidden;
+    }
+    .svc-card:hover { border-color: var(--border-hover); background: var(--bg-card-hover); transform: translateY(-4px); }
+    .svc-card-bottom {
+      position: absolute; bottom: 0; left: 0; right: 0; height: 2px;
+      background: var(--gradient-primary);
+      transform: scaleX(0); transform-origin: left;
+      transition: transform 0.35s ease;
+    }
+    .svc-card:hover .svc-card-bottom { transform: scaleX(1); }
+    .svc-icon {
+      width: 44px; height: 44px;
+      background: rgba(13,148,136,0.08);
+      border: 1px solid rgba(13,148,136,0.15);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      margin-bottom: 18px;
+      transition: background 0.25s, border-color 0.25s;
+    }
+    .svc-card:hover .svc-icon {
+      background: rgba(13,148,136,0.14);
+      border-color: rgba(13,148,136,0.3);
+    }
+    .svc-icon svg { width: 22px; height: 22px; stroke: var(--teal); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .svc-card h3 { font-size: 15px; margin-bottom: 8px; }
+    .svc-card p { font-size: 13px; color: var(--text-muted); line-height: 1.65; margin-bottom: 16px; }
+    .svc-link { font-size: 11px; font-weight: 700; letter-spacing: 0.5px; color: var(--teal); display: inline-flex; align-items: center; gap: 5px; transition: gap 0.2s; }
+    .svc-link:hover { gap: 9px; }
+    @media (max-width: 900px) { .services-grid { grid-template-columns: repeat(2, 1fr); } }
+    @media (max-width: 560px) { .services-grid { grid-template-columns: 1fr; } }
+
+    /* ─── Why section ─── */
+    .why-section { padding: var(--section-gap) 0; }
+    .why-layout {
+      display: grid; grid-template-columns: 1fr 1fr;
+      gap: 64px; align-items: center; margin-top: 52px;
+    }
+    .why-scorecard {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 32px 28px;
+      position: relative; overflow: hidden;
+    }
+    .why-scorecard::after {
+      content: '';
+      position: absolute; top: -60px; right: -60px;
+      width: 200px; height: 200px;
+      background: radial-gradient(circle, rgba(13,148,136,0.07), transparent 70%);
+      border-radius: 50%; pointer-events: none;
+    }
+    .scorecard-label { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--text-dim); margin-bottom: 20px; }
+    .score-row { display: flex; align-items: center; gap: 14px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+    .score-row:last-child { border-bottom: none; }
+    .score-label { font-size: 11px; color: var(--text-muted); min-width: 150px; }
+    .score-bar { flex: 1; height: 5px; background: var(--bg-deep); border-radius: 3px; overflow: hidden; }
+    .score-fill { height: 100%; border-radius: 3px; background: var(--gradient-primary); }
+    .score-pct { font-size: 12px; font-weight: 700; min-width: 36px; text-align: right; }
+    .why-points { display: flex; flex-direction: column; gap: 28px; }
+    .why-point { display: flex; gap: 18px; align-items: flex-start; }
+    .why-point-icon {
+      width: 40px; height: 40px; flex-shrink: 0; margin-top: 2px;
+      border-radius: 10px;
+      background: rgba(13,148,136,0.07);
+      border: 1px solid rgba(13,148,136,0.15);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .why-point-icon svg { width: 20px; height: 20px; stroke: var(--teal); fill: none; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; }
+    .why-point h4 { font-size: 14px; margin-bottom: 6px; }
+    .why-point p { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+    @media (max-width: 768px) { .why-layout { grid-template-columns: 1fr; gap: 36px; } }
+
+    /* ─── Testimonials ─── */
+    .testimonials-section { padding: var(--section-gap) 0; background: var(--section-bg-alt); }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 52px; }
+    .testi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px 24px;
+    }
+    .testi-stars { color: var(--amber); letter-spacing: 2px; font-size: 13px; margin-bottom: 14px; }
+    .testi-quote { font-size: 14px; color: var(--text-muted); line-height: 1.72; margin-bottom: 20px; font-style: italic; }
+    .testi-author { display: flex; align-items: center; gap: 12px; }
+    .testi-avatar {
+      width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0;
+      background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700; color: #fff;
+    }
+    .testi-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .testi-role { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    @media (max-width: 768px) { .testimonials-grid { grid-template-columns: 1fr; } }
+
+    /* ─── CTA band ─── */
+    .cta-band-section { padding: var(--section-gap) 0; }
+    .cta-band {
+      background: var(--gradient-hero, linear-gradient(135deg, #0F2B4C, #1E3A5F));
+      border-radius: var(--radius-xl);
+      padding: 80px 48px;
+      text-align: center;
+      position: relative; overflow: hidden;
+    }
+    .cta-band::before {
+      content: '';
+      position: absolute; top: -80px; left: 50%; transform: translateX(-50%);
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(13,148,136,0.14), transparent 65%);
+      border-radius: 50%; pointer-events: none;
+    }
+    .cta-band h2 {
+      font-size: clamp(1.8rem, 3.2vw, 2.8rem);
+      letter-spacing: -0.8px;
+      color: var(--text-on-dark) !important;
+      margin-bottom: 14px;
+    }
+    .cta-band p { max-width: 500px; margin: 0 auto 36px; font-size: 17px; color: var(--text-on-dark-muted); }
+    .cta-checklist {
+      display: flex; justify-content: center; gap: 28px;
+      flex-wrap: wrap; margin-bottom: 40px; list-style: none; padding: 0;
+    }
+    .cta-checklist li {
+      font-size: 13px; color: var(--text-on-dark-muted);
+      display: flex; align-items: center; gap: 8px;
+    }
+    .cta-checklist li::before {
+      content: '';
+      width: 16px; height: 16px; flex-shrink: 0;
+      border-radius: 50%;
+      background: rgba(13,148,136,0.15);
+      border: 1px solid rgba(13,148,136,0.35);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%230D9488' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-size: 10px; background-repeat: no-repeat; background-position: center;
+    }
+    @media (max-width: 768px) {
+      .cta-band { padding: 52px 24px; }
+      .cta-checklist { flex-direction: column; align-items: center; gap: 12px; }
+    }
+
+    /* ─── Section header ─── */
+    .sh { margin-bottom: 0; }
+    .sh .label-accent { display: block; margin-bottom: 10px; }
+    .sh h2 { margin-bottom: 14px; }
+    .sh p { font-size: 16px; max-width: 520px; }
+
+    /* ─── Palette preview link ─── */
+    .palette-bar {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 0;
+      text-align: center;
+      font-size: 12px;
+      color: var(--text-dim);
+    }
+    .palette-bar a { color: var(--teal); font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <!-- Palette preview notice -->
+  <div class="palette-bar">
+    Exploring color options? <a href="palettes.html">View 3 palette concepts →</a>
+  </div>
+
+  <!-- Nav -->
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="blog.html">Insights</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <a href="assessment.html" class="btn btn-primary btn-sm nav-cta">Free Assessment</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile sticky CTA -->
+  <div class="mobile-cta-bar">
+    <a href="assessment.html" class="btn btn-primary">Find My Revenue Gaps →</a>
+  </div>
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a>
+    <a href="blog.html">Insights</a>
+    <a href="contact.html">Contact</a>
+    <a href="assessment.html" class="btn btn-primary">Free Assessment</a>
+  </div>
+
+  <!-- ═══════════════════════════════ HERO ═══════════════════════════════ -->
+  <section class="hero">
+    <div class="hero-mesh"></div>
+    <canvas id="neural-canvas"></canvas>
+
+    <div class="container">
+      <div class="hero-layout">
+        <!-- Text side -->
+        <div class="hero-text-col">
+          <div class="hero-badge hero-entrance">
+            <span class="hero-badge-dot"></span>
+            <span class="hero-badge-text">The Nexvora Falcon System</span>
+          </div>
+
+          <h1 class="hero-entrance">
+            <em>We see the gaps</em><br>
+            that cost your business<br>
+            <strong>$2.4M a year</strong>
+          </h1>
+
+          <p class="hero-sub hero-entrance">
+            The Nexvora Falcon System diagnoses your operations in 10 minutes — surfacing the revenue leaks, bottlenecks, and breakdowns quietly draining your margins.
+          </p>
+
+          <div class="hero-actions hero-entrance">
+            <a href="assessment.html" class="btn btn-primary btn-lg">Find My Revenue Gaps →</a>
+            <a href="services.html" class="btn btn-ghost btn-lg">See How It Works</a>
+          </div>
+
+          <div class="hero-proof hero-entrance">
+            <div class="hero-proof-avatars">
+              <div class="hero-proof-avatar">JM</div>
+              <div class="hero-proof-avatar">SR</div>
+              <div class="hero-proof-avatar">TK</div>
+              <div class="hero-proof-avatar">AL</div>
+              <div class="hero-proof-avatar">+</div>
+            </div>
+            <p class="hero-proof-text"><strong>500+ businesses</strong> assessed and improved</p>
+          </div>
+        </div>
+
+        <!-- Falcon visual side -->
+        <div class="hero-visual-col hero-entrance">
+          <div class="hero-falcon-block">
+            <div class="hero-falcon-ring"></div>
+            <div class="hero-falcon-ring-2"></div>
+            <div class="falcon-hero-wrap" style="width:260px;height:260px;margin:20px auto;"></div>
+
+            <div class="hero-stat-bubble top-left">
+              <div class="hero-stat-num">$2.4M</div>
+              <div class="hero-stat-label">avg annual leakage</div>
+            </div>
+            <div class="hero-stat-bubble bottom-right">
+              <div class="hero-stat-num">10min</div>
+              <div class="hero-stat-label">to full diagnosis</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust strip -->
+  <div class="trust-strip">
+    <div class="container">
+      <p class="label">Trusted by businesses across industries</p>
+      <div class="trust-logos">
+        <span>Healthcare</span>
+        <span>Real Estate</span>
+        <span>Manufacturing</span>
+        <span>Professional Services</span>
+        <span>Logistics</span>
+        <span>Retail</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metrics -->
+  <div class="container">
+    <div class="metrics-strip reveal">
+      <div class="metric-cell">
+        <div class="metric-val count-up" data-target="2.4">0</div>
+        <div class="metric-lbl">Average annual revenue<br>leakage per business (M)</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-val count-up" data-target="67">0</div>
+        <div class="metric-lbl">% of businesses<br>underperforming their potential</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-val count-up" data-target="10">0</div>
+        <div class="metric-lbl">Minutes to a complete<br>operational diagnosis</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ HOW IT WORKS ═══════════════════════ -->
+  <section class="how-section">
+    <div class="container">
+      <div class="sh reveal">
+        <span class="label-accent">The Process</span>
+        <h2>Clarity in three steps</h2>
+        <p>No consultants, no long retainers — just a precise picture of where your business is losing ground and what to do about it.</p>
+      </div>
+      <div class="steps-row stagger">
+        <div class="step-block">
+          <p class="step-num">01 — Assess</p>
+          <h3>Answer 15 honest questions</h3>
+          <p>A 10-minute conversational assessment across 8 operational dimensions. The Falcon asks. You answer honestly. No judgment.</p>
+        </div>
+        <div class="step-block">
+          <p class="step-num">02 — Diagnose</p>
+          <h3>Receive your scorecard</h3>
+          <p>Get a breakdown of every gap — with dollar-loss estimates tied to your actual business size and industry benchmarks.</p>
+        </div>
+        <div class="step-block">
+          <p class="step-num">03 — Execute</p>
+          <h3>Build your roadmap</h3>
+          <p>We translate findings into a 90-day action plan specific to your industry, stage, and the gaps that cost you most.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ SERVICES ═══════════════════════════ -->
+  <section class="services-section">
+    <div class="container">
+      <div class="sh reveal">
+        <span class="label-accent">What We Fix</span>
+        <h2>The six pillars of operational excellence</h2>
+        <p>We specialize in the gaps most consultants overlook — the ones bleeding your margins quietly, month after month.</p>
+      </div>
+      <div class="services-grid stagger">
+
+        <div class="svc-card">
+          <div class="svc-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3>Operations &amp; Workflow</h3>
+          <p>Manual processes, bottlenecks, and coordination failures that slow delivery and inflate costs — identified and fixed.</p>
+          <a href="services.html" class="svc-link">Learn more <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <div class="svc-card-bottom"></div>
+        </div>
+
+        <div class="svc-card">
+          <div class="svc-icon">
+            <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+          </div>
+          <h3>Sales &amp; Revenue Systems</h3>
+          <p>Leaky pipelines, inconsistent follow-up, and pricing gaps leaving revenue on the table every single quarter.</p>
+          <a href="services.html" class="svc-link">Learn more <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <div class="svc-card-bottom"></div>
+        </div>
+
+        <div class="svc-card">
+          <div class="svc-icon">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          </div>
+          <h3>Team &amp; Communication</h3>
+          <p>Misaligned teams, unclear accountability, and breakdowns that compound into performance gaps over time.</p>
+          <a href="services.html" class="svc-link">Learn more <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <div class="svc-card-bottom"></div>
+        </div>
+
+        <div class="svc-card">
+          <div class="svc-icon">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+          </div>
+          <h3>Financial Visibility</h3>
+          <p>Cash flow blind spots, untracked expenses, and reporting gaps that prevent you from making smart, timely decisions.</p>
+          <a href="services.html" class="svc-link">Learn more <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <div class="svc-card-bottom"></div>
+        </div>
+
+        <div class="svc-card">
+          <div class="svc-icon">
+            <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2" ry="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+          </div>
+          <h3>Technology &amp; Tools</h3>
+          <p>Disconnected software stacks, missing automations, and tech debt costing your team hours every single week.</p>
+          <a href="services.html" class="svc-link">Learn more <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <div class="svc-card-bottom"></div>
+        </div>
+
+        <div class="svc-card">
+          <div class="svc-icon">
+            <svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3>Compliance &amp; Risk</h3>
+          <p>Hidden liability, regulatory gaps, and risk blind spots that represent a financial threat hiding in plain sight.</p>
+          <a href="services.html" class="svc-link">Learn more <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg></a>
+          <div class="svc-card-bottom"></div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ WHY ════════════════════════════════ -->
+  <section class="why-section">
+    <div class="container">
+      <div class="why-layout">
+        <div class="why-scorecard reveal-left">
+          <p class="scorecard-label">Sample Business Health Scan</p>
+          <div class="score-row">
+            <span class="score-label">Operations Efficiency</span>
+            <div class="score-bar"><div class="score-fill" style="width:38%"></div></div>
+            <span class="score-pct" style="color:var(--red)">38%</span>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Sales Process Maturity</span>
+            <div class="score-bar"><div class="score-fill" style="width:52%"></div></div>
+            <span class="score-pct" style="color:var(--amber)">52%</span>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Team Alignment Score</span>
+            <div class="score-bar"><div class="score-fill" style="width:44%"></div></div>
+            <span class="score-pct" style="color:var(--red)">44%</span>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Technology Utilization</span>
+            <div class="score-bar"><div class="score-fill" style="width:29%"></div></div>
+            <span class="score-pct" style="color:var(--red)">29%</span>
+          </div>
+          <div class="score-row">
+            <span class="score-label">Financial Clarity</span>
+            <div class="score-bar"><div class="score-fill" style="width:71%"></div></div>
+            <span class="score-pct" style="color:var(--green)">71%</span>
+          </div>
+        </div>
+
+        <div class="why-points reveal-right">
+          <span class="label-accent" style="display:block;margin-bottom:14px;">Why Nexvora</span>
+          <h2 style="margin-bottom:36px;">We find what your business can't see itself</h2>
+
+          <div class="why-point">
+            <div class="why-point-icon">
+              <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </div>
+            <div>
+              <h4>Industry-Calibrated Analysis</h4>
+              <p>Your scores are benchmarked against businesses of the same size, industry, and growth stage — not generic averages that mean nothing to you.</p>
+            </div>
+          </div>
+
+          <div class="why-point">
+            <div class="why-point-icon">
+              <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            </div>
+            <div>
+              <h4>Dollar-Loss Quantification</h4>
+              <p>Every gap is translated into estimated annual revenue impact so you can prioritize by financial urgency — not gut feel.</p>
+            </div>
+          </div>
+
+          <div class="why-point">
+            <div class="why-point-icon">
+              <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+            </div>
+            <div>
+              <h4>No Long Retainers Required</h4>
+              <p>Start free. Our model is built around results at each stage — not locking you into contracts before you've seen the value.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ TESTIMONIALS ════════════════════════ -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="sh reveal">
+        <span class="label-accent">Client Results</span>
+        <h2>What businesses say after their assessment</h2>
+        <p>Real outcomes from companies who stopped guessing and started fixing.</p>
+      </div>
+      <div class="testimonials-grid stagger">
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">"The assessment found $340K in annual leakage we had no idea existed. Within 90 days we fixed the top three issues and saw immediate margin improvement."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">MR</div>
+            <div>
+              <p class="testi-name">Marcus R.</p>
+              <p class="testi-role">CEO, Regional Healthcare Group</p>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">"I've worked with expensive consultants who gave me slide decks. Nexvora gave me a roadmap I could actually execute. Best 10 minutes I've spent this year."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">SL</div>
+            <div>
+              <p class="testi-name">Stephanie L.</p>
+              <p class="testi-role">COO, Logistics Network</p>
+            </div>
+          </div>
+        </div>
+        <div class="testi-card">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-quote">"Our sales pipeline was a black box. After the analysis we rebuilt our follow-up system and closed 22% more deals in Q1 without adding headcount."</p>
+          <div class="testi-author">
+            <div class="testi-avatar">DK</div>
+            <div>
+              <p class="testi-name">David K.</p>
+              <p class="testi-role">Founder, Professional Services Firm</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ CTA BAND ════════════════════════════ -->
+  <section class="cta-band-section">
+    <div class="container">
+      <div class="cta-band reveal">
+        <span class="label-accent" style="display:block;margin-bottom:16px;font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--teal);">Start Today — It's Free</span>
+        <h2>Find out what your business<br>is losing every year</h2>
+        <p>10 minutes. 8 dimensions. One personalized report that shows exactly where the money is going.</p>
+        <ul class="cta-checklist">
+          <li>Conversational — no forms</li>
+          <li>Personalized to your industry</li>
+          <li>Dollar-loss estimates included</li>
+          <li>100% free, no credit card</li>
+        </ul>
+        <a href="assessment.html" class="btn btn-primary btn-lg">Take the Free Assessment →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════ FOOTER ══════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo">
+            <img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" />
+          </a>
+          <p>Operational intelligence for mid-market businesses. We find what's costing you money before you can fix it.</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Company</p>
+          <div class="footer-links">
+            <a href="about.html">About Nexvora</a>
+            <a href="services.html">Our Services</a>
+            <a href="blog.html">Insights</a>
+            <a href="contact.html">Contact</a>
+            <a href="assessment.html" class="highlight">Free Assessment →</a>
+          </div>
+        </div>
+        <div>
+          <p class="footer-col-title">Services</p>
+          <div class="footer-links">
+            <a href="services.html">Operations Consulting</a>
+            <a href="services.html">Revenue Optimization</a>
+            <a href="services.html">Team Alignment</a>
+            <a href="services.html">Technology Audit</a>
+            <a href="services.html">Financial Visibility</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-bottom-left">© 2026 Nexvora Systems LLC. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="legal/terms.html">Terms &amp; Conditions</a>
+          <a href="legal/privacy.html">Privacy Policy</a>
+          <a href="legal/disclaimer.html">Disclaimer</a>
+          <a href="legal/cookies.html">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/falcon.js"></script>
+  <script>
+    // Count-up on scroll
+    const countEls = document.querySelectorAll('.count-up');
+    const countIO = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          Nexvora.countUp(e.target, parseFloat(e.target.dataset.target), 1600);
+          e.target.classList.add('active');
+          countIO.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    countEls.forEach(el => countIO.observe(el));
+  </script>
+</body>
+</html>

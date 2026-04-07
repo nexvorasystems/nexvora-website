@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Free business assessment from Nexvora. Find out where your business can improve in 10 minutes."/>
+<title>Free Assessment — Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;
+  --bg-surface:#F0EDE8;
+  --bg-card:#FFFFFF;
+  --text:#1A1A2E;
+  --muted:#4A5568;
+  --dim:#718096;
+  --border:#E2DDD5;
+  --teal:#0D9488;
+  --teal-lt:rgba(13,148,136,0.1);
+  --teal-mid:rgba(13,148,136,0.2);
+  --navy:#0F2B4C;
+  --radius:12px;
+  --nav-h:68px;
+  --red:#EF4444;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+
+/* NAV */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  height:var(--nav-h);display:flex;align-items:center;
+  background:rgba(250,248,245,0.92);
+  -webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);padding:0 44px;
+}
+.nav-inner{display:flex;align-items:center;width:100%;}
+.logo{font-size:19px;font-weight:800;letter-spacing:-0.5px;color:var(--text);text-decoration:none;}
+.logo span{color:var(--teal);}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;margin-left:auto;display:flex;align-items:center;gap:6px;transition:color .15s;}
+.nav-back:hover{color:var(--teal);}
+
+/* PROGRESS BAR */
+.progress-bar{
+  position:fixed;top:var(--nav-h);left:0;right:0;z-index:100;
+  height:3px;background:var(--border);
+}
+.progress-fill{
+  height:100%;background:var(--teal);
+  transition:width .4s cubic-bezier(.4,0,.2,1);
+  width:0%;
+}
+
+/* MAIN LAYOUT */
+.assessment-wrap{
+  min-height:100vh;
+  padding:calc(var(--nav-h) + 48px) 24px 80px;
+  display:flex;align-items:flex-start;justify-content:center;
+}
+.card{
+  width:100%;max-width:580px;
+  background:var(--bg-card);
+  border:1px solid var(--border);
+  border-radius:20px;
+  padding:48px 48px 40px;
+  box-shadow:0 4px 32px rgba(0,0,0,0.06);
+}
+
+/* STEP HEADER */
+.step-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
+.step-counter{font-size:12px;color:var(--dim);margin-bottom:24px;}
+.step-q{font-size:22px;font-weight:700;line-height:1.3;color:var(--text);margin-bottom:8px;}
+.step-hint{font-size:14px;color:var(--muted);margin-bottom:32px;line-height:1.6;}
+
+/* OPTIONS (radio/checkbox style cards) */
+.options{display:flex;flex-direction:column;gap:10px;margin-bottom:32px;}
+.opt{
+  display:flex;align-items:center;gap:14px;
+  padding:14px 18px;
+  border:1.5px solid var(--border);border-radius:10px;
+  cursor:pointer;transition:all .15s;
+  user-select:none;
+}
+.opt:hover{border-color:var(--teal);background:var(--teal-lt);}
+.opt.selected{border-color:var(--teal);background:var(--teal-lt);}
+.opt-dot{
+  width:20px;height:20px;min-width:20px;border-radius:50%;
+  border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  transition:all .15s;
+}
+.opt.selected .opt-dot{border-color:var(--teal);background:var(--teal);}
+.opt.selected .opt-dot::after{content:'';display:block;width:6px;height:6px;border-radius:50%;background:#fff;}
+.opt-text{font-size:15px;color:var(--text);font-weight:500;}
+.opt-sub{font-size:12px;color:var(--dim);margin-top:2px;}
+
+/* Multi-select variant */
+.opt.multi .opt-dot{border-radius:4px;}
+.opt.multi.selected .opt-dot{border-color:var(--teal);background:var(--teal);}
+.opt.multi.selected .opt-dot::after{content:'✓';display:block;font-size:11px;color:#fff;line-height:1;margin-top:0;}
+
+/* TEXT INPUT */
+.input-group{margin-bottom:24px;}
+.input-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:8px;display:block;}
+.input-label .req{color:var(--red);margin-left:2px;}
+input[type=text],input[type=email],input[type=tel],select,textarea{
+  width:100%;
+  padding:13px 16px;
+  border:1.5px solid var(--border);border-radius:10px;
+  font-size:15px;color:var(--text);
+  background:var(--bg);
+  font-family:inherit;
+  transition:border-color .15s;
+  outline:none;
+  -webkit-appearance:none;appearance:none;
+}
+input[type=text]:focus,input[type=email]:focus,input[type=tel]:focus,select:focus,textarea:focus{
+  border-color:var(--teal);
+  box-shadow:0 0 0 3px rgba(13,148,136,0.12);
+}
+input::placeholder,textarea::placeholder{color:var(--dim);}
+select{background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23718096' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px;cursor:pointer;}
+textarea{resize:vertical;min-height:100px;line-height:1.6;}
+.input-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
+
+/* SCALE / SLIDER */
+.scale{display:flex;gap:8px;margin-bottom:32px;}
+.scale-btn{
+  flex:1;padding:10px 4px;text-align:center;
+  border:1.5px solid var(--border);border-radius:8px;
+  cursor:pointer;font-size:14px;font-weight:600;color:var(--muted);
+  transition:all .15s;
+}
+.scale-btn:hover{border-color:var(--teal);color:var(--teal);}
+.scale-btn.selected{border-color:var(--teal);background:var(--teal);color:#fff;}
+.scale-labels{display:flex;justify-content:space-between;font-size:11px;color:var(--dim);margin-top:6px;margin-bottom:32px;}
+
+/* BUTTONS */
+.btn-row{display:flex;gap:12px;align-items:center;}
+.btn-next{
+  padding:14px 32px;border-radius:10px;background:var(--teal);color:#fff;
+  font-size:15px;font-weight:700;border:none;cursor:pointer;
+  transition:all .18s;flex:1;
+}
+.btn-next:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.btn-next:disabled{opacity:0.4;cursor:not-allowed;transform:none;filter:none;}
+.btn-back{
+  padding:14px 20px;border-radius:10px;background:transparent;
+  color:var(--muted);border:1.5px solid var(--border);
+  font-size:15px;font-weight:600;cursor:pointer;transition:all .15s;
+}
+.btn-back:hover{border-color:var(--teal);color:var(--teal);}
+
+/* THANK YOU SCREEN */
+.ty-wrap{text-align:center;padding:16px 0;}
+.ty-icon{
+  width:72px;height:72px;border-radius:50%;
+  background:var(--teal-lt);border:2px solid var(--teal-mid);
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 24px;
+}
+.ty-wrap h2{font-size:26px;font-weight:800;color:var(--text);margin-bottom:12px;}
+.ty-wrap p{font-size:16px;color:var(--muted);line-height:1.7;margin-bottom:8px;}
+.ty-wrap .highlight{color:var(--teal);font-weight:700;}
+.ty-steps{
+  margin-top:32px;text-align:left;
+  background:var(--bg-surface);border-radius:14px;padding:24px;
+}
+.ty-step{display:flex;gap:14px;padding:10px 0;border-bottom:1px solid var(--border);}
+.ty-step:last-child{border-bottom:none;}
+.ty-step-n{
+  width:28px;height:28px;min-width:28px;border-radius:50%;
+  background:var(--teal);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;font-weight:800;
+}
+.ty-step-text{font-size:14px;color:var(--muted);line-height:1.5;}
+.ty-step-text strong{color:var(--text);}
+.btn-home{
+  display:inline-block;margin-top:32px;
+  padding:14px 32px;border-radius:10px;background:var(--teal);color:#fff;
+  font-size:15px;font-weight:700;text-decoration:none;
+  transition:all .18s;
+}
+.btn-home:hover{filter:brightness(1.08);}
+
+/* RESPONSIVE */
+@media(max-width:640px){
+  nav{padding:0 20px;}
+  .card{padding:32px 24px 28px;border-radius:16px;}
+  .input-row{grid-template-columns:1fr;}
+  .step-q{font-size:19px;}
+}
+@media(max-width:400px){
+  .scale-btn{font-size:12px;padding:8px 2px;}
+}
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Nexvora<span>.</span></a>
+    <a href="index.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back to site
+    </a>
+  </div>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+
+<!-- MAIN -->
+<div class="assessment-wrap">
+  <div class="card" id="assessCard">
+    <!-- Steps injected by JS -->
+  </div>
+</div>
+
+<script>
+// ── DATA ──────────────────────────────────────────────────────────────
+const answers = {};
+
+// Steps are defined as functions so they can read prior answers
+const STEPS = [
+
+  // ── STAGE 1: Contact ──────────────────────────────────────────
+  {
+    id: 'contact',
+    label: 'Let\'s Get Started',
+    title: 'How should we reach you?',
+    hint: 'We will send your personalized report here within 24 hours.',
+    type: 'form',
+    fields: [
+      {id:'full_name', label:'Full Name', type:'text', placeholder:'John Smith', required:true},
+      {id:'email',     label:'Email Address', type:'email', placeholder:'john@yourcompany.com', required:true},
+      {id:'phone',     label:'Phone Number', type:'tel', placeholder:'+1 (555) 000-0000', required:false},
+      {id:'referral',  label:'How did you hear about us?', type:'select', options:['Google Search','Social Media','Referral from a friend','Online ad','Other'], required:false},
+    ]
+  },
+
+  // ── STAGE 2: Business basics ──────────────────────────────────
+  {
+    id: 'biz_type',
+    label: 'Your Business',
+    title: 'What type of business do you run?',
+    hint: 'Pick the one that fits best.',
+    type: 'single',
+    options: [
+      {value:'cleaning',        label:'Cleaning Services',         sub:'Residential or commercial cleaning'},
+      {value:'retail',          label:'Retail or E-commerce',      sub:'Physical store or online shop'},
+      {value:'service_trade',   label:'Trade or Field Services',   sub:'Contractors, HVAC, plumbing, landscaping'},
+      {value:'professional',    label:'Professional Services',     sub:'Consulting, legal, accounting, real estate'},
+      {value:'food',            label:'Food and Hospitality',      sub:'Restaurant, cafe, catering'},
+      {value:'health',          label:'Health and Wellness',       sub:'Gym, salon, clinic, therapy'},
+      {value:'other',           label:'Other',                     sub:'Something not listed above'},
+    ]
+  },
+
+  {
+    id: 'biz_name',
+    label: 'Your Business',
+    title: 'What is your business name?',
+    hint: 'This helps us personalize your report.',
+    type: 'form',
+    fields: [
+      {id:'biz_name', label:'Business Name', type:'text', placeholder:'Your Company Name', required:true},
+    ]
+  },
+
+  {
+    id: 'team_size',
+    label: 'Your Business',
+    title: 'How many people are on your team?',
+    hint: 'Include full-time, part-time, and contractors.',
+    type: 'single',
+    options: [
+      {value:'solo',   label:'Just me',        sub:'Solo operator'},
+      {value:'2_5',    label:'2 to 5 people',  sub:'Small but growing'},
+      {value:'6_15',   label:'6 to 15 people', sub:'Small team'},
+      {value:'16_50',  label:'16 to 50 people',sub:'Mid-size team'},
+      {value:'50plus', label:'50+ people',     sub:'Larger organization'},
+    ]
+  },
+
+  {
+    id: 'revenue',
+    label: 'Your Business',
+    title: 'What is your approximate annual revenue?',
+    hint: 'Ballpark is fine. This helps us understand where you are.',
+    type: 'single',
+    options: [
+      {value:'under_100k',  label:'Under $100K'},
+      {value:'100_500k',    label:'$100K to $500K'},
+      {value:'500k_1m',     label:'$500K to $1M'},
+      {value:'1m_5m',       label:'$1M to $5M'},
+      {value:'5m_plus',     label:'$5M+'},
+      {value:'prefer_not',  label:'Prefer not to say'},
+    ]
+  },
+
+  // ── STAGE 3: Challenges (adaptive) ────────────────────────────
+  {
+    id: 'main_challenge',
+    label: 'Your Challenges',
+    title: () => `What is the biggest challenge in your business right now?`,
+    hint: 'Pick the one that is most pressing.',
+    type: 'single',
+    options: [
+      {value:'operations',  label:'Operations',          sub:'Things break, processes are unclear, team is confused'},
+      {value:'sales',       label:'Sales',               sub:'Not enough leads, not closing enough deals'},
+      {value:'marketing',   label:'Marketing',           sub:'People don\'t know we exist, no consistent lead flow'},
+      {value:'team',        label:'Team',                sub:'Hard to hire, keep, or manage people effectively'},
+      {value:'finance',     label:'Finance',             sub:'Cash flow, margins, or financial visibility'},
+      {value:'tech',        label:'Technology',          sub:'Systems don\'t work together, too many tools'},
+      {value:'growth',      label:'Growth & Scaling',    sub:'Growing but things are getting messy'},
+      {value:'not_sure',    label:'Not sure',            sub:'I need help figuring out where to focus'},
+    ]
+  },
+
+  // Solo-specific: time question
+  {
+    id: 'solo_time',
+    label: 'Your Situation',
+    title: 'How many hours a week do you spend on admin and tasks that are not your core work?',
+    hint: 'Things like reporting, emails, scheduling, follow-ups.',
+    type: 'scale',
+    min: 0, max: 10,
+    labels: ['Almost none', 'Half my week', 'Most of my time'],
+    showIf: a => a.team_size === 'solo',
+  },
+
+  // Small team: departments
+  {
+    id: 'departments',
+    label: 'Your Team',
+    title: 'Which of these does your business currently have?',
+    hint: 'Select all that apply.',
+    type: 'multi',
+    options: [
+      {value:'sales_team',    label:'Dedicated sales person or team'},
+      {value:'marketing_team',label:'Someone handling marketing'},
+      {value:'ops_manager',   label:'Operations or office manager'},
+      {value:'finance_person',label:'Someone handling finances/bookkeeping'},
+      {value:'none',          label:'It\'s mostly just me or one other person'},
+    ],
+    showIf: a => ['2_5','6_15'].includes(a.team_size),
+  },
+
+  // Larger team: org structure
+  {
+    id: 'org_clarity',
+    label: 'Your Team',
+    title: 'How clear are roles and responsibilities in your organization?',
+    hint: 'Be honest. This helps us find the right gaps.',
+    type: 'single',
+    options: [
+      {value:'very_clear',    label:'Very clear',         sub:'Everyone knows exactly what they own'},
+      {value:'mostly_clear',  label:'Mostly clear',       sub:'Some overlap but generally fine'},
+      {value:'somewhat',      label:'Somewhat clear',     sub:'Some confusion, things fall through cracks'},
+      {value:'unclear',       label:'Not clear at all',   sub:'People duplicate effort or miss things regularly'},
+    ],
+    showIf: a => ['6_15','16_50','50plus'].includes(a.team_size),
+  },
+
+  // Mid/large: reporting
+  {
+    id: 'reporting',
+    label: 'Reporting',
+    title: 'How do you currently track business performance?',
+    hint: 'What does your weekly or monthly reporting look like?',
+    type: 'single',
+    options: [
+      {value:'no_reporting',    label:'I don\'t really track it',      sub:'Running on gut feel'},
+      {value:'basic',           label:'Basic spreadsheets or manual',  sub:'Works but takes time'},
+      {value:'some_tools',      label:'Some software tools',           sub:'QuickBooks, CRM, etc.'},
+      {value:'dashboards',      label:'Dashboards and reports',        sub:'Mostly automated'},
+      {value:'very_advanced',   label:'Advanced reporting',            sub:'Real-time data, multiple systems connected'},
+    ],
+    showIf: a => ['6_15','16_50','50plus'].includes(a.team_size),
+  },
+
+  // AI / automation awareness
+  {
+    id: 'ai_current',
+    label: 'Technology',
+    title: 'Are you currently using any AI or automation in your business?',
+    hint: '',
+    type: 'single',
+    options: [
+      {value:'none',        label:'No, not at all'},
+      {value:'basic',       label:'A little, like AI writing tools or chatbots'},
+      {value:'moderate',    label:'Yes, some workflows are automated'},
+      {value:'advanced',    label:'Yes, we use AI and automation extensively'},
+    ]
+  },
+
+  // Top goal
+  {
+    id: 'goal',
+    label: 'Your Goals',
+    title: 'What outcome matters most to you in the next 12 months?',
+    hint: 'Pick the one that excites you most.',
+    type: 'single',
+    options: [
+      {value:'save_time',     label:'Save time and reduce overwhelm'},
+      {value:'grow_revenue',  label:'Grow revenue without adding headcount'},
+      {value:'reduce_costs',  label:'Cut costs and improve profitability'},
+      {value:'systemize',     label:'Build systems so the business runs without me'},
+      {value:'scale_team',    label:'Scale the team the right way'},
+      {value:'all',           label:'All of the above'},
+    ]
+  },
+
+  // Free text
+  {
+    id: 'anything_else',
+    label: 'Almost Done',
+    title: 'Anything else you want us to know?',
+    hint: 'Optional. Tell us anything specific about your situation that would help us give you better recommendations.',
+    type: 'form',
+    fields: [
+      {id:'notes', label:'Your notes (optional)', type:'textarea', placeholder:'e.g. We just hired two new people, we are trying to expand into a new city...', required:false},
+    ]
+  },
+
+];
+
+// ── LOGIC ──────────────────────────────────────────────────────────────
+let visibleSteps = [];
+let currentIdx = 0;
+
+function getVisibleSteps(){
+  return STEPS.filter(s => !s.showIf || s.showIf(answers));
+}
+
+function getProgress(){
+  return Math.round(((currentIdx) / (visibleSteps.length)) * 100);
+}
+
+function updateProgress(){
+  document.getElementById('progressFill').style.width = getProgress() + '%';
+}
+
+// ── RENDER ──────────────────────────────────────────────────────────────
+function render(){
+  visibleSteps = getVisibleSteps();
+  const step = visibleSteps[currentIdx];
+  if(!step){ renderThankYou(); return; }
+
+  const card = document.getElementById('assessCard');
+  const label = typeof step.label === 'function' ? step.label(answers) : step.label;
+  const title = typeof step.title === 'function' ? step.title(answers) : step.title;
+  const hint  = typeof step.hint  === 'function' ? step.hint(answers)  : step.hint;
+
+  let inner = `
+    <div class="step-label">${label}</div>
+    <div class="step-counter">Question ${currentIdx+1} of ${visibleSteps.length}</div>
+    <div class="step-q">${title}</div>
+    ${hint ? `<div class="step-hint">${hint}</div>` : ''}
+  `;
+
+  if(step.type === 'form'){
+    inner += renderForm(step);
+  } else if(step.type === 'single'){
+    inner += renderSingle(step);
+  } else if(step.type === 'multi'){
+    inner += renderMulti(step);
+  } else if(step.type === 'scale'){
+    inner += renderScale(step);
+  }
+
+  inner += `
+    <div class="btn-row">
+      ${currentIdx > 0 ? `<button class="btn-back" onclick="goBack()">Back</button>` : ''}
+      <button class="btn-next" id="btnNext" onclick="goNext()">
+        ${currentIdx === visibleSteps.length - 1 ? 'Submit Assessment' : 'Continue'}
+      </button>
+    </div>
+  `;
+
+  card.innerHTML = inner;
+  card.scrollIntoView({behavior:'smooth',block:'start'});
+  updateProgress();
+  validateStep();
+}
+
+function renderForm(step){
+  let html = '';
+  const fields = step.fields;
+  // Pair fields in rows if both are short inputs
+  let i = 0;
+  while(i < fields.length){
+    const f = fields[i];
+    if(f.type === 'textarea'){
+      html += `<div class="input-group">${renderField(f)}</div>`;
+      i++;
+    } else {
+      html += `<div class="input-group">${renderField(f)}</div>`;
+      i++;
+    }
+  }
+  return html;
+}
+
+function renderField(f){
+  const val = answers[f.id] || '';
+  const req = f.required ? '<span class="req">*</span>' : '';
+  if(f.type === 'select'){
+    const opts = f.options.map(o => `<option value="${o}" ${val===o?'selected':''}>${o}</option>`).join('');
+    return `
+      <label class="input-label">${f.label}${req}</label>
+      <select id="field_${f.id}" onchange="saveField('${f.id}',this.value);validateStep();">
+        <option value="">Select one</option>
+        ${opts}
+      </select>`;
+  }
+  if(f.type === 'textarea'){
+    return `
+      <label class="input-label">${f.label}${req}</label>
+      <textarea id="field_${f.id}" placeholder="${f.placeholder||''}" oninput="saveField('${f.id}',this.value);validateStep();">${val}</textarea>`;
+  }
+  return `
+    <label class="input-label">${f.label}${req}</label>
+    <input type="${f.type}" id="field_${f.id}" placeholder="${f.placeholder||''}" value="${val}"
+      oninput="saveField('${f.id}',this.value);validateStep();" autocomplete="on"/>`;
+}
+
+function renderSingle(step){
+  const saved = answers[step.id];
+  const opts = step.options.map(o => `
+    <div class="opt${saved===o.value?' selected':''}" onclick="selectOpt('${step.id}','${o.value}',this,false)">
+      <div class="opt-dot"></div>
+      <div>
+        <div class="opt-text">${o.label}</div>
+        ${o.sub ? `<div class="opt-sub">${o.sub}</div>` : ''}
+      </div>
+    </div>`).join('');
+  return `<div class="options">${opts}</div>`;
+}
+
+function renderMulti(step){
+  const saved = answers[step.id] || [];
+  const opts = step.options.map(o => `
+    <div class="opt multi${saved.includes(o.value)?' selected':''}" onclick="selectOpt('${step.id}','${o.value}',this,true)">
+      <div class="opt-dot"></div>
+      <div>
+        <div class="opt-text">${o.label}</div>
+        ${o.sub ? `<div class="opt-sub">${o.sub}</div>` : ''}
+      </div>
+    </div>`).join('');
+  return `<div class="options">${opts}</div>`;
+}
+
+function renderScale(step){
+  const saved = answers[step.id];
+  const count = step.max - step.min + 1;
+  const btns = Array.from({length:count},(_,i)=>{
+    const v = step.min + i;
+    return `<div class="scale-btn${saved===v?' selected':''}" onclick="selectScale('${step.id}',${v},this)">${v}</div>`;
+  }).join('');
+  return `
+    <div class="scale">${btns}</div>
+    <div class="scale-labels">
+      <span>${step.labels[0]}</span>
+      <span>${step.labels[1]}</span>
+      <span>${step.labels[2]}</span>
+    </div>`;
+}
+
+// ── INTERACTION ────────────────────────────────────────────────────────
+function saveField(id, val){
+  answers[id] = val;
+}
+
+function selectOpt(stepId, val, el, isMulti){
+  if(isMulti){
+    if(!answers[stepId]) answers[stepId] = [];
+    const arr = answers[stepId];
+    const idx = arr.indexOf(val);
+    if(idx > -1){ arr.splice(idx,1); el.classList.remove('selected'); }
+    else { arr.push(val); el.classList.add('selected'); }
+  } else {
+    answers[stepId] = val;
+    document.querySelectorAll('.opt:not(.multi)').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    // Auto-advance after short delay for single-select
+    setTimeout(()=>goNext(), 280);
+  }
+  validateStep();
+}
+
+function selectScale(stepId, val, el){
+  answers[stepId] = val;
+  document.querySelectorAll('.scale-btn').forEach(b => b.classList.remove('selected'));
+  el.classList.add('selected');
+  validateStep();
+}
+
+function validateStep(){
+  const step = visibleSteps[currentIdx];
+  const btn = document.getElementById('btnNext');
+  if(!btn) return;
+  let valid = true;
+
+  if(step.type === 'form'){
+    step.fields.forEach(f => {
+      if(f.required){
+        const el = document.getElementById('field_'+f.id);
+        if(!el || !el.value.trim()) valid = false;
+      }
+    });
+  } else if(step.type === 'single'){
+    if(!answers[step.id]) valid = false;
+  } else if(step.type === 'scale'){
+    if(answers[step.id] === undefined) valid = false;
+  }
+  // multi is optional (can skip)
+
+  btn.disabled = !valid;
+}
+
+function goNext(){
+  const step = visibleSteps[currentIdx];
+
+  // Save form fields
+  if(step.type === 'form'){
+    step.fields.forEach(f => {
+      const el = document.getElementById('field_'+f.id);
+      if(el) answers[f.id] = el.value.trim();
+    });
+  }
+
+  // Recompute visible steps after new answer (branching)
+  visibleSteps = getVisibleSteps();
+  currentIdx++;
+  render();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function goBack(){
+  if(currentIdx > 0){
+    currentIdx--;
+    visibleSteps = getVisibleSteps();
+    render();
+    window.scrollTo({top:0,behavior:'smooth'});
+  }
+}
+
+// ── THANK YOU ──────────────────────────────────────────────────────────
+function renderThankYou(){
+  document.getElementById('progressFill').style.width = '100%';
+  const name = answers.full_name ? answers.full_name.split(' ')[0] : 'there';
+  const email = answers.email || 'your email';
+  const biz = answers.biz_name || 'your business';
+
+  document.getElementById('assessCard').innerHTML = `
+    <div class="ty-wrap">
+      <div class="ty-icon">
+        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h2>Thank you, ${name}!</h2>
+      <p>Your assessment for <span class="highlight">${biz}</span> has been submitted.</p>
+      <p>We will review your answers and send your personalized report to <span class="highlight">${email}</span> within 24 hours.</p>
+      <div class="ty-steps">
+        <div class="ty-step">
+          <div class="ty-step-n">1</div>
+          <div class="ty-step-text"><strong>Assessment received</strong><br>We have everything we need to get started.</div>
+        </div>
+        <div class="ty-step">
+          <div class="ty-step-n">2</div>
+          <div class="ty-step-text"><strong>We review your answers</strong><br>Our team looks at your specific situation and identifies the biggest opportunities.</div>
+        </div>
+        <div class="ty-step">
+          <div class="ty-step-n">3</div>
+          <div class="ty-step-text"><strong>Report in your inbox</strong><br>You will receive your personalized report within 24 hours with clear next steps.</div>
+        </div>
+      </div>
+      <a href="index.html" class="btn-home">Back to Home</a>
+    </div>
+  `;
+}
+
+// ── START ──────────────────────────────────────────────────────────────
+visibleSteps = getVisibleSteps();
+render();
+</script>
+</body>
+</html>

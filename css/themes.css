@@ -1,0 +1,463 @@
+/* ============================================================
+   NEXVORA SYSTEMS — themes.css
+   7 Color Themes — The Nexvora Falcon System
+   Applied via data-theme attribute on <html>
+
+   cream        — Cream Intelligence (NEW DEFAULT - light)
+   space        — Midnight Space (old default, kept)
+   apple-light  — Apple Light
+   apple-dark   — Apple Dark
+   carbon       — Falcon Carbon
+   forest       — Forest Sovereign
+   titanium     — Falcon Titanium
+
+   OLD_APRIL5: Previous 4 themes (B/A/C/D) replaced by this system
+   ============================================================ */
+
+/* ─────────────────────────────────────────────
+   THEME 1: Cream Intelligence (DEFAULT)
+   McKinsey-meets-Nexvora. Warm, authoritative, premium.
+───────────────────────────────────────────── */
+[data-theme="cream"] {
+  --bg-base:         #FAF8F5;
+  --bg-surface:      #F0EDE8;
+  --bg-deep:         #E8E4DE;
+  --bg-card:         rgba(255, 255, 255, 0.75);
+  --bg-card-hover:   rgba(255, 255, 255, 0.95);
+  --bg-dark:         #0F2B4C;
+  --bg-dark-surface: #091D33;
+
+  --gradient-primary: linear-gradient(135deg, #0F2B4C, #0D9488);
+  --gradient-text:    linear-gradient(90deg, #0F2B4C, #0D9488);
+  --gradient-hero:    linear-gradient(135deg, #0F2B4C 0%, #1E3A5F 100%);
+
+  --teal:            #0D9488;
+  --teal-dark:       #0A7B71;
+  --teal-light:      #CCFBF1;
+  --blue:            #1E3A5F;
+  --green:           #10B981;
+  --amber:           #D97706;
+  --gold:            #B45309;
+  --red:             #DC2626;
+  --purple:          #7C3AED;
+
+  --text-primary:    #1A1A2E;
+  --text-muted:      #4A5568;
+  --text-dim:        #718096;
+  --text-faint:      #A0AEC0;
+  --text-on-dark:    #FAF8F5;
+  --text-on-dark-muted: rgba(250,248,245,0.65);
+
+  --border:          #E2DDD5;
+  --border-hover:    rgba(13, 148, 136, 0.4);
+  --border-glow:     rgba(13, 148, 136, 0.15);
+
+  --nav-bg:          rgba(250, 248, 245, 0.88);
+  --nav-border:      #E2DDD5;
+  --mobile-menu-bg:  rgba(250, 248, 245, 0.98);
+  --footer-bg:       #0F2B4C;
+  --footer-text:     rgba(250,248,245,0.7);
+
+  --shadow-glow-teal: 0 0 28px rgba(13,148,136,0.2);
+  --shadow-glow-blue: 0 0 28px rgba(15,43,76,0.2);
+  --glow-card:        0 2px 24px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+
+  --section-bg-alt:  #F0EDE8;
+  --trust-strip-bg:  #E8E4DE;
+}
+
+/* ─────────────────────────────────────────────
+   THEME 2: Midnight Space (previous default)
+   Deep space, crystalline, premium dark.
+───────────────────────────────────────────── */
+[data-theme="space"] {
+  --bg-base:         #05080f;
+  --bg-surface:      #080d1a;
+  --bg-deep:         #030609;
+  --bg-card:         rgba(255, 255, 255, 0.03);
+  --bg-card-hover:   rgba(255, 255, 255, 0.055);
+  --bg-dark:         #05080f;
+  --bg-dark-surface: #030609;
+
+  --gradient-primary: linear-gradient(135deg, #3182ce 0%, #44caa2 100%);
+  --gradient-text:    linear-gradient(90deg, #63b3ed 0%, #44caa2 60%, #68d391 100%);
+  --gradient-hero:    linear-gradient(135deg, #05080f, #080d1a);
+
+  --teal:            #44caa2;
+  --teal-dark:       #2f9e85;
+  --teal-light:      rgba(68,202,162,0.15);
+  --blue:            #63b3ed;
+  --green:           #68d391;
+  --amber:           #f6ad55;
+  --gold:            #c9a84c;
+  --red:             #fc8181;
+  --purple:          #b794f4;
+
+  --text-primary:    rgba(255, 255, 255, 0.93);
+  --text-muted:      rgba(255, 255, 255, 0.42);
+  --text-dim:        rgba(255, 255, 255, 0.22);
+  --text-faint:      rgba(255, 255, 255, 0.12);
+  --text-on-dark:    rgba(255, 255, 255, 0.93);
+  --text-on-dark-muted: rgba(255, 255, 255, 0.42);
+
+  --border:          rgba(255, 255, 255, 0.07);
+  --border-hover:    rgba(68, 202, 162, 0.28);
+  --border-glow:     rgba(68, 202, 162, 0.15);
+
+  --nav-bg:          rgba(5, 8, 15, 0.88);
+  --nav-border:      rgba(255,255,255,0.07);
+  --mobile-menu-bg:  rgba(5, 8, 15, 0.97);
+  --footer-bg:       #030609;
+  --footer-text:     rgba(255,255,255,0.4);
+
+  --shadow-glow-teal: 0 0 28px rgba(68,202,162,0.22);
+  --shadow-glow-blue: 0 0 28px rgba(49,130,206,0.25);
+  --glow-card:        0 4px 32px rgba(0,0,0,0.4), 0 0 0 1px rgba(255,255,255,0.06);
+
+  --section-bg-alt:  #080d1a;
+  --trust-strip-bg:  rgba(255,255,255,0.02);
+}
+
+/* ─────────────────────────────────────────────
+   THEME 3: Apple Light
+   apple.com marketing design language.
+───────────────────────────────────────────── */
+[data-theme="apple-light"] {
+  --bg-base:         #FBFBFD;
+  --bg-surface:      #F5F5F7;
+  --bg-deep:         #F5F5F7;
+  --bg-card:         rgba(255, 255, 255, 0.85);
+  --bg-card-hover:   #FFFFFF;
+  --bg-dark:         #1D1D1F;
+  --bg-dark-surface: #000000;
+
+  --gradient-primary: linear-gradient(135deg, #0071e3, #34aadc);
+  --gradient-text:    linear-gradient(90deg, #0071e3, #34aadc);
+  --gradient-hero:    linear-gradient(135deg, #1D1D1F, #3A3A3C);
+
+  --teal:            #007AFF;
+  --teal-dark:       #0066CC;
+  --teal-light:      #E3F0FF;
+  --blue:            #007AFF;
+  --green:           #34C759;
+  --amber:           #FF9500;
+  --gold:            #FF9F0A;
+  --red:             #FF3B30;
+  --purple:          #AF52DE;
+
+  --text-primary:    #1D1D1F;
+  --text-muted:      #6E6E73;
+  --text-dim:        #98989D;
+  --text-faint:      #C7C7CC;
+  --text-on-dark:    #F5F5F7;
+  --text-on-dark-muted: rgba(245,245,247,0.6);
+
+  --border:          #D2D2D7;
+  --border-hover:    rgba(0, 122, 255, 0.4);
+  --border-glow:     rgba(0, 122, 255, 0.12);
+
+  --nav-bg:          rgba(251, 251, 253, 0.82);
+  --nav-border:      rgba(0,0,0,0.08);
+  --mobile-menu-bg:  rgba(251, 251, 253, 0.98);
+  --footer-bg:       #1D1D1F;
+  --footer-text:     rgba(245,245,247,0.6);
+
+  --shadow-glow-teal: 0 0 28px rgba(0,122,255,0.18);
+  --shadow-glow-blue: 0 0 28px rgba(0,102,204,0.2);
+  --glow-card:        0 2px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05);
+
+  --section-bg-alt:  #F5F5F7;
+  --trust-strip-bg:  #F5F5F7;
+}
+
+/* ─────────────────────────────────────────────
+   THEME 4: Apple Dark
+   Apple dark mode — maximum contrast, ultra-clean.
+───────────────────────────────────────────── */
+[data-theme="apple-dark"] {
+  --bg-base:         #000000;
+  --bg-surface:      #1C1C1E;
+  --bg-deep:         #000000;
+  --bg-card:         rgba(255, 255, 255, 0.06);
+  --bg-card-hover:   rgba(255, 255, 255, 0.10);
+  --bg-dark:         #000000;
+  --bg-dark-surface: #1C1C1E;
+
+  --gradient-primary: linear-gradient(135deg, #0A84FF, #34aadc);
+  --gradient-text:    linear-gradient(90deg, #0A84FF, #64D2FF);
+  --gradient-hero:    linear-gradient(135deg, #000000, #1C1C1E);
+
+  --teal:            #0A84FF;
+  --teal-dark:       #0071e3;
+  --teal-light:      rgba(10,132,255,0.15);
+  --blue:            #0A84FF;
+  --green:           #30D158;
+  --amber:           #FF9F0A;
+  --gold:            #FFD60A;
+  --red:             #FF453A;
+  --purple:          #BF5AF2;
+
+  --text-primary:    rgba(255, 255, 255, 0.95);
+  --text-muted:      #98989D;
+  --text-dim:        #636366;
+  --text-faint:      #48484A;
+  --text-on-dark:    rgba(255, 255, 255, 0.95);
+  --text-on-dark-muted: #98989D;
+
+  --border:          rgba(255, 255, 255, 0.16);
+  --border-hover:    rgba(10, 132, 255, 0.5);
+  --border-glow:     rgba(10, 132, 255, 0.2);
+
+  --nav-bg:          rgba(0, 0, 0, 0.82);
+  --nav-border:      rgba(255,255,255,0.12);
+  --mobile-menu-bg:  rgba(0, 0, 0, 0.97);
+  --footer-bg:       #000000;
+  --footer-text:     rgba(255,255,255,0.4);
+
+  --shadow-glow-teal: 0 0 28px rgba(10,132,255,0.3);
+  --shadow-glow-blue: 0 0 28px rgba(10,132,255,0.25);
+  --glow-card:        0 4px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1);
+
+  --section-bg-alt:  #1C1C1E;
+  --trust-strip-bg:  #1C1C1E;
+}
+
+/* ─────────────────────────────────────────────
+   THEME 5: Falcon Carbon
+   Dark tech — for the data-driven operator.
+───────────────────────────────────────────── */
+[data-theme="carbon"] {
+  --bg-base:         #141920;
+  --bg-surface:      #1E2530;
+  --bg-deep:         #0D1117;
+  --bg-card:         rgba(255, 255, 255, 0.04);
+  --bg-card-hover:   rgba(255, 255, 255, 0.07);
+  --bg-dark:         #0D1117;
+  --bg-dark-surface: #141920;
+
+  --gradient-primary: linear-gradient(135deg, #0D9488, #14B8A6);
+  --gradient-text:    linear-gradient(90deg, #0D9488, #2DD4BF);
+  --gradient-hero:    linear-gradient(135deg, #0D1117, #1E2530);
+
+  --teal:            #0D9488;
+  --teal-dark:       #0A7B71;
+  --teal-light:      rgba(13,148,136,0.15);
+  --blue:            #38BDF8;
+  --green:           #34D399;
+  --amber:           #FBBF24;
+  --gold:            #F59E0B;
+  --red:             #F87171;
+  --purple:          #A78BFA;
+
+  --text-primary:    rgba(232, 244, 248, 0.95);
+  --text-muted:      rgba(232, 244, 248, 0.5);
+  --text-dim:        rgba(232, 244, 248, 0.28);
+  --text-faint:      rgba(232, 244, 248, 0.14);
+  --text-on-dark:    rgba(232, 244, 248, 0.95);
+  --text-on-dark-muted: rgba(232,244,248,0.5);
+
+  --border:          rgba(13, 148, 136, 0.18);
+  --border-hover:    rgba(13, 148, 136, 0.45);
+  --border-glow:     rgba(13, 148, 136, 0.2);
+
+  --nav-bg:          rgba(20, 25, 32, 0.88);
+  --nav-border:      rgba(13,148,136,0.15);
+  --mobile-menu-bg:  rgba(20, 25, 32, 0.98);
+  --footer-bg:       #0D1117;
+  --footer-text:     rgba(232,244,248,0.4);
+
+  --shadow-glow-teal: 0 0 32px rgba(13,148,136,0.3);
+  --shadow-glow-blue: 0 0 28px rgba(56,189,248,0.2);
+  --glow-card:        0 4px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(13,148,136,0.12);
+
+  --section-bg-alt:  #1E2530;
+  --trust-strip-bg:  rgba(13,148,136,0.05);
+}
+
+/* ─────────────────────────────────────────────
+   THEME 6: Forest Sovereign
+   Deep forest — nature-intelligence premium.
+───────────────────────────────────────────── */
+[data-theme="forest"] {
+  --bg-base:         #0A1F15;
+  --bg-surface:      #0F2B1E;
+  --bg-deep:         #061209;
+  --bg-card:         rgba(250, 248, 245, 0.04);
+  --bg-card-hover:   rgba(250, 248, 245, 0.07);
+  --bg-dark:         #061209;
+  --bg-dark-surface: #0A1F15;
+
+  --gradient-primary: linear-gradient(135deg, #059669, #14B8A6);
+  --gradient-text:    linear-gradient(90deg, #34D399, #2DD4BF);
+  --gradient-hero:    linear-gradient(135deg, #061209, #0F2B1E);
+
+  --teal:            #14B8A6;
+  --teal-dark:       #0D9488;
+  --teal-light:      rgba(20,184,166,0.15);
+  --blue:            #60A5FA;
+  --green:           #34D399;
+  --amber:           #FBBF24;
+  --gold:            #D4A017;
+  --red:             #F87171;
+  --purple:          #A78BFA;
+
+  --text-primary:    rgba(250, 248, 245, 0.93);
+  --text-muted:      rgba(250, 248, 245, 0.5);
+  --text-dim:        rgba(250, 248, 245, 0.28);
+  --text-faint:      rgba(250, 248, 245, 0.14);
+  --text-on-dark:    rgba(250, 248, 245, 0.93);
+  --text-on-dark-muted: rgba(250,248,245,0.5);
+
+  --border:          rgba(20, 184, 166, 0.18);
+  --border-hover:    rgba(20, 184, 166, 0.45);
+  --border-glow:     rgba(20, 184, 166, 0.2);
+
+  --nav-bg:          rgba(10, 31, 21, 0.88);
+  --nav-border:      rgba(20,184,166,0.15);
+  --mobile-menu-bg:  rgba(10, 31, 21, 0.98);
+  --footer-bg:       #061209;
+  --footer-text:     rgba(250,248,245,0.4);
+
+  --shadow-glow-teal: 0 0 32px rgba(20,184,166,0.28);
+  --shadow-glow-blue: 0 0 28px rgba(5,150,105,0.25);
+  --glow-card:        0 4px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(20,184,166,0.12);
+
+  --section-bg-alt:  #0F2B1E;
+  --trust-strip-bg:  rgba(20,184,166,0.05);
+}
+
+/* ─────────────────────────────────────────────
+   THEME 7: Falcon Titanium
+   Warm light + amber — speed and precision.
+───────────────────────────────────────────── */
+[data-theme="titanium"] {
+  --bg-base:         #F8F7F4;
+  --bg-surface:      #EEEAE4;
+  --bg-deep:         #E5E0D8;
+  --bg-card:         rgba(255, 255, 255, 0.8);
+  --bg-card-hover:   #FFFFFF;
+  --bg-dark:         #1A2332;
+  --bg-dark-surface: #111824;
+
+  --gradient-primary: linear-gradient(135deg, #1A2332, #D97706);
+  --gradient-text:    linear-gradient(90deg, #1A2332, #D97706);
+  --gradient-hero:    linear-gradient(135deg, #1A2332, #2D3F5A);
+
+  --teal:            #D97706;
+  --teal-dark:       #B45309;
+  --teal-light:      #FEF3C7;
+  --blue:            #2D3F5A;
+  --green:           #059669;
+  --amber:           #D97706;
+  --gold:            #B45309;
+  --red:             #DC2626;
+  --purple:          #7C3AED;
+
+  --text-primary:    #1A2332;
+  --text-muted:      #64748B;
+  --text-dim:        #94A3B8;
+  --text-faint:      #CBD5E1;
+  --text-on-dark:    #F8F7F4;
+  --text-on-dark-muted: rgba(248,247,244,0.65);
+
+  --border:          #DDD9D3;
+  --border-hover:    rgba(217,119,6,0.4);
+  --border-glow:     rgba(217,119,6,0.15);
+
+  --nav-bg:          rgba(248, 247, 244, 0.88);
+  --nav-border:      #DDD9D3;
+  --mobile-menu-bg:  rgba(248, 247, 244, 0.98);
+  --footer-bg:       #1A2332;
+  --footer-text:     rgba(248,247,244,0.6);
+
+  --shadow-glow-teal: 0 0 28px rgba(217,119,6,0.2);
+  --shadow-glow-blue: 0 0 28px rgba(26,35,50,0.2);
+  --glow-card:        0 2px 20px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+
+  --section-bg-alt:  #EEEAE4;
+  --trust-strip-bg:  #E5E0D8;
+}
+
+/* ─────────────────────────────────────────────
+   THEME SWITCHER V2 — Styles (7 themes)
+───────────────────────────────────────────── */
+.theme-switcher-v2 {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.theme-switcher-v2-label {
+  font-size: 9px;
+  letter-spacing: 2.5px;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  text-align: right;
+}
+.theme-btns-v2 {
+  display: flex;
+  gap: 5px;
+  align-items: center;
+}
+.theme-btn-v2 {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+  position: relative;
+  padding: 0;
+  background: none;
+  outline: none;
+}
+.theme-btn-v2:hover { transform: scale(1.2); }
+.theme-btn-v2.active {
+  border-color: var(--teal);
+  transform: scale(1.15);
+  box-shadow: 0 0 8px var(--border-glow);
+}
+/* Individual theme button colors */
+.theme-btn-v2-inner[data-t="cream"]       { background: linear-gradient(135deg, #FAF8F5, #0D9488); border-radius: 50%; width: 100%; height: 100%; display: block; }
+.theme-btn-v2-inner[data-t="space"]       { background: linear-gradient(135deg, #05080f, #44caa2); border-radius: 50%; width: 100%; height: 100%; display: block; }
+.theme-btn-v2-inner[data-t="apple-light"] { background: linear-gradient(135deg, #FBFBFD, #007AFF); border-radius: 50%; width: 100%; height: 100%; display: block; border: 1px solid #D2D2D7; }
+.theme-btn-v2-inner[data-t="apple-dark"]  { background: linear-gradient(135deg, #000000, #0A84FF); border-radius: 50%; width: 100%; height: 100%; display: block; }
+.theme-btn-v2-inner[data-t="carbon"]      { background: linear-gradient(135deg, #141920, #0D9488); border-radius: 50%; width: 100%; height: 100%; display: block; }
+.theme-btn-v2-inner[data-t="forest"]      { background: linear-gradient(135deg, #0A1F15, #14B8A6); border-radius: 50%; width: 100%; height: 100%; display: block; }
+.theme-btn-v2-inner[data-t="titanium"]    { background: linear-gradient(135deg, #F8F7F4, #D97706); border-radius: 50%; width: 100%; height: 100%; display: block; border: 1px solid #DDD9D3; }
+
+.theme-btn-v2-tip {
+  position: absolute;
+  bottom: 32px;
+  right: 0;
+  background: var(--bg-surface, #1C1C1E);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 10px;
+  white-space: nowrap;
+  color: var(--text-primary);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.15s;
+  font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+}
+.theme-btn-v2:hover .theme-btn-v2-tip { opacity: 1; }
+
+/* Light theme adjustments for switcher */
+[data-theme="cream"] .theme-switcher-v2-label,
+[data-theme="apple-light"] .theme-switcher-v2-label,
+[data-theme="titanium"] .theme-switcher-v2-label {
+  color: rgba(0,0,0,0.3);
+}
+[data-theme="cream"] .theme-btn-v2-tip,
+[data-theme="apple-light"] .theme-btn-v2-tip,
+[data-theme="titanium"] .theme-btn-v2-tip {
+  background: #1D1D1F;
+  color: #F5F5F7;
+  border-color: rgba(0,0,0,0.15);
+}

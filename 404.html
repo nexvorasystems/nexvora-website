@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Page Not Found — Nexvora Systems</title>
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/falcon.css" />
+  <style>
+    .not-found {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: 40px 28px;
+    }
+    .not-found-inner {
+      max-width: 520px;
+    }
+    .not-found-code {
+      font-size: clamp(80px, 15vw, 140px);
+      font-weight: 200;
+      line-height: 1;
+      letter-spacing: -6px;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 8px;
+    }
+    .not-found h1 {
+      font-size: clamp(1.4rem, 3vw, 2rem);
+      font-weight: 300;
+      margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+    .not-found p {
+      font-size: 16px;
+      color: var(--text-muted);
+      max-width: 380px;
+      margin: 0 auto 36px;
+      line-height: 1.7;
+    }
+    .not-found-actions {
+      display: flex;
+      gap: 12px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .not-found-falcon {
+      margin: 0 auto 36px;
+      width: 100px;
+      height: 100px;
+    }
+  </style>
+</head>
+<body>
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="blog.html">Insights</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <a href="assessment.html" class="btn btn-primary btn-sm nav-cta">Free Assessment</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a>
+    <a href="blog.html">Insights</a>
+    <a href="contact.html">Contact</a>
+    <a href="assessment.html" class="btn btn-primary">Free Assessment</a>
+  </div>
+
+  <div class="not-found">
+    <div class="not-found-inner">
+      <div class="not-found-falcon falcon-hero-wrap"></div>
+      <div class="not-found-code">404</div>
+      <h1>The Falcon lost this page</h1>
+      <p>Even our operational intelligence couldn't locate this one. The page you're looking for has moved, or never existed.</p>
+      <div class="not-found-actions">
+        <a href="index.html" class="btn btn-primary">Back to Home →</a>
+        <a href="assessment.html" class="btn btn-ghost">Take the Assessment</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="js/main.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/falcon.js"></script>
+</body>
+</html>

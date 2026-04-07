@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Free business assessment from Nexvora. Chat with us and find out where your business can improve."/>
+<title>Free Assessment — Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
+  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
+  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.12);--teal-dark:#0a7a70;
+  --navy:#0F2B4C;--radius:12px;--nav-h:68px;--red:#EF4444;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);height:100%;overflow:hidden;}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.95);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 44px;}
+.nav-inner{display:flex;align-items:center;width:100%;}
+.logo{font-size:19px;font-weight:800;letter-spacing:-0.5px;color:var(--text);text-decoration:none;}
+.logo span{color:var(--teal);}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;margin-left:auto;display:flex;align-items:center;gap:6px;transition:color .15s;}
+.nav-back:hover{color:var(--teal);}
+.nav-progress{display:flex;align-items:center;gap:10px;margin:0 auto;}
+.nav-prog-label{font-size:12px;color:var(--dim);}
+.nav-prog-bar{width:120px;height:4px;background:var(--border);border-radius:99px;overflow:hidden;}
+.nav-prog-fill{height:100%;background:var(--teal);border-radius:99px;transition:width .4s ease;}
+
+/* CHAT LAYOUT */
+.chat-wrap{
+  position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;
+  display:flex;flex-direction:column;
+}
+.chat-messages{
+  flex:1;overflow-y:auto;
+  padding:32px 0 16px;
+  display:flex;flex-direction:column;
+  scroll-behavior:smooth;
+}
+.chat-messages-inner{
+  width:100%;max-width:640px;margin:0 auto;
+  padding:0 20px;
+  display:flex;flex-direction:column;gap:16px;
+}
+
+/* BUBBLE STYLES */
+.bubble-row{display:flex;align-items:flex-end;gap:10px;}
+.bubble-row.bot{justify-content:flex-start;}
+.bubble-row.user{justify-content:flex-end;}
+
+.bot-avatar{
+  width:32px;height:32px;min-width:32px;border-radius:50%;
+  background:linear-gradient(135deg,#0F2B4C,#0D9488);
+  display:flex;align-items:center;justify-content:center;
+  font-size:11px;font-weight:800;color:#fff;
+  align-self:flex-end;
+}
+.bubble{
+  max-width:80%;padding:13px 17px;border-radius:18px;
+  font-size:15px;line-height:1.6;
+}
+.bubble.bot{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-bottom-left-radius:4px;color:var(--text);
+}
+.bubble.user{
+  background:var(--teal);color:#fff;
+  border-bottom-right-radius:4px;
+}
+.bubble.typing{padding:16px 18px;}
+.typing-dots{display:flex;gap:5px;align-items:center;}
+.typing-dots span{
+  width:7px;height:7px;border-radius:50%;background:var(--dim);
+  animation:typingDot 1.4s ease-in-out infinite;
+}
+.typing-dots span:nth-child(2){animation-delay:.2s;}
+.typing-dots span:nth-child(3){animation-delay:.4s;}
+@keyframes typingDot{0%,60%,100%{transform:translateY(0);opacity:.4;}30%{transform:translateY(-6px);opacity:1;}}
+
+/* OPTION CHIPS */
+.chips-row{
+  display:flex;flex-wrap:wrap;gap:8px;
+  max-width:560px;padding:4px 0;
+}
+.chip{
+  padding:9px 16px;border-radius:99px;
+  border:1.5px solid var(--border);
+  background:var(--bg-card);
+  font-size:14px;color:var(--muted);font-weight:500;
+  cursor:pointer;transition:all .15s;
+  user-select:none;
+}
+.chip:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-lt);}
+.chip.selected{border-color:var(--teal);background:var(--teal);color:#fff;}
+
+/* INPUT AREA */
+.chat-input-area{
+  border-top:1px solid var(--border);
+  background:var(--bg-card);
+  padding:16px 20px;
+}
+.chat-input-inner{max-width:640px;margin:0 auto;}
+.input-field-row{display:flex;gap:10px;align-items:flex-end;}
+.chat-input{
+  flex:1;padding:13px 16px;
+  border:1.5px solid var(--border);border-radius:12px;
+  font-size:15px;color:var(--text);background:var(--bg);
+  font-family:inherit;outline:none;resize:none;
+  transition:border-color .15s;line-height:1.5;
+  -webkit-appearance:none;
+}
+.chat-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,0.1);}
+.chat-input.error{border-color:var(--red);}
+.send-btn{
+  width:44px;height:44px;min-width:44px;border-radius:12px;
+  background:var(--teal);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .18s;
+}
+.send-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.send-btn:disabled{opacity:0.35;cursor:not-allowed;transform:none;filter:none;}
+.error-msg{font-size:12px;color:var(--red);margin-top:6px;display:none;}
+.error-msg.show{display:block;}
+
+/* MULTI-SELECT CONFIRM */
+.confirm-btn{
+  margin-top:10px;
+  padding:10px 24px;border-radius:99px;
+  background:var(--teal);color:#fff;font-size:14px;font-weight:700;
+  border:none;cursor:pointer;transition:all .15s;display:none;
+}
+.confirm-btn.show{display:inline-block;}
+.confirm-btn:hover{filter:brightness(1.1);}
+
+/* THANK YOU */
+.ty-bubble{
+  background:var(--bg-card);border:1px solid var(--border);
+  border-radius:16px;padding:28px 24px;max-width:480px;
+}
+.ty-icon{width:48px;height:48px;border-radius:50%;background:var(--teal-lt);border:1.5px solid rgba(13,148,136,0.25);display:flex;align-items:center;justify-content:center;margin-bottom:14px;}
+.ty-bubble h3{font-size:18px;font-weight:800;color:var(--text);margin-bottom:8px;}
+.ty-bubble p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:6px;}
+.ty-bubble .highlight{color:var(--teal);font-weight:700;}
+.btn-home{display:inline-block;margin-top:16px;padding:12px 24px;border-radius:10px;background:var(--teal);color:#fff;font-size:14px;font-weight:700;text-decoration:none;transition:all .18s;}
+.btn-home:hover{filter:brightness(1.08);}
+
+@media(max-width:640px){
+  nav{padding:0 16px;}
+  .nav-progress{display:none;}
+  .chat-messages{padding:20px 0 12px;}
+  .bubble{font-size:14px;}
+  .chat-input-area{padding:12px 16px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html" class="logo">Nexvora<span>.</span></a>
+    <div class="nav-progress">
+      <span class="nav-prog-label" id="progLabel">Step 1</span>
+      <div class="nav-prog-bar"><div class="nav-prog-fill" id="progFill" style="width:0%"></div></div>
+    </div>
+    <a href="index.html" class="nav-back">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      Back
+    </a>
+  </div>
+</nav>
+
+<div class="chat-wrap">
+  <div class="chat-messages" id="chatMessages">
+    <div class="chat-messages-inner" id="chatInner"></div>
+  </div>
+  <div class="chat-input-area" id="chatInputArea">
+    <div class="chat-input-inner">
+      <div class="input-field-row">
+        <input class="chat-input" id="chatInput" type="text" placeholder="Type your answer..." autocomplete="off" onkeydown="handleKey(event)" oninput="onInputChange()"/>
+        <button class="send-btn" id="sendBtn" onclick="submitText()" disabled>
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="error-msg" id="errorMsg"></div>
+      <div id="chipsArea"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── CONVERSATION SCRIPT ──────────────────────────────────────────────
+const answers = {};
+let step = 0;
+let waitingForInput = false;
+let currentInputType = null; // 'text','email','phone','select','multi'
+let multiSelected = [];
+
+const TOTAL_STEPS = 13;
+
+// Each step: {bot: message, input: type, id: key, options?, validate?}
+const FLOW = [
+  {
+    id: null,
+    bot: "Hi! I'm here to help Nexvora understand your business so we can send you a personalized report. It takes about 10 minutes and all questions are based on your answers.",
+    input: null,
+    nextBot: "Let's start with the basics. What is your full name?"
+  },
+  {
+    id: 'full_name',
+    input: 'text',
+    placeholder: 'Your full name',
+    validate: v => v.trim().length >= 2 ? null : 'Please enter your full name',
+  },
+  {
+    id: 'email',
+    bot: v => `Nice to meet you, ${v.split(' ')[0]}! What is the best email address to send your report to?`,
+    input: 'email',
+    placeholder: 'your@email.com',
+    validate: v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? null : 'Please enter a valid email address (e.g. name@company.com)',
+  },
+  {
+    id: 'phone',
+    bot: 'Got it. And your phone number? (Optional — skip by typing "skip")',
+    input: 'phone',
+    placeholder: '+1 (555) 000-0000',
+    validate: v => {
+      if(v.toLowerCase()==='skip'||v.trim()==='') return null;
+      const digits = v.replace(/\D/g,'');
+      return digits.length >= 7 ? null : 'Please enter a valid phone number or type "skip"';
+    },
+    transform: v => v.toLowerCase()==='skip'?'':v,
+  },
+  {
+    id: 'referral',
+    bot: 'How did you hear about us?',
+    input: 'select',
+    options: ['Google Search','Social Media','Referral from a friend','Online ad','Other'],
+  },
+  {
+    id: 'biz_type',
+    bot: 'Great. Now tell me about your business. What type of business do you run?',
+    input: 'select',
+    options: ['Cleaning Services','Retail or E-commerce','Trade or Field Services','Professional Services','Food and Hospitality','Health and Wellness','Other'],
+  },
+  {
+    id: 'biz_name',
+    bot: 'What is your business name?',
+    input: 'text',
+    placeholder: 'Your business name',
+    validate: v => v.trim().length >= 1 ? null : 'Please enter your business name',
+  },
+  {
+    id: 'team_size',
+    bot: v => `Thanks! How many people are on the ${v} team? Include full-time, part-time, and contractors.`,
+    input: 'select',
+    options: ['Just me','2 to 5 people','6 to 15 people','16 to 50 people','50+ people'],
+  },
+  {
+    id: 'revenue',
+    bot: 'What is your approximate annual revenue? (Ballpark is fine)',
+    input: 'select',
+    options: ['Under $100K','$100K to $500K','$500K to $1M','$1M to $5M','$5M+','Prefer not to say'],
+  },
+  {
+    id: 'main_challenge',
+    bot: 'What is the biggest challenge in your business right now?',
+    input: 'select',
+    options: ['Operations — things are unclear or chaotic','Sales — not enough leads or closing','Marketing — no consistent lead flow','Team — hard to hire or manage people','Finance — cash flow or profitability','Technology — systems don\'t work together','Growth — growing but getting messy','Not sure yet'],
+  },
+  {
+    id: 'ai_current',
+    bot: 'Are you currently using any AI or automation in your business?',
+    input: 'select',
+    options: ['No, not at all','A little — like AI writing tools or chatbots','Yes, some workflows are automated','Yes, we use AI and automation a lot'],
+  },
+  {
+    id: 'goal',
+    bot: 'What outcome matters most to you in the next 12 months?',
+    input: 'select',
+    options: ['Save time and reduce overwhelm','Grow revenue without adding headcount','Cut costs and improve profitability','Build systems so the business runs without me','Scale the team the right way','All of the above'],
+  },
+  {
+    id: 'notes',
+    bot: 'Almost done! Is there anything else you want us to know about your situation? (Optional — press send or type "skip")',
+    input: 'textarea',
+    placeholder: 'e.g. We just hired two new people and trying to expand...',
+    validate: () => null,
+    transform: v => v.toLowerCase()==='skip'?'':v,
+  },
+];
+
+// ── RENDER HELPERS ────────────────────────────────────────────────────
+function addBubble(text, type='bot', delay=0){
+  return new Promise(resolve => {
+    setTimeout(()=>{
+      const inner = document.getElementById('chatInner');
+      const row = document.createElement('div');
+      row.className = `bubble-row ${type}`;
+      if(type==='bot'){
+        row.innerHTML = `
+          <div class="bot-avatar">NX</div>
+          <div class="bubble bot">${text}</div>`;
+      } else {
+        row.innerHTML = `<div class="bubble user">${text}</div>`;
+      }
+      inner.appendChild(row);
+      scrollBottom();
+      resolve();
+    }, delay);
+  });
+}
+
+function showTyping(delay=0){
+  return new Promise(resolve=>{
+    setTimeout(()=>{
+      const inner = document.getElementById('chatInner');
+      const row = document.createElement('div');
+      row.className = 'bubble-row bot';
+      row.id = 'typingIndicator';
+      row.innerHTML = `<div class="bot-avatar">NX</div><div class="bubble bot typing"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+      inner.appendChild(row);
+      scrollBottom();
+      resolve();
+    }, delay);
+  });
+}
+
+function removeTyping(){
+  const t = document.getElementById('typingIndicator');
+  if(t) t.remove();
+}
+
+function scrollBottom(){
+  const c = document.getElementById('chatMessages');
+  c.scrollTop = c.scrollHeight;
+}
+
+function updateProgress(){
+  const pct = Math.round((step / TOTAL_STEPS) * 100);
+  document.getElementById('progFill').style.width = pct + '%';
+  document.getElementById('progLabel').textContent = `Step ${Math.min(step+1, TOTAL_STEPS)} of ${TOTAL_STEPS}`;
+}
+
+// ── INPUT RENDERING ───────────────────────────────────────────────────
+function setInputMode(type, options, placeholder){
+  const inp = document.getElementById('chatInput');
+  const chipsArea = document.getElementById('chipsArea');
+  const sendBtn = document.getElementById('sendBtn');
+  const errMsg = document.getElementById('errorMsg');
+  errMsg.classList.remove('show');
+  errMsg.textContent = '';
+  chipsArea.innerHTML = '';
+  inp.value = '';
+  inp.classList.remove('error');
+
+  currentInputType = type;
+  multiSelected = [];
+
+  if(type === 'select'){
+    inp.style.display = 'none';
+    sendBtn.style.display = 'none';
+    const chips = document.createElement('div');
+    chips.className = 'chips-row';
+    chips.style.paddingTop = '8px';
+    options.forEach(opt => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = opt;
+      chip.onclick = () => selectChip(opt);
+      chips.appendChild(chip);
+    });
+    chipsArea.appendChild(chips);
+  } else if(type === 'multi'){
+    inp.style.display = 'none';
+    sendBtn.style.display = 'none';
+    const chips = document.createElement('div');
+    chips.className = 'chips-row';
+    chips.style.paddingTop = '8px';
+    options.forEach(opt => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = opt;
+      chip.onclick = () => toggleMultiChip(chip, opt);
+      chips.appendChild(chip);
+    });
+    const confirmBtn = document.createElement('button');
+    confirmBtn.className = 'confirm-btn';
+    confirmBtn.id = 'confirmMulti';
+    confirmBtn.textContent = 'Confirm';
+    confirmBtn.onclick = confirmMulti;
+    chipsArea.appendChild(chips);
+    chipsArea.appendChild(confirmBtn);
+  } else {
+    inp.style.display = '';
+    sendBtn.style.display = '';
+    if(type === 'textarea'){
+      inp.setAttribute('rows','3');
+    } else {
+      inp.removeAttribute('rows');
+    }
+    inp.placeholder = placeholder || 'Type your answer...';
+    inp.type = type === 'email' ? 'email' : type === 'phone' ? 'tel' : 'text';
+    sendBtn.disabled = true;
+    inp.focus();
+  }
+}
+
+function selectChip(val){
+  answers[FLOW[step].id] = val;
+  setInputMode('none');
+  proceedWithAnswer(val);
+}
+
+function toggleMultiChip(chip, val){
+  const idx = multiSelected.indexOf(val);
+  if(idx > -1){
+    multiSelected.splice(idx,1);
+    chip.classList.remove('selected');
+  } else {
+    multiSelected.push(val);
+    chip.classList.add('selected');
+  }
+  const btn = document.getElementById('confirmMulti');
+  if(btn) btn.classList.toggle('show', multiSelected.length > 0);
+}
+
+function confirmMulti(){
+  answers[FLOW[step].id] = multiSelected.slice();
+  setInputMode('none');
+  proceedWithAnswer(multiSelected.join(', '));
+}
+
+function handleKey(e){
+  if(e.key === 'Enter' && !e.shiftKey){
+    e.preventDefault();
+    submitText();
+  }
+}
+
+function onInputChange(){
+  const inp = document.getElementById('chatInput');
+  document.getElementById('sendBtn').disabled = inp.value.trim() === '';
+  inp.classList.remove('error');
+  document.getElementById('errorMsg').classList.remove('show');
+}
+
+function submitText(){
+  const inp = document.getElementById('chatInput');
+  const raw = inp.value.trim();
+  if(!raw) return;
+
+  const currentStep = FLOW[step];
+  const validator = currentStep.validate;
+  if(validator){
+    const err = validator(raw);
+    if(err){
+      inp.classList.add('error');
+      const errMsg = document.getElementById('errorMsg');
+      errMsg.textContent = err;
+      errMsg.classList.add('show');
+      return;
+    }
+  }
+  const val = currentStep.transform ? currentStep.transform(raw) : raw;
+  answers[currentStep.id] = val;
+  setInputMode('none');
+  proceedWithAnswer(raw === 'skip' || raw === 'Skip' ? '(skipped)' : raw);
+}
+
+// ── FLOW CONTROL ──────────────────────────────────────────────────────
+async function proceedWithAnswer(displayVal){
+  // Show user bubble
+  await addBubble(displayVal, 'user');
+  step++;
+  updateProgress();
+
+  if(step >= FLOW.length){
+    await showTyping(400);
+    await new Promise(r=>setTimeout(r,1200));
+    removeTyping();
+    showThankYou();
+    return;
+  }
+
+  const next = FLOW[step];
+  await showTyping(300);
+  await new Promise(r=>setTimeout(r,900));
+  removeTyping();
+
+  // Bot message
+  if(next.bot){
+    const msg = typeof next.bot === 'function' ? next.bot(displayVal) : next.bot;
+    await addBubble(msg, 'bot');
+  }
+
+  // Activate input
+  if(next.input){
+    setTimeout(()=>{
+      setInputMode(next.input, next.options, next.placeholder);
+    }, 200);
+  }
+}
+
+async function showThankYou(){
+  document.getElementById('chatInputArea').style.display = 'none';
+  const name = answers.full_name ? answers.full_name.split(' ')[0] : 'there';
+  const email = answers.email || 'your email';
+  const biz = answers.biz_name || 'your business';
+
+  const inner = document.getElementById('chatInner');
+  const row = document.createElement('div');
+  row.className = 'bubble-row bot';
+  row.innerHTML = `
+    <div class="bot-avatar">NX</div>
+    <div class="ty-bubble">
+      <div class="ty-icon">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#0D9488" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+      </div>
+      <h3>Thank you, ${name}!</h3>
+      <p>Your assessment for <span class="highlight">${biz}</span> has been submitted.</p>
+      <p>We will review your answers and send your personalized report to <span class="highlight">${email}</span> within 24 hours.</p>
+      <a href="index.html" class="btn-home">Back to Home</a>
+    </div>`;
+  inner.appendChild(row);
+  scrollBottom();
+}
+
+// ── START ─────────────────────────────────────────────────────────────
+async function startChat(){
+  updateProgress();
+  const first = FLOW[0];
+
+  await showTyping(400);
+  await new Promise(r=>setTimeout(r,1000));
+  removeTyping();
+  await addBubble(first.bot, 'bot');
+
+  await showTyping(800);
+  await new Promise(r=>setTimeout(r,1000));
+  removeTyping();
+  await addBubble(first.nextBot, 'bot');
+
+  step = 1;
+  updateProgress();
+  setInputMode(FLOW[1].input, null, FLOW[1].placeholder);
+}
+
+startChat();
+</script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+/* ============================================================
+   NEXVORA SYSTEMS — Animations CSS
+   Scroll reveal + entrance animations + logo-inspired keyframes
+   ============================================================ */
+
+/* Scroll reveal — initial hidden state */
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Stagger children */
+.stagger > * {
+  opacity: 0;
+  transform: translateY(22px);
+  transition: opacity 0.6s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.stagger.visible > *:nth-child(1) { transition-delay: 0ms; }
+.stagger.visible > *:nth-child(2) { transition-delay: 80ms; }
+.stagger.visible > *:nth-child(3) { transition-delay: 160ms; }
+.stagger.visible > *:nth-child(4) { transition-delay: 240ms; }
+.stagger.visible > *:nth-child(5) { transition-delay: 320ms; }
+.stagger.visible > *:nth-child(6) { transition-delay: 400ms; }
+.stagger.visible > * { opacity: 1; transform: translateY(0); }
+
+/* Fade only */
+.fade-in { opacity: 0; transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1); }
+.fade-in.visible { opacity: 1; }
+
+/* Scale pop */
+@keyframes scalePop {
+  0%   { transform: scale(0.5); opacity: 0; }
+  65%  { transform: scale(1.05); }
+  100% { transform: scale(1); opacity: 1; }
+}
+.scale-pop { animation: scalePop 0.48s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+/* Slide up */
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.slide-up { animation: slideUp 0.42s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+/* Pulse ring — teal version (logo node dots) */
+@keyframes pulseRing {
+  0%   { box-shadow: 0 0 0 0 rgba(68, 202, 162, 0.4); }
+  70%  { box-shadow: 0 0 0 10px rgba(68, 202, 162, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(68, 202, 162, 0); }
+}
+.pulse { animation: pulseRing 2.8s ease infinite; }
+
+/* Crystal float — logo-inspired slow levitation */
+@keyframes crystalFloat {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  33%       { transform: translateY(-8px) rotate(1.5deg); }
+  66%       { transform: translateY(-4px) rotate(-1deg); }
+}
+.float { animation: crystalFloat 6s ease-in-out infinite; }
+.float-slow { animation: crystalFloat 9s ease-in-out infinite; }
+.float-delay { animation: crystalFloat 7s ease-in-out infinite; animation-delay: -3s; }
+
+/* Node pulse — like the logo corner dots */
+@keyframes nodePulse {
+  0%, 100% { transform: scale(1); opacity: 0.8; }
+  50%       { transform: scale(1.25); opacity: 1; }
+}
+.node-pulse { animation: nodePulse 3s ease-in-out infinite; }
+
+/* Glow shimmer — teal glow sweep */
+@keyframes glowShimmer {
+  0%, 100% { box-shadow: 0 0 12px rgba(68,202,162,0.1); }
+  50%       { box-shadow: 0 0 28px rgba(68,202,162,0.3), 0 0 60px rgba(68,202,162,0.1); }
+}
+.glow-shimmer { animation: glowShimmer 4s ease-in-out infinite; }
+
+/* Spin */
+@keyframes spin { to { transform: rotate(360deg); } }
+.spin { animation: spin 0.9s linear infinite; }
+
+/* Count-up — JS-driven */
+.count-up { opacity: 0; transition: opacity 0.35s ease; }
+.count-up.active { opacity: 1; }
+
+/* Typing dots */
+@keyframes typingBounce {
+  0%, 80%, 100% { transform: translateY(0); opacity: 0.3; }
+  40%            { transform: translateY(-6px); opacity: 1; }
+}
+.typing-dot { animation: typingBounce 1.2s ease infinite; display: inline-block; }
+.typing-dot:nth-child(2) { animation-delay: 0.18s; }
+.typing-dot:nth-child(3) { animation-delay: 0.36s; }
+
+/* Checkmark pop */
+@keyframes checkPop {
+  from { transform: scale(0); opacity: 0; }
+  to   { transform: scale(1); opacity: 1; }
+}
+.check-complete { animation: checkPop 0.28s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+
+/* Gradient border sweep — premium card effect */
+@keyframes borderSweep {
+  0%   { background-position: 0% 50%; }
+  100% { background-position: 100% 50%; }
+}
+
+/* Line draw — for decorative lines */
+@keyframes lineDraw {
+  from { transform: scaleX(0); }
+  to   { transform: scaleX(1); }
+}
+.line-draw {
+  transform-origin: left;
+  animation: lineDraw 0.8s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+/* Hero entrance stagger for text blocks */
+@keyframes heroEntrance {
+  from { opacity: 0; transform: translateY(32px) skewY(0.5deg); }
+  to   { opacity: 1; transform: translateY(0) skewY(0); }
+}
+.hero-entrance {
+  animation: heroEntrance 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  opacity: 0;
+}
+.hero-entrance:nth-child(1) { animation-delay: 0.1s; }
+.hero-entrance:nth-child(2) { animation-delay: 0.22s; }
+.hero-entrance:nth-child(3) { animation-delay: 0.34s; }
+.hero-entrance:nth-child(4) { animation-delay: 0.46s; }
+.hero-entrance:nth-child(5) { animation-delay: 0.58s; }
+
+/* ── Slide from left ── */
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.reveal-left {
+  opacity: 0;
+  transform: translateX(-36px);
+  transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-left.visible { opacity: 1; transform: translateX(0); }
+
+/* ── Slide from right ── */
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(40px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+.reveal-right {
+  opacity: 0;
+  transform: translateX(36px);
+  transition: opacity 0.72s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.72s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal-right.visible { opacity: 1; transform: translateX(0); }
+
+/* ── Pop in (scale from center) ── */
+@keyframes popIn {
+  0%   { opacity: 0; transform: scale(0.82) translateY(10px); }
+  60%  { transform: scale(1.03) translateY(-2px); }
+  100% { opacity: 1; transform: scale(1) translateY(0); }
+}
+.pop-in {
+  opacity: 0;
+  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transform: scale(0.9) translateY(8px);
+}
+.pop-in.visible { opacity: 1; transform: scale(1) translateY(0); }
+
+/* ── Float up (gentle parallax feel) ── */
+.float-up {
+  opacity: 0;
+  transform: translateY(48px);
+  transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.float-up.visible { opacity: 1; transform: translateY(0); }
+
+/* ── Stagger delay variants ── */
+.stagger-delay-1 { transition-delay: 0ms !important; }
+.stagger-delay-2 { transition-delay: 80ms !important; }
+.stagger-delay-3 { transition-delay: 160ms !important; }
+.stagger-delay-4 { transition-delay: 240ms !important; }
+.stagger-delay-5 { transition-delay: 320ms !important; }
+.stagger-delay-6 { transition-delay: 400ms !important; }
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .reveal, .reveal-left, .reveal-right, .stagger > *, .fade-in, .pop-in, .float-up {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .scale-pop, .slide-up, .hero-entrance { animation: none; opacity: 1; }
+  .spin { animation-duration: 4s; }
+  .pulse, .float, .float-slow, .float-delay, .node-pulse, .glow-shimmer { animation: none; }
+}

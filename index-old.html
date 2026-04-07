@@ -1,0 +1,820 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nexvora Systems — Operational Intelligence for Mid-Market Businesses</title>
+  <meta name="description" content="Nexvora Systems helps mid-market businesses find hidden revenue leaks, fix operational gaps, and scale intelligently. Free business assessment in 10 minutes." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <!-- Theme engine — loads before paint to prevent flash -->
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/falcon.css" />
+  <style>
+    /* ── Hero ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    /* Animated gradient mesh — theme-aware, drifts slowly */
+    .hero-gradient-mesh {
+      position: absolute;
+      inset: -50%;
+      width: 200%; height: 200%;
+      background:
+        radial-gradient(ellipse at 20% 50%, rgba(13,148,136,0.10) 0%, transparent 50%),
+        radial-gradient(ellipse at 80% 20%, rgba(30,58,95,0.08) 0%, transparent 50%),
+        radial-gradient(ellipse at 60% 80%, rgba(201,168,76,0.05) 0%, transparent 50%);
+      filter: blur(48px);
+      animation: meshDrift 22s ease-in-out infinite alternate;
+      pointer-events: none;
+      z-index: 0;
+      will-change: transform;
+    }
+    @keyframes meshDrift {
+      0%   { transform: translate(0, 0) rotate(0deg) scale(1); }
+      33%  { transform: translate(3%, -2%) rotate(1deg) scale(1.02); }
+      66%  { transform: translate(-2%, 3%) rotate(-1deg) scale(0.98); }
+      100% { transform: translate(1%, -1%) rotate(0.5deg) scale(1.01); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .hero-gradient-mesh { animation: none; }
+    }
+    #neural-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 720px;
+    }
+
+    /* Badge */
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 7px 16px 7px 10px;
+      background: rgba(13,148,136,0.07);
+      border: 1px solid rgba(13,148,136,0.18);
+      border-radius: 40px;
+      margin-bottom: 32px;
+      backdrop-filter: blur(8px);
+    }
+    .hero-badge-dot {
+      position: relative;
+      width: 8px; height: 8px;
+      flex-shrink: 0;
+    }
+    .hero-badge-dot::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+    .hero-badge-dot::after {
+      content: '';
+      position: absolute;
+      inset: -4px;
+      border-radius: 50%;
+      background: rgba(13,148,136,0.25);
+      animation: pulseRing 2.8s ease infinite;
+    }
+    .hero-badge-text {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--teal);
+    }
+
+    .hero h1 {
+      font-size: clamp(2.6rem, 5.5vw, 4.2rem);
+      font-weight: 280;
+      line-height: 1.08;
+      letter-spacing: -2px;
+      margin-bottom: 22px;
+      color: var(--text-primary);
+    }
+    .hero h1 .word-light {
+      font-weight: 200;
+      color: var(--text-dim);
+    }
+    .hero h1 .accent {
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 500;
+    }
+    .hero-sub {
+      font-size: 18px;
+      color: var(--text-muted);
+      line-height: 1.68;
+      max-width: 540px;
+      margin-bottom: 40px;
+      font-weight: 300;
+    }
+    .hero-actions { display: flex; gap: 14px; flex-wrap: wrap; align-items: center; }
+    .hero-note {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 18px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .hero-note-item {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .hero-note-item::before {
+      content: '';
+      width: 4px; height: 4px;
+      border-radius: 50%;
+      background: var(--teal);
+      opacity: 0.6;
+      flex-shrink: 0;
+    }
+
+    /* Social proof row */
+    .proof-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 60px;
+      flex-wrap: wrap;
+    }
+    .proof-avatar-stack { display: flex; }
+    .proof-avatar {
+      width: 34px; height: 34px;
+      border-radius: 50%;
+      border: 2px solid var(--bg-base);
+      background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 10px; font-weight: 700;
+      color: var(--text-on-dark);
+      margin-left: -9px;
+      box-shadow: 0 0 8px rgba(13,148,136,0.2);
+    }
+    .proof-avatar:first-child { margin-left: 0; }
+    .proof-divider { width: 1px; height: 24px; background: var(--border); }
+    .proof-text { font-size: 13px; color: var(--text-muted); line-height: 1.5; }
+    .proof-text strong { color: var(--text-primary); font-weight: 600; }
+
+    /* Falcon hero visual — right side on desktop */
+    .hero-falcon-wrap {
+      position: absolute;
+      right: 8%;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 1;
+      pointer-events: none;
+      display: none;
+      opacity: 0.88;
+    }
+    @media (min-width: 1100px) { .hero-falcon-wrap { display: block; } }
+
+    /* ── How It Works ── */
+    .how-section { padding: var(--section-gap) 0; }
+    .steps-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    @media (max-width: 768px) { .steps-grid { grid-template-columns: 1fr; } }
+
+    /* ── Services preview ── */
+    .services-section { padding: var(--section-gap) 0; background: var(--section-bg-alt); }
+    .services-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+    .service-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px 24px;
+      transition: border-color 0.25s, transform 0.25s, background 0.25s;
+      position: relative;
+      overflow: hidden;
+    }
+    .service-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 2px;
+      background: var(--gradient-primary);
+      transform: scaleX(0);
+      transition: transform 0.35s ease;
+      transform-origin: left;
+    }
+    .service-card:hover { border-color: var(--border-hover); background: var(--bg-card-hover); transform: translateY(-4px); }
+    .service-card:hover::after { transform: scaleX(1); }
+    .service-icon { font-size: 26px; margin-bottom: 16px; display: block; }
+    .service-card h3 { font-size: 15px; margin-bottom: 9px; }
+    .service-card p { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+    .service-link {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
+      color: var(--teal);
+      margin-top: 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      text-decoration: none;
+      transition: gap 0.2s;
+    }
+    .service-link:hover { gap: 9px; }
+    @media (max-width: 768px) { .services-grid { grid-template-columns: 1fr; } }
+
+    /* ── Why Nexvora ── */
+    .why-section { padding: var(--section-gap) 0; }
+    .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+    .why-visual {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      padding: 36px;
+      position: relative;
+      overflow: hidden;
+    }
+    .why-visual::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 220px; height: 220px;
+      background: radial-gradient(circle, rgba(13,148,136,0.08), transparent 70%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .why-visual-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--text-dim);
+      margin-bottom: 24px;
+    }
+    .why-metric {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 14px 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .why-metric:last-child { border-bottom: none; }
+    .why-metric-bar-wrap { flex: 1; }
+    .why-metric-label { font-size: 11px; color: var(--text-muted); margin-bottom: 7px; letter-spacing: 0.2px; }
+    .why-metric-bar { height: 5px; background: var(--bg-deep); border-radius: 3px; overflow: hidden; }
+    .why-metric-fill { height: 100%; border-radius: 3px; background: var(--gradient-primary); }
+    .why-metric-val { font-size: 13px; font-weight: 700; min-width: 38px; text-align: right; }
+    .why-points { display: flex; flex-direction: column; gap: 28px; }
+    .why-point { display: flex; gap: 18px; align-items: flex-start; }
+    .why-point-icon {
+      width: 36px; height: 36px;
+      border-radius: 9px;
+      background: rgba(13,148,136,0.08);
+      border: 1px solid rgba(13,148,136,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .why-point h4 { font-size: 14px; margin-bottom: 6px; }
+    .why-point p { font-size: 13px; color: var(--text-muted); line-height: 1.65; }
+    @media (max-width: 768px) { .why-grid { grid-template-columns: 1fr; gap: 36px; } }
+
+    /* ── Testimonials ── */
+    .testimonials-section { padding: var(--section-gap) 0; background: var(--section-bg-alt); }
+    .testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+    .testimonial-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 28px 24px;
+    }
+    .testimonial-stars { color: var(--amber); font-size: 13px; margin-bottom: 14px; letter-spacing: 2px; }
+    .testimonial-text { font-size: 14px; color: var(--text-muted); line-height: 1.7; margin-bottom: 20px; font-style: italic; }
+    .testimonial-author { display: flex; align-items: center; gap: 12px; }
+    .testimonial-avatar {
+      width: 38px; height: 38px;
+      border-radius: 50%;
+      background: var(--gradient-primary);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 12px; font-weight: 700;
+      color: var(--text-on-dark);
+      flex-shrink: 0;
+    }
+    .testimonial-name { font-size: 13px; font-weight: 600; color: var(--text-primary); }
+    .testimonial-role { font-size: 11px; color: var(--text-dim); margin-top: 2px; }
+    @media (max-width: 768px) { .testimonials-grid { grid-template-columns: 1fr; } }
+
+    /* ── Assessment CTA ── */
+    .assessment-cta-section { padding: var(--section-gap) 0; }
+    .assessment-cta-card {
+      position: relative;
+      overflow: hidden;
+      background: var(--gradient-hero, linear-gradient(135deg, #0F2B4C, #1E3A5F));
+      border-radius: var(--radius-xl);
+      padding: 80px 48px;
+      text-align: center;
+    }
+    .assessment-cta-card::before {
+      content: '';
+      position: absolute;
+      top: -100px; left: 50%;
+      transform: translateX(-50%);
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(13,148,136,0.12), transparent 65%);
+      border-radius: 50%;
+      pointer-events: none;
+    }
+    .assessment-cta-card .label-teal { color: var(--teal); margin-bottom: 18px; }
+    .assessment-cta-card h2 {
+      font-size: clamp(1.9rem, 3.5vw, 2.9rem);
+      margin-bottom: 16px;
+      letter-spacing: -0.8px;
+      color: var(--text-on-dark) !important;
+    }
+    .assessment-cta-card > p {
+      max-width: 520px; margin: 0 auto 36px;
+      font-size: 17px; color: var(--text-on-dark-muted);
+    }
+    .assessment-checklist {
+      display: flex;
+      justify-content: center;
+      gap: 28px;
+      flex-wrap: wrap;
+      margin-bottom: 40px;
+      padding: 0;
+    }
+    .assessment-checklist li {
+      list-style: none;
+      font-size: 13px;
+      color: var(--text-on-dark-muted);
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+    .assessment-checklist li::before {
+      content: '';
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      background: rgba(13,148,136,0.15);
+      border: 1px solid rgba(13,148,136,0.35);
+      flex-shrink: 0;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12'%3E%3Cpath d='M2 6l3 3 5-5' stroke='%230D9488' stroke-width='1.5' fill='none' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+      background-size: 10px;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+    @media (max-width: 768px) {
+      .assessment-cta-card { padding: 52px 24px; }
+      .assessment-checklist { flex-direction: column; align-items: center; gap: 12px; }
+    }
+
+    /* ── Metrics band ── */
+    .metrics-band {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      margin-top: 64px;
+    }
+    .metric-cell {
+      background: var(--bg-surface);
+      padding: 28px 24px;
+      text-align: center;
+    }
+    .metric-value {
+      font-size: 36px;
+      font-weight: 700;
+      background: var(--gradient-text);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+      margin-bottom: 6px;
+    }
+    .metric-desc { font-size: 12px; color: var(--text-dim); line-height: 1.5; }
+    @media (max-width: 600px) { .metrics-band { grid-template-columns: 1fr; } }
+
+    /* Section header utility */
+    .section-header {
+      max-width: 580px;
+      margin-bottom: 52px;
+    }
+    .section-header h2 { margin-top: 10px; margin-bottom: 14px; }
+    .section-header p { font-size: 16px; }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="blog.html">Insights</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+      <a href="assessment.html" class="btn btn-primary btn-sm nav-cta">Free Assessment</a>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile sticky CTA bar -->
+  <div class="mobile-cta-bar">
+    <a href="assessment.html" class="btn btn-primary">Find My Revenue Gaps →</a>
+  </div>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a>
+    <a href="blog.html">Insights</a>
+    <a href="contact.html">Contact</a>
+    <a href="assessment.html" class="btn btn-primary">Free Assessment</a>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-gradient-mesh"></div>
+    <canvas id="neural-canvas"></canvas>
+
+    <!-- Falcon mascot — right side on desktop, populated by falcon.js -->
+    <div class="hero-falcon-wrap falcon-hero-wrap"></div>
+
+    <div class="container">
+      <div class="hero-inner">
+        <!-- Eyebrow badge -->
+        <div class="hero-badge hero-entrance">
+          <span class="hero-badge-dot"></span>
+          <span class="hero-badge-text">The Nexvora Falcon System</span>
+        </div>
+
+        <!-- Headline -->
+        <h1 class="hero-entrance">
+          <span class="word-light">We see the gaps</span><br>
+          that cost your business<br>
+          <span class="accent">$2.4M a year</span>
+        </h1>
+
+        <p class="hero-sub hero-entrance">
+          The Nexvora Falcon System diagnoses your operations in 10 minutes — uncovering the revenue leaks, workflow breakdowns, and communication failures quietly draining your margins.
+        </p>
+
+        <div class="hero-actions hero-entrance">
+          <a href="assessment.html" class="btn btn-primary btn-lg">Find My Revenue Gaps →</a>
+          <a href="services.html" class="btn btn-ghost btn-lg">See How It Works</a>
+        </div>
+
+        <div class="hero-note hero-entrance">
+          <span class="hero-note-item">Free, no credit card</span>
+          <span class="hero-note-item">Results in 10 minutes</span>
+          <span class="hero-note-item">100% personalized</span>
+        </div>
+
+        <div class="proof-row hero-entrance">
+          <div class="proof-avatar-stack">
+            <div class="proof-avatar">JM</div>
+            <div class="proof-avatar">SR</div>
+            <div class="proof-avatar">TK</div>
+            <div class="proof-avatar">AL</div>
+          </div>
+          <div class="proof-divider"></div>
+          <div class="proof-text">
+            <strong>500+ businesses</strong> assessed<br>and improved in 2025
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Trust Strip -->
+  <div class="trust-strip">
+    <div class="container">
+      <p class="label">Trusted by growing businesses across industries</p>
+      <div class="trust-logos">
+        <span>Healthcare Ops</span>
+        <span>Real Estate</span>
+        <span>Manufacturing</span>
+        <span>Professional Services</span>
+        <span>Logistics</span>
+        <span>Retail Chains</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Metrics Band -->
+  <div class="container">
+    <div class="metrics-band reveal">
+      <div class="metric-cell">
+        <div class="metric-value count-up" data-target="2.4">0</div>
+        <div class="metric-desc">Average annual revenue<br>leakage per business (M)</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-value count-up" data-target="67">0</div>
+        <div class="metric-desc">% of businesses<br>underperforming their potential</div>
+      </div>
+      <div class="metric-cell">
+        <div class="metric-value count-up" data-target="10">0</div>
+        <div class="metric-desc">Minutes to a complete<br>operational diagnosis</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- How It Works -->
+  <section class="how-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="label-accent">The Process</p>
+        <h2>Clarity in three steps</h2>
+        <p>No consultants. No long retainers. Just a clear picture of where your business is losing ground — and what to do about it.</p>
+      </div>
+      <div class="steps-grid stagger">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <h3>Take the Assessment</h3>
+          <p>A 10-minute conversational assessment across 8 operational dimensions. We ask smart questions. You answer honestly.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <h3>Receive Your Report</h3>
+          <p>Get a breakdown of every gap we find — with dollar-loss estimates tied to your actual business size and industry.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <h3>Book a Strategy Call</h3>
+          <p>Our team walks you through the findings and maps out a 90-day roadmap specific to your industry and situation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Preview -->
+  <section class="services-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="label-accent">What We Fix</p>
+        <h2>Operational problems we solve</h2>
+        <p>We specialize in the gaps most consultants overlook — the ones bleeding your margins quietly, month after month.</p>
+      </div>
+      <div class="services-grid stagger">
+        <div class="service-card">
+          <span class="service-icon">⚙️</span>
+          <h3>Operations &amp; Workflow</h3>
+          <p>Manual processes, bottlenecks, and team coordination failures that slow delivery and inflate costs.</p>
+          <a href="services.html" class="service-link">Learn more →</a>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">📊</span>
+          <h3>Sales &amp; Revenue Systems</h3>
+          <p>Leaky pipelines, inconsistent follow-up, and pricing gaps that leave revenue on the table every quarter.</p>
+          <a href="services.html" class="service-link">Learn more →</a>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">👥</span>
+          <h3>Team &amp; Communication</h3>
+          <p>Misaligned teams, unclear accountability, and communication breakdowns that compound over time.</p>
+          <a href="services.html" class="service-link">Learn more →</a>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">💰</span>
+          <h3>Financial Visibility</h3>
+          <p>Blind spots in cash flow, untracked expenses, and reporting gaps that prevent smart decisions.</p>
+          <a href="services.html" class="service-link">Learn more →</a>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">🔧</span>
+          <h3>Technology &amp; Tools</h3>
+          <p>Disconnected software stacks, missing automations, and tech debt costing you hours every week.</p>
+          <a href="services.html" class="service-link">Learn more →</a>
+        </div>
+        <div class="service-card">
+          <span class="service-icon">🛡️</span>
+          <h3>Compliance &amp; Risk</h3>
+          <p>Hidden liability exposure, compliance gaps, and risk management blind spots that threaten your business.</p>
+          <a href="services.html" class="service-link">Learn more →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Why Nexvora -->
+  <section class="why-section">
+    <div class="container">
+      <div class="why-grid">
+        <div class="why-visual reveal">
+          <p class="why-visual-label">Typical Business Health Scan</p>
+          <div class="why-metric">
+            <div class="why-metric-bar-wrap">
+              <p class="why-metric-label">Operations Efficiency</p>
+              <div class="why-metric-bar"><div class="why-metric-fill" style="width: 38%;"></div></div>
+            </div>
+            <span class="why-metric-val" style="color: var(--red);">38%</span>
+          </div>
+          <div class="why-metric">
+            <div class="why-metric-bar-wrap">
+              <p class="why-metric-label">Sales Process Maturity</p>
+              <div class="why-metric-bar"><div class="why-metric-fill" style="width: 52%;"></div></div>
+            </div>
+            <span class="why-metric-val" style="color: var(--amber);">52%</span>
+          </div>
+          <div class="why-metric">
+            <div class="why-metric-bar-wrap">
+              <p class="why-metric-label">Team Alignment Score</p>
+              <div class="why-metric-bar"><div class="why-metric-fill" style="width: 44%;"></div></div>
+            </div>
+            <span class="why-metric-val" style="color: var(--red);">44%</span>
+          </div>
+          <div class="why-metric">
+            <div class="why-metric-bar-wrap">
+              <p class="why-metric-label">Technology Utilization</p>
+              <div class="why-metric-bar"><div class="why-metric-fill" style="width: 29%;"></div></div>
+            </div>
+            <span class="why-metric-val" style="color: var(--red);">29%</span>
+          </div>
+          <div class="why-metric">
+            <div class="why-metric-bar-wrap">
+              <p class="why-metric-label">Financial Clarity</p>
+              <div class="why-metric-bar"><div class="why-metric-fill" style="width: 71%;"></div></div>
+            </div>
+            <span class="why-metric-val" style="color: var(--green);">71%</span>
+          </div>
+        </div>
+
+        <div class="why-points reveal">
+          <p class="label-accent" style="margin-bottom: 18px;">Why Nexvora</p>
+          <h2 style="margin-bottom: 36px;">We find what your business can't see itself</h2>
+          <div class="why-point">
+            <div class="why-point-icon">🎯</div>
+            <div>
+              <h4>Industry-Calibrated Analysis</h4>
+              <p>Our assessment benchmarks your scores against businesses of your same size, industry, and growth stage — not generic averages.</p>
+            </div>
+          </div>
+          <div class="why-point">
+            <div class="why-point-icon">💡</div>
+            <div>
+              <h4>Dollar-Loss Quantification</h4>
+              <p>Every gap we find is translated into estimated annual revenue impact, so you can prioritize by financial urgency — not gut feel.</p>
+            </div>
+          </div>
+          <div class="why-point">
+            <div class="why-point-icon">⚡</div>
+            <div>
+              <h4>No Long Retainers Required</h4>
+              <p>Start with a free assessment. Our engagement model is designed around results at each stage, not locked-in consulting contracts.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials -->
+  <section class="testimonials-section">
+    <div class="container">
+      <div class="section-header reveal">
+        <p class="label-accent">Client Results</p>
+        <h2>What businesses say after their assessment</h2>
+        <p>Real outcomes from real companies who stopped guessing and started fixing.</p>
+      </div>
+      <div class="testimonials-grid stagger">
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"The assessment found $340K in annual leakage we had no idea existed. Within 90 days we fixed the top three issues and saw immediate margin improvement."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">MR</div>
+            <div>
+              <p class="testimonial-name">Marcus R.</p>
+              <p class="testimonial-role">CEO, Regional Healthcare Group</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"I've worked with expensive consultants who gave me slide decks. Nexvora gave me a roadmap I could actually execute. Best 10 minutes I've spent this year."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">SL</div>
+            <div>
+              <p class="testimonial-name">Stephanie L.</p>
+              <p class="testimonial-role">COO, Logistics Network</p>
+            </div>
+          </div>
+        </div>
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-text">"Our sales pipeline was a black box. After the analysis, we rebuilt our follow-up system and closed 22% more deals in Q1 without adding headcount."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">DK</div>
+            <div>
+              <p class="testimonial-name">David K.</p>
+              <p class="testimonial-role">Founder, Professional Services Firm</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Assessment CTA -->
+  <section class="assessment-cta-section">
+    <div class="container">
+      <div class="assessment-cta-card reveal">
+        <p class="label-teal" style="font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--teal);margin-bottom:18px;">Start Today — It's Free</p>
+        <h2>Find out what your business<br>is losing every year</h2>
+        <p>10 minutes. 8 dimensions. 1 personalized report that shows you exactly where the money is going.</p>
+        <ul class="assessment-checklist">
+          <li>Conversational — no forms</li>
+          <li>Personalized to your industry</li>
+          <li>Dollar-loss estimates included</li>
+          <li>100% free, no credit card</li>
+        </ul>
+        <a href="assessment.html" class="btn btn-primary btn-lg">Take the Free Assessment →</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="margin-bottom: 0;">
+            <img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" />
+          </a>
+          <p>Operational intelligence for mid-market businesses. We find what's costing you money before you can fix it.</p>
+          <p class="footer-location">📍 Serving businesses nationwide</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Company</p>
+          <div class="footer-links">
+            <a href="about.html">About Nexvora</a>
+            <a href="services.html">Our Services</a>
+            <a href="blog.html">Insights</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="assessment.html" class="highlight">Free Assessment →</a>
+          </div>
+        </div>
+        <div>
+          <p class="footer-col-title">Services</p>
+          <div class="footer-links">
+            <a href="services.html">Operations Consulting</a>
+            <a href="services.html">Revenue Optimization</a>
+            <a href="services.html">Team Alignment</a>
+            <a href="services.html">Technology Audit</a>
+            <a href="services.html">Financial Visibility</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-bottom-left">© 2026 Nexvora Systems LLC. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="legal/terms.html">Terms &amp; Conditions</a>
+          <a href="legal/privacy.html">Privacy Policy</a>
+          <a href="legal/disclaimer.html">Disclaimer</a>
+          <a href="legal/cookies.html">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/falcon.js"></script>
+
+  <!-- Count-up on scroll -->
+  <script>
+    const countEls = document.querySelectorAll('.count-up');
+    const countIO = new IntersectionObserver(entries => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          const target = parseFloat(e.target.dataset.target);
+          Nexvora.countUp(e.target, target, 1600);
+          e.target.classList.add('active');
+          countIO.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.5 });
+    countEls.forEach(el => countIO.observe(el));
+  </script>
+</body>
+</html>

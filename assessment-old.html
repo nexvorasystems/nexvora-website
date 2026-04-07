@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Free Business Assessment — Nexvora Systems</title>
+  <meta name="description" content="Take our free 10-minute business assessment and find out exactly where your business is losing money across 8 operational dimensions." />
+  <link rel="icon" href="assets/favicon.svg" type="image/svg+xml" />
+  <script src="js/theme.js"></script>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/animations.css" />
+  <link rel="stylesheet" href="css/falcon.css" />
+  <link rel="stylesheet" href="css/assessment.css" />
+  <style>
+    /* ── Assessment Hero ── */
+    .assessment-hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      overflow: hidden;
+    }
+    #neural-canvas {
+      position: absolute;
+      inset: 0;
+      z-index: 0;
+      pointer-events: none;
+    }
+    .assessment-hero-inner {
+      position: relative;
+      z-index: 1;
+      max-width: 660px;
+    }
+    .assessment-hero-label {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--blue);
+      margin-bottom: 24px;
+    }
+    .assessment-hero-label-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--blue);
+      animation: pulseRing 2.5s ease infinite;
+    }
+    .assessment-hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.6rem);
+      line-height: 1.12;
+      letter-spacing: -1.5px;
+      margin-bottom: 20px;
+    }
+    .assessment-hero h1 .accent {
+      background: var(--gradient-primary);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .assessment-hero-sub {
+      font-size: 17px;
+      color: var(--text-muted);
+      line-height: 1.65;
+      max-width: 520px;
+      margin-bottom: 36px;
+    }
+    .assessment-hero-note {
+      font-size: 12px;
+      color: var(--text-dim);
+      margin-top: 16px;
+    }
+    .assessment-hero-note span { color: var(--green); }
+
+    /* ── Hero stat strip ── */
+    .hero-stats {
+      display: flex;
+      gap: 32px;
+      margin-top: 52px;
+      flex-wrap: wrap;
+    }
+    .hero-stat {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .hero-stat-value {
+      font-size: 20px;
+      font-weight: 700;
+      color: #fff;
+      line-height: 1;
+    }
+    .hero-stat-label {
+      font-size: 11px;
+      color: var(--text-dim);
+      letter-spacing: 0.5px;
+    }
+    .hero-stat-divider {
+      width: 1px;
+      background: var(--border);
+      align-self: stretch;
+    }
+    @media (max-width: 480px) {
+      .hero-stat-divider { display: none; }
+      .hero-stats { gap: 24px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       Navigation
+  ══════════════════════════════════════ -->
+  <nav class="nav" id="mainNav">
+    <div class="nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" />
+      </a>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="services.html">Services</a></li>
+        <li><a href="blog.html">Insights</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="assessment.html" style="color:#fff;font-weight:600;">Assessment</a></li>
+      </ul>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <a href="about.html">About</a>
+    <a href="services.html">Services</a>
+    <a href="blog.html">Insights</a>
+    <a href="contact.html">Contact</a>
+    <a href="assessment.html" style="color:#fff;font-weight:600;">Assessment</a>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       Hero
+  ══════════════════════════════════════ -->
+  <section class="assessment-hero">
+    <canvas id="neural-canvas"></canvas>
+    <div class="container">
+      <div class="assessment-hero-inner">
+        <div class="assessment-hero-label">
+          <span class="assessment-hero-label-dot"></span>
+          Free Business Assessment
+        </div>
+        <h1>Find Out What Your<br>Business Is <span class="accent">Losing</span></h1>
+        <p class="assessment-hero-sub">
+          A 10-minute, 8-dimension assessment that reveals the hidden operational gaps
+          costing your business real money — and shows you exactly where to fix first.
+        </p>
+        <button class="btn btn-primary btn-lg" id="startAssessmentBtn">
+          Start My Free Assessment →
+        </button>
+        <p class="assessment-hero-note">
+          <span>Free</span> · No credit card · Results in 10 minutes
+        </p>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <span class="hero-stat-value">10 Minutes</span>
+            <span class="hero-stat-label">To complete</span>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat">
+            <span class="hero-stat-value">8 Dimensions</span>
+            <span class="hero-stat-label">Assessed in depth</span>
+          </div>
+          <div class="hero-stat-divider"></div>
+          <div class="hero-stat">
+            <span class="hero-stat-value">100% Free</span>
+            <span class="hero-stat-label">No strings attached</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════════
+       Assessment Overlay — All 5 Phases
+  ══════════════════════════════════════ -->
+  <div class="assessment-overlay" id="assessmentOverlay">
+
+    <!-- Close button -->
+    <button class="assessment-close" id="assessmentClose" aria-label="Close assessment">✕</button>
+
+    <!-- ─────────────────────────────────────
+         Phase 1 — Lead Capture
+    ───────────────────────────────────── -->
+    <div class="phase phase-capture active" id="phase1">
+      <div class="capture-wrap">
+        <div class="capture-inner">
+          <p class="label">Step 1 of 5</p>
+          <h2>Before We Begin</h2>
+          <p>We'll use this to personalize your report and send a copy to your inbox.</p>
+
+          <form id="captureForm" class="capture-form" novalidate>
+
+            <!-- Row 1: Full Name + Company Name -->
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="captureName">Full Name *</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="captureName"
+                  name="name"
+                  placeholder="Jane Smith"
+                  autocomplete="name"
+                />
+                <span class="form-error">Full name is required.</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="captureCompany">Company Name *</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="captureCompany"
+                  name="company"
+                  placeholder="Acme Corp"
+                  autocomplete="organization"
+                />
+                <span class="form-error">Company name is required.</span>
+              </div>
+            </div>
+
+            <!-- Row 2: Email + Phone -->
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="captureEmail">Business Email *</label>
+                <input
+                  type="email"
+                  class="form-input"
+                  id="captureEmail"
+                  name="email"
+                  placeholder="jane@acmecorp.com"
+                  autocomplete="email"
+                />
+                <span class="form-error">A valid email address is required.</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="capturePhone">Phone Number *</label>
+                <input
+                  type="tel"
+                  class="form-input"
+                  id="capturePhone"
+                  name="phone"
+                  placeholder="(555) 000-0000"
+                  autocomplete="tel"
+                />
+                <span class="form-error">Phone number is required.</span>
+              </div>
+            </div>
+
+            <!-- Row 3: City + State -->
+            <div class="form-grid">
+              <div class="form-group">
+                <label class="form-label" for="captureCity">City *</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="captureCity"
+                  name="city"
+                  placeholder="New York"
+                  autocomplete="address-level2"
+                />
+                <span class="form-error">City is required.</span>
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="captureState">State *</label>
+                <input
+                  type="text"
+                  class="form-input"
+                  id="captureState"
+                  name="state"
+                  placeholder="NY"
+                  autocomplete="address-level1"
+                  maxlength="2"
+                />
+                <span class="form-error">State is required.</span>
+              </div>
+            </div>
+
+            <!-- Submit -->
+            <button type="submit" class="btn btn-primary btn-block btn-lg" id="captureSubmit">
+              Start My Assessment →
+            </button>
+
+            <!-- Privacy note -->
+            <p class="capture-privacy">Your information is secure and never shared.</p>
+
+          </form>
+        </div>
+      </div>
+    </div><!-- /phase1 -->
+
+    <!-- ─────────────────────────────────────
+         Phase 2 — Chat
+    ───────────────────────────────────── -->
+    <div class="phase phase-chat" id="phase2">
+
+      <!-- Progress bar header -->
+      <div class="chat-header">
+        <span class="chat-progress-text" id="chatProgressText">Question 1 of 15</span>
+        <div class="progress-bar-wrap">
+          <div class="progress-bar-fill" id="progressBarFill"></div>
+        </div>
+        <span class="progress-pct" id="progressPct">0%</span>
+      </div>
+
+      <!-- Chat wrap (messages + input stacked) -->
+      <div class="chat-wrap">
+
+        <!-- Messages area -->
+        <div class="chat-messages" id="chatMessages">
+          <!-- Messages injected by assessment.js -->
+        </div>
+
+        <!-- Input row -->
+        <div class="chat-input-row">
+          <textarea
+            class="chat-input form-input"
+            id="chatInput"
+            placeholder="Type your answer..."
+            autocomplete="off"
+            rows="1"
+          ></textarea>
+          <button class="btn btn-primary" id="chatSend">Send</button>
+        </div>
+
+      </div>
+    </div><!-- /phase2 -->
+
+    <!-- ─────────────────────────────────────
+         Phase 3 — Analysis
+    ───────────────────────────────────── -->
+    <div class="phase phase-analysis" id="phase3">
+      <div class="analysis-wrap">
+        <div class="analysis-inner">
+
+          <div class="analysis-spinner">
+            <div class="analysis-spinner-inner" style="animation: spin 0.9s linear infinite;"></div>
+          </div>
+
+          <h2>Analyzing Your Business</h2>
+          <p style="color: var(--text-muted); margin-bottom: 0;">Running our 8-dimension assessment model...</p>
+
+          <div class="analysis-checklist" id="analysisChecklist">
+            <div class="analysis-item checklist-item" id="ac1">
+              <span class="pending">○</span>
+              <span>Mapping operational gaps...</span>
+            </div>
+            <div class="analysis-item checklist-item" id="ac2">
+              <span class="pending">○</span>
+              <span>Calculating revenue impact...</span>
+            </div>
+            <div class="analysis-item checklist-item" id="ac3">
+              <span class="pending">○</span>
+              <span>Benchmarking against your industry...</span>
+            </div>
+            <div class="analysis-item checklist-item" id="ac4">
+              <span class="pending">○</span>
+              <span>Generating personalized report...</span>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </div><!-- /phase3 -->
+
+    <!-- ─────────────────────────────────────
+         Phase 4 — Reveal
+    ───────────────────────────────────── -->
+    <div class="phase phase-reveal" id="phase4">
+      <div class="reveal-wrap">
+        <div class="reveal-inner">
+
+          <p class="label">Your Results Are Ready</p>
+          <h2>Your Assessment Is Complete</h2>
+          <p id="revealSubtext">Based on your assessment, here's a summary of what we found across 8 operational dimensions.</p>
+
+          <!-- Counters -->
+          <div class="reveal-counters">
+            <div class="reveal-counter critical" id="revealCritical">
+              <div class="rnum reveal-count-number">0</div>
+              <div class="rlbl">Critical</div>
+            </div>
+            <div class="reveal-counter warning" id="revealWarning">
+              <div class="rnum reveal-count-number">0</div>
+              <div class="rlbl">Needs Work</div>
+            </div>
+            <div class="reveal-counter good" id="revealGood">
+              <div class="rnum reveal-count-number">0</div>
+              <div class="rlbl">Strong</div>
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-lg" id="showReportBtn">
+            View Full Report →
+          </button>
+
+        </div>
+      </div>
+    </div><!-- /phase4 -->
+
+    <!-- ─────────────────────────────────────
+         Phase 5 — Report Wizard
+    ───────────────────────────────────── -->
+    <div class="phase phase-report" id="phase5">
+      <div class="wizard-wrap">
+
+        <!-- Wizard header: counter + score chip + dots -->
+        <div class="wizard-header">
+          <span class="wizard-counter" id="wizardCounter">1 / 9</span>
+          <div class="wizard-dots" id="wizardDots">
+            <!-- Dots injected by report.js -->
+          </div>
+          <span class="wizard-score-chip" id="wizardScoreChip"></span>
+        </div>
+
+        <!-- Slide content area -->
+        <div class="wizard-body" id="wizardBody">
+          <!-- Slides injected by report.js -->
+        </div>
+
+        <!-- Navigation -->
+        <div class="wizard-nav">
+          <button class="wizard-back" id="wizardBack">← Back</button>
+          <button class="btn btn-primary wizard-next" id="wizardNext">Next →</button>
+        </div>
+
+      </div>
+
+      <!-- Floating arrow (hidden on mobile via CSS) -->
+      <button class="wizard-arrow" id="wizardArrow" aria-label="Next slide">›</button>
+
+    </div><!-- /phase5 -->
+
+  </div><!-- /assessmentOverlay -->
+
+  <!-- ══════════════════════════════════════
+       Footer
+  ══════════════════════════════════════ -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="index.html" class="nav-logo" style="margin-bottom: 0;">
+            <img src="assets/nexvora-logo.png" alt="Nexvora Systems" class="nav-logo-img" />
+          </a>
+          <p>Operational intelligence for mid-market businesses. We find what's costing you money before you can fix it.</p>
+          <p class="footer-location">📍 Serving businesses nationwide</p>
+        </div>
+        <div>
+          <p class="footer-col-title">Company</p>
+          <div class="footer-links">
+            <a href="about.html">About Nexvora</a>
+            <a href="services.html">Our Services</a>
+            <a href="blog.html">Insights</a>
+            <a href="contact.html">Contact Us</a>
+            <a href="assessment.html" class="highlight">Free Assessment →</a>
+          </div>
+        </div>
+        <div>
+          <p class="footer-col-title">Services</p>
+          <div class="footer-links">
+            <a href="services.html">Operations Consulting</a>
+            <a href="services.html">Revenue Optimization</a>
+            <a href="services.html">Team Alignment</a>
+            <a href="services.html">Technology Audit</a>
+            <a href="services.html">Financial Visibility</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p class="footer-bottom-left">© 2026 Nexvora Systems LLC. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="legal/terms.html">Terms &amp; Conditions</a>
+          <a href="legal/privacy.html">Privacy Policy</a>
+          <a href="legal/disclaimer.html">Disclaimer</a>
+          <a href="legal/cookies.html">Cookie Policy</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════════
+       Scripts
+  ══════════════════════════════════════ -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/main.js"></script>
+  <script src="js/animations.js"></script>
+  <script src="js/falcon.js"></script>
+  <script src="js/assessment.js"></script>
+  <script src="js/report.js"></script>
+</body>
+</html>

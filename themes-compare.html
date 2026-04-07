@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Color Theme Comparison — Nexvora Systems</title>
+  <link rel="stylesheet" href="css/global.css" />
+  <link rel="stylesheet" href="css/themes.css" />
+  <style>
+    body { background: #060b18; min-height: 100vh; }
+
+    .picker-header {
+      text-align: center;
+      padding: 64px 24px 48px;
+    }
+    .picker-header h1 {
+      font-size: clamp(28px, 5vw, 48px);
+      font-weight: 300;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+    }
+    .picker-header p {
+      font-size: 16px;
+      color: rgba(255,255,255,0.45);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .themes-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 24px;
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 0 24px 80px;
+    }
+
+    .theme-card {
+      border-radius: 16px;
+      overflow: hidden;
+      border: 2px solid rgba(255,255,255,0.08);
+      transition: border-color 0.25s, transform 0.25s;
+      cursor: pointer;
+      text-decoration: none;
+      display: block;
+    }
+    .theme-card:hover {
+      border-color: rgba(255,255,255,0.28);
+      transform: translateY(-4px);
+    }
+
+    /* Mini preview panel inside each card */
+    .theme-preview {
+      height: 340px;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Nav bar preview */
+    .p-nav {
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      border-bottom: 1px solid;
+      flex-shrink: 0;
+    }
+    .p-logo { display: flex; align-items: center; gap: 8px; }
+    .p-logo-box { width: 18px; height: 18px; border-radius: 4px; }
+    .p-logo-text { font-size: 11px; font-weight: 700; letter-spacing: 1.5px; }
+    .p-nav-links { display: flex; gap: 14px; }
+    .p-nav-link { font-size: 9px; opacity: 0.5; }
+    .p-btn { font-size: 9px; font-weight: 700; padding: 5px 12px; border-radius: 4px; letter-spacing: 0.5px; }
+
+    /* Hero preview */
+    .p-hero {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 20px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+    .p-hero::before {
+      content: '';
+      position: absolute;
+      top: -40px; right: -40px;
+      width: 180px; height: 180px;
+      border-radius: 50%;
+      opacity: 0.15;
+    }
+    .p-eyebrow { font-size: 8px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 10px; opacity: 0.7; }
+    .p-h1 { font-size: 18px; font-weight: 300; line-height: 1.2; margin-bottom: 8px; letter-spacing: -0.5px; }
+    .p-h1 span { font-weight: 700; }
+    .p-sub { font-size: 9px; line-height: 1.6; opacity: 0.5; max-width: 220px; margin-bottom: 14px; }
+    .p-btns { display: flex; gap: 8px; }
+    .p-btn-primary { font-size: 9px; font-weight: 700; padding: 6px 14px; border-radius: 4px; letter-spacing: 0.3px; }
+    .p-btn-ghost { font-size: 9px; padding: 6px 14px; border-radius: 4px; border: 1px solid; opacity: 0.6; }
+
+    /* Stats bar */
+    .p-stats {
+      display: flex;
+      border-top: 1px solid;
+      flex-shrink: 0;
+    }
+    .p-stat { flex: 1; text-align: center; padding: 8px; }
+    .p-stat + .p-stat { border-left: 1px solid; }
+    .p-stat-num { font-size: 13px; font-weight: 700; }
+    .p-stat-lbl { font-size: 7px; opacity: 0.4; margin-top: 2px; text-transform: uppercase; letter-spacing: 1px; }
+
+    /* Card info bar */
+    .theme-info {
+      padding: 20px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+    .theme-info-left h3 { font-size: 15px; font-weight: 600; color: #fff; margin-bottom: 3px; }
+    .theme-info-left p { font-size: 12px; color: rgba(255,255,255,0.4); }
+    .theme-open-btn {
+      font-size: 12px;
+      font-weight: 600;
+      padding: 8px 18px;
+      border-radius: 20px;
+      white-space: nowrap;
+      transition: opacity 0.2s;
+    }
+    .theme-open-btn:hover { opacity: 0.85; }
+
+    /* ── Theme B: Dark Navy ── */
+    .card-navy { background: #060b18; }
+    .card-navy .p-nav { background: rgba(6,11,24,0.92); border-color: rgba(255,255,255,0.08); }
+    .card-navy .p-logo-box { background: linear-gradient(135deg,#3182ce,#2f855a); }
+    .card-navy .p-logo-text { color: #fff; }
+    .card-navy .p-nav-link { color: rgba(255,255,255,0.45); }
+    .card-navy .p-btn { background: linear-gradient(135deg,#3182ce,#2f855a); color: #fff; }
+    .card-navy .p-hero { background: #060b18; }
+    .card-navy .p-hero::before { background: radial-gradient(circle, #3182ce, transparent); }
+    .card-navy .p-eyebrow { color: #63b3ed; }
+    .card-navy .p-h1 { color: rgba(255,255,255,0.92); }
+    .card-navy .p-h1 span { background: linear-gradient(135deg,#3182ce,#2f855a); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .card-navy .p-sub { color: rgba(255,255,255,0.45); }
+    .card-navy .p-btn-primary { background: linear-gradient(135deg,#3182ce,#2f855a); color: #fff; }
+    .card-navy .p-btn-ghost { color: rgba(255,255,255,0.6); border-color: rgba(255,255,255,0.2); }
+    .card-navy .p-stats { background: #060b18; border-color: rgba(255,255,255,0.08); }
+    .card-navy .p-stat + .p-stat { border-color: rgba(255,255,255,0.08); }
+    .card-navy .p-stat-num { color: #fff; }
+    .card-navy .theme-info { background: #0a1220; border-top: 1px solid rgba(255,255,255,0.06); }
+    .card-navy .theme-open-btn { background: linear-gradient(135deg,#3182ce,#2f855a); color: #fff; }
+
+    /* ── Theme A: Apple Black ── */
+    .card-apple { background: #000; }
+    .card-apple .p-nav { background: rgba(0,0,0,0.95); border-color: rgba(255,255,255,0.1); }
+    .card-apple .p-logo-box { background: linear-gradient(135deg,#0071e3,#34aadc); }
+    .card-apple .p-logo-text { color: #fff; }
+    .card-apple .p-nav-link { color: rgba(255,255,255,0.5); }
+    .card-apple .p-btn { background: linear-gradient(135deg,#0071e3,#34aadc); color: #fff; }
+    .card-apple .p-hero { background: #000; }
+    .card-apple .p-hero::before { background: radial-gradient(circle, #0071e3, transparent); }
+    .card-apple .p-eyebrow { color: #2997ff; }
+    .card-apple .p-h1 { color: rgba(255,255,255,0.96); }
+    .card-apple .p-h1 span { background: linear-gradient(135deg,#0071e3,#34aadc); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .card-apple .p-sub { color: rgba(255,255,255,0.5); }
+    .card-apple .p-btn-primary { background: linear-gradient(135deg,#0071e3,#34aadc); color: #fff; }
+    .card-apple .p-btn-ghost { color: rgba(255,255,255,0.6); border-color: rgba(255,255,255,0.2); }
+    .card-apple .p-stats { background: #000; border-color: rgba(255,255,255,0.1); }
+    .card-apple .p-stat + .p-stat { border-color: rgba(255,255,255,0.1); }
+    .card-apple .p-stat-num { color: #fff; }
+    .card-apple .theme-info { background: #161616; border-top: 1px solid rgba(255,255,255,0.07); }
+    .card-apple .theme-open-btn { background: linear-gradient(135deg,#0071e3,#34aadc); color: #fff; }
+
+    /* ── Theme C: Logo Colors (deep green-black) ── */
+    .card-logo { background: #020d0a; }
+    .card-logo .p-nav { background: rgba(2,13,10,0.97); border-color: rgba(74,222,128,0.14); }
+    .card-logo .p-logo-box { background: linear-gradient(135deg,#22c55e,#3b82f6); }
+    .card-logo .p-logo-text { color: #fff; }
+    .card-logo .p-nav-link { color: rgba(255,255,255,0.5); }
+    .card-logo .p-btn { background: linear-gradient(135deg,#22c55e,#3b82f6); color: #fff; box-shadow: 0 0 10px rgba(34,197,94,0.4); }
+    .card-logo .p-hero { background: #020d0a; }
+    .card-logo .p-hero::before { background: radial-gradient(circle, #22c55e, transparent); }
+    .card-logo .p-eyebrow { color: #4ade80; }
+    .card-logo .p-h1 { color: rgba(255,255,255,0.96); }
+    .card-logo .p-h1 span { background: linear-gradient(135deg,#4ade80,#60a5fa); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .card-logo .p-sub { color: rgba(255,255,255,0.5); }
+    .card-logo .p-btn-primary { background: linear-gradient(135deg,#22c55e,#3b82f6); color: #fff; box-shadow: 0 0 12px rgba(34,197,94,0.4); }
+    .card-logo .p-btn-ghost { color: rgba(255,255,255,0.6); border-color: rgba(74,222,128,0.3); }
+    .card-logo .p-stats { background: #020d0a; border-color: rgba(74,222,128,0.14); }
+    .card-logo .p-stat + .p-stat { border-color: rgba(74,222,128,0.14); }
+    .card-logo .p-stat-num { color: #4ade80; }
+    .card-logo .theme-info { background: #071a14; border-top: 1px solid rgba(74,222,128,0.1); }
+    .card-logo .theme-open-btn { background: linear-gradient(135deg,#22c55e,#3b82f6); color: #fff; box-shadow: 0 0 14px rgba(34,197,94,0.45); }
+
+    /* ── Theme D: Nexvora Live (medium charcoal — clearly lighter) ── */
+    .card-nexvora { background: #1e293b; }
+    .card-nexvora .p-nav { background: rgba(30,41,59,0.97); border-color: rgba(255,255,255,0.14); }
+    .card-nexvora .p-logo-box { background: linear-gradient(135deg,#046bd2,#44caa2); }
+    .card-nexvora .p-logo-text { color: #fff; }
+    .card-nexvora .p-nav-link { color: rgba(255,255,255,0.55); }
+    .card-nexvora .p-btn { background: linear-gradient(135deg,#046bd2,#44caa2); color: #fff; }
+    .card-nexvora .p-hero { background: #1e293b; }
+    .card-nexvora .p-hero::before { background: radial-gradient(circle, #046bd2, transparent); }
+    .card-nexvora .p-eyebrow { color: #44caa2; }
+    .card-nexvora .p-h1 { color: rgba(255,255,255,0.96); }
+    .card-nexvora .p-h1 span { background: linear-gradient(135deg,#046bd2,#44caa2); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+    .card-nexvora .p-sub { color: rgba(255,255,255,0.55); }
+    .card-nexvora .p-btn-primary { background: linear-gradient(135deg,#046bd2,#44caa2); color: #fff; }
+    .card-nexvora .p-btn-ghost { color: rgba(255,255,255,0.65); border-color: rgba(68,202,162,0.3); }
+    .card-nexvora .p-stats { background: #1e293b; border-color: rgba(255,255,255,0.14); }
+    .card-nexvora .p-stat + .p-stat { border-color: rgba(255,255,255,0.14); }
+    .card-nexvora .p-stat-num { color: #44caa2; }
+    .card-nexvora .theme-info { background: #253347; border-top: 1px solid rgba(68,202,162,0.12); }
+    .card-nexvora .theme-open-btn { background: linear-gradient(135deg,#046bd2,#44caa2); color: #fff; }
+
+    @media (max-width: 768px) {
+      .themes-grid { grid-template-columns: 1fr; }
+      .theme-preview { height: 280px; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="picker-header">
+    <p class="label" style="margin-bottom:12px;">Nexvora Systems</p>
+    <h1>Choose Your Color Theme</h1>
+    <p>4 complete palettes. Click any card to open the full website in that theme.</p>
+  </div>
+
+  <div class="themes-grid">
+
+    <!-- Theme B: Dark Navy -->
+    <a href="preview-navy.html" class="theme-card card-navy">
+      <div class="theme-preview">
+        <div class="p-nav">
+          <div class="p-logo">
+            <div class="p-logo-box"></div>
+            <span class="p-logo-text">NEXVORA</span>
+          </div>
+          <div class="p-nav-links">
+            <span class="p-nav-link">About</span>
+            <span class="p-nav-link">Services</span>
+            <span class="p-nav-link">Contact</span>
+          </div>
+          <span class="p-btn">Free Assessment</span>
+        </div>
+        <div class="p-hero">
+          <div class="p-eyebrow">Operational Intelligence Platform</div>
+          <div class="p-h1">Stop Losing Money<br>to <span>Hidden Gaps</span><br>in Your Business</div>
+          <div class="p-sub">Nexvora uncovers the operational inefficiencies and revenue leaks silently costing your business.</div>
+          <div class="p-btns">
+            <span class="p-btn-primary">Get Your Free Assessment →</span>
+            <span class="p-btn-ghost">See How It Works</span>
+          </div>
+        </div>
+        <div class="p-stats">
+          <div class="p-stat"><div class="p-stat-num">$2.4M</div><div class="p-stat-lbl">Avg Leakage</div></div>
+          <div class="p-stat"><div class="p-stat-num">67%</div><div class="p-stat-lbl">Underperforming</div></div>
+          <div class="p-stat"><div class="p-stat-num">10min</div><div class="p-stat-lbl">To Diagnose</div></div>
+        </div>
+      </div>
+      <div class="theme-info">
+        <div class="theme-info-left">
+          <h3>Dark Navy</h3>
+          <p>Deep navy · Blue/green tech gradient · Original build</p>
+        </div>
+        <span class="theme-open-btn">Open →</span>
+      </div>
+    </a>
+
+    <!-- Theme A: Apple Black -->
+    <a href="preview-apple.html" class="theme-card card-apple">
+      <div class="theme-preview">
+        <div class="p-nav">
+          <div class="p-logo">
+            <div class="p-logo-box"></div>
+            <span class="p-logo-text">NEXVORA</span>
+          </div>
+          <div class="p-nav-links">
+            <span class="p-nav-link">About</span>
+            <span class="p-nav-link">Services</span>
+            <span class="p-nav-link">Contact</span>
+          </div>
+          <span class="p-btn">Free Assessment</span>
+        </div>
+        <div class="p-hero">
+          <div class="p-eyebrow">Operational Intelligence Platform</div>
+          <div class="p-h1">Stop Losing Money<br>to <span>Hidden Gaps</span><br>in Your Business</div>
+          <div class="p-sub">Nexvora uncovers the operational inefficiencies and revenue leaks silently costing your business.</div>
+          <div class="p-btns">
+            <span class="p-btn-primary">Get Your Free Assessment →</span>
+            <span class="p-btn-ghost">See How It Works</span>
+          </div>
+        </div>
+        <div class="p-stats">
+          <div class="p-stat"><div class="p-stat-num">$2.4M</div><div class="p-stat-lbl">Avg Leakage</div></div>
+          <div class="p-stat"><div class="p-stat-num">67%</div><div class="p-stat-lbl">Underperforming</div></div>
+          <div class="p-stat"><div class="p-stat-num">10min</div><div class="p-stat-lbl">To Diagnose</div></div>
+        </div>
+      </div>
+      <div class="theme-info">
+        <div class="theme-info-left">
+          <h3>Apple Black</h3>
+          <p>Pure #000000 · Apple's signature blue · Clean minimal</p>
+        </div>
+        <span class="theme-open-btn">Open →</span>
+      </div>
+    </a>
+
+    <!-- Theme C: Logo Colors -->
+    <a href="preview-logo.html" class="theme-card card-logo">
+      <div class="theme-preview">
+        <div class="p-nav">
+          <div class="p-logo">
+            <div class="p-logo-box"></div>
+            <span class="p-logo-text">NEXVORA</span>
+          </div>
+          <div class="p-nav-links">
+            <span class="p-nav-link">About</span>
+            <span class="p-nav-link">Services</span>
+            <span class="p-nav-link">Contact</span>
+          </div>
+          <span class="p-btn">Free Assessment</span>
+        </div>
+        <div class="p-hero">
+          <div class="p-eyebrow">Operational Intelligence Platform</div>
+          <div class="p-h1">Stop Losing Money<br>to <span>Hidden Gaps</span><br>in Your Business</div>
+          <div class="p-sub">Nexvora uncovers the operational inefficiencies and revenue leaks silently costing your business.</div>
+          <div class="p-btns">
+            <span class="p-btn-primary">Get Your Free Assessment →</span>
+            <span class="p-btn-ghost">See How It Works</span>
+          </div>
+        </div>
+        <div class="p-stats">
+          <div class="p-stat"><div class="p-stat-num">$2.4M</div><div class="p-stat-lbl">Avg Leakage</div></div>
+          <div class="p-stat"><div class="p-stat-num">67%</div><div class="p-stat-lbl">Underperforming</div></div>
+          <div class="p-stat"><div class="p-stat-num">10min</div><div class="p-stat-lbl">To Diagnose</div></div>
+        </div>
+      </div>
+      <div class="theme-info">
+        <div class="theme-info-left">
+          <h3>Logo Colors</h3>
+          <p>Your exact brand blue→green · Glowing borders · Deep dark</p>
+        </div>
+        <span class="theme-open-btn">Open →</span>
+      </div>
+    </a>
+
+    <!-- Theme D: Nexvora Live -->
+    <a href="preview-nexvora.html" class="theme-card card-nexvora">
+      <div class="theme-preview">
+        <div class="p-nav">
+          <div class="p-logo">
+            <div class="p-logo-box"></div>
+            <span class="p-logo-text">NEXVORA</span>
+          </div>
+          <div class="p-nav-links">
+            <span class="p-nav-link">About</span>
+            <span class="p-nav-link">Services</span>
+            <span class="p-nav-link">Contact</span>
+          </div>
+          <span class="p-btn">Free Assessment</span>
+        </div>
+        <div class="p-hero">
+          <div class="p-eyebrow">Operational Intelligence Platform</div>
+          <div class="p-h1">Stop Losing Money<br>to <span>Hidden Gaps</span><br>in Your Business</div>
+          <div class="p-sub">Nexvora uncovers the operational inefficiencies and revenue leaks silently costing your business.</div>
+          <div class="p-btns">
+            <span class="p-btn-primary">Get Your Free Assessment →</span>
+            <span class="p-btn-ghost">See How It Works</span>
+          </div>
+        </div>
+        <div class="p-stats">
+          <div class="p-stat"><div class="p-stat-num">$2.4M</div><div class="p-stat-lbl">Avg Leakage</div></div>
+          <div class="p-stat"><div class="p-stat-num">67%</div><div class="p-stat-lbl">Underperforming</div></div>
+          <div class="p-stat"><div class="p-stat-num">10min</div><div class="p-stat-lbl">To Diagnose</div></div>
+        </div>
+      </div>
+      <div class="theme-info">
+        <div class="theme-info-left">
+          <h3>Nexvora Live</h3>
+          <p>Live site's #046bd2 blue + #44caa2 teal · Dark charcoal base</p>
+        </div>
+        <span class="theme-open-btn">Open →</span>
+      </div>
+    </a>
+
+  </div>
+
+</body>
+</html>
