@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Your Nexvora Business Health Report — personalized assessment results."/>
+<title>Your Business Health Report — Nexvora Systems</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;--text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;--teal:#0D9488;--teal-lt:rgba(13,148,136,0.1);--navy:#0F2B4C;--green:#10B981;--yellow:#F59E0B;--red:#EF4444;--nav-h:76px;}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.96);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 28px;gap:20px;}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:color .15s;margin-left:auto;}
+.nav-back:hover{color:var(--teal);}
+.report-wrap{padding:calc(var(--nav-h) + 48px) 24px 80px;max-width:820px;margin:0 auto;display:flex;flex-direction:column;gap:28px;}
+/* ── SECTION CARDS ── */
+.section-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.section-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:14px;}
+.section-body{padding:28px 32px;}
+/* ── HEADER SECTION ── */
+.report-header{background:linear-gradient(135deg,#0F2B4C 0%,#0D9488 100%);padding:32px;color:#fff;}
+.report-header-top{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:8px;}
+.report-header h1{font-size:clamp(20px,3vw,26px);font-weight:800;margin-bottom:6px;}
+.report-header .sub{font-size:13px;color:rgba(255,255,255,0.6);margin-bottom:24px;}
+.badges{display:flex;gap:12px;flex-wrap:wrap;}
+.badge-box{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:12px;padding:14px 20px;text-align:center;min-width:110px;}
+.badge-box .n{font-size:28px;font-weight:800;color:#44CAA2;letter-spacing:-1px;}
+.badge-box .l{font-size:11px;color:rgba(255,255,255,0.55);margin-top:3px;}
+/* ── BENCHMARKS ── */
+.bench-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:20px;}
+.bench-box{background:var(--bg-surface);border-radius:12px;padding:18px;text-align:center;}
+.bench-n{font-size:26px;font-weight:800;color:var(--teal);letter-spacing:-1px;}
+.bench-sub{font-size:11px;color:var(--muted);margin-top:4px;line-height:1.5;}
+.bench-compare{font-size:12px;font-weight:700;color:var(--text);margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.blockquote{border-left:3px solid var(--teal);padding:14px 18px;background:var(--teal-lt);border-radius:0 10px 10px 0;font-size:14px;font-style:italic;color:var(--navy);line-height:1.7;}
+/* ── OWNER ECON ── */
+.econ-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:18px;}
+.econ-card{border-radius:12px;padding:20px;text-align:center;}
+.econ-card.owner{background:#FEF2F2;}
+.econ-card.team{background:#F0FDF4;}
+.econ-role{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px;}
+.econ-card.owner .econ-role{color:var(--red);}
+.econ-card.team .econ-role{color:var(--green);}
+.econ-rate{font-size:34px;font-weight:800;color:var(--text);}
+.econ-rate span{font-size:15px;font-weight:500;color:var(--muted);}
+.econ-detail{font-size:12px;color:var(--muted);margin-top:6px;line-height:1.5;}
+.econ-callout{background:#FFF7ED;border-left:3px solid var(--yellow);border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:14px;font-size:14px;color:var(--text);line-height:1.7;}
+.econ-callout strong{color:#B45309;}
+.econ-note{background:var(--bg-surface);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--muted);line-height:1.7;font-style:italic;}
+/* ── AREA ANALYSIS ── */
+.exec-summary{background:var(--teal-lt);border-radius:10px;padding:16px 18px;font-size:14px;color:var(--navy);line-height:1.7;margin-bottom:24px;border-left:3px solid var(--teal);}
+.area-block{border-radius:14px;padding:22px;margin-bottom:14px;}
+.area-block.green{background:#F0FDF4;border:1px solid #A7F3D0;}
+.area-block.yellow{background:#FFFDF0;border:1px solid #FDE68A;}
+.area-block.red{background:#FFFAFA;border:1px solid #FECACA;}
+.area-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.area-name{font-size:15px;font-weight:800;color:var(--text);}
+.area-score-tag{padding:5px 13px;border-radius:99px;font-size:12px;font-weight:700;}
+.area-score-tag.green{background:#D1FAE5;color:#059669;}
+.area-score-tag.yellow{background:#FEF3C7;color:#D97706;}
+.area-score-tag.red{background:#FEE2E2;color:#DC2626;}
+.area-bar-wrap{height:7px;background:rgba(0,0,0,0.06);border-radius:99px;overflow:hidden;margin-bottom:16px;}
+.area-bar{height:100%;border-radius:99px;transition:width 1.2s ease;}
+.area-bar.green{background:var(--green);}
+.area-bar.yellow{background:var(--yellow);}
+.area-bar.red{background:var(--red);}
+.area-issue-label{font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:6px;}
+.area-block.red .area-issue-label{color:var(--red);}
+.area-block.yellow .area-issue-label{color:#D97706;}
+.area-text{font-size:13px;color:var(--muted);line-height:1.75;margin-bottom:14px;}
+.area-green-text{font-size:13px;color:#4A5568;line-height:1.75;}
+.fix-paths{display:flex;flex-direction:column;gap:8px;margin-top:10px;}
+.fix-path{background:var(--bg-surface);border-radius:8px;padding:11px 14px;font-size:13px;color:var(--muted);line-height:1.6;}
+.fix-path strong{color:var(--text);}
+/* ── CTA ── */
+.cta-section{background:var(--navy);border-radius:16px;padding:36px 32px;color:#fff;text-align:center;}
+.cta-section h2{font-size:20px;font-weight:800;margin-bottom:8px;}
+.cta-section h2 strong{color:#44CAA2;}
+.cta-section .cta-sub{font-size:14px;color:rgba(255,255,255,0.6);margin-bottom:24px;}
+.offer-box{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:24px;margin-bottom:20px;}
+.offer-tag{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#44CAA2;margin-bottom:10px;}
+.offer-prices{display:flex;align-items:center;justify-content:center;gap:16px;margin-bottom:8px;}
+.offer-old{font-size:16px;color:rgba(255,255,255,0.35);text-decoration:line-through;}
+.offer-new{font-size:32px;font-weight:800;color:#44CAA2;}
+.offer-note{font-size:12px;color:rgba(255,255,255,0.45);margin-bottom:6px;line-height:1.6;}
+.countdown{font-size:13px;font-weight:700;color:rgba(255,255,255,0.7);margin-bottom:18px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.cd-unit{background:rgba(255,255,255,0.1);border-radius:7px;padding:6px 10px;text-align:center;min-width:52px;}
+.cd-n{font-size:18px;font-weight:800;color:#fff;}
+.cd-l{font-size:10px;color:rgba(255,255,255,0.5);}
+.cta-btn-primary{display:inline-block;padding:15px 32px;background:var(--teal);color:#fff;font-weight:700;font-size:15px;border-radius:11px;text-decoration:none;transition:all .18s;border:none;cursor:pointer;}
+.cta-btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.cta-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;margin-top:14px;}
+.cta-btn-secondary{padding:11px 22px;background:rgba(255,255,255,0.08);color:rgba(255,255,255,0.8);font-size:13px;font-weight:600;border-radius:9px;text-decoration:none;border:none;cursor:pointer;transition:all .15s;}
+.cta-btn-secondary:hover{background:rgba(255,255,255,0.14);}
+.email-confirm{text-align:center;margin-top:18px;font-size:12px;color:rgba(255,255,255,0.35);}
+/* ── FOOTER ── */
+footer{background:var(--navy);color:#FAF8F5;padding:48px 28px 28px;margin-top:0;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:36px;margin-bottom:40px;}
+.footer-brand p{font-size:13px;margin-top:10px;color:rgba(250,248,245,0.5);}
+.footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:12px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;}
+.footer-links a:hover{color:#FAF8F5;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(250,248,245,0.35);flex-wrap:wrap;gap:10px;}
+/* ── PRINT ── */
+@media print{nav,.cta-section,.countdown,footer{display:none!important;}.report-wrap{padding-top:20px;}.section-card,.area-block{break-inside:avoid;}.report-header{-webkit-print-color-adjust:exact;print-color-adjust:exact;}}
+@media(max-width:700px){.bench-grid{grid-template-columns:1fr;}.econ-grid{grid-template-columns:1fr;}.section-body{padding:20px;}.report-header{padding:22px;}.badges{gap:8px;}.badge-box{min-width:90px;padding:12px 14px;}.footer-grid{grid-template-columns:1fr;gap:22px;}footer{padding:32px 20px 20px;}.report-wrap{padding-left:16px;padding-right:16px;}}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html"><img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:44px;width:auto;display:block;"/></a>
+  <a href="index.html" class="nav-back">
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+    Back to Home
+  </a>
+</nav>
+
+<div class="report-wrap" id="reportWrap">
+  <!-- rendered by JS -->
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html"><img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:38px;width:auto;display:block;margin-bottom:10px;"/></a>
+      <p>Operational clarity for small businesses across Florida and all 50 states.</p>
+    </div>
+    <div>
+      <p class="footer-col-title">Company</p>
+      <div class="footer-links">
+        <a href="about.html">About</a>
+        <a href="services.html">Services</a>
+        <a href="blog.html">Insights</a>
+        <a href="contact.html">Contact</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Services</p>
+      <div class="footer-links">
+        <a href="services/operations.html">Operations</a>
+        <a href="services/ai-automation.html">AI & Automation</a>
+        <a href="services/sales-systems.html">Sales Systems</a>
+        <a href="services/growth-scaling.html">Growth & Scaling</a>
+      </div>
+    </div>
+    <div>
+      <p class="footer-col-title">Contact</p>
+      <div class="footer-links">
+        <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a>
+        <a href="assessment.html">Free Assessment</a>
+      </div>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <span>© 2025 Nexvora Systems LLC. All rights reserved.</span>
+    <span style="display:flex;gap:16px;flex-wrap:wrap;">
+      <a href="legal/terms.html" style="color:inherit;text-decoration:none;">Terms</a>
+      <a href="legal/privacy.html" style="color:inherit;text-decoration:none;">Privacy</a>
+    </span>
+  </div>
+</footer>
+
+<script>
+/* ═══════════════════════════════════════════════════════
+   SCORING ENGINE
+═══════════════════════════════════════════════════════ */
+function scoreQ6(v){return{nothing:10,head:25,notes:50,sops:75,'full-sops':95}[v]||50;}
+function scoreQ7(n){n=parseInt(n);if(n<=10)return 15;if(n<=25)return 35;if(n<=40)return 55;if(n<=60)return 70;if(n<=80)return 85;return 95;}
+function scoreQ8(v){return{nothing:10,manual:30,process:65,automated:90}[v]||40;}
+function scoreQ9(v){return{'word-of-mouth':30,google:60,social:55,'paid-ads':70,other:40}[v]||40;}
+function scoreQ10(v){return{'no-reviews':20,'1-3':15,'3-4':45,'4-4.5':70,'4.5-5':90}[v]||40;}
+function scoreQ11(arr){if(!arr||!arr.length)return 50;if(arr.includes('none'))return 95;const count=arr.length;return{1:75,2:60,3:40,4:25,5:10}[count]||10;}
+function scoreQ12(v){return{none:10,informal:30,'one-on-ones':55,kpis:75,formal:95}[v]||40;}
+function scoreQ13(v){return{rarely:10,'tax-time':25,quarterly:50,monthly:75,weekly:95}[v]||40;}
+function scoreQ14(v){return{none:10,occasional:25,spreadsheet:50,dashboard:75,automated:95}[v]||40;}
+
+function computeScores(d){
+  const s7=scoreQ7(d.q7), s10=scoreQ10(d.q10);
+  return {
+    operations: scoreQ6(d.q6),
+    customer_experience: Math.round((s7+s10)/2),
+    sales: scoreQ8(d.q8),
+    marketing: scoreQ9(d.q9),
+    ai_automation: scoreQ11(d.q11),
+    team_hr: scoreQ12(d.q12),
+    financial: scoreQ13(d.q13),
+    reporting: scoreQ14(d.q14),
+    growth: 60 // baseline — Q15 is context only
+  };
+}
+
+function overallScore(scores){
+  const vals=Object.values(scores);
+  return Math.round(vals.reduce((a,b)=>a+b,0)/vals.length);
+}
+
+function scoreColor(n){return n>=70?'green':n>=45?'yellow':'red';}
+function scoreLabel(n){return n>=70?'Strong':n>=45?'Needs Work':'Fix First';}
+
+/* ═══════════════════════════════════════════════════════
+   OWNER ECONOMICS
+═══════════════════════════════════════════════════════ */
+const PAY_MAP={'0':0,'lt3k':1500,'3k-5k':4000,'5k-8k':6500,'8k-12k':10000,'gt12k':13000};
+const TEAM_MAP={'lt2k':1500,'2k-3k':2500,'3k-4k':3500,'4k-5k':4500,'gt5k':5500};
+
+function computeOwnerEcon(d){
+  const ownerPay=PAY_MAP[d.q16]??0;
+  const weeklyHrs=parseFloat(d.q17)||40;
+  const monthlyHrs=weeklyHrs*4.33;
+  const ownerRate=ownerPay>0?(ownerPay/monthlyHrs):0;
+  const teamPay=TEAM_MAP[d.q19]??2500;
+  const teamRate=teamPay/(45*4.33);
+  const diffPct=ownerRate>0?Math.round(((teamRate-ownerRate)/ownerRate)*100):null;
+  return{ownerPay,weeklyHrs,monthlyHrs:Math.round(monthlyHrs),ownerRate:Math.round(ownerRate*100)/100,teamPay,teamRate:Math.round(teamRate*100)/100,diffPct};
+}
+
+/* ═══════════════════════════════════════════════════════
+   BENCHMARK DATA
+═══════════════════════════════════════════════════════ */
+const BENCHMARKS={
+  'home-services':{label:'Home Services',fail5yr:82,revenue:{'solo':85000,'2-5':220000,'6-15':380000,'16-30':750000,'30plus':1500000},margin:12,survival_note:'Only 18% of home services businesses survive past year 5. You are in that 18%.'},
+  'construction':{label:'Construction',fail5yr:78,revenue:{'solo':120000,'2-5':380000,'6-15':850000,'16-30':2200000,'30plus':5000000},margin:8,survival_note:'Construction has one of the highest early-closure rates of any industry. You are still here.'},
+  'food-bev':{label:'Food & Beverage',fail5yr:83,revenue:{'solo':200000,'2-5':450000,'6-15':900000,'16-30':1800000,'30plus':4000000},margin:5,survival_note:'Restaurant survival past year 5 is rarer than most people think. You have done something most cannot.'},
+  'retail':{label:'Retail',fail5yr:80,revenue:{'solo':150000,'2-5':400000,'6-15':950000,'16-30':2500000,'30plus':6000000},margin:7,survival_note:'Retail closures outpace most industries. Lasting this long means you have found something that works.'},
+  'health-wellness':{label:'Health & Wellness',fail5yr:75,revenue:{'solo':95000,'2-5':280000,'6-15':620000,'16-30':1400000,'30plus':3500000},margin:15,survival_note:'Health and wellness is competitive but rewarding for those who build loyal clientele. You are proving that.'},
+  'professional-services':{label:'Professional Services',fail5yr:68,revenue:{'solo':180000,'2-5':480000,'6-15':1100000,'16-30':2800000,'30plus':7000000},margin:22,survival_note:'Professional services firms that survive past year 3 tend to have strong retention. You are building something lasting.'},
+  'auto':{label:'Auto Services',fail5yr:76,revenue:{'solo':140000,'2-5':350000,'6-15':780000,'16-30':1600000,'30plus':3800000},margin:11,survival_note:'Auto services is relationship-driven. Businesses that survive are the ones their community trusts.'},
+  'real-estate':{label:'Real Estate',fail5yr:71,revenue:{'solo':90000,'2-5':320000,'6-15':750000,'16-30':2000000,'30plus':5500000},margin:18,survival_note:'Most real estate businesses stall or close when the market shifts. You have adapted and kept going.'}
+};
+
+const SIZE_KEY={'solo':'solo','2-5':'2-5','6-15':'6-15','16-30':'16-30','30plus':'30plus'};
+
+function fmt(n){if(n>=1000000)return'$'+(n/1000000).toFixed(1)+'M';if(n>=1000)return'$'+(n/1000).toFixed(0)+'K';return'$'+n;}
+
+/* ═══════════════════════════════════════════════════════
+   AREA CONTENT (issues, fix paths)
+═══════════════════════════════════════════════════════ */
+const AREA_META={
+  operations:{label:'Operations',
+    issue:'Your processes are not fully documented. When things go wrong, the fix depends on whoever was there — usually you. As you grow, this becomes the ceiling.',
+    why:'Businesses without documented processes spend 30–40% more time solving the same problems over and over. Every new team member takes longer to train. Every time you step away, quality slips.',
+    paths:{time:'Document your top 3 most-repeated processes. Once written, a new hire can follow them without asking you every step.',money:'Documented processes reduce rework and training time — both are direct cost savings. Businesses with SOPs typically cut onboarding time by half.',scale:'You cannot clone yourself. But you can write down what you know. That is how you scale without being personally involved in everything.'}},
+  customer_experience:{label:'Customer Experience',
+    issue:'Your repeat customer rate and online reviews suggest the customer experience is not creating the kind of loyalty that drives referrals and repeat business.',
+    why:'A 5% increase in customer retention can increase profits by 25–95%. Most businesses spend more on acquisition than retention — and it costs 5–7x more to get a new customer than to keep an existing one.',
+    paths:{time:'Set up a 2-touch follow-up after every job — a check-in call at day 7 and a review request at day 14. Both can be automated.',money:'Existing customers buy more, refer more, and complain less. Every dollar spent on retention delivers more than the same dollar spent on new leads.',scale:'A retention system runs whether or not you are personally involved. Set it up once. It compounds every month.'}},
+  sales:{label:'Sales Systems',
+    issue:'You have no consistent follow-up process when leads do not convert immediately. When someone asks for a quote and goes quiet, they are likely gone forever.',
+    why:'Home services businesses lose 25–40% of potential revenue to unconverted leads. At your revenue range, that can be $50K–$150K per year sitting in a leaking bucket. Every lead you paid to generate that goes cold is money spent twice.',
+    paths:{time:'A 3-message automated follow-up sequence (day 1, day 3, day 7) runs without you touching it. Set it up once.',money:'Recovering 20% of cold leads means spending less on new lead generation. Your cost per customer drops immediately.',scale:'Right now follow-up depends on you remembering. A system does it whether you are in the office, on a job, or asleep.'}},
+  marketing:{label:'Marketing',
+    issue:'Your marketing is almost entirely word-of-mouth with no owned channel. This means your revenue depends on factors you cannot control.',
+    why:'Referral businesses plateau. When growth depends entirely on word-of-mouth, you cannot predict or control it. Adding even one owned channel — Google Business, a monthly email, a consistent social presence — creates a baseline you can build on.',
+    paths:{time:'Claim and fully optimize your Google Business Profile. It takes 2 hours and has the highest ROI of any free marketing action in local services.',money:'Paid ads are scalable in a way that word-of-mouth is not. A $500/month campaign that generates even 3 new customers per month often pays back 3–5x.',scale:'Building a marketing system means the business can grow without you personally telling everyone about it.'}},
+  ai_automation:{label:'AI & Automation',
+    issue:'Your team is spending significant time every week on manual tasks that could be automated — scheduling, invoicing, reporting, follow-up.',
+    why:'At your team size, manual tasks can easily cost 10–20 hours per week across the team. That is 40–80 hours per month of paid time going into work that software can do for pennies.',
+    paths:{time:'Automating one recurring task — even just scheduling or invoicing — can save 5–8 hours per week immediately.',money:'Labor is your biggest cost. Automating repetitive work means your team spends their hours on what actually requires human judgment.',scale:'Manual processes break when you grow. Automated processes scale. The difference between a $500K business and a $2M business is usually automation.'}},
+  team_hr:{label:'Team & HR',
+    issue:'You have no formal system for tracking or improving team performance. This means you only find out about problems when they are already affecting customers.',
+    why:"Without accountability systems, your best people eventually leave because there's no growth path, and your worst people stay because there's no consequence. This is one of the most common reasons small businesses stall at 6–15 employees.",
+    paths:{time:'A 15-minute weekly check-in per team member is the minimum investment. It catches problems before they become customer complaints.',money:'High turnover costs 1.5–2x the annual salary of the person who left. Keeping good people is significantly cheaper than replacing them.',scale:'You cannot manage a growing team the same way you managed 3 people. Building accountability systems now prevents a management crisis later.'}},
+  financial:{label:'Financial Efficiency',
+    issue:'You review financials at tax time only. For 11 months of the year, you are flying blind. Unprofitable jobs, cost creep, and cash flow gaps go undetected until they become serious problems.',
+    why:'Businesses that review financials monthly catch margin problems 4x faster. At your revenue level, a 2% margin improvement is worth thousands of dollars per month. You cannot improve what you are not measuring.',
+    paths:{time:'A 30-minute monthly financial review habit — revenue, expenses, margin, cash position — is the single highest-leverage time investment you can make.',money:'Some jobs look profitable but are not once you factor in real time and overhead. Monthly reviews show you which ones to stop taking.',scale:'Investors, banks, and future buyers of your business all look at financial history. Clean monthly records now mean options later.'}},
+  reporting:{label:'Reporting & Analytics',
+    issue:'You have no real-time visibility into how your business is performing. You are making decisions based on gut feel and memory rather than data.',
+    why:'Businesses with operational dashboards respond to problems 60% faster than those without. Without a reporting system, you discover problems when customers complain or when the bank account is empty — both of which are too late.',
+    paths:{time:'A simple weekly dashboard — revenue, jobs completed, response time, review score — can be built in a spreadsheet in one afternoon.',money:'Identifying one underperforming area per month and fixing it compounds over time. You cannot do this without data.',scale:'At 15+ employees, you cannot know what everyone is doing by walking around. Data gives you scale without being everywhere at once.'}},
+  growth:{label:'Growth & Scaling',
+    issue:'You have a growth goal but the systems needed to support that growth are not fully in place. Growing without the right infrastructure creates chaos rather than results.',
+    why:"Most businesses that try to scale without fixing their operations first end up making less money at higher revenue — because costs and problems scale faster than profit. The owners who successfully grow are the ones who built the foundation first.",
+    paths:{time:"Identify the single biggest operational bottleneck in your business today. Fix that first before adding marketing spend or team members.",money:"Scaling an inefficient business amplifies losses. Scaling an efficient one amplifies profit. The same growth investment delivers very different results.",scale:"The goal is a business that runs without you in the daily operations. That requires documented processes, clear accountability, and systems that don't depend on your personal involvement."}}
+};
+
+/* ═══════════════════════════════════════════════════════
+   RENDER HELPERS
+═══════════════════════════════════════════════════════ */
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function renderSection(html){
+  const div=document.createElement('div');
+  div.className='section-card';
+  div.innerHTML=html;
+  document.getElementById('reportWrap').appendChild(div);
+  return div;
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 1: HEADER
+═══════════════════════════════════════════════════════ */
+function renderHeader(d,scores){
+  const overall=overallScore(scores);
+  const priorityCount=Object.values(scores).filter(s=>s<45).length;
+  const benchmark=BENCHMARKS[d.q1]||BENCHMARKS['professional-services'];
+  const sizeKey=SIZE_KEY[d.q5]||'solo';
+  const avgRev=benchmark.revenue[sizeKey]||benchmark.revenue['solo'];
+  const industryLabel=benchmark.label;
+  const yearsLabel={'lt1':'under 1 year','1-2':'1–2 years','3-5':'3–5 years','6-10':'6–10 years','10plus':'10+ years'}[d.q3]||d.q3;
+  const sizeLabel={'solo':'just yourself','2-5':'2–5 people','6-15':'6–15 people','16-30':'16–30 people','30plus':'30+ people'}[d.q5]||d.q5;
+  const topPct=100-overall;
+  const bizName=d.contact.company||d.contact.name+"'s Business";
+  const html=`
+    <div class="report-header">
+      <div class="report-header-top">NEXVORA SYSTEMS · BUSINESS HEALTH REPORT</div>
+      <h1>Business Health Report</h1>
+      <div class="sub">${esc(bizName)} · ${esc(d.q2)} · ${esc(industryLabel)} · ${esc(yearsLabel)} · ${esc(sizeLabel)}</div>
+      <div class="badges">
+        <div class="badge-box"><div class="n">${overall}</div><div class="l">Overall Score</div></div>
+        <div class="badge-box"><div class="n">Top ${topPct}%</div><div class="l">vs ${esc(industryLabel)} avg</div></div>
+        <div class="badge-box"><div class="n">${priorityCount}</div><div class="l">Priority area${priorityCount!==1?'s':''} to fix</div></div>
+        <div class="badge-box"><div class="n">${fmt(avgRev)}</div><div class="l">Industry avg revenue, your size</div></div>
+      </div>
+    </div>`;
+  renderSection(html);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 2: BENCHMARKS
+═══════════════════════════════════════════════════════ */
+function renderBenchmarks(d,aiText){
+  const b=BENCHMARKS[d.q1]||BENCHMARKS['professional-services'];
+  const sizeKey=SIZE_KEY[d.q5]||'solo';
+  const avgRev=b.revenue[sizeKey]||b.revenue['solo'];
+  const survivalPct=100-b.fail5yr;
+  const revLabel={'lt100k':'Under $100K','100k-300k':'$100K–$300K','300k-750k':'$300K–$750K','750k-2m':'$750K–$2M','gt2m':'Over $2M'}[d.q4]||'';
+  const narrative=aiText||b.survival_note;
+  const html=`
+    <div class="section-body">
+      <div class="section-label">Industry Benchmarks — ${esc(b.label)} · ${esc(d.q2)}</div>
+      <div class="bench-grid">
+        <div class="bench-box">
+          <div class="bench-n">${b.fail5yr}%</div>
+          <div class="bench-sub">of ${esc(b.label)} businesses close within 5 years</div>
+          <div class="bench-compare">You are in the ${survivalPct}% that made it.</div>
+        </div>
+        <div class="bench-box">
+          <div class="bench-n">${fmt(avgRev)}</div>
+          <div class="bench-sub">avg annual revenue for your industry and team size</div>
+          <div class="bench-compare">Your range: ${esc(revLabel)}</div>
+        </div>
+        <div class="bench-box">
+          <div class="bench-n">${b.margin}%</div>
+          <div class="bench-sub">avg net profit margin in ${esc(b.label)}</div>
+          <div class="bench-compare">Most owners don't track this monthly.</div>
+        </div>
+      </div>
+      <div class="blockquote">${esc(narrative)}</div>
+    </div>`;
+  renderSection(html);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 3: OWNER ECONOMICS
+═══════════════════════════════════════════════════════ */
+function renderOwnerEcon(d,econ){
+  const timeSlots={'daytime':'Regular daytime hours','mornings':'Early mornings','evenings':'Evenings','weekends':'Weekends'};
+  const workWhen=(d.q18||[]).map(s=>timeSlots[s]||s).join(', ');
+  let comparisonHtml='';
+  if(econ.ownerPay===0){
+    comparisonHtml=`<div class="econ-callout"><strong>You are not paying yourself.</strong> Every hour you work is costing you money with no return on your own time. This is the most urgent number in your business to change.</div>`;
+  } else if(econ.diffPct!==null){
+    if(econ.diffPct>0){
+      comparisonHtml=`<div class="econ-callout"><strong>Your team member earns ${econ.diffPct}% more per hour than you do.</strong> They work ~45 hours a week. You work ${econ.weeklyHrs}. They go home on time. You worked this weekend. They have zero business risk, zero liability, and no 3am panic about payroll. <strong>The math does not lie.</strong></div>`;
+    } else if(econ.diffPct<-10){
+      comparisonHtml=`<div class="econ-callout"><strong>You earn ${Math.abs(econ.diffPct)}% more per hour than your team — but you carry 100% of the risk, the liability, and the late nights.</strong> The question is whether that premium reflects what your time and risk are actually worth.</div>`;
+    } else {
+      comparisonHtml=`<div class="econ-callout"><strong>You and your team earn approximately the same per hour — but you carry all the risk. Let that sink in.</strong> Your team members have no liability, no payroll stress, and a guaranteed paycheck. You do not.</div>`;
+    }
+  }
+  const ownerRateDisplay=econ.ownerPay===0?'$0.00':('$'+econ.ownerRate.toFixed(2));
+  const html=`
+    <div class="section-body">
+      <div class="section-label">Owner Economics · The Real Math</div>
+      <div class="econ-grid">
+        <div class="econ-card owner">
+          <div class="econ-role">You (Owner)</div>
+          <div class="econ-rate">${ownerRateDisplay}<span>/hr</span></div>
+          <div class="econ-detail">${econ.weeklyHrs} hrs/week · $${(econ.ownerPay||0).toLocaleString()}/month<br/>${esc(workWhen)}</div>
+        </div>
+        <div class="econ-card team">
+          <div class="econ-role">Your Team</div>
+          <div class="econ-rate">$${econ.teamRate.toFixed(2)}<span>/hr</span></div>
+          <div class="econ-detail">~45 hrs/week · $${econ.teamPay.toLocaleString()}/month<br/>Regular hours only</div>
+        </div>
+      </div>
+      ${comparisonHtml}
+      <div class="econ-note">We are not here to tell you that you are overpaying your team or underpaying yourself. This is just the math. And this math is exactly why building the right systems is not a nice-to-have — it is the only way to change the equation.</div>
+    </div>`;
+  renderSection(html);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 4: FULL AREA ANALYSIS
+═══════════════════════════════════════════════════════ */
+function renderAreaAnalysis(d,scores,aiSummary){
+  const areaOrder=Object.entries(scores).sort((a,b)=>a[1]-b[1]);
+  let areasHtml='';
+  areaOrder.forEach(([key,score])=>{
+    const color=scoreColor(score);
+    const label=scoreLabel(score);
+    const meta=AREA_META[key];
+    if(!meta)return;
+    if(color==='green'){
+      areasHtml+=`<div class="area-block green">
+        <div class="area-header"><div class="area-name">${esc(meta.label)}</div><div class="area-score-tag green">${score} · ${label}</div></div>
+        <div class="area-bar-wrap"><div class="area-bar green" style="width:${score}%"></div></div>
+        <div class="area-green-text">This area is working well. Your systems here are above average — protect this advantage as you grow and make sure new team members are trained to the same standard.</div>
+      </div>`;
+    } else {
+      const paths=meta.paths||{};
+      const pathKeys=color==='red'?['time','money','scale']:['time','money'];
+      const pathLabels={time:'Save time',money:'Save money',scale:'Scale without you'};
+      const pathsHtml=pathKeys.map(k=>`<div class="fix-path"><strong>${pathLabels[k]}:</strong> ${esc(paths[k]||'')}</div>`).join('');
+      areasHtml+=`<div class="area-block ${color}">
+        <div class="area-header"><div class="area-name">${esc(meta.label)}</div><div class="area-score-tag ${color}">${score} · ${label}</div></div>
+        <div class="area-bar-wrap"><div class="area-bar ${color}" style="width:${score}%"></div></div>
+        <div class="area-issue-label">The issue</div>
+        <div class="area-text">${esc(meta.issue)}</div>
+        <div class="area-issue-label" style="margin-top:4px;">Why it matters</div>
+        <div class="area-text">${esc(meta.why)}</div>
+        <div class="area-issue-label" style="margin-top:4px;">How to fix it</div>
+        <div class="fix-paths">${pathsHtml}</div>
+      </div>`;
+    }
+  });
+  const summaryBlock=aiSummary?`<div class="exec-summary">${esc(aiSummary)}</div>`:'';
+  const html=`<div class="section-body">
+    <div class="section-label">Full Business Analysis — All 9 Areas</div>
+    ${summaryBlock}
+    ${areasHtml}
+  </div>`;
+  renderSection(html);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 5: CTA + COUNTDOWN
+═══════════════════════════════════════════════════════ */
+function renderCTA(d){
+  const first=d.contact.name.split(' ')[0];
+  const OFFER_END=new Date('2026-05-01T00:00:00');
+  const now=new Date();
+  const offerActive=now<OFFER_END;
+  let offerHtml='';
+  if(offerActive){
+    offerHtml=`
+      <div class="offer-box">
+        <div class="offer-tag">Limited Time — Assessment Completers Only</div>
+        <div class="offer-prices">
+          <div class="offer-old">$899 / 60 min</div>
+          <div class="offer-new">Complimentary</div>
+        </div>
+        <div class="offer-note">Standard strategy call rate is $899. Complete your assessment today and schedule at no cost.<br/>If you choose to work with us, the full call value is credited toward your engagement.</div>
+        <div class="countdown" id="countdown"></div>
+      </div>`;
+  } else {
+    offerHtml=`
+      <div class="offer-box">
+        <div class="offer-tag">Strategy Call</div>
+        <div class="offer-prices"><div class="offer-new" style="color:#44CAA2;font-size:24px;">$899 / 60 min</div></div>
+        <div class="offer-note">60-minute strategy session with Murat or Alexandr. If you choose to work with us, this call fee is credited toward your engagement.</div>
+      </div>`;
+  }
+  const html=`<div class="cta-section">
+    <h2>Ready to change<br><strong>the math?</strong></h2>
+    <div class="cta-sub">Murat or Alexandr will personally review this report with you and show you exactly where to start, ${esc(first)}.</div>
+    ${offerHtml}
+    <a href="contact.html" class="cta-btn-primary">Schedule Your ${offerActive?'Complimentary':'Strategy'} Call</a>
+    <div class="cta-actions">
+      <button class="cta-btn-secondary" onclick="window.print()">Download PDF</button>
+      <a href="index.html" class="cta-btn-secondary">Back to Home</a>
+    </div>
+    <div class="email-confirm" id="emailConfirm">Report sent to ${esc(d.contact.email)} · Not seeing it? Check your spam folder.</div>
+  </div>`;
+  const wrapper=document.createElement('div');
+  wrapper.innerHTML=html;
+  document.getElementById('reportWrap').appendChild(wrapper.firstElementChild);
+  if(offerActive) startCountdown();
+}
+
+function startCountdown(){
+  const OFFER_END=new Date('2026-05-01T00:00:00');
+  function update(){
+    const el=document.getElementById('countdown');
+    if(!el)return;
+    const diff=OFFER_END-new Date();
+    if(diff<=0){el.innerHTML='<span style="color:#44CAA2;font-size:14px;">Offer has ended</span>';return;}
+    const d=Math.floor(diff/86400000);
+    const h=Math.floor((diff%86400000)/3600000);
+    const m=Math.floor((diff%3600000)/60000);
+    const s=Math.floor((diff%60000)/1000);
+    el.innerHTML=`<span style="font-size:12px;color:rgba(255,255,255,0.5);margin-right:4px;">Offer ends in</span>
+      <div class="cd-unit"><div class="cd-n">${d}</div><div class="cd-l">days</div></div>
+      <div class="cd-unit"><div class="cd-n">${String(h).padStart(2,'0')}</div><div class="cd-l">hrs</div></div>
+      <div class="cd-unit"><div class="cd-n">${String(m).padStart(2,'0')}</div><div class="cd-l">min</div></div>
+      <div class="cd-unit"><div class="cd-n">${String(s).padStart(2,'0')}</div><div class="cd-l">sec</div></div>`;
+  }
+  update();
+  setInterval(update, 1000);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SEND EMAIL
+═══════════════════════════════════════════════════════ */
+async function sendEmail(d){
+  try{
+    await fetch('/api/email',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({to:d.contact.email,name:d.contact.name,bizName:d.contact.company||d.contact.name+"'s Business"})
+    });
+  }catch(e){console.warn('Email send failed:',e);}
+}
+
+/* ═══════════════════════════════════════════════════════
+   MAIN RENDER
+═══════════════════════════════════════════════════════ */
+function main(){
+  const raw=localStorage.getItem('nexvora_assessment');
+  if(!raw){
+    document.getElementById('reportWrap').innerHTML=`
+      <div style="text-align:center;padding:80px 20px;">
+        <h2 style="font-size:20px;font-weight:700;margin-bottom:12px;">No assessment found</h2>
+        <p style="color:#718096;margin-bottom:24px;">Please complete the assessment first to see your report.</p>
+        <a href="assessment.html" style="padding:12px 28px;background:#0D9488;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;">Start Assessment</a>
+      </div>`;
+    return;
+  }
+  const d=JSON.parse(raw);
+  const scores=computeScores(d);
+  const econ=computeOwnerEcon(d);
+
+  renderHeader(d,scores);
+  renderBenchmarks(d,d.ai_benchmark||'');
+  renderOwnerEcon(d,econ);
+  renderAreaAnalysis(d,scores,d.ai_summary||'');
+  renderCTA(d);
+
+  // Animate bars after short delay
+  setTimeout(()=>{
+    document.querySelectorAll('.area-bar,.rc-bar').forEach(bar=>{
+      const w=bar.style.width;
+      bar.style.width='0';
+      setTimeout(()=>bar.style.width=w,100);
+    });
+  },300);
+
+  // Send email
+  sendEmail(d);
+}
+
+main();
+</script>
+</body>
+</html>
