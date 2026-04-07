@@ -47,11 +47,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .econ-callout{background:#FFF7ED;border-left:3px solid var(--yellow);border-radius:0 10px 10px 0;padding:14px 18px;margin-bottom:14px;font-size:14px;color:var(--text);line-height:1.7;}
 .econ-callout strong{color:#B45309;}
 .econ-note{background:var(--bg-surface);border-radius:10px;padding:14px 18px;font-size:13px;color:var(--muted);line-height:1.7;font-style:italic;}
-.econ-math{background:#1A1A2E;border-radius:10px;padding:14px 18px;margin-bottom:16px;display:flex;flex-direction:column;gap:8px;}
-.econ-math-row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap;}
-.econ-math-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,0.45);min-width:140px;}
-.econ-math-formula{font-family:'Courier New',monospace;font-size:13px;color:#A3E635;line-height:1.5;}
-.econ-math-formula strong{color:#fff;}
 /* ── AREA ANALYSIS ── */
 .exec-summary{background:var(--teal-lt);border-radius:10px;padding:16px 18px;font-size:14px;color:var(--navy);line-height:1.7;margin-bottom:24px;border-left:3px solid var(--teal);}
 .area-block{border-radius:14px;padding:22px;margin-bottom:14px;}
@@ -171,24 +166,9 @@ footer{background:var(--navy);color:#FAF8F5;padding:48px 28px 28px;margin-top:0;
    SCORING ENGINE
 ═══════════════════════════════════════════════════════ */
 function scoreQ6(v){return{nothing:10,head:25,notes:50,sops:75,'full-sops':95}[v]||50;}
-function scoreQ7(v){
-  if(v==='none')return 5;
-  if(v==='dont-know')return 30;
-  const n=parseInt(v);
-  if(isNaN(n))return 30;
-  if(n<=10)return 15;if(n<=25)return 35;if(n<=40)return 55;if(n<=60)return 70;if(n<=80)return 85;return 95;
-}
+function scoreQ7(n){n=parseInt(n);if(n<=10)return 15;if(n<=25)return 35;if(n<=40)return 55;if(n<=60)return 70;if(n<=80)return 85;return 95;}
 function scoreQ8(v){return{nothing:10,manual:30,process:65,automated:90}[v]||40;}
-function scoreQ9(v){
-  const arr=Array.isArray(v)?v:(v?[v]:[]);
-  if(!arr.length)return 30;
-  const base={'word-of-mouth':30,google:60,social:55,'paid-ads':70,other:40};
-  const best=Math.max(...arr.map(a=>base[a]||40));
-  if(arr.length>=4)return 95;
-  if(arr.length>=3)return 85;
-  if(arr.length>=2)return Math.min(best+20,90);
-  return best;
-}
+function scoreQ9(v){return{'word-of-mouth':30,google:60,social:55,'paid-ads':70,other:40}[v]||40;}
 function scoreQ10(v){return{'no-reviews':20,'1-3':15,'3-4':45,'4-4.5':70,'4.5-5':90}[v]||40;}
 function scoreQ11(arr){if(!arr||!arr.length)return 50;if(arr.includes('none'))return 95;const count=arr.length;return{1:75,2:60,3:40,4:25,5:10}[count]||10;}
 function scoreQ12(v){return{none:10,informal:30,'one-on-ones':55,kpis:75,formal:95}[v]||40;}
@@ -224,24 +204,13 @@ function scoreLabel(n){return n>=70?'Strong':n>=45?'Needs Work':'Fix First';}
 const PAY_MAP={'0':0,'lt3k':1500,'3k-5k':4000,'5k-8k':6500,'8k-12k':10000,'gt12k':13000};
 const TEAM_MAP={'lt2k':1500,'2k-3k':2500,'3k-4k':3500,'4k-5k':4500,'gt5k':5500};
 
-function resolveOwnerPay(q16){
-  const n=parseFloat(q16);
-  if(!isNaN(n)&&PAY_MAP[q16]===undefined)return n; // new exact number
-  return PAY_MAP[q16]??0; // legacy chip value
-}
-function resolveTeamPay(q19){
-  const n=parseFloat(q19);
-  if(!isNaN(n)&&TEAM_MAP[q19]===undefined)return n; // new exact number
-  return TEAM_MAP[q19]??2500; // legacy chip value
-}
-
 function computeOwnerEcon(d){
-  const ownerPay=resolveOwnerPay(d.q16);
+  const ownerPay=PAY_MAP[d.q16]??0;
   const weeklyHrs=parseFloat(d.q17)||40;
   const monthlyHrs=weeklyHrs*4.33;
   const ownerRate=ownerPay>0?(ownerPay/monthlyHrs):0;
-  const teamPay=resolveTeamPay(d.q19);
-  const teamRate=teamPay/(40*4.33);
+  const teamPay=TEAM_MAP[d.q19]??2500;
+  const teamRate=teamPay/(45*4.33);
   const diffPct=ownerRate>0?Math.round(((teamRate-ownerRate)/ownerRate)*100):null;
   return{ownerPay,weeklyHrs,monthlyHrs:Math.round(monthlyHrs),ownerRate:Math.round(ownerRate*100)/100,teamPay,teamRate:Math.round(teamRate*100)/100,diffPct};
 }
@@ -387,21 +356,14 @@ function renderBenchmarks(d,aiText){
    SECTION 3: OWNER ECONOMICS
 ═══════════════════════════════════════════════════════ */
 function renderOwnerEcon(d,econ){
-  const timeSlots={'mornings':'Early mornings (before 9am)','evenings':'Evenings (after 5:30pm)','weekends':'Weekends','daytime':'Regular hours'};
+  const timeSlots={'daytime':'Regular daytime hours','mornings':'Early mornings','evenings':'Evenings','weekends':'Weekends'};
   const workWhen=(d.q18||[]).map(s=>timeSlots[s]||s).join(', ');
-
-  // Build slot breakdown if available
-  let slotDetail='';
-  const slots=d.q17_slots||{};
-  const slotParts=Object.entries(slots).filter(([,h])=>h>0).map(([s,h])=>`${h} hrs ${timeSlots[s]||s}`);
-  if(slotParts.length){slotDetail=`<br/><span style="font-size:11px;color:var(--muted);">${slotParts.join(' · ')}</span>`;}
-
   let comparisonHtml='';
   if(econ.ownerPay===0){
     comparisonHtml=`<div class="econ-callout"><strong>You are not paying yourself.</strong> Every hour you work is costing you money with no return on your own time. This is the most urgent number in your business to change.</div>`;
   } else if(econ.diffPct!==null){
     if(econ.diffPct>0){
-      comparisonHtml=`<div class="econ-callout"><strong>Your team member earns ${econ.diffPct}% more per hour than you do.</strong> They work ~40 hours a week. You work ${econ.weeklyHrs}. They go home on time. You worked this weekend. They have zero business risk, zero liability, and no 3am panic about payroll. <strong>The math does not lie.</strong></div>`;
+      comparisonHtml=`<div class="econ-callout"><strong>Your team member earns ${econ.diffPct}% more per hour than you do.</strong> They work ~45 hours a week. You work ${econ.weeklyHrs}. They go home on time. You worked this weekend. They have zero business risk, zero liability, and no 3am panic about payroll. <strong>The math does not lie.</strong></div>`;
     } else if(econ.diffPct<-10){
       comparisonHtml=`<div class="econ-callout"><strong>You earn ${Math.abs(econ.diffPct)}% more per hour than your team — but you carry 100% of the risk, the liability, and the late nights.</strong> The question is whether that premium reflects what your time and risk are actually worth.</div>`;
     } else {
@@ -409,8 +371,6 @@ function renderOwnerEcon(d,econ){
     }
   }
   const ownerRateDisplay=econ.ownerPay===0?'$0.00':('$'+econ.ownerRate.toFixed(2));
-  const ownerMonthlyFmt=(econ.ownerPay||0).toLocaleString();
-  const teamMonthlyFmt=econ.teamPay.toLocaleString();
   const html=`
     <div class="section-body">
       <div class="section-label">Owner Economics · The Real Math</div>
@@ -418,25 +378,15 @@ function renderOwnerEcon(d,econ){
         <div class="econ-card owner">
           <div class="econ-role">You (Owner)</div>
           <div class="econ-rate">${ownerRateDisplay}<span>/hr</span></div>
-          <div class="econ-detail">${econ.weeklyHrs} hrs/week · $${ownerMonthlyFmt}/month${slotDetail}</div>
+          <div class="econ-detail">${econ.weeklyHrs} hrs/week · $${(econ.ownerPay||0).toLocaleString()}/month<br/>${esc(workWhen)}</div>
         </div>
         <div class="econ-card team">
           <div class="econ-role">Your Team</div>
           <div class="econ-rate">$${econ.teamRate.toFixed(2)}<span>/hr</span></div>
-          <div class="econ-detail">~40 hrs/week · $${teamMonthlyFmt}/month<br/>Regular hours only</div>
+          <div class="econ-detail">~45 hrs/week · $${econ.teamPay.toLocaleString()}/month<br/>Regular hours only</div>
         </div>
       </div>
       ${comparisonHtml}
-      <div class="econ-math">
-        <div class="econ-math-row">
-          <span class="econ-math-label">Your rate</span>
-          <span class="econ-math-formula">$${ownerMonthlyFmt} ÷ (${econ.weeklyHrs} hrs × 4.33 wks) = <strong>${ownerRateDisplay}/hr</strong></span>
-        </div>
-        <div class="econ-math-row">
-          <span class="econ-math-label">Team rate</span>
-          <span class="econ-math-formula">$${teamMonthlyFmt} ÷ (40 hrs × 4.33 wks) = <strong>$${econ.teamRate.toFixed(2)}/hr</strong></span>
-        </div>
-      </div>
       <div class="econ-note">We are not here to tell you that you are overpaying your team or underpaying yourself. This is just the math. And this math is exactly why building the right systems is not a nice-to-have — it is the only way to change the equation.</div>
     </div>`;
   renderSection(html);

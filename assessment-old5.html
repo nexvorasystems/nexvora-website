@@ -398,30 +398,9 @@ async function main() {
   addBubble({'nothing':'Nothing documented','head':'Key steps in my head','notes':'Some basic notes','sops':'Written SOPs exist','full-sops':'Full SOPs + trained team'}[A.q6], 'user');
 
   setProgress(11);
-  await speak("Do you have repeat customers — people who come back to use your business more than once?", 700);
-  const q7HasRepeat = await askChips([
-    {label:'Yes', value:'yes'},
-    {label:'No', value:'no'},
-  ]);
-  addBubble(q7HasRepeat === 'yes' ? 'Yes' : 'No', 'user');
-
-  if (q7HasRepeat === 'no') {
-    A.q7 = 'none';
-  } else {
-    await speak("Do you know approximately what percentage of your customers come back?", 600);
-    const q7KnowRate = await askChips([
-      {label:"Yes, I track it", value:'yes'},
-      {label:"Not sure / I don't track it", value:'no'},
-    ]);
-    addBubble(q7KnowRate === 'yes' ? "Yes, I track it" : "Don't track it", 'user');
-    if (q7KnowRate === 'yes') {
-      await speak("What percentage of your customers return for repeat business?", 600);
-      A.q7 = await askNumber('%', 1, 100);
-      addBubble(A.q7 + '%', 'user');
-    } else {
-      A.q7 = 'dont-know';
-    }
-  }
+  await speak("What percentage of your revenue comes from repeat customers?", 700);
+  A.q7 = await askNumber('%', 0, 100);
+  addBubble(A.q7 + '%', 'user');
 
   setProgress(12);
   await speak("What happens after someone shows interest but doesn't buy immediately?", 700);
@@ -434,15 +413,15 @@ async function main() {
   addBubble({'nothing':'Nothing — they go cold','manual':'I follow up manually sometimes','process':'I have a set follow-up process','automated':'Automated follow-up system'}[A.q8], 'user');
 
   setProgress(13);
-  await speak("How do new customers find you? Select all that apply.", 700);
-  A.q9 = await askMultiChips([
+  await speak("How do most new customers find you?", 700);
+  A.q9 = await askChips([
     {label:'Word of mouth',value:'word-of-mouth'},
     {label:'Google search',value:'google'},
     {label:'Social media',value:'social'},
     {label:'Paid ads',value:'paid-ads'},
     {label:'Other',value:'other'},
-  ], 1);
-  addBubble(A.q9.map(v=>({'word-of-mouth':'Word of mouth','google':'Google search','social':'Social media','paid-ads':'Paid ads','other':'Other'}[v]||v)).join(', '), 'user');
+  ]);
+  addBubble({'word-of-mouth':'Word of mouth','google':'Google search','social':'Social media','paid-ads':'Paid ads','other':'Other'}[A.q9], 'user');
 
   setProgress(14);
   await speak("What is your average online review rating?", 700);
@@ -516,39 +495,42 @@ async function main() {
   setProgress(20, 'Owner economics');
   await speak(`Last section, ${first}. These questions help us calculate something most business owners have never seen about their own business.`, 900);
 
-  await speak("How much do you pay yourself per month? Enter the exact amount (enter 0 if you don't pay yourself).", 700);
-  A.q16 = await askNumber('$/month', 0, 200000);
-  addBubble('$' + Number(A.q16).toLocaleString() + '/month', 'user');
+  await speak("How much do you pay yourself per month?", 700);
+  A.q16 = await askChips([
+    {label:"$0 — not paying myself",value:'0'},
+    {label:'Under $3,000',value:'lt3k'},
+    {label:'$3,000–$5,000',value:'3k-5k'},
+    {label:'$5,000–$8,000',value:'5k-8k'},
+    {label:'$8,000–$12,000',value:'8k-12k'},
+    {label:'Over $12,000',value:'gt12k'},
+  ]);
+  addBubble({'0':'$0 — not paying myself','lt3k':'Under $3,000','3k-5k':'$3,000–$5,000','5k-8k':'$5,000–$8,000','8k-12k':'$8,000–$12,000','gt12k':'Over $12,000'}[A.q16], 'user');
 
   setProgress(21);
-  await speak("When do you typically work? Select all that apply.", 700);
-  A.q18 = await askMultiChips([
-    {label:'Early mornings (before 9am)', value:'mornings'},
-    {label:'Evenings (after 5:30pm)', value:'evenings'},
-    {label:'Weekends', value:'weekends'},
-  ], 1);
-  const slotDisplayNames = {mornings:'Early mornings (before 9am)', evenings:'Evenings (after 5:30pm)', weekends:'Weekends'};
-  const slotNarrative = {mornings:'early mornings', evenings:'evenings', weekends:'weekends'};
-  addBubble(A.q18.map(s => slotDisplayNames[s]||s).join(', '), 'user');
-
-  // Per-slot hours
-  const slotHrs = {};
-  for (const slot of A.q18) {
-    await speak(`How many hours per week do you work during ${slotNarrative[slot]}?`, 600);
-    slotHrs[slot] = await askNumber('hrs/week', 0, 60);
-    addBubble(slotHrs[slot] + ' hrs', 'user');
-  }
-  A.q17_slots = slotHrs;
-
-  setProgress(22);
-  await speak("Including all your hours — regular business hours plus everything you just mentioned — how many total hours per week do you work in the business?", 700);
+  await speak("How many hours per week do you personally work in the business?", 700);
   A.q17 = await askNumber('hrs/week', 1, 120);
   addBubble(A.q17 + ' hours/week', 'user');
 
+  setProgress(22);
+  await speak("When do you typically work? Select all that apply.", 700);
+  A.q18 = await askMultiChips([
+    {label:'Regular daytime hours',value:'daytime'},
+    {label:'Early mornings (before 7am)',value:'mornings'},
+    {label:'Evenings (after 6pm)',value:'evenings'},
+    {label:'Weekends',value:'weekends'},
+  ], 1);
+  addBubble(A.q18.join(', '), 'user');
+
   setProgress(23);
-  await speak("What do your team members earn on average per month? Enter the approximate amount.", 700);
-  A.q19 = await askNumber('$/month', 0, 50000);
-  addBubble('$' + Number(A.q19).toLocaleString() + '/month', 'user');
+  await speak("What do your team members earn on average per month?", 700);
+  A.q19 = await askChips([
+    {label:'Under $2,000',value:'lt2k'},
+    {label:'$2,000–$3,000',value:'2k-3k'},
+    {label:'$3,000–$4,000',value:'3k-4k'},
+    {label:'$4,000–$5,000',value:'4k-5k'},
+    {label:'Over $5,000',value:'gt5k'},
+  ]);
+  addBubble({'lt2k':'Under $2,000','2k-3k':'$2,000–$3,000','3k-4k':'$3,000–$4,000','4k-5k':'$4,000–$5,000','gt5k':'Over $5,000'}[A.q19], 'user');
 
   /* ── FINISH ── */
   await finishAssessment();
@@ -567,7 +549,6 @@ async function finishAssessment() {
   const yearsLabels = {'lt1':'less than 1 year','1-2':'1–2 years','3-5':'3–5 years','6-10':'6–10 years','10plus':'over 10 years'};
   const sizeLabels = {'solo':'just yourself','2-5':'2–5 people','6-15':'6–15 people','16-30':'16–30 people','30plus':'30+ people'};
 
-  const q7Display = A.q7 === 'none' ? 'No repeat customers' : A.q7 === 'dont-know' ? 'Has repeat customers but does not track the rate' : A.q7 + '%';
   const systemPrompt = `You are a direct, experienced business advisor writing for Nexvora Systems. Generate TWO short pieces of text for a business assessment report. Respond with ONLY valid JSON, no markdown.
 
 Business profile:
@@ -577,7 +558,7 @@ Business profile:
 - Years operating: ${yearsLabels[A.q3] || A.q3}
 - Annual revenue: ${A.q4}
 - Team size: ${sizeLabels[A.q5] || A.q5}
-- Repeat customers: ${q7Display}
+- Repeat customer %: ${A.q7}%
 - Goal: ${A.q15}
 
 JSON format:
@@ -605,7 +586,7 @@ JSON format:
   hideTyping();
 
   // Store everything
-  const payload = { contact: A.contact, q1:A.q1, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  const payload = { contact: A.contact, q1:A.q1, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
   document.getElementById('progFill').style.width = '100%';
