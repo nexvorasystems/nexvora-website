@@ -3,106 +3,66 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Free Assessment — Nexvora Systems</title>
+<meta name="description" content="Free Business Assessment — Nexvora Systems. Get your personalized business health report in under 10 minutes."/>
+<title>Free Business Assessment — Nexvora Systems</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-:root{
-  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
-  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
-  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.12);
-  --navy:#0F2B4C;--red:#EF4444;--nav-h:64px;
-}
+:root{--bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;--text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;--teal:#0D9488;--teal-lt:rgba(13,148,136,0.1);--navy:#0F2B4C;--red:#EF4444;--nav-h:76px;}
 html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);height:100%;overflow:hidden;}
-
-nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.96);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 24px;gap:16px;}
-.logo{font-size:18px;font-weight:800;letter-spacing:-0.5px;color:var(--text);text-decoration:none;white-space:nowrap;}
-.logo span{color:var(--teal);}
-.prog-wrap{flex:1;display:flex;align-items:center;gap:10px;max-width:360px;margin:0 auto;}
-.prog-label{font-size:11px;color:var(--dim);white-space:nowrap;}
-.prog-bar{flex:1;height:4px;background:var(--border);border-radius:99px;overflow:hidden;}
-.prog-fill{height:100%;background:var(--teal);border-radius:99px;transition:width .5s ease;width:0%;}
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.96);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 28px;gap:20px;}
+.prog-wrap{flex:1;display:flex;align-items:center;gap:12px;max-width:400px;margin:0 auto;}
+.prog-label{font-size:11px;color:var(--dim);white-space:nowrap;min-width:100px;}
+.prog-bar{flex:1;height:5px;background:var(--border);border-radius:99px;overflow:hidden;}
+.prog-fill{height:100%;background:var(--teal);border-radius:99px;transition:width .6s ease;width:0%;}
 .nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:color .15s;}
 .nav-back:hover{color:var(--teal);}
-
 .chat-wrap{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;display:flex;flex-direction:column;}
-.chat-scroll{flex:1;overflow-y:auto;padding:28px 16px 16px;scroll-behavior:smooth;}
-.chat-inner{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:14px;}
-
-.brow{display:flex;align-items:flex-end;gap:9px;}
+.chat-scroll{flex:1;overflow-y:auto;padding:32px 16px 20px;scroll-behavior:smooth;}
+.chat-inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
+.brow{display:flex;align-items:flex-end;gap:10px;}
 .brow.bot{justify-content:flex-start;}
 .brow.user{justify-content:flex-end;}
-.avatar{width:30px;height:30px;min-width:30px;border-radius:50%;background:linear-gradient(135deg,#0F2B4C,#0D9488);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:800;color:#fff;}
-.bbl{max-width:82%;padding:12px 16px;border-radius:18px;font-size:15px;line-height:1.6;}
+.avatar{width:34px;height:34px;min-width:34px;border-radius:50%;background:linear-gradient(135deg,#0F2B4C,#0D9488);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;}
+.bbl{max-width:84%;padding:13px 17px;border-radius:18px;font-size:15px;line-height:1.65;}
 .bbl.bot{background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text);}
-.bbl.bot a{color:var(--teal);text-decoration:none;border-bottom:1px solid rgba(13,148,136,0.3);}
 .bbl.user{background:var(--teal);color:#fff;border-bottom-right-radius:4px;}
-
 .typing-dots{display:flex;gap:5px;align-items:center;padding:4px 2px;}
 .typing-dots span{width:7px;height:7px;border-radius:50%;background:var(--dim);animation:td 1.4s ease-in-out infinite;}
 .typing-dots span:nth-child(2){animation-delay:.2s;}
 .typing-dots span:nth-child(3){animation-delay:.4s;}
 @keyframes td{0%,60%,100%{transform:translateY(0);opacity:.35;}30%{transform:translateY(-7px);opacity:1;}}
-
-.search-card{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;max-width:380px;}
-.sc-searching{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--muted);}
-.sc-spinner{width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--teal);border-radius:50%;animation:spin .8s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg);}}
-.sc-result{display:flex;flex-direction:column;gap:10px;}
-.sc-biz-name{font-size:16px;font-weight:700;color:var(--text);}
-.sc-biz-loc{font-size:13px;color:var(--muted);}
-.sc-links{display:flex;gap:10px;flex-wrap:wrap;}
-.sc-link{font-size:12px;font-weight:600;color:var(--teal);text-decoration:none;padding:5px 10px;border:1px solid rgba(13,148,136,0.25);border-radius:6px;transition:all .15s;}
-.sc-link:hover{background:var(--teal-lt);}
-
-.report-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:24px;max-width:520px;}
-.rc-title{font-size:18px;font-weight:800;color:var(--text);margin-bottom:4px;}
-.rc-sub{font-size:13px;color:var(--muted);margin-bottom:20px;}
-.rc-dims{display:flex;flex-direction:column;gap:10px;margin-bottom:20px;}
-.rc-dim{display:flex;align-items:center;gap:10px;}
-.rc-dim-name{font-size:13px;font-weight:600;color:var(--text);min-width:158px;}
-.rc-bar-wrap{flex:1;height:6px;background:var(--bg-surface);border-radius:99px;overflow:hidden;}
-.rc-bar{height:100%;border-radius:99px;transition:width 1.2s ease;}
-.rc-bar.green{background:#10B981;}.rc-bar.yellow{background:#F59E0B;}.rc-bar.red{background:#EF4444;}
-.rc-score{font-size:11px;font-weight:700;min-width:52px;text-align:right;}
-.rc-score.green{color:#10B981;}.rc-score.yellow{color:#F59E0B;}.rc-score.red{color:#EF4444;}
-.rc-recs{border-top:1px solid var(--border);padding-top:16px;counter-reset:rec;}
-.rc-recs-title{font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:12px;}
-.rc-rec{display:flex;gap:10px;margin-bottom:10px;font-size:13px;color:var(--muted);line-height:1.6;}
-.rc-rec::before{content:counter(rec);counter-increment:rec;min-width:22px;height:22px;border-radius:50%;background:var(--teal);color:#fff;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;margin-top:1px;flex-shrink:0;}
-.rc-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px;}
-.rc-btn{padding:10px 20px;border-radius:9px;font-size:13px;font-weight:700;cursor:pointer;border:none;transition:all .18s;text-decoration:none;display:inline-flex;align-items:center;gap:6px;}
-.rc-btn.primary{background:var(--teal);color:#fff;}
-.rc-btn.primary:hover{filter:brightness(1.08);}
-.rc-btn.secondary{background:transparent;border:1.5px solid var(--border);color:var(--muted);}
-.rc-btn.secondary:hover{border-color:var(--teal);color:var(--teal);}
-
-.chat-input-area{border-top:1px solid var(--border);background:var(--bg-card);padding:14px 16px;flex-shrink:0;}
-.input-inner{max-width:620px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
-.input-row{display:flex;gap:9px;align-items:flex-end;}
-.chat-input{flex:1;padding:12px 15px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;color:var(--text);background:var(--bg);font-family:inherit;outline:none;resize:none;transition:border-color .15s;line-height:1.5;-webkit-appearance:none;}
-.chat-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px rgba(13,148,136,0.1);}
+.chat-input-area{border-top:1px solid var(--border);background:var(--bg-card);padding:16px;flex-shrink:0;}
+.input-inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
+.input-row{display:flex;gap:10px;align-items:flex-end;}
+.chat-input{flex:1;padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:15px;color:var(--text);background:var(--bg);font-family:inherit;outline:none;transition:border-color .15s;-webkit-appearance:none;}
+.chat-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-lt);}
 .chat-input.err{border-color:var(--red);}
-.send-btn{width:42px;height:42px;min-width:42px;border-radius:11px;background:var(--teal);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;align-self:flex-end;}
+.send-btn{width:44px;height:44px;min-width:44px;border-radius:11px;background:var(--teal);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .18s;}
 .send-btn:hover{filter:brightness(1.1);}
 .send-btn:disabled{opacity:.35;cursor:not-allowed;}
 .err-msg{font-size:12px;color:var(--red);display:none;}
 .err-msg.show{display:block;}
-
-.chips{display:flex;flex-wrap:wrap;gap:8px;padding-top:4px;}
-.chip{padding:9px 16px;border-radius:99px;border:1.5px solid var(--border);background:var(--bg-card);font-size:14px;color:var(--muted);font-weight:500;cursor:pointer;transition:all .15s;user-select:none;}
+.chips{display:flex;flex-wrap:wrap;gap:9px;padding-top:4px;}
+.chip{padding:10px 18px;border-radius:99px;border:1.5px solid var(--border);background:var(--bg-card);font-size:14px;color:var(--muted);font-weight:500;cursor:pointer;transition:all .15s;user-select:none;min-height:44px;display:inline-flex;align-items:center;touch-action:manipulation;}
 .chip:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-lt);}
 .chip.on{border-color:var(--teal);background:var(--teal);color:#fff;}
-
-.api-error{background:#FEF2F2;border:1px solid #FECACA;border-radius:10px;padding:12px 16px;font-size:13px;color:#DC2626;max-width:400px;}
-
-@media print{nav,.chat-input-area,.brow.user{display:none!important;}.chat-scroll{overflow:visible;position:static;}.chat-wrap{position:static;}.report-card{max-width:100%;}}
-@media(max-width:600px){nav{padding:0 14px;}.prog-label{display:none;}.bbl{font-size:14px;max-width:90%;}.chat-input-area{padding:10px 12px;}}
+.multi-confirm{margin-top:8px;}
+.multi-confirm button{padding:10px 22px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all .18s;}
+.multi-confirm button:disabled{opacity:.35;cursor:not-allowed;}
+.states-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(68px,1fr));gap:7px;max-height:220px;overflow-y:auto;padding:4px 0 8px;}
+.state-chip{padding:8px 4px;border-radius:8px;border:1.5px solid var(--border);background:var(--bg-card);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;transition:all .15s;text-align:center;user-select:none;min-height:44px;display:flex;align-items:center;justify-content:center;touch-action:manipulation;}
+.state-chip:hover{border-color:var(--teal);color:var(--teal);background:var(--teal-lt);}
+.state-chip.on{border-color:var(--teal);background:var(--teal);color:#fff;}
+.num-wrap{display:flex;align-items:center;gap:12px;}
+.num-input{width:120px;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:18px;font-weight:700;color:var(--text);background:var(--bg);font-family:inherit;outline:none;text-align:center;-webkit-appearance:none;-moz-appearance:textfield;}
+.num-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-lt);}
+.num-unit{font-size:14px;color:var(--muted);}
+@media(max-width:600px){nav{padding:0 16px;}.prog-label{display:none;}.bbl{font-size:14px;max-width:90%;}.chat-input-area{padding:12px 14px;}}
 </style>
 </head>
 <body>
-
 <nav>
-  <a href="index.html"><img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:48px;width:auto;display:block;"/></a>
+  <a href="index.html"><img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:44px;width:auto;display:block;"/></a>
   <div class="prog-wrap">
     <span class="prog-label" id="progLabel">Getting started</span>
     <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
@@ -112,7 +72,6 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
     Back
   </a>
 </nav>
-
 <div class="chat-wrap">
   <div class="chat-scroll" id="chatScroll">
     <div class="chat-inner" id="chatInner"></div>
@@ -121,479 +80,532 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
     <div class="input-inner" id="inputInner"></div>
   </div>
 </div>
-
 <script>
-// ── CONFIG ────────────────────────────────────────────────────
-const API_ENDPOINT = '/api/chat';
-const A = {}; // collected answers
+/* ── GLOBALS ─────────────────────────────────────────── */
+const A = {}; // all answers
+const TOTAL_STEPS = 23; // 4 contact + 19 questions
+let currentStep = 0;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
-// ── PROGRESS ──────────────────────────────────────────────────
-function setProgress(pct, label) {
-  document.getElementById('progFill').style.width = Math.min(pct, 99) + '%';
-  if(label) document.getElementById('progLabel').textContent = label;
+/* ── PROGRESS ────────────────────────────────────────── */
+function setProgress(step, label) {
+  currentStep = step;
+  const pct = Math.min((step / TOTAL_STEPS) * 100, 99);
+  document.getElementById('progFill').style.width = pct + '%';
+  if (label) document.getElementById('progLabel').textContent = label;
 }
 
-// ── SCROLL ────────────────────────────────────────────────────
-function scrollToBottom() {
+/* ── SCROLL ──────────────────────────────────────────── */
+function scrollBottom() {
   const el = document.getElementById('chatScroll');
   el.scrollTop = el.scrollHeight;
 }
-function scrollToLastQuestion() {
+function scrollToLast() {
   const el = document.getElementById('chatScroll');
   const bots = el.querySelectorAll('.brow.bot');
-  if(bots.length) {
-    const last = bots[bots.length - 1];
-    el.scrollTo({ top: Math.max(0, last.offsetTop - 24), behavior: 'smooth' });
-  }
+  if (bots.length) el.scrollTo({ top: Math.max(0, bots[bots.length-1].offsetTop - 28), behavior: 'smooth' });
 }
 
-// ── BUBBLE HELPERS ────────────────────────────────────────────
-function addBubble(text, type, isHtml = false) {
+/* ── BUBBLE ──────────────────────────────────────────── */
+function esc(s) { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function addBubble(text, type, isHtml=false) {
   const inner = document.getElementById('chatInner');
   const row = document.createElement('div');
   row.className = `brow ${type}`;
-  const content = isHtml ? text : escHtml(text);
-  if(type === 'bot') {
-    row.innerHTML = `<div class="avatar">NX</div><div class="bbl bot">${content}</div>`;
-  } else {
-    row.innerHTML = `<div class="bbl user">${content}</div>`;
-  }
+  const content = isHtml ? text : esc(text);
+  if (type === 'bot') row.innerHTML = `<div class="avatar">NX</div><div class="bbl bot">${content}</div>`;
+  else row.innerHTML = `<div class="bbl user">${content}</div>`;
   inner.appendChild(row);
-  scrollToBottom();
+  scrollBottom();
   return row;
 }
 
-function addCard(html) {
-  const inner = document.getElementById('chatInner');
-  const row = document.createElement('div');
-  row.className = 'brow bot';
-  row.innerHTML = `<div class="avatar">NX</div><div>${html}</div>`;
-  inner.appendChild(row);
-  scrollToBottom();
-}
-
-function escHtml(s) {
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-// ── TYPING ────────────────────────────────────────────────────
+/* ── TYPING ──────────────────────────────────────────── */
 let typingEl = null;
 function showTyping() {
-  if(typingEl) return;
+  if (typingEl) return;
   const inner = document.getElementById('chatInner');
   typingEl = document.createElement('div');
   typingEl.className = 'brow bot';
   typingEl.innerHTML = `<div class="avatar">NX</div><div class="bbl bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
   inner.appendChild(typingEl);
-  scrollToBottom();
+  scrollBottom();
 }
-function hideTyping() {
-  if(typingEl) { typingEl.remove(); typingEl = null; }
-}
+function hideTyping() { if (typingEl) { typingEl.remove(); typingEl = null; } }
 
-// ── SPEAK (bot message with typing delay) ────────────────────
-async function speak(text, delayMs = 900, isHtml = false) {
+async function speak(text, delay=800, isHtml=false) {
   showTyping();
-  await sleep(delayMs);
+  await sleep(delay);
   hideTyping();
   addBubble(text, 'bot', isHtml);
 }
 
-// ── INPUT HELPERS ─────────────────────────────────────────────
+/* ── INPUT CLEAR ─────────────────────────────────────── */
 function clearInput() {
   document.getElementById('inputInner').innerHTML = '';
   document.getElementById('inputArea').style.display = 'none';
 }
 
-function askText(placeholder, validate, inputType = 'text') {
+/* ── TEXT INPUT ──────────────────────────────────────── */
+function askText(placeholder, validate, type='text') {
   return new Promise(resolve => {
     const area = document.getElementById('inputArea');
     const inner = document.getElementById('inputInner');
     inner.innerHTML = `
       <div class="input-row">
-        <input class="chat-input" id="ci" type="${inputType}" placeholder="${placeholder}" autocomplete="off"/>
+        <input class="chat-input" id="ci" type="${type}" placeholder="${placeholder}" autocomplete="off"/>
         <button class="send-btn" id="csend" disabled>
           <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
         </button>
       </div>
       <div class="err-msg" id="cerr"></div>`;
     area.style.display = '';
-
     const inp = document.getElementById('ci');
     const btn = document.getElementById('csend');
     const err = document.getElementById('cerr');
-
-    inp.addEventListener('input', () => {
-      btn.disabled = !inp.value.trim();
-      inp.classList.remove('err'); err.classList.remove('show');
-    });
+    inp.addEventListener('input', () => { btn.disabled = !inp.value.trim(); inp.classList.remove('err'); err.classList.remove('show'); });
     const submit = () => {
       const val = inp.value.trim();
-      if(!val) return;
-      if(validate) {
-        const e = validate(val);
-        if(e) { inp.classList.add('err'); err.textContent = e; err.classList.add('show'); return; }
-      }
-      clearInput();
-      resolve(val);
+      if (!val) return;
+      if (validate) { const e = validate(val); if (e) { inp.classList.add('err'); err.textContent = e; err.classList.add('show'); return; } }
+      clearInput(); resolve(val);
     };
-    inp.addEventListener('keydown', e => { if(e.key === 'Enter') submit(); });
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
     btn.addEventListener('click', submit);
-    setTimeout(() => { inp.focus(); scrollToLastQuestion(); }, 80);
+    setTimeout(() => { inp.focus(); scrollToLast(); }, 80);
   });
 }
 
+/* ── NUMBER INPUT ────────────────────────────────────── */
+function askNumber(unit, min, max) {
+  return new Promise(resolve => {
+    const area = document.getElementById('inputArea');
+    const inner = document.getElementById('inputInner');
+    inner.innerHTML = `
+      <div class="input-row">
+        <div class="num-wrap">
+          <input class="num-input" id="ni" type="number" min="${min}" max="${max}" placeholder="0"/>
+          <span class="num-unit">${unit}</span>
+        </div>
+        <button class="send-btn" id="nsend" disabled>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div class="err-msg" id="nerr"></div>`;
+    area.style.display = '';
+    const inp = document.getElementById('ni');
+    const btn = document.getElementById('nsend');
+    const err = document.getElementById('nerr');
+    inp.addEventListener('input', () => { btn.disabled = inp.value === '' || isNaN(Number(inp.value)); inp.classList.remove('err'); err.classList.remove('show'); });
+    const submit = () => {
+      const val = Number(inp.value);
+      if (isNaN(val)) return;
+      if (val < min || val > max) { inp.classList.add('err'); err.textContent = `Please enter a value between ${min} and ${max}`; err.classList.add('show'); return; }
+      clearInput(); resolve(val);
+    };
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
+    btn.addEventListener('click', submit);
+    setTimeout(() => { inp.focus(); scrollToLast(); }, 80);
+  });
+}
+
+/* ── SINGLE CHIP ─────────────────────────────────────── */
 function askChips(options) {
   return new Promise(resolve => {
     const area = document.getElementById('inputArea');
     const inner = document.getElementById('inputInner');
-    inner.innerHTML = `<div class="chips" id="chipsWrap"></div>`;
-    area.style.display = '';
-    const wrap = document.getElementById('chipsWrap');
-    options.forEach(opt => {
+    const wrap = document.createElement('div');
+    wrap.className = 'chips';
+    options.forEach(o => {
       const chip = document.createElement('div');
       chip.className = 'chip';
-      chip.textContent = opt;
-      chip.onclick = () => { clearInput(); resolve(opt); };
+      chip.textContent = o.label;
+      chip.onclick = () => { clearInput(); resolve(o.value); };
       wrap.appendChild(chip);
     });
-    setTimeout(() => scrollToLastQuestion(), 80);
+    inner.innerHTML = '';
+    inner.appendChild(wrap);
+    area.style.display = '';
+    setTimeout(() => scrollToLast(), 80);
   });
 }
 
-// ── OPENAI API CALL ───────────────────────────────────────────
-async function callAI(messages, maxTokens = 400) {
-  const res = await fetch(API_ENDPOINT, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ messages, max_tokens: maxTokens })
+/* ── MULTI CHIP ──────────────────────────────────────── */
+function askMultiChips(options, minSelect=1) {
+  return new Promise(resolve => {
+    const area = document.getElementById('inputArea');
+    const inner = document.getElementById('inputInner');
+    const wrap = document.createElement('div');
+    wrap.className = 'chips';
+    const selected = new Set();
+    options.forEach(o => {
+      const chip = document.createElement('div');
+      chip.className = 'chip';
+      chip.textContent = o.label;
+      chip.onclick = () => {
+        if (selected.has(o.value)) { selected.delete(o.value); chip.classList.remove('on'); }
+        else { selected.add(o.value); chip.classList.add('on'); }
+        confirmBtn.disabled = selected.size < minSelect;
+      };
+      wrap.appendChild(chip);
+    });
+    const confirmDiv = document.createElement('div');
+    confirmDiv.className = 'multi-confirm';
+    const confirmBtn = document.createElement('button');
+    confirmBtn.textContent = 'Confirm →';
+    confirmBtn.disabled = true;
+    confirmBtn.onclick = () => { clearInput(); resolve([...selected]); };
+    confirmDiv.appendChild(confirmBtn);
+    inner.innerHTML = '';
+    inner.appendChild(wrap);
+    inner.appendChild(confirmDiv);
+    area.style.display = '';
+    setTimeout(() => scrollToLast(), 80);
   });
-  if(!res.ok) {
-    const err = await res.json().catch(() => ({}));
-    throw new Error(err.error || `HTTP ${res.status}`);
-  }
-  const data = await res.json();
-  if(data.error) throw new Error(data.error);
-  return data.reply;
 }
 
-// ── SYSTEM PROMPT ─────────────────────────────────────────────
-function buildSystemPrompt() {
-  return `You are Nex, a warm and friendly business advisor at Nexvora Systems. You are having a natural one-on-one chat conversation with a business owner named ${A.full_name} to understand their business and prepare a personalized assessment.
-
-Your goal: collect information naturally through genuine conversation, then signal when you have enough.
-
-Information to collect (ask naturally, not like a form):
-- Business location (city/state or city/country)
-- Business name and exactly what they do
-- Team size (exact numbers, who does what)
-- Approximate revenue
-- Biggest current challenges (dig in, ask follow-ups)
-- Current technology and AI usage
-- Goals for the next 12 months
-
-Conversation rules:
-- Ask ONLY ONE question per message
-- Keep messages short: 1-3 sentences maximum
-- Be genuinely warm and human, not corporate
-- Do NOT use em-dashes (use commas or periods instead)
-- Reference what they said to show you are listening
-- Adapt questions to their situation:
-  * Solo operator: focus on time, what they handle alone, marketing approach
-  * 2-5 people: ask who handles marketing and sales, main time wasters
-  * 6-20 people: ask about team structure, reporting, who owns what
-  * 20+ people: ask about departments, cross-team communication, reporting systems
-- Ask smart industry-specific follow-ups based on what they tell you
-- If they mention a problem, dig into it before moving on
-- Show genuine interest and occasional encouragement
-
-After 8-14 exchanges (when you have collected enough on all topics), wrap up warmly and end your message with this exact marker on a new line: [REPORT_READY]
-Do not mention the marker to the user. Just say something like "I think I have a great picture of your business now" and then put [REPORT_READY] on the next line.`;
-}
-
-// ── AI CONVERSATION LOOP ──────────────────────────────────────
-let aiMessages = [];
-let exchangeCount = 0;
-
-async function startAIPhase() {
-  aiMessages = [{ role: 'system', content: buildSystemPrompt() }];
-  setProgress(25, 'Learning about your business');
-
-  showTyping();
-  await sleep(600);
-  let firstQ;
-  try {
-    firstQ = await callAI(aiMessages, 250);
-  } catch(e) {
-    hideTyping();
-    addBubble("I'm having trouble connecting right now. Please refresh and try again.", 'bot');
-    return;
-  }
-  hideTyping();
-  aiMessages.push({ role: 'assistant', content: firstQ });
-
-  const clean = firstQ.replace('[REPORT_READY]', '').trim();
-  addBubble(clean, 'bot');
-
-  await aiLoop();
-}
-
-async function aiLoop() {
-  const answer = await askText("Type your answer...", null);
-  addBubble(answer, 'user');
-  exchangeCount++;
-  aiMessages.push({ role: 'user', content: answer });
-
-  const pct = Math.min(25 + exchangeCount * 5, 85);
-  setProgress(pct);
-
-  showTyping();
-  await sleep(400);
-
-  let reply;
-  try {
-    reply = await callAI(aiMessages);
-  } catch(e) {
-    hideTyping();
-    addBubble("Sorry, I lost connection for a moment. Can you repeat that?", 'bot');
-    await aiLoop();
-    return;
-  }
-
-  hideTyping();
-  aiMessages.push({ role: 'assistant', content: reply });
-
-  if(reply.includes('[REPORT_READY]')) {
-    const clean = reply.replace('[REPORT_READY]', '').trim();
-    if(clean) addBubble(clean, 'bot');
-    await sleep(600);
-    await generateReport();
-  } else {
-    addBubble(reply, 'bot');
-    await aiLoop();
-  }
-}
-
-// ── REPORT GENERATION ─────────────────────────────────────────
-async function generateReport() {
-  clearInput();
-  setProgress(90, 'Generating your report');
-  showTyping();
-  await sleep(500);
-  addBubble("Give me just a moment to put your report together...", 'bot');
-  showTyping();
-  await sleep(2000);
-  hideTyping();
-
-  // Ask AI to generate JSON report based on full conversation
-  const reportPrompt = [
-    ...aiMessages,
-    {
-      role: 'user',
-      content: 'Please generate the assessment report now.'
-    },
-    {
-      role: 'system',
-      content: `Based on the entire conversation, generate a detailed assessment report as JSON. Respond with ONLY valid JSON, no other text, no markdown code blocks.
-
-Use this exact structure:
-{
-  "biz_name": "exact business name from conversation",
-  "location": "city and state/country",
-  "summary": "2-sentence summary of their business and situation",
-  "scores": {
-    "operations": <0-100 integer>,
-    "ai_automation": <0-100 integer>,
-    "reporting": <0-100 integer>,
-    "sales": <0-100 integer>,
-    "marketing": <0-100 integer>,
-    "customer": <0-100 integer>,
-    "team_hr": <0-100 integer>,
-    "financial": <0-100 integer>,
-    "growth": <0-100 integer>
-  },
-  "recommendations": [
-    "Specific actionable recommendation 1 tailored to their situation",
-    "Specific actionable recommendation 2 tailored to their situation",
-    "Specific actionable recommendation 3 tailored to their situation"
-  ]
-}
-
-Score each dimension honestly based on what they told you. Lower scores = bigger problem areas. Be specific in recommendations, referencing their actual business and what they said.`
-    }
+/* ── STATE GRID ──────────────────────────────────────── */
+function askState() {
+  const states = [
+    {label:'AL',value:'AL'},{label:'AK',value:'AK'},{label:'AZ',value:'AZ'},{label:'AR',value:'AR'},{label:'CA',value:'CA'},{label:'CO',value:'CO'},{label:'CT',value:'CT'},{label:'DE',value:'DE'},{label:'FL',value:'FL'},{label:'GA',value:'GA'},{label:'HI',value:'HI'},{label:'ID',value:'ID'},{label:'IL',value:'IL'},{label:'IN',value:'IN'},{label:'IA',value:'IA'},{label:'KS',value:'KS'},{label:'KY',value:'KY'},{label:'LA',value:'LA'},{label:'ME',value:'ME'},{label:'MD',value:'MD'},{label:'MA',value:'MA'},{label:'MI',value:'MI'},{label:'MN',value:'MN'},{label:'MS',value:'MS'},{label:'MO',value:'MO'},{label:'MT',value:'MT'},{label:'NE',value:'NE'},{label:'NV',value:'NV'},{label:'NH',value:'NH'},{label:'NJ',value:'NJ'},{label:'NM',value:'NM'},{label:'NY',value:'NY'},{label:'NC',value:'NC'},{label:'ND',value:'ND'},{label:'OH',value:'OH'},{label:'OK',value:'OK'},{label:'OR',value:'OR'},{label:'PA',value:'PA'},{label:'RI',value:'RI'},{label:'SC',value:'SC'},{label:'SD',value:'SD'},{label:'TN',value:'TN'},{label:'TX',value:'TX'},{label:'UT',value:'UT'},{label:'VT',value:'VT'},{label:'VA',value:'VA'},{label:'WA',value:'WA'},{label:'WV',value:'WV'},{label:'WI',value:'WI'},{label:'WY',value:'WY'}
   ];
-
-  let reportData = null;
-  try {
-    const raw = await callAI(reportPrompt, 900);
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
-    if(jsonMatch) reportData = JSON.parse(jsonMatch[0]);
-  } catch(e) {
-    console.error('Report generation error:', e);
-  }
-
-  displayReport(reportData);
+  return new Promise(resolve => {
+    const area = document.getElementById('inputArea');
+    const inner = document.getElementById('inputInner');
+    const grid = document.createElement('div');
+    grid.className = 'states-grid';
+    states.forEach(s => {
+      const chip = document.createElement('div');
+      chip.className = 'state-chip';
+      chip.textContent = s.label;
+      chip.onclick = () => { clearInput(); resolve(s.value); };
+      grid.appendChild(chip);
+    });
+    inner.innerHTML = '';
+    inner.appendChild(grid);
+    area.style.display = '';
+    setTimeout(() => scrollToLast(), 80);
+  });
 }
 
-function scoreColor(n) {
-  if(n >= 70) return 'green';
-  if(n >= 45) return 'yellow';
-  return 'red';
-}
-function scoreLabel(n) {
-  if(n >= 70) return 'Strong';
-  if(n >= 45) return 'Needs Work';
-  return 'Priority Fix';
-}
-
-function displayReport(data) {
-  const first = A.full_name.split(' ')[0];
-  const bizName = (data && data.biz_name) ? data.biz_name : (A.biz_name || 'Your Business');
-  const location = (data && data.location) ? data.location : '';
-
-  const dims = [
-    { key:'operations',    label:'Operations' },
-    { key:'ai_automation', label:'AI & Automation' },
-    { key:'reporting',     label:'Reporting & Analytics' },
-    { key:'sales',         label:'Sales Systems' },
-    { key:'marketing',     label:'Marketing' },
-    { key:'customer',      label:'Customer Experience' },
-    { key:'team_hr',       label:'Team & HR' },
-    { key:'financial',     label:'Financial Efficiency' },
-    { key:'growth',        label:'Growth & Scaling' },
-  ];
-
-  // Use AI scores if available, otherwise fallback
-  const fallbackScores = { operations:60, ai_automation:45, reporting:50, sales:60, marketing:55, customer:65, team_hr:60, financial:55, growth:50 };
-  const scores = (data && data.scores) ? data.scores : fallbackScores;
-
-  const dimRows = dims.map(d => {
-    const sc = Math.max(0, Math.min(100, parseInt(scores[d.key]) || 50));
-    const col = scoreColor(sc);
-    return `<div class="rc-dim">
-      <div class="rc-dim-name">${d.label}</div>
-      <div class="rc-bar-wrap"><div class="rc-bar ${col}" style="width:${sc}%"></div></div>
-      <div class="rc-score ${col}">${scoreLabel(sc)}</div>
-    </div>`;
-  }).join('');
-
-  const recs = (data && data.recommendations && data.recommendations.length)
-    ? data.recommendations
-    : ["Review your core operational processes and document the top 3 that need improvement.",
-       "Identify one repetitive task your team does daily and automate it this month.",
-       "Set up a simple weekly review of your key business numbers."];
-
-  const recItems = recs.map(r => `<div class="rc-rec">${escHtml(r)}</div>`).join('');
-
-  const summaryHtml = (data && data.summary)
-    ? `<div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;padding:12px 14px;background:var(--bg-surface);border-radius:8px;">${escHtml(data.summary)}</div>`
-    : '';
-
-  addCard(`
-    <div class="report-card" id="reportCard">
-      <div class="rc-title">Business Assessment Report</div>
-      <div class="rc-sub">${escHtml(bizName)}${location ? ' · ' + escHtml(location) : ''} · Prepared for ${escHtml(first)}</div>
-      ${summaryHtml}
-      <div class="rc-dims">${dimRows}</div>
-      <div class="rc-recs">
-        <div class="rc-recs-title">Top Recommendations</div>
-        ${recItems}
-      </div>
-      <div class="rc-actions">
-        <button class="rc-btn primary" onclick="window.print()">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
-          Download PDF
-        </button>
-        <a href="index.html" class="rc-btn secondary">Back to Home</a>
-      </div>
-    </div>`);
-
-  setProgress(100, 'Complete');
-  scrollToBottom();
-
-  setTimeout(async () => {
-    await speak(`Your report is ready, ${first}! We have also sent a copy to <strong>${escHtml(A.email)}</strong>. If you do not see it within a few minutes, please check your spam folder.`, 800, true);
-    await sleep(400);
-    await speak('If you have any questions or want to talk through the results, just <a href="contact.html">get in touch</a> and we will be happy to help.', 700, true);
-  }, 600);
-}
-
-// ── BUSINESS SEARCH ───────────────────────────────────────────
-async function doBusinessSearch(bizName, location) {
-  const mapsUrl = `https://www.google.com/maps/search/${encodeURIComponent(bizName + ' ' + location)}`;
-  const reviewsUrl = `https://www.google.com/search?q=${encodeURIComponent(bizName + ' ' + location + ' reviews')}`;
-  const yelpUrl = `https://www.yelp.com/search?find_desc=${encodeURIComponent(bizName)}&find_loc=${encodeURIComponent(location)}`;
-
-  addCard(`<div class="search-card">
-    <div class="sc-searching" id="scStatus">
-      <div class="sc-spinner"></div>
-      <span>Searching for "${escHtml(bizName)}"...</span>
-    </div>
-  </div>`);
-
-  await sleep(2000);
-
-  document.getElementById('scStatus').closest('.search-card').innerHTML = `
-    <div class="sc-result">
-      <div class="sc-biz-name">${escHtml(bizName)}</div>
-      <div class="sc-biz-loc">${escHtml(location)}</div>
-      <div class="sc-links">
-        <a class="sc-link" href="${mapsUrl}" target="_blank">Google Maps</a>
-        <a class="sc-link" href="${reviewsUrl}" target="_blank">Reviews</a>
-        <a class="sc-link" href="${yelpUrl}" target="_blank">Yelp</a>
-      </div>
-    </div>`;
-  scrollToBottom();
-}
-
-// ── MAIN FLOW ─────────────────────────────────────────────────
+/* ── MAIN FLOW ───────────────────────────────────────── */
 async function main() {
-  setProgress(2, 'Getting started');
-  await sleep(500);
-
-  await speak("Hi! I'm Nex, your Nexvora advisor. I'll have a quick conversation with you to understand your business and put together a free personalized report.", 1000);
+  setProgress(0, 'Getting started');
+  await sleep(400);
+  await speak("Hi, I'm Nex — your Nexvora advisor. I'll ask you a few questions about your business and put together a personalized report. It takes about 5 minutes.", 900);
   await sleep(200);
-  await speak("Let's start. What's your full name?", 700);
+  await speak("Let's start with some contact info so we can send you the report.", 700);
 
+  /* ── CONTACT INFO ── */
+  await sleep(300);
+  await speak("What's your full name?", 600);
+  setProgress(1, 'Contact info');
   const name = await askText("Your full name", v => v.trim().length >= 2 ? null : "Please enter your full name");
   addBubble(name, 'user');
-  A.full_name = name;
+  A.contact = { name };
   const first = name.split(' ')[0];
 
-  setProgress(8, 'Contact info');
-  await speak(`Great to meet you, ${first}! What's the best email to send your report to?`);
-
-  const email = await askText("your@email.com", v =>
-    /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? null : "Please enter a valid email (e.g. name@company.com)",
-    'email'
-  );
+  setProgress(2);
+  await speak(`Great to meet you, ${first}! What email should we send your report to?`, 700);
+  const email = await askText("your@email.com", v => /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v) ? null : "Please enter a valid email", 'email');
   addBubble(email, 'user');
-  A.email = email;
+  A.contact.email = email;
+
+  setProgress(3);
+  await speak("Your phone number?", 600);
+  const phone = await askText("+1 (555) 000-0000", v => v.replace(/\D/g,'').length >= 7 ? null : "Please enter a valid phone number", 'tel');
+  addBubble(phone, 'user');
+  A.contact.phone = phone;
+
+  setProgress(4);
+  await speak("And your company name? (optional — type 'skip' if you prefer)", 600);
+  const company = await askText("Company name or 'skip'", null);
+  addBubble(company.toLowerCase() === 'skip' ? '(skipped)' : company, 'user');
+  A.contact.company = company.toLowerCase() === 'skip' ? '' : company;
+
+  /* ── PROFILE QUESTIONS ── */
+  setProgress(5, 'About your business');
+  await speak(`Thanks, ${first}. Now a few questions about your business.`, 800);
+  await sleep(200);
+
+  await speak("Which industry is your business in?", 600);
+  A.q1 = await askChips([
+    {label:'Home Services',value:'home-services'},
+    {label:'Construction & Contractors',value:'construction'},
+    {label:'Food & Beverage',value:'food-bev'},
+    {label:'Retail',value:'retail'},
+    {label:'Health & Wellness',value:'health-wellness'},
+    {label:'Professional Services',value:'professional-services'},
+    {label:'Auto Services',value:'auto'},
+    {label:'Real Estate',value:'real-estate'},
+  ]);
+  addBubble({
+    'home-services':'Home Services','construction':'Construction & Contractors','food-bev':'Food & Beverage',
+    'retail':'Retail','health-wellness':'Health & Wellness','professional-services':'Professional Services',
+    'auto':'Auto Services','real-estate':'Real Estate'
+  }[A.q1], 'user');
+
+  setProgress(6);
+  await speak("What state is your business based in?", 600);
+  A.q2 = await askState();
+  addBubble(A.q2, 'user');
+
+  setProgress(7);
+  await speak("How long has your business been operating?", 600);
+  A.q3 = await askChips([
+    {label:'Less than 1 year',value:'lt1'},
+    {label:'1–2 years',value:'1-2'},
+    {label:'3–5 years',value:'3-5'},
+    {label:'6–10 years',value:'6-10'},
+    {label:'10+ years',value:'10plus'},
+  ]);
+  addBubble({'lt1':'Less than 1 year','1-2':'1–2 years','3-5':'3–5 years','6-10':'6–10 years','10plus':'10+ years'}[A.q3], 'user');
+
+  setProgress(8);
+  await speak("What is your approximate annual revenue?", 600);
+  A.q4 = await askChips([
+    {label:'Under $100K',value:'lt100k'},
+    {label:'$100K–$300K',value:'100k-300k'},
+    {label:'$300K–$750K',value:'300k-750k'},
+    {label:'$750K–$2M',value:'750k-2m'},
+    {label:'Over $2M',value:'gt2m'},
+  ]);
+  addBubble({'lt100k':'Under $100K','100k-300k':'$100K–$300K','300k-750k':'$300K–$750K','750k-2m':'$750K–$2M','gt2m':'Over $2M'}[A.q4], 'user');
+
+  setProgress(9);
+  await speak("How many people work in your business, including you?", 600);
+  A.q5 = await askChips([
+    {label:'Just me',value:'solo'},
+    {label:'2–5 people',value:'2-5'},
+    {label:'6–15 people',value:'6-15'},
+    {label:'16–30 people',value:'16-30'},
+    {label:'30+ people',value:'30plus'},
+  ]);
+  addBubble({'solo':'Just me','2-5':'2–5 people','6-15':'6–15 people','16-30':'16–30 people','30plus':'30+ people'}[A.q5], 'user');
+
+  /* ── DIAGNOSTIC QUESTIONS ── */
+  setProgress(10, 'Business health');
+  await speak("Now let's look at how your business actually runs. There are no right or wrong answers — just be honest.", 900);
+
+  await speak("Do you have documented processes for how your business runs?", 700);
+  A.q6 = await askChips([
+    {label:'Nothing documented',value:'nothing'},
+    {label:'Key steps in my head',value:'head'},
+    {label:'Some basic notes',value:'notes'},
+    {label:'Written SOPs exist',value:'sops'},
+    {label:'Full SOPs + trained team',value:'full-sops'},
+  ]);
+  addBubble({'nothing':'Nothing documented','head':'Key steps in my head','notes':'Some basic notes','sops':'Written SOPs exist','full-sops':'Full SOPs + trained team'}[A.q6], 'user');
+
+  setProgress(11);
+  await speak("What percentage of your revenue comes from repeat customers?", 700);
+  A.q7 = await askNumber('%', 0, 100);
+  addBubble(A.q7 + '%', 'user');
+
+  setProgress(12);
+  await speak("What happens after someone shows interest but doesn't buy immediately?", 700);
+  A.q8 = await askChips([
+    {label:"Nothing — they go cold",value:'nothing'},
+    {label:'I follow up manually sometimes',value:'manual'},
+    {label:'I have a set follow-up process',value:'process'},
+    {label:'Automated follow-up system',value:'automated'},
+  ]);
+  addBubble({'nothing':'Nothing — they go cold','manual':'I follow up manually sometimes','process':'I have a set follow-up process','automated':'Automated follow-up system'}[A.q8], 'user');
+
+  setProgress(13);
+  await speak("How do most new customers find you?", 700);
+  A.q9 = await askChips([
+    {label:'Word of mouth',value:'word-of-mouth'},
+    {label:'Google search',value:'google'},
+    {label:'Social media',value:'social'},
+    {label:'Paid ads',value:'paid-ads'},
+    {label:'Other',value:'other'},
+  ]);
+  addBubble({'word-of-mouth':'Word of mouth','google':'Google search','social':'Social media','paid-ads':'Paid ads','other':'Other'}[A.q9], 'user');
 
   setProgress(14);
-  await speak("Got it. And your phone number? Optional, type 'skip' if you prefer.", 800);
+  await speak("What is your average online review rating?", 700);
+  A.q10 = await askChips([
+    {label:'No reviews yet',value:'no-reviews'},
+    {label:'1–3 stars',value:'1-3'},
+    {label:'3–4 stars',value:'3-4'},
+    {label:'4–4.5 stars',value:'4-4.5'},
+    {label:'4.5–5 stars',value:'4.5-5'},
+  ]);
+  addBubble({'no-reviews':'No reviews yet','1-3':'1–3 stars','3-4':'3–4 stars','4-4.5':'4–4.5 stars','4.5-5':'4.5–5 stars'}[A.q10], 'user');
 
-  const phone = await askText("+1 (555) 000-0000", v => {
-    if(v.toLowerCase() === 'skip' || !v.trim()) return null;
-    return v.replace(/\D/g,'').length >= 7 ? null : "Please enter a valid number or type 'skip'";
-  }, 'tel');
-  addBubble(phone.toLowerCase() === 'skip' ? '(skipped)' : phone, 'user');
-  A.phone = phone.toLowerCase() === 'skip' ? '' : phone;
+  setProgress(15);
+  await speak("Which tasks does your team still do manually every week? Select all that apply.", 700);
+  A.q11 = await askMultiChips([
+    {label:'Scheduling',value:'scheduling'},
+    {label:'Invoicing',value:'invoicing'},
+    {label:'Customer follow-up',value:'follow-up'},
+    {label:'Reporting',value:'reporting'},
+    {label:'Data entry',value:'data-entry'},
+    {label:'None — mostly automated',value:'none'},
+  ], 1);
+  addBubble(A.q11.includes('none') ? 'Mostly automated' : A.q11.join(', '), 'user');
+
+  setProgress(16);
+  await speak("How do you currently manage team performance?", 700);
+  A.q12 = await askChips([
+    {label:'No formal process',value:'none'},
+    {label:'Informal check-ins',value:'informal'},
+    {label:'Regular 1-on-1s',value:'one-on-ones'},
+    {label:'KPIs and tracking',value:'kpis'},
+    {label:'Formal reviews + accountability system',value:'formal'},
+  ]);
+  addBubble({'none':'No formal process','informal':'Informal check-ins','one-on-ones':'Regular 1-on-1s','kpis':'KPIs and tracking','formal':'Formal reviews + accountability system'}[A.q12], 'user');
+
+  setProgress(17);
+  await speak("How often do you review your business financials?", 700);
+  A.q13 = await askChips([
+    {label:'Rarely or never',value:'rarely'},
+    {label:'At tax time only',value:'tax-time'},
+    {label:'Quarterly',value:'quarterly'},
+    {label:'Monthly',value:'monthly'},
+    {label:'Weekly',value:'weekly'},
+  ]);
+  addBubble({'rarely':'Rarely or never','tax-time':'At tax time only','quarterly':'Quarterly','monthly':'Monthly','weekly':'Weekly'}[A.q13], 'user');
 
   setProgress(18);
-  await speak("How did you hear about us?", 700);
-  const referral = await askChips(['Google Search','Social Media','Referral','Online ad','Other']);
-  addBubble(referral, 'user');
-  A.referral = referral;
+  await speak("Do you track key business numbers in a dashboard or regular report?", 700);
+  A.q14 = await askChips([
+    {label:'No tracking',value:'none'},
+    {label:'I check occasionally',value:'occasional'},
+    {label:'Basic spreadsheet',value:'spreadsheet'},
+    {label:'Software dashboard',value:'dashboard'},
+    {label:'Real-time automated reporting',value:'automated'},
+  ]);
+  addBubble({'none':'No tracking','occasional':'I check occasionally','spreadsheet':'Basic spreadsheet','dashboard':'Software dashboard','automated':'Real-time automated reporting'}[A.q14], 'user');
 
-  setProgress(22, 'Your business');
+  setProgress(19);
+  await speak("What is your primary goal for the next 12 months?", 700);
+  A.q15 = await askChips([
+    {label:'Survive and stabilize',value:'survive'},
+    {label:'Increase revenue',value:'revenue'},
+    {label:'Reduce owner dependency',value:'owner-dep'},
+    {label:'Build a team',value:'team'},
+    {label:'Automate and scale',value:'automate'},
+    {label:'Exit or sell',value:'exit'},
+  ]);
+  addBubble({'survive':'Survive and stabilize','revenue':'Increase revenue','owner-dep':'Reduce owner dependency','team':'Build a team','automate':'Automate and scale','exit':'Exit or sell'}[A.q15], 'user');
 
-  // Hand off to AI
-  await startAIPhase();
+  /* ── OWNER ECONOMICS ── */
+  setProgress(20, 'Owner economics');
+  await speak(`Last section, ${first}. These questions help us calculate something most business owners have never seen about their own business.`, 900);
+
+  await speak("How much do you pay yourself per month?", 700);
+  A.q16 = await askChips([
+    {label:"$0 — not paying myself",value:'0'},
+    {label:'Under $3,000',value:'lt3k'},
+    {label:'$3,000–$5,000',value:'3k-5k'},
+    {label:'$5,000–$8,000',value:'5k-8k'},
+    {label:'$8,000–$12,000',value:'8k-12k'},
+    {label:'Over $12,000',value:'gt12k'},
+  ]);
+  addBubble({'0':'$0 — not paying myself','lt3k':'Under $3,000','3k-5k':'$3,000–$5,000','5k-8k':'$5,000–$8,000','8k-12k':'$8,000–$12,000','gt12k':'Over $12,000'}[A.q16], 'user');
+
+  setProgress(21);
+  await speak("How many hours per week do you personally work in the business?", 700);
+  A.q17 = await askNumber('hrs/week', 1, 120);
+  addBubble(A.q17 + ' hours/week', 'user');
+
+  setProgress(22);
+  await speak("When do you typically work? Select all that apply.", 700);
+  A.q18 = await askMultiChips([
+    {label:'Regular daytime hours',value:'daytime'},
+    {label:'Early mornings (before 7am)',value:'mornings'},
+    {label:'Evenings (after 6pm)',value:'evenings'},
+    {label:'Weekends',value:'weekends'},
+  ], 1);
+  addBubble(A.q18.join(', '), 'user');
+
+  setProgress(23);
+  await speak("What do your team members earn on average per month?", 700);
+  A.q19 = await askChips([
+    {label:'Under $2,000',value:'lt2k'},
+    {label:'$2,000–$3,000',value:'2k-3k'},
+    {label:'$3,000–$4,000',value:'3k-4k'},
+    {label:'$4,000–$5,000',value:'4k-5k'},
+    {label:'Over $5,000',value:'gt5k'},
+  ]);
+  addBubble({'lt2k':'Under $2,000','2k-3k':'$2,000–$3,000','3k-4k':'$3,000–$4,000','4k-5k':'$4,000–$5,000','gt5k':'Over $5,000'}[A.q19], 'user');
+
+  /* ── FINISH ── */
+  await finishAssessment();
 }
 
-main();
+/* ── FINISH + AI CALL ────────────────────────────────── */
+async function finishAssessment() {
+  clearInput();
+  setProgress(23, 'Building your report');
+  await speak(`Perfect, ${A.contact.name.split(' ')[0]}. I have everything I need. Give me a moment to put your report together.`, 900);
+  showTyping();
+  await sleep(500);
+
+  // Build AI prompt
+  const industryLabels = {'home-services':'Home Services','construction':'Construction','food-bev':'Food & Beverage','retail':'Retail','health-wellness':'Health & Wellness','professional-services':'Professional Services','auto':'Auto Services','real-estate':'Real Estate'};
+  const yearsLabels = {'lt1':'less than 1 year','1-2':'1–2 years','3-5':'3–5 years','6-10':'6–10 years','10plus':'over 10 years'};
+  const sizeLabels = {'solo':'just yourself','2-5':'2–5 people','6-15':'6–15 people','16-30':'16–30 people','30plus':'30+ people'};
+
+  const systemPrompt = `You are a direct, experienced business advisor writing for Nexvora Systems. Generate TWO short pieces of text for a business assessment report. Respond with ONLY valid JSON, no markdown.
+
+Business profile:
+- Owner: ${A.contact.name}
+- Industry: ${industryLabels[A.q1] || A.q1}
+- State: ${A.q2}
+- Years operating: ${yearsLabels[A.q3] || A.q3}
+- Annual revenue: ${A.q4}
+- Team size: ${sizeLabels[A.q5] || A.q5}
+- Repeat customer %: ${A.q7}%
+- Goal: ${A.q15}
+
+JSON format:
+{
+  "benchmark_narrative": "2-3 sentence motivational paragraph about what surviving this long in their industry means. Reference their specific industry, state, and years. Direct and real, not fluffy.",
+  "executive_summary": "3-4 sentence summary of their business situation — what they are doing well, their biggest risk area, and what the single most important priority is right now. Use their actual data. No generic advice."
+}`;
+
+  let aiResult = { benchmark_narrative: '', executive_summary: '' };
+  try {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), 12000);
+    const res = await fetch('/api/chat', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages: [{ role: 'user', content: systemPrompt }], max_tokens: 400 }),
+      signal: controller.signal
+    });
+    clearTimeout(timer);
+    const data = await res.json();
+    const match = (data.reply || '').match(/\{[\s\S]*\}/);
+    if (match) aiResult = JSON.parse(match[0]);
+  } catch(e) { console.warn('AI summary skipped:', e.message); }
+
+  hideTyping();
+
+  // Store everything
+  const payload = { contact: A.contact, q1:A.q1, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
+
+  document.getElementById('progFill').style.width = '100%';
+  document.getElementById('progLabel').textContent = 'Complete';
+  addBubble(`Your report is ready, ${A.contact.name.split(' ')[0]}! Taking you there now...`, 'bot');
+  await sleep(1200);
+  window.location.href = 'report.html';
+}
+
+main().catch(err => {
+  console.error('Assessment flow error:', err);
+  hideTyping();
+  document.getElementById('inputArea').style.display = 'none';
+  const inner = document.getElementById('chatInner');
+  const row = document.createElement('div');
+  row.className = 'brow bot';
+  row.innerHTML = '<div class="avatar">NX</div><div class="bbl bot">Something went wrong. Please refresh the page and try again.</div>';
+  inner.appendChild(row);
+});
 </script>
 </body>
 </html>
