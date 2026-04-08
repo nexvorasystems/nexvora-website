@@ -249,7 +249,7 @@ Requirements:
 - Specific examples, numbers, step-by-step explanations
 - Florida business examples using cities: ${cityList}
 - Mention ${founder} naturally once
-- End with CTA: take free assessment at nexvorasystems.us/assessment.html
+- End with CTA linking to the assessment: use markdown [Start Free Assessment](https://nexvorasystems.us/assessment.html) — NEVER show raw URLs or .html extensions as plain visible text
 - Optimize for Google featured snippets, voice search, AI search tools
 - Primary keyword density 0.8%–1.2%
 - Service: ${service}
@@ -290,7 +290,7 @@ Requirements:
 - Florida cities: ${cityList}
 - Mention ${aiFounder} naturally once
 - Optimize for AI search tools, Google, featured snippets
-- End with CTA to nexvorasystems.us/assessment.html
+- End with CTA linking to the assessment: use markdown [Start Free Assessment](https://nexvorasystems.us/assessment.html) — NEVER show raw URLs or .html extensions as plain visible text
 - For key statistics, data points, or important quotes use markdown blockquote format: > **The data:** your stat here
 - Use blockquotes 2-3 times per article for maximum visual impact`;
 }

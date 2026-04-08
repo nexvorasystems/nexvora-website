@@ -645,7 +645,9 @@ JSON format:
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
   // Encode payload into URL so the report link works from any device (email link)
-  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  // URL-safe base64: replace +/= so email clients don't break the link
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
+    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
   const reportUrl = `https://nexvorasystems.us/report.html?d=${encoded}`;
 
   document.getElementById('progFill').style.width = '100%';

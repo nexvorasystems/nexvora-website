@@ -571,7 +571,11 @@ function loadData(){
   const params=new URLSearchParams(window.location.search);
   const encoded=params.get('d');
   if(encoded){
-    try{return JSON.parse(decodeURIComponent(escape(atob(encoded))));}catch(e){}
+    try{
+      // Handle URL-safe base64 (- → +, _ → /, restore padding)
+      const b64 = encoded.replace(/-/g,'+').replace(/_/g,'/').padEnd(Math.ceil(encoded.length/4)*4,'=');
+      return JSON.parse(decodeURIComponent(escape(atob(b64))));
+    }catch(e){}
   }
   // Fallback to localStorage (same device)
   const raw=localStorage.getItem('nexvora_assessment');

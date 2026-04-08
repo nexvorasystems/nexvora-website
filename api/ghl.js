@@ -200,9 +200,9 @@ module.exports = async function handler(req, res) {
   ${revenueLabel ? `<p style="font-size:15px;color:#4A5568;line-height:1.7;margin:0 0 20px;">Your personalized report includes an owner economics breakdown, area-by-area scoring, and a prioritized action plan based on your ${revenueLabel} business profile.</p>` : ''}
   <a href="${reportUrl}" style="display:inline-block;padding:14px 32px;background:#0D9488;color:#ffffff;font-weight:700;font-size:15px;border-radius:10px;text-decoration:none;margin-bottom:28px;">View Your Report →</a>
   <p style="font-size:13px;color:#718096;line-height:1.6;margin:0 0 4px;">Murat and Alexandr personally review every assessment. If you'd like to talk through your results:</p>
-  <p style="font-size:13px;margin:0 0 24px;"><a href="https://nexvorasystems.us/contact.html" style="color:#0D9488;font-weight:600;">Schedule a free strategy call →</a></p>
+  <p style="font-size:13px;margin:0 0 24px;"><a href="https://api.leadconnectorhq.com/widget/booking/bGQ7oVjEW8HdbcQYTTUF" style="color:#0D9488;font-weight:600;">Schedule a free strategy call →</a></p>
   <hr style="border:none;border-top:1px solid #E2DDD5;margin:0 0 20px;"/>
-  <p style="font-size:12px;color:#A0ADB8;margin:0;">© 2025 Nexvora Systems LLC · Tampa Bay, Florida · <a href="https://nexvorasystems.us/legal/privacy.html" style="color:#A0ADB8;">Privacy Policy</a></p>
+  <p style="font-size:12px;color:#A0ADB8;margin:0;">© 2026 Nexvora Systems LLC · Tampa Bay, Florida · <a href="https://nexvorasystems.us/legal/privacy.html" style="color:#A0ADB8;">Privacy Policy</a></p>
 </div>`;
 
     const emailRes = await fetch(`${GHL_BASE}/conversations/messages`, {
