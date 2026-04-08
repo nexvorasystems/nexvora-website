@@ -647,6 +647,22 @@ JSON format:
   document.getElementById('progFill').style.width = '100%';
   document.getElementById('progLabel').textContent = 'Complete';
   addBubble(`Your report is ready, ${A.contact.name.split(' ')[0]}! Taking you there now...`, 'bot');
+
+  // Send to GHL + email in parallel (non-blocking — don't delay the user)
+  Promise.allSettled([
+    fetch('/api/ghl', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    }).then(r => r.json()).then(d => console.log('[GHL]', d)).catch(e => console.warn('[GHL] failed:', e.message)),
+
+    fetch('/api/email', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to: A.contact.email, name: A.contact.name, bizName: A.contact.company || A.contact.name })
+    }).then(r => r.json()).then(d => console.log('[Email]', d)).catch(e => console.warn('[Email] failed:', e.message))
+  ]);
+
   await sleep(1200);
   window.location.href = 'report.html';
 }
