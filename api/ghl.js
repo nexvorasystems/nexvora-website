@@ -220,9 +220,28 @@ module.exports = async function handler(req, res) {
     if (!emailRes.ok) {
       const err = await emailRes.json().catch(() => ({}));
       console.warn('[GHL] Email send failed:', emailRes.status, JSON.stringify(err));
-      // Non-fatal — contact + opportunity still created
     } else {
       console.log('[GHL] Email sent successfully');
+    }
+
+    // 6. Send SMS via GHL (only if phone number provided)
+    if (d.contact.phone) {
+      const smsBody = `Hi ${first}! Your Nexvora Business Health Report is ready. View it here: ${reportUrl}\n\nQuestions? Book a free strategy call: https://api.leadconnectorhq.com/widget/booking/bGQ7oVjEW8HdbcQYTTUF`;
+      const smsRes = await fetch(`${GHL_BASE}/conversations/messages`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          type: 'SMS',
+          contactId,
+          message: smsBody
+        })
+      });
+      if (!smsRes.ok) {
+        const err = await smsRes.json().catch(() => ({}));
+        console.warn('[GHL] SMS send failed:', smsRes.status, JSON.stringify(err));
+      } else {
+        console.log('[GHL] SMS sent successfully');
+      }
     }
 
     return res.json({ success: true, contactId });
