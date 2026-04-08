@@ -82,13 +82,24 @@ function makeSlug(title) {
 
 // ── HTML BUILDER ──────────────────────────────────────────
 function buildHTML(meta, bodyMarkdown) {
+  // Strip SEO metadata block that appears after article (keywords, social, linkedin, etc.)
+  let cleaned = bodyMarkdown
+    .replace(/\n+---+\n[\s\S]*$/m, '')                          // strip after ---
+    .replace(/\n+\*?\*?10 SEO keywords[\s\S]*$/im, '')          // strip SEO block
+    .replace(/\n+\*?\*?SEO keywords[\s\S]*$/im, '')
+    .replace(/\n+\*?\*?Social media excerpt[\s\S]*$/im, '')
+    .replace(/\n+\*?\*?LinkedIn post[\s\S]*$/im, '')
+    .replace(/\n+\*?\*?Suggested social[\s\S]*$/im, '');
+
   // Clean markdown → HTML
-  let html = bodyMarkdown
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')  // bold first
+  let html = cleaned
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')           // bold
+    .replace(/\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>') // links
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>') // relative links
     .replace(/^# (.+)$/gm, '<h1>$1</h1>')
     .replace(/^## (.+)$/gm, '<h2>$1</h2>')
     .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')  // blockquotes
+    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')
     .replace(/^\* (.+)$/gm, '<li>$1</li>')
     .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
     .replace(/(<li>[\s\S]*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
@@ -113,6 +124,9 @@ function buildHTML(meta, bodyMarkdown) {
 <meta property="og:description" content="${esc(meta.metaDescription)}"/>
 <meta property="og:type" content="article"/>
 <meta property="og:url" content="https://nexvorasystems.us/posts/${meta.slug}.html"/>
+${meta.primaryKeyword ? `<meta name="keywords" content="${esc(meta.primaryKeyword)}${meta.secondaryKeywords ? ', ' + esc(meta.secondaryKeywords) : ''}"/>` : ''}
+<meta name="author" content="${esc(meta.author)}"/>
+<meta name="article:published_time" content="${meta.date}"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
 :root{--bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;--text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;--teal:#0D9488;--navy:#0F2B4C;--nav-h:76px;}
@@ -125,7 +139,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .post-tag{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--teal);}
 .post-date{font-size:12px;color:var(--dim);}
 .post-read{font-size:12px;color:var(--dim);}
-.post-author{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:28px;}
+.post-author{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted);font-weight:600;margin-bottom:28px;}
+.post-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,#0D9488,#0F2B4C);display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;color:#fff;flex-shrink:0;letter-spacing:0.5px;}
 h1{font-size:clamp(24px,4vw,36px);font-weight:800;line-height:1.25;margin-bottom:12px;color:var(--text);}
 h2{font-size:20px;font-weight:700;margin:36px 0 14px;color:var(--text);}
 h3{font-size:16px;font-weight:700;margin:24px 0 10px;color:var(--text);}
@@ -157,7 +172,10 @@ blockquote strong{color:var(--navy);}
     <span class="post-read">${meta.readTime}</span>
   </div>
   <h1>${esc(meta.title)}</h1>
-  <div class="post-author">By ${esc(meta.author)} · Nexvora Systems</div>
+  <div class="post-author">
+    <div class="post-avatar">${meta.author.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
+    <span>By <strong>${esc(meta.author)}</strong> · Nexvora Systems</span>
+  </div>
   <div class="post-body">
     ${html}
   </div>
@@ -176,13 +194,15 @@ function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;'
 // ── PARSE META FROM AI OUTPUT ─────────────────────────────
 function parseMeta(raw) {
   const get = (key) => { const m = raw.match(new RegExp(key + ':\\s*(.+)')); return m ? m[1].trim() : ''; };
+  const getBlock = (key) => { const m = raw.match(new RegExp(key + ':?\\s*([^\\n]+(?:\\n(?![A-Z][a-z])[^\\n]+)*)')); return m ? m[1].trim() : ''; };
   return {
     title: get('Title'),
     metaTitle: get('Meta Title') || get('Title'),
     metaDescription: get('Meta Description'),
     slug: get('Slug') || makeSlug(get('Title')),
     primaryKeyword: get('Primary Keyword'),
-    readTime: get('Estimated Reading Time') || '8 min read',
+    secondaryKeywords: get('Secondary Keywords'),
+    readTime: (get('Estimated Reading Time') || '8 min read').replace(/\*+/g, '').trim(),
   };
 }
 
