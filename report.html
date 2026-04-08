@@ -563,33 +563,31 @@ function startCountdown(){
 /* ═══════════════════════════════════════════════════════
    SEND EMAIL
 ═══════════════════════════════════════════════════════ */
-async function sendEmail(d){
-  try{
-    await fetch('/api/email',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({to:d.contact.email,name:d.contact.name,bizName:d.contact.company||d.contact.name+"'s Business"})
-    });
-  }catch(e){console.warn('Email send failed:',e);}
-}
-
 /* ═══════════════════════════════════════════════════════
    MAIN RENDER
 ═══════════════════════════════════════════════════════ */
-function main(){
+function loadData(){
+  // Try URL param first (works from email link on any device)
+  const params=new URLSearchParams(window.location.search);
+  const encoded=params.get('d');
+  if(encoded){
+    try{return JSON.parse(decodeURIComponent(escape(atob(encoded))));}catch(e){}
+  }
+  // Fallback to localStorage (same device)
   const raw=localStorage.getItem('nexvora_assessment');
-  if(!raw){
+  if(raw){try{return JSON.parse(raw);}catch(e){}}
+  return null;
+}
+
+function main(){
+  const d=loadData();
+  if(!d){
     document.getElementById('reportWrap').innerHTML=`
       <div style="text-align:center;padding:80px 20px;">
         <h2 style="font-size:20px;font-weight:700;margin-bottom:12px;">No assessment found</h2>
         <p style="color:#718096;margin-bottom:24px;">Please complete the assessment first to see your report.</p>
         <a href="assessment.html" style="padding:12px 28px;background:#0D9488;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;">Start Assessment</a>
       </div>`;
-    return;
-  }
-  let d;
-  try{d=JSON.parse(raw);}catch(e){
-    document.getElementById('reportWrap').innerHTML=`<div style="text-align:center;padding:80px 20px;"><h2 style="font-size:20px;font-weight:700;margin-bottom:12px;">Report data is corrupted</h2><p style="color:#718096;margin-bottom:24px;">Something went wrong loading your results. Please retake the assessment.</p><a href="assessment.html" style="padding:12px 28px;background:#0D9488;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;">Retake Assessment</a></div>`;
     return;
   }
   const scores=computeScores(d);
@@ -609,13 +607,6 @@ function main(){
       setTimeout(()=>bar.style.width=w,100);
     });
   },300);
-
-  // Send email
-  if(!d.email_sent){
-    sendEmail(d);
-    d.email_sent=true;
-    localStorage.setItem('nexvora_assessment',JSON.stringify(d));
-  }
 }
 
 main();

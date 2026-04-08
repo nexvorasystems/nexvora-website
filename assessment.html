@@ -644,19 +644,23 @@ JSON format:
   const payload = { contact: A.contact, q1:A.q1, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
+  // Encode payload into URL so the report link works from any device (email link)
+  const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  const reportUrl = `https://nexvorasystems.us/report.html?d=${encoded}`;
+
   document.getElementById('progFill').style.width = '100%';
   document.getElementById('progLabel').textContent = 'Complete';
   addBubble(`Your report is ready, ${A.contact.name.split(' ')[0]}! Taking you there now...`, 'bot');
 
-  // Push to GHL — workflow inside GHL sends the confirmation email
+  // Push to GHL — GHL sends the confirmation email with the personalized report link
   fetch('/api/ghl', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload)
+    body: JSON.stringify({ ...payload, reportUrl })
   }).then(r => r.json()).then(d => console.log('[GHL]', d)).catch(e => console.warn('[GHL] failed:', e.message));
 
   await sleep(1200);
-  window.location.href = 'report.html';
+  window.location.href = `report.html?d=${encoded}`;
 }
 
 main().catch(err => {
