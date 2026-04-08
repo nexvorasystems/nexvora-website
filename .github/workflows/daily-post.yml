@@ -1,0 +1,35 @@
+name: Daily Blog Post Generator
+
+on:
+  schedule:
+    # 6:00 AM PST = 14:00 UTC
+    - cron: '0 14 * * *'
+  workflow_dispatch: # allow manual trigger from GitHub UI
+
+jobs:
+  generate-post:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate post(s)
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node scripts/generate-post.js
+
+      - name: Commit and push new post(s)
+        run: |
+          git config user.name "Nexvora Content Bot"
+          git config user.email "bot@nexvorasystems.us"
+          git add posts/ blog.html
+          git diff --staged --quiet || git commit -m "content: auto-generate daily post $(date +'%Y-%m-%d')"
+          git push
