@@ -89,7 +89,9 @@ function buildHTML(meta, bodyMarkdown) {
     .replace(/\n+\*?\*?SEO keywords[\s\S]*$/im, '')
     .replace(/\n+\*?\*?Social media excerpt[\s\S]*$/im, '')
     .replace(/\n+\*?\*?LinkedIn post[\s\S]*$/im, '')
-    .replace(/\n+\*?\*?Suggested social[\s\S]*$/im, '');
+    .replace(/\n+\*?\*?Suggested social[\s\S]*$/im, '')
+    // Remove any paragraph/line with a raw nexvorasystems.us URL — template CTA handles this
+    .split('\n').filter(line => !/nexvorasystems\.us\/assessment/i.test(line) || line.includes('[')).join('\n');
 
   // Clean markdown → HTML
   let html = cleaned
