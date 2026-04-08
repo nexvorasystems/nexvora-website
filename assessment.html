@@ -648,7 +648,7 @@ JSON format:
   // URL-safe base64: replace +/= so email clients don't break the link
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
     .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
-  const reportUrl = `https://nexvorasystems.us/report.html?d=${encoded}`;
+  const reportUrl = `${window.location.origin}/report.html?d=${encoded}`;
 
   document.getElementById('progFill').style.width = '100%';
   document.getElementById('progLabel').textContent = 'Complete';

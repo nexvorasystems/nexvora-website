@@ -1,5 +1,7 @@
 const GHL_BASE = 'https://services.leadconnectorhq.com';
 const GHL_VERSION = '2021-07-28';
+// Use env var once domain is pointed to Vercel; falls back to Vercel URL
+const SITE_URL = (process.env.SITE_URL || 'https://nexvora-website.vercel.app').replace(/\/$/, '');
 
 function ghlHeaders(apiKey) {
   return {
@@ -186,7 +188,7 @@ module.exports = async function handler(req, res) {
     }
 
     // 5. Send email via GHL Conversations API
-    const reportUrl = d.reportUrl || 'https://nexvorasystems.us/report.html';
+    const reportUrl = d.reportUrl || `${SITE_URL}/report.html`;
     const first = firstName || d.contact.name || 'there';
     const bizLabel = d.contact.company || d.contact.name || 'your business';
     const revenueMap = { 'under100k':'Under $100K','100-250k':'$100K–$250K','250-500k':'$250K–$500K','500k-1m':'$500K–$1M','1m-3m':'$1M–$3M','3m-10m':'$3M–$10M','10mplus':'$10M+' };
@@ -194,7 +196,7 @@ module.exports = async function handler(req, res) {
 
     const emailHtml = `
 <div style="font-family:-apple-system,Helvetica,sans-serif;max-width:580px;margin:0 auto;padding:32px 20px;color:#1A1A2E;background:#ffffff;">
-  <img src="https://nexvorasystems.us/assets/Logo no background.png" alt="Nexvora Systems" style="height:40px;margin-bottom:28px;"/>
+  <img src="${SITE_URL}/assets/Logo no background.png" alt="Nexvora Systems" style="height:40px;margin-bottom:28px;"/>
   <h1 style="font-size:22px;font-weight:800;margin:0 0 12px;">Your Business Health Report is ready, ${first}.</h1>
   <p style="font-size:15px;color:#4A5568;line-height:1.7;margin:0 0 8px;">Thank you for completing the Nexvora assessment for <strong>${bizLabel}</strong>.</p>
   ${revenueLabel ? `<p style="font-size:15px;color:#4A5568;line-height:1.7;margin:0 0 20px;">Your personalized report includes an owner economics breakdown, area-by-area scoring, and a prioritized action plan based on your ${revenueLabel} business profile.</p>` : ''}
@@ -202,7 +204,7 @@ module.exports = async function handler(req, res) {
   <p style="font-size:13px;color:#718096;line-height:1.6;margin:0 0 4px;">Murat and Alexandr personally review every assessment. If you'd like to talk through your results:</p>
   <p style="font-size:13px;margin:0 0 24px;"><a href="https://api.leadconnectorhq.com/widget/booking/bGQ7oVjEW8HdbcQYTTUF" style="color:#0D9488;font-weight:600;">Schedule a free strategy call →</a></p>
   <hr style="border:none;border-top:1px solid #E2DDD5;margin:0 0 20px;"/>
-  <p style="font-size:12px;color:#A0ADB8;margin:0;">© 2026 Nexvora Systems LLC · Tampa Bay, Florida · <a href="https://nexvorasystems.us/legal/privacy.html" style="color:#A0ADB8;">Privacy Policy</a></p>
+  <p style="font-size:12px;color:#A0ADB8;margin:0;">© 2026 Nexvora Systems LLC · Tampa Bay, Florida · <a href="${SITE_URL}/legal/privacy.html" style="color:#A0ADB8;">Privacy Policy</a></p>
 </div>`;
 
     const emailRes = await fetch(`${GHL_BASE}/conversations/messages`, {
