@@ -264,6 +264,19 @@ Requirements:
 - End with CTA to nexvorasystems.us/assessment.html`;
 }
 
+// ── SERVICE → FILTER CATEGORY MAP ────────────────────────
+const SERVICE_CATEGORY = {
+  'Operations': 'operations',
+  'AI & Automation': 'ai-automation',
+  'Reporting & Analytics': 'reporting',
+  'Sales Systems': 'sales',
+  'Marketing': 'marketing',
+  'Customer Experience': 'revenue',
+  'Team & HR': 'team',
+  'Financial Efficiency': 'finance',
+  'Growth & Scaling': 'growth',
+};
+
 // ── UPDATE BLOG INDEX ─────────────────────────────────────
 function updateBlogIndex(entries) {
   const blogPath = path.join(__dirname, '..', 'blog.html');
@@ -272,12 +285,18 @@ function updateBlogIndex(entries) {
   const insertMark = '<!-- POSTS_START -->';
   if (!blog.includes(insertMark)) return;
 
-  const newCards = entries.map(e => `
-    <a href="posts/${e.slug}.html" class="post-card">
-      <div class="post-card-tag">${esc(e.service)}</div>
-      <h3 class="post-card-title">${esc(e.title)}</h3>
-      <div class="post-card-meta">${e.date} · ${e.readTime}</div>
-    </a>`).join('\n');
+  const newCards = entries.map(e => {
+    const category = SERVICE_CATEGORY[e.service] || 'operations';
+    return `
+      <a href="posts/${e.slug}.html" class="blog-card" data-category="${category}">
+        <div class="blog-card-img" style="background:linear-gradient(135deg,rgba(13,148,136,0.12),rgba(15,43,76,0.08));"></div>
+        <div class="blog-card-body">
+          <p class="blog-card-cat">${esc(e.service)}</p>
+          <p class="blog-card-title">${esc(e.title)}</p>
+          <p class="blog-card-meta">${e.date} · ${e.readTime}</p>
+        </div>
+      </a>`;
+  }).join('\n');
 
   blog = blog.replace(insertMark, insertMark + '\n' + newCards);
   fs.writeFileSync(blogPath, blog);

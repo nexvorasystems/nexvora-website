@@ -158,12 +158,16 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
 <div class="section">
   <div class="container">
     <div class="filter-bar">
-      <button class="filter-btn active">All</button>
-      <button class="filter-btn">Operations</button>
-      <button class="filter-btn">Revenue</button>
-      <button class="filter-btn">Team</button>
-      <button class="filter-btn">Technology</button>
-      <button class="filter-btn">Finance</button>
+      <button class="filter-btn active" data-filter="all">All</button>
+      <button class="filter-btn" data-filter="operations">Operations</button>
+      <button class="filter-btn" data-filter="ai-automation">AI &amp; Automation</button>
+      <button class="filter-btn" data-filter="sales">Sales</button>
+      <button class="filter-btn" data-filter="marketing">Marketing</button>
+      <button class="filter-btn" data-filter="team">Team &amp; HR</button>
+      <button class="filter-btn" data-filter="finance">Finance</button>
+      <button class="filter-btn" data-filter="revenue">Revenue</button>
+      <button class="filter-btn" data-filter="reporting">Reporting</button>
+      <button class="filter-btn" data-filter="growth">Growth</button>
     </div>
 
     <div class="blog-grid">
@@ -274,6 +278,14 @@ document.querySelectorAll('.filter-btn').forEach(btn => {
   btn.addEventListener('click', function() {
     document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
     this.classList.add('active');
+    const filter = this.dataset.filter;
+    document.querySelectorAll('.blog-grid [data-category]').forEach(card => {
+      if (filter === 'all') {
+        card.style.display = '';
+      } else {
+        card.style.display = card.dataset.category === filter ? '' : 'none';
+      }
+    });
   });
 });
 document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});
