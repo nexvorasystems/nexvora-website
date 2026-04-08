@@ -556,22 +556,30 @@ async function main() {
   // Per-slot hours
   const slotHrs = {};
   for (const slot of A.q18) {
-    await speak(`How many hours per week do you work during ${slotNarrative[slot]}?`, 600);
-    slotHrs[slot] = await askNumber('hrs/week', 0, 60);
-    addBubble(slotHrs[slot] + ' hrs', 'user');
+    if (slot === 'mornings') {
+      await speak("On average, how many hours per day do you work in early mornings (before 9am)?", 600);
+      slotHrs[slot] = await askNumber('hrs/day', 0, 6);
+      addBubble(slotHrs[slot] + ' hrs/day', 'user');
+    } else if (slot === 'evenings') {
+      await speak("On average, how many hours per day do you work in evenings (after 5:30pm)?", 600);
+      slotHrs[slot] = await askNumber('hrs/day', 0, 6);
+      addBubble(slotHrs[slot] + ' hrs/day', 'user');
+    } else if (slot === 'weekends') {
+      await speak("How many total hours do you work on weekends?", 600);
+      slotHrs[slot] = await askNumber('hrs/week', 0, 30);
+      addBubble(slotHrs[slot] + ' hrs/week', 'user');
+    }
   }
   A.q17_slots = slotHrs;
+  A.q17_regular = 40; // 8 hrs/day × 5 days, auto
 
   setProgress(22);
-  await speak("How many hours do you work on regular weekdays (Monday–Friday, during standard business hours)?", 700);
-  const q17Regular = await askNumber('hrs/week', 0, 80);
-  addBubble(q17Regular + ' hrs on weekdays', 'user');
-  A.q17_regular = q17Regular;
-
-  // Auto-compute total hours
-  const slotTotal = Object.values(slotHrs).reduce((s,h)=>s+(Number(h)||0),0);
-  A.q17 = q17Regular + slotTotal;
-  await speak(`Got it — that's ${A.q17} hours per week total.`, 500);
+  // Auto-compute total: regular 40 + mornings/evenings × 5 days + weekends as-is
+  const morningWeekly = (slotHrs.mornings || 0) * 5;
+  const eveningWeekly = (slotHrs.evenings || 0) * 5;
+  const weekendWeekly = slotHrs.weekends || 0;
+  A.q17 = 40 + morningWeekly + eveningWeekly + weekendWeekly;
+  await speak(`Got it — that works out to about ${A.q17} hours per week.`, 500);
 
   setProgress(23);
   await speak("What do your team members earn on average per month? Enter the approximate amount.", 700);

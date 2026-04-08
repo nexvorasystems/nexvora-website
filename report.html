@@ -398,8 +398,10 @@ function renderOwnerEcon(d,econ){
   let slotDetail='';
   const slots=d.q17_slots||{};
   const parts=[];
-  if(d.q17_regular>0) parts.push(`${d.q17_regular} hrs weekdays`);
-  Object.entries(slots).filter(([,h])=>h>0).forEach(([s,h])=>parts.push(`${h} hrs ${timeSlots[s]||s}`));
+  parts.push(`40 hrs weekdays`);
+  if(slots.mornings>0) parts.push(`${slots.mornings} hrs/day mornings`);
+  if(slots.evenings>0) parts.push(`${slots.evenings} hrs/day evenings`);
+  if(slots.weekends>0) parts.push(`${slots.weekends} hrs weekends`);
   if(parts.length){slotDetail=`<br/><span style="font-size:11px;color:var(--muted);">${parts.join(' · ')}</span>`;}
 
   let comparisonHtml='';
