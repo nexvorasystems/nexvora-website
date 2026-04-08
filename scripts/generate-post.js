@@ -82,18 +82,24 @@ function makeSlug(title) {
 
 // ── HTML BUILDER ──────────────────────────────────────────
 function buildHTML(meta, bodyMarkdown) {
-  // Convert basic markdown to HTML
+  // Clean markdown → HTML
   let html = bodyMarkdown
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')  // bold first
     .replace(/^# (.+)$/gm, '<h1>$1</h1>')
     .replace(/^## (.+)$/gm, '<h2>$1</h2>')
     .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^\*\*(.+)\*\*$/gm, '<strong>$1</strong>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/^> (.+)$/gm, '<blockquote>$1</blockquote>')  // blockquotes
     .replace(/^\* (.+)$/gm, '<li>$1</li>')
     .replace(/^\d+\. (.+)$/gm, '<li>$1</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/^(?!<[hul]|<\/[hul]|<li|<\/li)(.+)$/gm, (m) => m.startsWith('<') ? m : `<p>${m}</p>`);
+    .replace(/(<li>[\s\S]*?<\/li>\n?)+/g, m => `<ul>${m}</ul>`)
+    .split('\n\n')
+    .map(block => {
+      block = block.trim();
+      if (!block) return '';
+      if (block.startsWith('<')) return block;
+      return `<p>${block}</p>`;
+    })
+    .join('\n');
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -115,24 +121,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;margin-left:auto;transition:color .15s;}
 .nav-back:hover{color:var(--teal);}
 .post-wrap{max-width:780px;margin:0 auto;padding:calc(var(--nav-h) + 48px) 24px 80px;}
-.post-meta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:32px;}
+.post-meta{display:flex;gap:14px;flex-wrap:wrap;align-items:center;margin-bottom:8px;}
 .post-tag{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--teal);}
 .post-date{font-size:12px;color:var(--dim);}
 .post-read{font-size:12px;color:var(--dim);}
-h1{font-size:clamp(24px,4vw,36px);font-weight:800;line-height:1.25;margin-bottom:20px;color:var(--text);}
+.post-author{font-size:13px;color:var(--muted);font-weight:600;margin-bottom:28px;}
+h1{font-size:clamp(24px,4vw,36px);font-weight:800;line-height:1.25;margin-bottom:12px;color:var(--text);}
 h2{font-size:20px;font-weight:700;margin:36px 0 14px;color:var(--text);}
 h3{font-size:16px;font-weight:700;margin:24px 0 10px;color:var(--text);}
 p{font-size:16px;line-height:1.8;color:var(--muted);margin-bottom:18px;}
 ul,ol{padding-left:22px;margin-bottom:18px;}
 li{font-size:16px;line-height:1.8;color:var(--muted);margin-bottom:6px;}
 strong{color:var(--text);}
+blockquote{background:var(--bg-surface);border-left:4px solid var(--teal);border-radius:0 10px 10px 0;padding:16px 20px;margin:24px 0;font-size:15px;color:var(--text);line-height:1.7;}
+blockquote strong{color:var(--navy);}
 .post-cta{background:var(--navy);border-radius:16px;padding:36px 32px;text-align:center;color:#fff;margin-top:48px;}
 .post-cta h2{color:#fff;margin-top:0;}
 .post-cta p{color:rgba(255,255,255,0.65);}
 .post-cta a{display:inline-block;margin-top:18px;padding:14px 32px;background:var(--teal);color:#fff;font-weight:700;font-size:15px;border-radius:11px;text-decoration:none;}
-.faq-block{background:var(--bg-surface);border-radius:12px;padding:20px 24px;margin-bottom:14px;}
-.faq-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;}
-.faq-a{font-size:14px;color:var(--muted);line-height:1.7;}
 @media(max-width:640px){.post-wrap{padding-left:16px;padding-right:16px;}}
 </style>
 </head>
@@ -151,6 +157,7 @@ strong{color:var(--text);}
     <span class="post-read">${meta.readTime}</span>
   </div>
   <h1>${esc(meta.title)}</h1>
+  <div class="post-author">By ${esc(meta.author)} · Nexvora Systems</div>
   <div class="post-body">
     ${html}
   </div>
@@ -225,7 +232,9 @@ Requirements:
 - End with CTA: take free assessment at nexvorasystems.us/assessment.html
 - Optimize for Google featured snippets, voice search, AI search tools
 - Primary keyword density 0.8%–1.2%
-- Service: ${service}`;
+- Service: ${service}
+- For key statistics, data points, or important quotes use markdown blockquote format: > **The data:** your stat here
+- Use blockquotes 2-3 times per article for maximum visual impact`;
 }
 
 function buildAiPrompt() {
@@ -261,7 +270,9 @@ Requirements:
 - Florida cities: ${cityList}
 - Mention ${aiFounder} naturally once
 - Optimize for AI search tools, Google, featured snippets
-- End with CTA to nexvorasystems.us/assessment.html`;
+- End with CTA to nexvorasystems.us/assessment.html
+- For key statistics, data points, or important quotes use markdown blockquote format: > **The data:** your stat here
+- Use blockquotes 2-3 times per article for maximum visual impact`;
 }
 
 // ── SERVICE → FILTER CATEGORY MAP ────────────────────────
@@ -304,11 +315,12 @@ function updateBlogIndex(entries) {
 }
 
 // ── WRITE POST FILE ───────────────────────────────────────
-function writePost(meta, rawContent, serviceLabel) {
+function writePost(meta, rawContent, serviceLabel, authorName) {
   // Extract body (everything after the last metadata line)
   const bodyStart = rawContent.indexOf('## ');
   const body = bodyStart >= 0 ? rawContent.slice(bodyStart) : rawContent;
   meta.service = serviceLabel;
+  meta.author = authorName || founder;
   meta.date = new Date(dateStr).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
   const html = buildHTML(meta, body);
   const filename = meta.slug + '.html';
@@ -327,7 +339,7 @@ function writePost(meta, rawContent, serviceLabel) {
   const mainRaw = await callOpenAI(buildMainPrompt());
   const mainMeta = parseMeta(mainRaw);
   if (mainMeta.title) {
-    writePost(mainMeta, mainRaw, service);
+    writePost(mainMeta, mainRaw, service, founder);
     written.push(mainMeta);
   } else {
     console.error('Could not parse main post meta. Raw output saved for debug.');
@@ -337,10 +349,11 @@ function writePost(meta, rawContent, serviceLabel) {
   // AI bonus post on Mon/Wed/Fri
   if (isAiDay) {
     console.log('Generating AI bonus post...');
+    const aiFounder = dayOfWeek === 3 ? wednesdayFounder : founder;
     const aiRaw = await callOpenAI(buildAiPrompt());
     const aiMeta = parseMeta(aiRaw);
     if (aiMeta.title) {
-      writePost(aiMeta, aiRaw, 'AI & Automation');
+      writePost(aiMeta, aiRaw, 'AI & Automation', aiFounder);
       written.push(aiMeta);
     } else {
       console.error('Could not parse AI post meta.');
