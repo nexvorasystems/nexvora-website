@@ -5,5 +5,8 @@
       "memory": 256,
       "maxDuration": 30
     }
-  }
+  },
+  "rewrites": [
+    { "source": "/r/:id", "destination": "/report.html?id=:id" }
+  ]
 }
