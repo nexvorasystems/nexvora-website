@@ -602,15 +602,17 @@ async function main() {
   }
 
   setProgress(16);
-  await speak("How do you currently manage team performance?", 700);
-  A.q12 = await askChips([
+  await speak("How do you currently manage team performance? Select all that apply.", 700);
+  A.q12 = await askMultiChips([
     {label:'No formal process',value:'none'},
     {label:'Informal check-ins',value:'informal'},
     {label:'Regular 1-on-1s',value:'one-on-ones'},
-    {label:'KPIs and tracking',value:'kpis'},
-    {label:'Formal reviews + accountability system',value:'formal'},
-  ]);
-  addBubble({'none':'No formal process','informal':'Informal check-ins','one-on-ones':'Regular 1-on-1s','kpis':'KPIs and tracking','formal':'Formal reviews + accountability system'}[A.q12], 'user');
+    {label:'KPIs and performance tracking',value:'kpis'},
+    {label:'Written scorecards or accountability system',value:'formal'},
+    {label:'Formal performance reviews (quarterly/annual)',value:'reviews'},
+  ], 1);
+  const q12Labels = {'none':'No formal process','informal':'Informal check-ins','one-on-ones':'Regular 1-on-1s','kpis':'KPIs and tracking','formal':'Written scorecards','reviews':'Formal reviews'};
+  addBubble(A.q12.map(v => q12Labels[v] || v).join(', '), 'user');
 
   setProgress(17);
   await speak("How often do you review your business financials?", 700);
