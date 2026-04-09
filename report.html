@@ -560,6 +560,22 @@ function renderAreaAnalysis(d,scores,aiSummary){
         <div class="fix-paths">${pathsHtml}</div>
       </div>`;
     }
+    if(key==='sales' && d.q8==='nothing'){
+      const b=BENCHMARKS[d.q1]||BENCHMARKS['professional-services'];
+      const sizeKey=SIZE_KEY[d.q5]||'solo';
+      const avgRev=b.revenue[sizeKey]||b.revenue['solo'];
+      const lostLow=Math.round(avgRev*0.25/1000)*1000;
+      const lostHigh=Math.round(avgRev*0.40/1000)*1000;
+      const lostCallout=`<div style="border:1px solid #E53E3E;border-radius:10px;padding:16px 20px;margin-top:12px;background:rgba(229,62,62,0.04);">
+        <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#E53E3E;margin-bottom:8px;">REVENUE LEAKING RIGHT NOW</div>
+        <p style="font-size:14px;color:#4A5568;line-height:1.7;margin:0 0 8px;">For a ${esc(b.label)} business your size, the industry average is <strong>25–40% of potential revenue lost to unconverted leads.</strong></p>
+        <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:10px;">
+          <div><div style="font-size:22px;font-weight:800;color:#E53E3E;">${fmt(lostLow)}–${fmt(lostHigh)}</div><div style="font-size:12px;color:#718096;">Estimated annual revenue lost to cold leads</div></div>
+        </div>
+        <p style="font-size:14px;color:#4A5568;line-height:1.7;margin:0;">Every person who asked about your service and went quiet is revenue you already paid to generate. A 3-message automated follow-up sequence (day 1, day 3, day 7) costs almost nothing to set up and recovers 20–30% of those leads.</p>
+      </div>`;
+      areasHtml+=lostCallout;
+    }
     if(key==='customer_experience' && typeof d.q7==='number'){
       const pct=d.q7;
       const avg=38;
@@ -753,7 +769,7 @@ function renderCTA(d){
     <h2>Ready to change<br><strong>the math?</strong></h2>
     <div class="cta-sub">Murat or Alexandr will personally review this report with you and show you exactly where to start, ${esc(first)}.</div>
     ${offerHtml}
-    <a href="contact.html" class="cta-btn-primary">Schedule Your ${offerActive?'Complimentary':'Strategy'} Call</a>
+    <a href="https://api.leadconnectorhq.com/widget/booking/bGQ7oVjEW8HdbcQYTTUF" target="_blank" class="cta-btn-primary">Schedule Your ${offerActive?'Complimentary':'Strategy'} Call</a>
     <div class="cta-actions">
       <button class="cta-btn-secondary" id="pdfBtn" onclick="downloadPDF(this)">Download PDF</button>
       <a href="index.html" class="cta-btn-secondary">Back to Home</a>
