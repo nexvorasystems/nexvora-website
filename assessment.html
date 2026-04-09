@@ -854,11 +854,15 @@ JSON format:
   } catch(e) { console.warn('[save-report] failed, using base64 URL:', e.message); }
 
   // Push to GHL with the short URL (or base64 fallback)
-  fetch('/api/ghl', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...payload, reportUrl: shortUrl })
-  }).then(r => r.json()).then(d => console.log('[GHL]', d)).catch(e => console.warn('[GHL] failed:', e.message));
+  try {
+    const ghlRes = await fetch('/api/ghl', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...payload, reportUrl: shortUrl })
+    });
+    const ghlData = await ghlRes.json();
+    console.log('[GHL]', ghlData);
+  } catch(e) { console.warn('[GHL] failed:', e.message); }
 
   await sleep(1200);
   window.location.href = `report.html?d=${encoded}`;
