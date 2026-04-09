@@ -20,16 +20,26 @@ const FAQ_CSS = `.faq-item{border:1px solid var(--border);border-radius:12px;pad
 .faq-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;}
 .faq-a{font-size:15px;color:var(--muted);line-height:1.7;margin:0;}`;
 
-const IMAGE_PROMPTS = {
-  'Operations':            'Professional photo of a small business owner reviewing workflow checklists and process charts in a modern Florida office, natural lighting, realistic photography, no text',
-  'AI & Automation':       'Business owner at a clean desk reviewing AI automation dashboard on laptop, modern Florida office with natural light, realistic photography, no text overlays',
-  'Reporting & Analytics': 'Entrepreneur analyzing business performance charts on multiple screens in a professional Florida office, natural lighting, realistic photography, no text',
-  'Sales Systems':         'Small business sales team reviewing customer pipeline on a screen in a modern Florida office, professional photography, natural light, no text',
-  'Financial Efficiency':  'Business owner reviewing financial statements and cash flow reports at a clean desk in a professional Florida office, realistic photography, no text',
-  'Team & HR':             'Small business team in collaborative meeting in a modern Florida office, diverse professionals, natural light, realistic photography, no text',
+// Per-slug image prompts: diverse person + topic + neutral professional attire.
+// Distribution across all 13 posts: 6M/7F, ~3-4 each of white/Asian/Black/Latino.
+// No religious symbols, no political symbols, no revealing clothing.
+const SLUG_PROMPTS = {
+  'operations-consulting-tampa-bay':          'Professional photo of a white male business consultant in neutral business casual attire reviewing workflow charts on a laptop at a modern Florida office desk, natural lighting, realistic photography, no religious symbols, no text on screen',
+  'sales-systems-southwest-florida':          'Professional photo of a Black female sales professional in smart business casual reviewing a sales pipeline on a laptop screen in a bright modern Florida office, natural lighting, realistic photography, no religious symbols, no text on screen',
+  '** reporting-analytics-southwest-florida': 'Professional photo of an Asian male business analyst in smart casual attire studying analytics charts on a monitor in a modern Florida office, natural lighting, realistic photography, no religious symbols, no text on screen',
+  'reporting-analytics-southwest-florida':    'Professional photo of an Asian female data analyst in business casual attire reviewing performance dashboards on dual monitors in a modern Florida office, natural lighting, realistic photography, no religious symbols, no text on screen',
+  'reporting-analytics-sw-florida-business':  'Professional photo of a white male entrepreneur in business casual studying reports on a laptop at a clean modern Florida office desk, natural lighting, realistic photography, no religious symbols, no text on screen',
+  'ai-business-growth-florida-ai':            'Professional photo of a Black female tech consultant in smart business casual exploring an AI software dashboard on a laptop in a modern Florida office, natural lighting, realistic photography, no religious symbols, no text on screen',
+  'ai-business-growth-southwest-florida-ai':  'Professional photo of a white female business owner in professional attire working on a laptop with a modern AI dashboard in a bright Florida office, natural light, realistic photography, no religious symbols, no text on screen',
+  'ai-business-southwest-florida-ai':         'Professional photo of a Latino male entrepreneur in business casual attire working on an automation tool on a laptop in a modern sunny Florida office, natural lighting, realistic photography, no religious symbols, no text on screen',
+  'ai-southwest-florida-business-ai':         'Professional photo of an Asian male business owner in smart casual attire typing on a laptop in a clean modern Florida office workspace, natural lighting, realistic photography, no religious symbols, no text on screen',
+  'revenue-leaks':                            'Professional photo of a Black female business consultant in professional attire reviewing financial reports on a laptop at a tidy modern Florida office desk, natural lighting, realistic photography, no religious symbols, no text on screen',
+  'tampa-cash-flow':                          'Professional photo of a Latino male accountant in smart business casual reviewing cash flow spreadsheets on a laptop in a clean modern Florida office, natural lighting, realistic photography, no religious symbols, no text on screen',
+  'tampa-revenue-leaks':                      'Professional photo of an Asian female business advisor in business casual attire reviewing revenue charts on a laptop in a professional modern Florida office, natural lighting, realistic photography, no religious symbols, no text on screen',
+  'tampa-team-accountability':                'Professional photo of a white female business manager in professional attire leading a meeting discussion at a modern Florida office conference table, natural lighting, realistic photography, no religious symbols, no text on screen',
 };
 
-// Slug → service (for image prompt selection)
+// Slug → service (kept for reference but SLUG_PROMPTS takes priority)
 const SLUG_SERVICE = {
   'tampa-cash-flow':                          'Financial Efficiency',
   'tampa-revenue-leaks':                      'Operations',
@@ -110,19 +120,20 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
       changed = true;
     }
 
-    // 3. Generate and embed hero image if missing
+    // 3. Generate and embed hero image (force regenerate ALL with new diverse prompts)
     const imgFile = 'assets/blog/' + slug + '.jpg';
     const imgDest = path.join(ROOT, imgFile);
-    const hasImg  = html.includes('assets/blog/');
+    const prompt  = SLUG_PROMPTS[slug];
 
-    if (!hasImg && SLUG_SERVICE[slug]) {
-      const service = SLUG_SERVICE[slug];
-      console.log('  Generating DALL-E image (' + service + ')...');
-      const imgUrl = await generateImage(IMAGE_PROMPTS[service]);
+    if (prompt) {
+      console.log('  Generating DALL-E image...');
+      const imgUrl = await generateImage(prompt);
       if (imgUrl) {
         const ok = await downloadImage(imgUrl, imgDest);
         if (ok) {
           console.log('  ✓ Image saved: ' + imgFile);
+          // Remove old img tag if present, then add new one
+          html = html.replace(/<img src="\.\.\/assets\/blog\/[^"]+\.jpg"[^>]*\/>\n?/g, '');
           const imgTag = '<img src="../' + imgFile + '" alt="" style="width:100%;border-radius:14px;margin-bottom:32px;object-fit:cover;max-height:420px;display:block;"/>';
           html = html.replace('  <div class="post-body">', '  ' + imgTag + '\n  <div class="post-body">');
           changed = true;
@@ -133,10 +144,8 @@ function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
         console.log('  ✗ DALL-E generation failed');
       }
       await sleep(800);
-    } else if (!hasImg) {
-      console.log('  SKIP image — no service mapping for this slug');
     } else {
-      console.log('  Already has image');
+      console.log('  SKIP — no prompt defined for this slug');
     }
 
     if (changed) {

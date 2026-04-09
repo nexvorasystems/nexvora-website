@@ -77,20 +77,29 @@ function callOpenAI(prompt) {
 }
 
 // ── DALL-E 3 IMAGE GENERATION ─────────────────────────────
-const IMAGE_PROMPTS = {
-  'Operations':            'Professional photo of a small business owner reviewing workflow checklists and process charts in a modern Florida office, natural lighting, realistic photography, no text or labels',
-  'AI & Automation':       'Business owner at a clean desk reviewing AI dashboard on laptop, modern office with Florida sunshine, realistic photography, no text overlays',
-  'Reporting & Analytics': 'Entrepreneur analyzing business performance charts on multiple screens in a professional office, natural lighting, realistic photography, no text',
-  'Sales Systems':         'Small business sales team in a modern Florida office reviewing customer pipeline on a screen, professional photography, natural light, no text',
-  'Marketing':             'Small business owner working on marketing strategy with sticky notes and laptop in a bright Florida office, realistic photography, no text',
-  'Financial Efficiency':  'Business owner reviewing financial statements and cash flow reports at a clean desk, professional Florida office, realistic photography, no text',
-  'Customer Experience':   'Friendly business owner greeting a happy customer in a professional Florida service business, realistic photography, natural light, no text',
-  'Team & HR':             'Small business team in a collaborative meeting in a modern Florida office, diverse group, professional photography, no text',
-  'Growth & Scaling':      'Entrepreneur planning business growth on a whiteboard in a clean modern office, Florida light, realistic photography, no text',
+// Diversity rotation: 8 combinations cycling through gender + ethnicity equally.
+// No religious symbols, no political symbols, neutral professional business attire only.
+const DIVERSITY = [
+  'white male',   'Asian female',  'Black male',   'Latina female',
+  'white female', 'Asian male',    'Black female', 'Latino male'
+];
+
+const IMAGE_TOPIC = {
+  'Operations':            'reviewing workflow process charts and checklists on a laptop at a modern Florida office desk, natural lighting',
+  'AI & Automation':       'working with an AI automation dashboard on a laptop in a bright modern Florida office, natural lighting',
+  'Reporting & Analytics': 'analyzing business performance charts on multiple monitors in a professional Florida office, natural lighting',
+  'Sales Systems':         'reviewing a sales pipeline dashboard on a laptop in a clean modern Florida office, natural lighting',
+  'Marketing':             'planning a marketing strategy with a laptop and notes in a bright modern Florida office, natural lighting',
+  'Financial Efficiency':  'reviewing financial reports and cash flow charts on a laptop at a modern Florida office desk, natural lighting',
+  'Customer Experience':   'helping a customer in a professional Florida business office, friendly and welcoming, natural lighting',
+  'Team & HR':             'leading a team discussion at a modern Florida office conference table, natural lighting',
+  'Growth & Scaling':      'planning business growth on a whiteboard in a clean modern Florida office, natural lighting',
 };
 
-function generateImage(service) {
-  const prompt = IMAGE_PROMPTS[service] || IMAGE_PROMPTS['Operations'];
+function generateImage(service, rotationIndex) {
+  const person = DIVERSITY[(rotationIndex || 0) % DIVERSITY.length];
+  const topic  = IMAGE_TOPIC[service] || IMAGE_TOPIC['Operations'];
+  const prompt = `Professional photo of a ${person} business professional in neutral business casual attire ${topic}, realistic photography, no religious symbols, no political symbols, no text on screen`;
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
       model: 'dall-e-3',
@@ -433,7 +442,7 @@ async function writePost(meta, rawContent, serviceLabel, authorName) {
   console.log(`Generating image for: ${serviceLabel}`);
   const imgDir = path.join(__dirname, '..', 'assets', 'blog');
   if (!fs.existsSync(imgDir)) fs.mkdirSync(imgDir, { recursive: true });
-  const imgUrl = await generateImage(serviceLabel);
+  const imgUrl = await generateImage(serviceLabel, dayOfMonth + (authorName === 'Alexandr Godovanyuk' ? 4 : 0));
   if (imgUrl) {
     const imgFile = `assets/blog/${meta.slug}.jpg`;
     const imgFilePath = path.join(__dirname, '..', imgFile);
