@@ -144,6 +144,21 @@ Regex in `buildHTML` converts this to `.faq-item` divs (single-line match only �
 - Domain: nexvorasystems.us (Hostinger nameservers → ns1/ns2.vercel-dns.com)
 - Vercel project: nexvora-website
 
+### Google Analytics — ALWAYS ADD TO NEW PAGES
+- GA4 Measurement ID: `G-TY0PZHVN0L`
+- Every new HTML page must include this tag immediately after `<meta charset="UTF-8"/>`:
+```html
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TY0PZHVN0L"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TY0PZHVN0L');
+</script>
+```
+- Blog post templates already have it baked in (generate-post.js, generate-news-post.js)
+
 ---
 
 ## Scripts
