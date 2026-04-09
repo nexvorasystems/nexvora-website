@@ -1,0 +1,35 @@
+name: AI News Roundup Generator
+
+on:
+  schedule:
+    # 6:30 AM PST = 14:30 UTC — runs every Tuesday and Saturday
+    - cron: '30 14 * * 2,6'
+  workflow_dispatch: # allow manual trigger from GitHub UI
+
+jobs:
+  generate-news:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Generate AI news roundup
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: node scripts/generate-news-post.js
+
+      - name: Commit and push news post
+        run: |
+          git config user.name "Nexvora Content Bot"
+          git config user.email "bot@nexvorasystems.us"
+          git add posts/ blog.html assets/blog/
+          git diff --staged --quiet || git commit -m "content: AI news roundup $(date +'%Y-%m-%d')"
+          git push
