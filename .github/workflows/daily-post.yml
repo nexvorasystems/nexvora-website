@@ -30,6 +30,6 @@ jobs:
         run: |
           git config user.name "Nexvora Content Bot"
           git config user.email "bot@nexvorasystems.us"
-          git add posts/ blog.html
+          git add posts/ blog.html assets/blog/
           git diff --staged --quiet || git commit -m "content: auto-generate daily post $(date +'%Y-%m-%d')"
           git push

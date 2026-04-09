@@ -51,7 +51,7 @@ const wednesdayFounder = 'Murat Zhandaurov';
 function callOpenAI(prompt) {
   return new Promise((resolve, reject) => {
     const body = JSON.stringify({
-      model: 'gpt-4o',
+      model: 'gpt-4o-mini',
       max_tokens: 4000,
       messages: [{ role: 'user', content: prompt }],
       temperature: 0.75
@@ -75,13 +75,68 @@ function callOpenAI(prompt) {
   });
 }
 
+// ── DALL-E 3 IMAGE GENERATION ─────────────────────────────
+const IMAGE_PROMPTS = {
+  'Operations':            'Professional photo of a small business owner reviewing workflow checklists and process charts in a modern Florida office, natural lighting, realistic photography, no text or labels',
+  'AI & Automation':       'Business owner at a clean desk reviewing AI dashboard on laptop, modern office with Florida sunshine, realistic photography, no text overlays',
+  'Reporting & Analytics': 'Entrepreneur analyzing business performance charts on multiple screens in a professional office, natural lighting, realistic photography, no text',
+  'Sales Systems':         'Small business sales team in a modern Florida office reviewing customer pipeline on a screen, professional photography, natural light, no text',
+  'Marketing':             'Small business owner working on marketing strategy with sticky notes and laptop in a bright Florida office, realistic photography, no text',
+  'Financial Efficiency':  'Business owner reviewing financial statements and cash flow reports at a clean desk, professional Florida office, realistic photography, no text',
+  'Customer Experience':   'Friendly business owner greeting a happy customer in a professional Florida service business, realistic photography, natural light, no text',
+  'Team & HR':             'Small business team in a collaborative meeting in a modern Florida office, diverse group, professional photography, no text',
+  'Growth & Scaling':      'Entrepreneur planning business growth on a whiteboard in a clean modern office, Florida light, realistic photography, no text',
+};
+
+function generateImage(service) {
+  const prompt = IMAGE_PROMPTS[service] || IMAGE_PROMPTS['Operations'];
+  return new Promise((resolve, reject) => {
+    const body = JSON.stringify({
+      model: 'dall-e-3',
+      prompt,
+      n: 1,
+      size: '1792x1024',
+      quality: 'standard',
+      response_format: 'url'
+    });
+    const req = https.request({
+      hostname: 'api.openai.com',
+      path: '/v1/images/generations',
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${OPENAI_API_KEY}`, 'Content-Length': Buffer.byteLength(body) }
+    }, res => {
+      let data = '';
+      res.on('data', c => data += c);
+      res.on('end', () => {
+        try {
+          const parsed = JSON.parse(data);
+          resolve(parsed.data?.[0]?.url || null);
+        } catch(e) { resolve(null); }
+      });
+    });
+    req.on('error', () => resolve(null));
+    req.write(body);
+    req.end();
+  });
+}
+
+function downloadImage(url, destPath) {
+  return new Promise((resolve) => {
+    const file = fs.createWriteStream(destPath);
+    https.get(url, res => {
+      res.pipe(file);
+      file.on('finish', () => { file.close(); resolve(true); });
+    }).on('error', () => { fs.unlink(destPath, () => {}); resolve(false); });
+  });
+}
+
 // ── SLUG HELPER ───────────────────────────────────────────
 function makeSlug(title) {
   return title.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 80);
 }
 
 // ── HTML BUILDER ──────────────────────────────────────────
-function buildHTML(meta, bodyMarkdown) {
+function buildHTML(meta, bodyMarkdown, imagePath) {
   // Strip SEO metadata block that appears after article (keywords, social, linkedin, etc.)
   let cleaned = bodyMarkdown
     .replace(/\n+---+\n[\s\S]*$/m, '')                          // strip after ---
@@ -178,6 +233,7 @@ blockquote strong{color:var(--navy);}
     <div class="post-avatar">${meta.author.split(' ').map(w=>w[0]).slice(0,2).join('')}</div>
     <span>By <strong>${esc(meta.author)}</strong> · Nexvora Systems</span>
   </div>
+  ${imagePath ? `<img src="../${imagePath}" alt="${esc(meta.title)}" style="width:100%;border-radius:14px;margin-bottom:32px;object-fit:cover;max-height:420px;display:block;"/>` : ''}
   <div class="post-body">
     ${html}
   </div>
@@ -320,9 +376,12 @@ function updateBlogIndex(entries) {
 
   const newCards = entries.map(e => {
     const category = SERVICE_CATEGORY[e.service] || 'operations';
+    const imgStyle = e.imagePath
+      ? `background:url('../${e.imagePath}') center/cover no-repeat;`
+      : `background:linear-gradient(135deg,rgba(13,148,136,0.12),rgba(15,43,76,0.08));`;
     return `
       <a href="posts/${e.slug}.html" class="blog-card" data-category="${category}">
-        <div class="blog-card-img" style="background:linear-gradient(135deg,rgba(13,148,136,0.12),rgba(15,43,76,0.08));"></div>
+        <div class="blog-card-img" style="${imgStyle}"></div>
         <div class="blog-card-body">
           <p class="blog-card-cat">${esc(e.service)}</p>
           <p class="blog-card-title">${esc(e.title)}</p>
@@ -337,14 +396,32 @@ function updateBlogIndex(entries) {
 }
 
 // ── WRITE POST FILE ───────────────────────────────────────
-function writePost(meta, rawContent, serviceLabel, authorName) {
+async function writePost(meta, rawContent, serviceLabel, authorName) {
   // Extract body (everything after the last metadata line)
   const bodyStart = rawContent.indexOf('## ');
   const body = bodyStart >= 0 ? rawContent.slice(bodyStart) : rawContent;
   meta.service = serviceLabel;
   meta.author = authorName || founder;
   meta.date = new Date(dateStr).toLocaleDateString('en-US', { year:'numeric', month:'long', day:'numeric' });
-  const html = buildHTML(meta, body);
+
+  // Generate image with DALL-E 3
+  let imagePath = null;
+  console.log(`Generating image for: ${serviceLabel}`);
+  const imgDir = path.join(__dirname, '..', 'assets', 'blog');
+  if (!fs.existsSync(imgDir)) fs.mkdirSync(imgDir, { recursive: true });
+  const imgUrl = await generateImage(serviceLabel);
+  if (imgUrl) {
+    const imgFile = `assets/blog/${meta.slug}.jpg`;
+    const imgFilePath = path.join(__dirname, '..', imgFile);
+    const ok = await downloadImage(imgUrl, imgFilePath);
+    if (ok) {
+      imagePath = imgFile;
+      console.log('Image saved:', imgFile);
+    }
+  }
+  meta.imagePath = imagePath;
+
+  const html = buildHTML(meta, body, imagePath);
   const filename = meta.slug + '.html';
   const filepath = path.join(__dirname, '..', 'posts', filename);
   fs.writeFileSync(filepath, html);
@@ -356,12 +433,16 @@ function writePost(meta, rawContent, serviceLabel, authorName) {
 (async () => {
   const written = [];
 
+  // Ensure posts dir exists
+  const postsDir = path.join(__dirname, '..', 'posts');
+  if (!fs.existsSync(postsDir)) fs.mkdirSync(postsDir, { recursive: true });
+
   // Main post
   console.log(`Generating main post: ${service} | ${region.name}`);
   const mainRaw = await callOpenAI(buildMainPrompt());
   const mainMeta = parseMeta(mainRaw);
   if (mainMeta.title) {
-    writePost(mainMeta, mainRaw, service, founder);
+    await writePost(mainMeta, mainRaw, service, founder);
     written.push(mainMeta);
   } else {
     console.error('Could not parse main post meta. Raw output saved for debug.');
@@ -375,7 +456,7 @@ function writePost(meta, rawContent, serviceLabel, authorName) {
     const aiRaw = await callOpenAI(buildAiPrompt());
     const aiMeta = parseMeta(aiRaw);
     if (aiMeta.title) {
-      writePost(aiMeta, aiRaw, 'AI & Automation', aiFounder);
+      await writePost(aiMeta, aiRaw, 'AI & Automation', aiFounder);
       written.push(aiMeta);
     } else {
       console.error('Could not parse AI post meta.');
