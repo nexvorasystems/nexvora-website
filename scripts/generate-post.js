@@ -149,6 +149,18 @@ function buildHTML(meta, bodyMarkdown, imagePath) {
     // Remove any paragraph/line with a raw nexvorasystems.us URL — template CTA handles this
     .split('\n').filter(line => !/nexvorasystems\.us\/assessment/i.test(line) || line.includes('[')).join('\n');
 
+  // Convert FAQ Q/A lines into structured blocks before main conversion
+  // Pattern 1: **Q:** on one line, **A:** on next line (each single line only)
+  cleaned = cleaned.replace(
+    /\*\*Q:\*\*\s*([^\n]+)\n\*\*A:\*\*\s*([^\n]+)/g,
+    (_, q, a) => `<div class="faq-item"><p class="faq-q">Q: ${q.trim()}</p><p class="faq-a">A: ${a.trim()}</p></div>`
+  );
+  // Pattern 2: inline **Q: question?** A: answer. (stops at next **Q: or end of paragraph)
+  cleaned = cleaned.replace(
+    /\*\*Q:\s*([^*\n]+?)\*\*\s*A:\s*([^*]+?)(?=\s*\*\*Q:|\n\n|$)/g,
+    (_, q, a) => `<div class="faq-item"><p class="faq-q">Q: ${q.trim()}</p><p class="faq-a">A: ${a.trim()}</p></div>`
+  );
+
   // Clean markdown → HTML
   let html = cleaned
     .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')           // bold
@@ -208,6 +220,9 @@ li{font-size:16px;line-height:1.8;color:var(--muted);margin-bottom:6px;}
 strong{color:var(--text);}
 blockquote{background:var(--bg-surface);border-left:4px solid var(--teal);border-radius:0 10px 10px 0;padding:16px 20px;margin:24px 0;font-size:15px;color:var(--text);line-height:1.7;}
 blockquote strong{color:var(--navy);}
+.faq-item{border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:14px;background:var(--bg-card);}
+.faq-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.faq-a{font-size:15px;color:var(--muted);line-height:1.7;margin:0;}
 .post-cta{background:var(--navy);border-radius:16px;padding:36px 32px;text-align:center;color:#fff;margin-top:48px;}
 .post-cta h2{color:#fff;margin-top:0;}
 .post-cta p{color:rgba(255,255,255,0.65);}
@@ -313,7 +328,11 @@ Requirements:
 - Primary keyword density 0.8%–1.2%
 - Service: ${service}
 - For key statistics, data points, or important quotes use markdown blockquote format: > **The data:** your stat here
-- Use blockquotes 2-3 times per article for maximum visual impact`;
+- Use blockquotes 2-3 times per article for maximum visual impact
+- In the Frequently Asked Questions section, format EACH question and answer on its own line exactly like this:
+**Q:** Your question here?
+**A:** Your answer here.
+(blank line between each Q&A pair)`;
 }
 
 function buildAiPrompt() {
@@ -351,7 +370,11 @@ Requirements:
 - Optimize for AI search tools, Google, featured snippets
 - End with CTA linking to the assessment: use markdown [Start Free Assessment](https://nexvorasystems.us/assessment.html) — NEVER show raw URLs or .html extensions as plain visible text
 - For key statistics, data points, or important quotes use markdown blockquote format: > **The data:** your stat here
-- Use blockquotes 2-3 times per article for maximum visual impact`;
+- Use blockquotes 2-3 times per article for maximum visual impact
+- In the FAQ section, format EACH question and answer on its own line exactly like this:
+**Q:** Your question here?
+**A:** Your answer here.
+(blank line between each Q&A pair)`;
 }
 
 // ── SERVICE → FILTER CATEGORY MAP ────────────────────────
