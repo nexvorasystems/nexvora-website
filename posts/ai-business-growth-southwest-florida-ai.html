@@ -67,5 +67,25 @@ strong{color:var(--text);}
     <a href="../assessment.html">Start Free Assessment</a>
   </div>
 </div>
+<!-- Floating Assessment Button -->
+<style>
+#floatAssess{position:fixed;bottom:28px;right:28px;z-index:9000;display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+#floatLabel{background:#0F2B4C;color:#fff;font-size:13px;font-weight:700;padding:9px 16px;border-radius:10px;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,0.18);opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s;pointer-events:none;}
+#floatLabel.show{opacity:1;transform:translateY(0);}
+#floatLink{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:#0D9488;box-shadow:0 4px 20px rgba(13,148,136,0.45);text-decoration:none;animation:floatPulse 2.8s ease-in-out infinite;}
+#floatLink:hover{background:#0b7a71;}
+#floatLink img{width:30px;height:30px;object-fit:contain;filter:brightness(0) invert(1);}
+@keyframes floatPulse{0%,100%{box-shadow:0 4px 20px rgba(13,148,136,0.45);background:#0D9488;}50%{box-shadow:0 4px 32px rgba(13,148,136,0.75),0 0 0 8px rgba(13,148,136,0.12);background:#0fb8a9;}}
+@media(max-width:480px){#floatAssess{bottom:16px;right:16px;}}
+</style>
+<div id="floatAssess">
+  <div id="floatLabel">Free Assessment →</div>
+  <a href="../assessment.html" id="floatLink" title="Free Assessment">
+    <img src="../assets/Logo no background.png" alt="Nexvora"/>
+  </a>
+</div>
+<script>
+(function(){var label=document.getElementById("floatLabel");var shown=false;function showLabel(){if(!shown){shown=true;label.classList.add("show");setTimeout(function(){label.classList.remove("show");setTimeout(function(){shown=false;},400);},3500);}}setTimeout(showLabel,3000);setInterval(showLabel,12000);})();
+</script>
 </body>
 </html>
