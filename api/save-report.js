@@ -29,16 +29,27 @@ module.exports = async function handler(req, res) {
 
   const id = generateId();
 
-  const response = await fetch(`${SUPABASE_URL}/rest/v1/reports`, {
-    method: 'POST',
-    headers: {
-      'apikey': SUPABASE_SERVICE_KEY,
-      'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
-      'Content-Type': 'application/json',
-      'Prefer': 'return=minimal'
-    },
-    body: JSON.stringify({ id, data })
-  });
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 10000);
+  let response;
+  try {
+    response = await fetch(`${SUPABASE_URL}/rest/v1/reports`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({ id, data }),
+      signal: controller.signal
+    });
+  } catch (err) {
+    clearTimeout(timeout);
+    console.error('[save-report] Fetch failed:', err.message);
+    return res.status(500).json({ error: 'Failed to save report' });
+  }
+  clearTimeout(timeout);
 
   if (!response.ok) {
     const err = await response.text();
