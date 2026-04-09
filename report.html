@@ -333,6 +333,8 @@ function renderHeader(d,scores){
   const sizeKey=SIZE_KEY[d.q5]||'solo';
   const avgRev=benchmark.revenue[sizeKey]||benchmark.revenue['solo'];
   const industryLabel=benchmark.label;
+  const subTypeLabel=d.q1b?d.q1b.replace(/-/g,' ').replace(/\b\w/g,c=>c.toUpperCase()):'';
+  const industryDisplay=subTypeLabel?`${subTypeLabel} (${industryLabel})`:industryLabel;
   const yearsLabel={'lt1':'under 1 year','1-2':'1–2 years','3-5':'3–5 years','6-10':'6–10 years','10plus':'10+ years'}[d.q3]||d.q3;
   const sizeLabel={'solo':'just yourself','2-5':'2–5 people','6-15':'6–15 people','16-30':'16–30 people','30plus':'30+ people'}[d.q5]||d.q5;
   const topPct=100-overall;
@@ -341,7 +343,7 @@ function renderHeader(d,scores){
     <div class="report-header">
       <div class="report-header-top">NEXVORA SYSTEMS · BUSINESS HEALTH REPORT</div>
       <h1>Business Health Report</h1>
-      <div class="sub">${esc(bizName)} · ${esc(d.q2)} · ${esc(industryLabel)} · ${esc(yearsLabel)} · ${esc(sizeLabel)}</div>
+      <div class="sub">${esc(bizName)} · ${esc(d.q2)} · ${esc(industryDisplay)} · ${esc(yearsLabel)} · ${esc(sizeLabel)}</div>
       <div class="badges">
         <div class="badge-box"><div class="n">${overall}</div><div class="l">Overall Score</div></div>
         <div class="badge-box"><div class="n">Top ${topPct}%</div><div class="l">vs ${esc(industryLabel)} avg</div></div>

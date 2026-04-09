@@ -366,6 +366,58 @@ async function main() {
     'auto':'Auto Services','real-estate':'Real Estate'
   }[A.q1], 'user');
 
+  // Sub-type question
+  const SUB_TYPES = {
+    'home-services': [
+      {label:'Cleaning',value:'cleaning'},{label:'Landscaping',value:'landscaping'},
+      {label:'Plumbing',value:'plumbing'},{label:'HVAC',value:'hvac'},
+      {label:'Roofing',value:'roofing'},{label:'Pest Control',value:'pest-control'},
+      {label:'Pool Service',value:'pool'},{label:'Painting',value:'painting'},
+      {label:'Electrical',value:'electrical'},{label:'Other',value:'other'},
+    ],
+    'construction': [
+      {label:'General Contractor',value:'general'},{label:'Remodeling',value:'remodeling'},
+      {label:'Concrete',value:'concrete'},{label:'Flooring',value:'flooring'},
+      {label:'Fencing',value:'fencing'},{label:'Other',value:'other'},
+    ],
+    'food-bev': [
+      {label:'Restaurant',value:'restaurant'},{label:'Café / Coffee',value:'cafe'},
+      {label:'Catering',value:'catering'},{label:'Food Truck',value:'food-truck'},
+      {label:'Bar',value:'bar'},{label:'Other',value:'other'},
+    ],
+    'retail': [
+      {label:'Clothing',value:'clothing'},{label:'Furniture',value:'furniture'},
+      {label:'Electronics',value:'electronics'},{label:'Specialty Store',value:'specialty'},
+      {label:'Online Retail',value:'online'},{label:'Other',value:'other'},
+    ],
+    'health-wellness': [
+      {label:'Medical Office',value:'medical'},{label:'Dental',value:'dental'},
+      {label:'Chiropractic',value:'chiro'},{label:'Gym / Fitness',value:'gym'},
+      {label:'Spa / Massage',value:'spa'},{label:'Mental Health',value:'mental'},
+      {label:'Other',value:'other'},
+    ],
+    'professional-services': [
+      {label:'Law Firm',value:'law'},{label:'Accounting / CPA',value:'accounting'},
+      {label:'Marketing Agency',value:'agency'},{label:'Consulting',value:'consulting'},
+      {label:'IT Services',value:'it'},{label:'Insurance',value:'insurance'},
+      {label:'Other',value:'other'},
+    ],
+    'auto': [
+      {label:'Auto Repair',value:'repair'},{label:'Detailing',value:'detailing'},
+      {label:'Towing',value:'towing'},{label:'Dealership',value:'dealership'},
+      {label:'Other',value:'other'},
+    ],
+    'real-estate': [
+      {label:'Property Management',value:'property-mgmt'},{label:'Real Estate Agent',value:'agent'},
+      {label:'Investor / Flipping',value:'investor'},{label:'Short-Term Rentals',value:'str'},
+      {label:'Other',value:'other'},
+    ],
+  };
+  const subTypes = SUB_TYPES[A.q1] || [{label:'Other',value:'other'}];
+  await speak("What type of business specifically?", 500);
+  A.q1b = await askChips(subTypes);
+  addBubble(subTypes.find(s => s.value === A.q1b)?.label || A.q1b, 'user');
+
   setProgress(6);
   await speak("What state is your business based in?", 600);
   A.q2 = await askState();
@@ -641,7 +693,7 @@ JSON format:
   hideTyping();
 
   // Store everything
-  const payload = { contact: A.contact, q1:A.q1, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
   // Encode payload into URL so the report link works from any device (email link)
