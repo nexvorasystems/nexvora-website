@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<meta name="description" content="Frequently asked questions about Nexvora Systems — who we are, how the free assessment works, what services we offer, and how AI automation actually fits into a small business."/>
+<title>FAQ — Nexvora Systems</title>
+<link rel="canonical" href="https://nexvorasystems.us/faq.html"/>
+<meta name="robots" content="index, follow"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
+  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
+  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.1);--teal-mid:rgba(13,148,136,0.2);
+  --navy:#0F2B4C;--radius:12px;--nav-h:76px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 44px;}
+.nav-inner{display:flex;align-items:center;width:100%;}
+.nav-links{display:flex;gap:28px;list-style:none;margin:0 auto;}
+.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s;}
+.nav-links a:hover,.nav-links a.active{color:var(--text);}
+.nav-cta{padding:9px 22px;border-radius:9px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;white-space:nowrap;}
+.nav-cta:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.nav-has-dropdown{position:relative;padding-bottom:12px;margin-bottom:-12px;}
+.nav-dropdown{visibility:hidden;opacity:0;pointer-events:none;position:absolute;top:calc(100% - 4px);left:50%;transform:translateX(-50%) translateY(-4px);background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px;min-width:240px;box-shadow:0 8px 32px rgba(0,0,0,0.1);z-index:300;transition:opacity .2s ease,transform .2s ease,visibility 0s linear .2s;}
+.nav-has-dropdown:hover .nav-dropdown{visibility:visible;opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .2s ease,transform .2s ease,visibility 0s linear 0s;}
+.nav-dropdown a{display:block;padding:9px 14px;font-size:13px;color:var(--muted);text-decoration:none;border-radius:8px;transition:all .15s;}
+.nav-dropdown a:hover{background:var(--teal-lt);color:var(--teal);}
+
+/* PAGE HERO */
+.page-hero{padding:calc(var(--nav-h) + 80px) 44px 72px;text-align:center;}
+.sec-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.page-hero h1{font-size:clamp(2.2rem,4vw,3.4rem);font-weight:800;letter-spacing:-1.5px;color:var(--text);margin-bottom:16px;line-height:1.1;}
+.page-hero h1 strong{background:linear-gradient(90deg,#0F2B4C,#0D9488);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.page-hero p{max-width:560px;margin:0 auto;font-size:17px;color:var(--muted);line-height:1.7;}
+
+/* SECTIONS */
+.section{padding:80px 0;}
+.section-alt{padding:80px 0;background:var(--bg-surface);}
+.container{max-width:800px;margin:0 auto;padding:0 44px;}
+
+/* FAQ */
+.faq-section-title{font-size:11px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:24px;padding-bottom:12px;border-bottom:1px solid var(--border);}
+.faq-group{margin-bottom:56px;}
+.faq-group:last-child{margin-bottom:0;}
+.faq-item{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:28px 32px;margin-bottom:12px;}
+.faq-item:last-child{margin-bottom:0;}
+.faq-q{font-size:16px;font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.4;}
+.faq-a{font-size:15px;color:var(--muted);line-height:1.75;}
+
+/* CTA */
+.cta-block{border-radius:20px;padding:72px 56px;text-align:center;background:linear-gradient(135deg,#0F2B4C,#0D3330);position:relative;overflow:hidden;}
+.cta-block::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% -10%,rgba(13,148,136,0.3),transparent);pointer-events:none;}
+.cta-block .sec-label{color:rgba(68,202,162,0.8);}
+.cta-block h2{font-size:clamp(1.5rem,3vw,2.2rem);font-weight:800;letter-spacing:-0.5px;color:#FAF8F5;margin-bottom:12px;position:relative;}
+.cta-block h2 strong{color:#44CAA2;}
+.cta-block p{font-size:16px;color:rgba(250,248,245,0.6);margin-bottom:28px;position:relative;}
+.btn-p{padding:15px 30px;border-radius:10px;background:var(--teal);color:#fff;font-size:15px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;display:inline-block;}
+.btn-p:hover{filter:brightness(1.08);transform:translateY(-2px);box-shadow:0 8px 24px rgba(13,148,136,0.3);}
+
+/* FOOTER */
+footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65);}
+.footer-inner{max-width:1160px;margin:0 auto;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:48px;margin-bottom:40px;}
+.footer-brand p{font-size:13px;margin-top:10px;color:rgba(250,248,245,0.5);}
+.footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:14px;}
+.footer-links{display:flex;flex-direction:column;gap:8px;}
+.footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;transition:color .15s;}
+.footer-links a:hover{color:#FAF8F5;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;flex-wrap:wrap;gap:12px;}
+
+/* HAMBURGER / MOBILE */
+.hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:12px;}
+.hamburger span{display:block;width:22px;height:2px;background:var(--text);border-radius:2px;transition:all .25s;}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px);}
+.hamburger.open span:nth-child(2){opacity:0;}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px);}
+.mobile-menu{display:none;position:fixed;top:var(--nav-h);left:0;right:0;z-index:190;background:var(--bg);border-bottom:1px solid var(--border);padding:20px 20px 24px;flex-direction:column;gap:0;}
+.mobile-menu.open{display:flex;}
+.mobile-menu a{font-size:15px;font-weight:500;color:var(--muted);text-decoration:none;padding:13px 0;border-bottom:1px solid var(--border);}
+.mobile-menu a.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff;font-weight:700;text-align:center;border-radius:10px;border-bottom:none;font-size:14px;}
+
+@media(max-width:768px){
+  :root{--nav-h:56px;}
+  nav{padding:0 20px;}
+  .nav-links{display:none;}
+  .nav-cta{display:none;}
+  .hamburger{display:flex;}
+  .page-hero,.container{padding-left:20px;padding-right:20px;}
+  .page-hero{padding-top:calc(var(--nav-h) + 40px);}
+  .footer-grid{grid-template-columns:1fr;gap:28px;}
+  footer{padding:40px 20px 24px;}
+  .cta-block{padding:48px 24px;}
+  .faq-item{padding:20px 20px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <a href="index.html"><img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:48px;width:auto;display:block;"/></a>
+    <ul class="nav-links">
+      <li><a href="about.html">About</a></li>
+      <li class="nav-has-dropdown">
+        <a href="services.html">Services</a>
+        <div class="nav-dropdown">
+          <a href="services/operations.html">Operations</a>
+          <a href="services/ai-automation.html">AI &amp; Automation</a>
+          <a href="services/sales-systems.html">Sales Systems</a>
+          <a href="services/marketing.html">Marketing</a>
+          <a href="services/financial-efficiency.html">Financial Efficiency</a>
+          <a href="services/reporting-analytics.html">Reporting &amp; Analytics</a>
+          <a href="services/customer-experience.html">Customer Experience</a>
+          <a href="services/team-hr.html">Team &amp; HR</a>
+          <a href="services/growth-scaling.html">Growth &amp; Scaling</a>
+        </div>
+      </li>
+      <li><a href="blog.html">Insights</a></li>
+      <li><a href="contact.html">Contact</a></li>
+    </ul>
+    <a href="assessment.html" class="nav-cta">Free Assessment</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
+</nav>
+<div class="mobile-menu" id="mobileMenu">
+  <a href="about.html">About</a>
+  <a href="services.html">Services</a>
+  <a href="blog.html">Insights</a>
+  <a href="contact.html">Contact</a>
+  <a href="assessment.html" class="mobile-cta">Free Assessment</a>
+</div>
+
+<!-- HERO -->
+<div class="page-hero">
+  <div class="sec-label">FAQ</div>
+  <h1>Frequently Asked <strong>Questions</strong></h1>
+  <p>Everything you need to know about Nexvora Systems and how we work.</p>
+</div>
+
+<!-- FAQ CONTENT -->
+<div class="section">
+  <div class="container">
+
+    <!-- About Nexvora -->
+    <div class="faq-group">
+      <div class="faq-section-title">About Nexvora</div>
+
+      <div class="faq-item">
+        <div class="faq-q">What is Nexvora Systems and what do you do?</div>
+        <div class="faq-a">Nexvora Systems is an operational consulting firm for small businesses. We help business owners fix the internal problems that limit growth — broken processes, inconsistent output, poor visibility into performance, and systems that haven't kept up with the business. We work across operations, AI and automation, sales, marketing, finance, team management, and more.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Who is Nexvora for? What size businesses do you work with?</div>
+        <div class="faq-a">We work primarily with small businesses between 1 and 50 employees. Our clients are typically owners who have grown past the startup stage but feel like the business is running them rather than the other way around. If you're doing real revenue but operations feel chaotic or growth has stalled, we're built for that situation.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Where are you located? Do you work with businesses outside Florida?</div>
+        <div class="faq-a">Nexvora Systems is based in Tampa Bay, Florida. We work with businesses across all 50 states — most engagements happen over Zoom, which means location is not a barrier. For clients in the Tampa Bay area and across Florida, we also offer in-person working sessions when that format is more effective for the work.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How is Nexvora different from hiring a business consultant?</div>
+        <div class="faq-a">Most consultants hand you a report and move on. We work alongside you to actually implement the changes — mapping processes, building SOPs, setting up systems, and making sure new workflows stick with your team. The measure of success is not a document; it's a business that works better. We also specialize exclusively in small businesses, so we don't bring enterprise frameworks that don't fit your reality.</div>
+      </div>
+    </div>
+
+    <!-- The Assessment -->
+    <div class="faq-group">
+      <div class="faq-section-title">The Assessment</div>
+
+      <div class="faq-item">
+        <div class="faq-q">What is the Business Health Assessment?</div>
+        <div class="faq-a">It's a structured questionnaire that covers how your business operates today — your processes, team, sales, finances, marketing, and use of technology. Based on your answers, we identify the specific gaps and bottlenecks that are most likely costing you time and money. You get a clear picture of where your business stands and what to prioritize.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How long does the assessment take?</div>
+        <div class="faq-a">Most people complete it in 10 to 20 minutes. The questions are direct and practical — no filler, no trick questions. You don't need to prepare anything beforehand; just answer based on how your business actually runs today.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Is the assessment really free? What's the catch?</div>
+        <div class="faq-a">It's genuinely free with no strings attached. We offer it because it creates a useful starting point for both sides — you get real clarity on your operational gaps, and if it makes sense to work together, we already have a concrete understanding of your business. There's no obligation and no sales pitch at the end of the form.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What happens after I complete the assessment?</div>
+        <div class="faq-a">We review your responses and follow up with a summary of what we found — the areas of highest priority and what we'd recommend looking at first. If you want to discuss the results or explore working together, we'll schedule a call. If you just wanted the clarity, that's fine too.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Will someone try to sell me something immediately?</div>
+        <div class="faq-a">No. The follow-up is focused on the findings from your assessment, not on closing a deal. If there's a fit, we'll talk about it honestly. If there isn't, we'll tell you that too. We'd rather give you something useful than waste your time with a pitch that doesn't apply to your situation.</div>
+      </div>
+    </div>
+
+    <!-- Services & Pricing -->
+    <div class="faq-group">
+      <div class="faq-section-title">Services &amp; Pricing</div>
+
+      <div class="faq-item">
+        <div class="faq-q">What services does Nexvora offer?</div>
+        <div class="faq-a">We work across nine areas: Operations, AI &amp; Automation, Sales Systems, Marketing Systems, Financial Efficiency, Reporting &amp; Analytics, Customer Experience, Team &amp; HR, and Growth &amp; Scaling. Most engagements focus on two or three of these areas where the gaps are most significant. We don't push clients into work that isn't relevant to their situation.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How much do Nexvora's services cost?</div>
+        <div class="faq-a">Pricing depends on the scope and duration of the engagement. We don't publish flat rates because the work is different for every business — a one-person service operation has different needs than a 30-person product company. After the assessment and an initial conversation, we'll put together a clear proposal with no ambiguity about what's included and what it costs.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">How long does it take to see results?</div>
+        <div class="faq-a">Some improvements are visible within the first few weeks — particularly around process clarity, bottleneck removal, and quick automation wins. Deeper structural changes, like rebuilding a sales system or standing up a reporting framework, typically take one to three months before you see consistent results. We set realistic expectations upfront so you know what to look for and when.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Do I need to sign a long-term contract?</div>
+        <div class="faq-a">No long-term contracts are required. Some projects are short and defined — a process audit and SOP build, for example, has a clear beginning and end. Ongoing advisory relationships are month-to-month. We believe you should stay because the work is useful, not because you're locked in.</div>
+      </div>
+    </div>
+
+    <!-- AI & Automation -->
+    <div class="faq-group">
+      <div class="faq-section-title">AI &amp; Automation</div>
+
+      <div class="faq-item">
+        <div class="faq-q">Do I need to be tech-savvy to use AI automation?</div>
+        <div class="faq-a">No. We select and configure tools based on what your team can actually use without a steep learning curve. Our job is to make the technology invisible — you get the benefit without needing to understand how it works under the hood. If a tool requires significant technical knowledge to maintain, we either simplify it or don't recommend it.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">Will AI replace my employees?</div>
+        <div class="faq-a">That's not the goal, and in most small businesses it's not realistic either. What AI and automation do well is handle repetitive, rule-based tasks — data entry, follow-up emails, scheduling, report generation — so your team can spend their time on work that actually requires judgment and relationships. The typical result is that the same team gets more done, not that you need fewer people.</div>
+      </div>
+
+      <div class="faq-item">
+        <div class="faq-q">What tools or software do you use?</div>
+        <div class="faq-a">We're tool-agnostic, meaning we recommend what fits your business rather than pushing a preferred platform. Common tools we work with include Zapier, Make, HubSpot, GoHighLevel, Notion, Airtable, and various AI writing and data tools. We also integrate with whatever you're already using — the goal is to build on what works, not replace everything from scratch.</div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- CTA -->
+<div class="section-alt">
+  <div class="container">
+    <div class="cta-block">
+      <div class="sec-label">Still Have Questions?</div>
+      <h2>Start With the <strong>Free Assessment</strong></h2>
+      <p>The assessment gives us both a clear picture of your business before any conversation. No commitment required.</p>
+      <a href="assessment.html" class="btn-p">Take the Free Assessment</a>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html"><img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:48px;width:auto;display:block;margin-bottom:10px;"/></a>
+        <p>AI-powered operational consulting for small and growing businesses.</p>
+        <p style="margin-top:8px;font-size:13px;"><a href="mailto:info@nexvorasystems.us" style="color:rgba(250,248,245,0.5);text-decoration:none;">info@nexvorasystems.us</a></p>
+      </div>
+      <div>
+        <p class="footer-col-title">Company</p>
+        <div class="footer-links">
+          <a href="about.html">About</a>
+          <a href="services.html">Services</a>
+          <a href="blog.html">Insights</a>
+          <a href="faq.html">FAQ</a>
+          <a href="contact.html">Contact</a>
+          <a href="assessment.html" style="color:#44CAA2;">Free Assessment</a>
+        </div>
+      </div>
+      <div>
+        <p class="footer-col-title">Services</p>
+        <div class="footer-links">
+          <a href="services/operations.html">Operations</a>
+          <a href="services/ai-automation.html">AI &amp; Automation</a>
+          <a href="services/reporting-analytics.html">Reporting &amp; Analytics</a>
+          <a href="services/sales-systems.html">Sales Systems</a>
+          <a href="services/marketing.html">Marketing</a>
+          <a href="services/customer-experience.html">Customer Experience</a>
+          <a href="services/team-hr.html">Team &amp; HR</a>
+          <a href="services/financial-efficiency.html">Financial Efficiency</a>
+          <a href="services/growth-scaling.html">Growth &amp; Scaling</a>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span style="color:rgba(250,248,245,0.4);">© 2026 Nexvora Systems LLC. All rights reserved.</span>
+      <div style="display:flex;gap:20px;flex-wrap:wrap;">
+        <a href="legal/terms.html" style="color:rgba(250,248,245,0.4);text-decoration:none;font-size:12px;">Terms &amp; Conditions</a>
+        <a href="legal/privacy.html" style="color:rgba(250,248,245,0.4);text-decoration:none;font-size:12px;">Privacy Policy</a>
+        <a href="legal/cookies.html" style="color:rgba(250,248,245,0.4);text-decoration:none;font-size:12px;">Cookie Policy</a>
+        <a href="legal/disclaimer.html" style="color:rgba(250,248,245,0.4);text-decoration:none;font-size:12px;">Disclaimer</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Floating Assessment Button -->
+<style>
+#floatAssess{position:fixed;bottom:28px;right:28px;z-index:9000;display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
+#floatLabel{background:#0F2B4C;color:#fff;font-size:13px;font-weight:700;padding:9px 16px;border-radius:10px;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,0.18);opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s;pointer-events:none;}
+#floatLabel.show{opacity:1;transform:translateY(0);}
+#floatLink{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:#0D9488;box-shadow:0 4px 20px rgba(13,148,136,0.45);text-decoration:none;animation:floatPulse 2.8s ease-in-out infinite;}
+#floatLink:hover{background:#0b7a71;}
+#floatLink img{width:30px;height:30px;object-fit:contain;filter:brightness(0) invert(1);}
+@keyframes floatPulse{
+  0%,100%{box-shadow:0 4px 20px rgba(13,148,136,0.45);background:#0D9488;}
+  50%{box-shadow:0 4px 32px rgba(13,148,136,0.75),0 0 0 8px rgba(13,148,136,0.12);background:#0fb8a9;}
+}
+@media(max-width:480px){#floatAssess{bottom:16px;right:16px;}}
+</style>
+<div id="floatAssess">
+  <div id="floatLabel">Free Assessment →</div>
+  <a href="assessment.html" id="floatLink" title="Free Assessment">
+    <img src="assets/Logo no background.png" alt="Nexvora"/>
+  </a>
+</div>
+<script>
+document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});
+(function(){
+  var label=document.getElementById('floatLabel');
+  var shown=false;
+  function showLabel(){if(!shown){shown=true;label.classList.add('show');setTimeout(function(){label.classList.remove('show');setTimeout(function(){shown=false;},400);},3500);}}
+  setTimeout(showLabel,3000);
+  setInterval(showLabel,12000);
+})();
+</script>
+<!-- End Floating Button -->
+</body>
+</html>
