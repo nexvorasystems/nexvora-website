@@ -485,6 +485,17 @@ function renderAreaAnalysis(d,scores,aiSummary){
         <div class="fix-paths">${pathsHtml}</div>
       </div>`;
     }
+    if(key==='customer_experience' && typeof d.q7==='number'){
+      const pct=d.q7;
+      const avg=38;
+      const insight=pct>=avg
+        ?`Your ${pct}% repeat rate is above the small business average of ${avg}%. You're also in the top 23% of business owners who actively track this metric — most never do.`
+        :`Your ${pct}% repeat rate is below the small business average of ${avg}%. A 10-point improvement in repeat rate typically adds 15–25% to annual revenue without spending a dollar on new leads.`;
+      areasHtml+=`<div style="border:1px solid #0D9488;border-radius:10px;padding:16px 20px;margin-top:12px;background:rgba(13,148,136,0.04);">
+        <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#0D9488;margin-bottom:8px;">REPEAT CUSTOMER RATE</div>
+        <p style="font-size:14px;color:#4A5568;line-height:1.7;margin:0;">${insight}</p>
+      </div>`;
+    }
   });
   const summaryBlock=aiSummary?`<div class="exec-summary">${esc(aiSummary)}</div>`:'';
   const html=`<div class="section-body">

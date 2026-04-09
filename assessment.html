@@ -482,6 +482,7 @@ async function main() {
 
   if (q7HasRepeat === 'no') {
     A.q7 = 'none';
+    await speak("Got it. Most one-time service businesses still have strong referral and review opportunities — we'll cover that in your report.", 700);
   } else {
     await speak("Do you know approximately what percentage of your customers come back?", 600);
     const q7KnowRate = await askChips([
@@ -493,8 +494,14 @@ async function main() {
       await speak("What percentage of your customers return for repeat business?", 600);
       A.q7 = await askNumber('%', 1, 100);
       addBubble(A.q7 + '%', 'user');
+      if (A.q7 >= 40) {
+        await speak(`${A.q7}% — that's strong. Only about 23% of small business owners actively track their repeat rate. The fact that you know this number puts you ahead of most.`, 900);
+      } else {
+        await speak(`${A.q7}% repeat rate noted. The average for most small businesses is 35–45%. Your report will show you exactly how to close that gap.`, 800);
+      }
     } else {
       A.q7 = 'dont-know';
+      await speak("No worries — 71% of small business owners have never measured this either. We'll show you what it's likely costing you and how to start tracking it.", 900);
     }
   }
 
