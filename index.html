@@ -46,10 +46,12 @@ nav{
 .nav-cta:hover{filter:brightness(1.08);transform:translateY(-1px);}
 /* SERVICES DROPDOWN */
 .nav-has-dropdown{position:relative;}
-.nav-dropdown{display:none;position:absolute;top:calc(100% + 12px);left:50%;transform:translateX(-50%);background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px;min-width:240px;box-shadow:0 8px 32px rgba(0,0,0,0.1);z-index:300;}
-.nav-has-dropdown:hover .nav-dropdown{display:block;}
+.nav-dropdown{display:none;opacity:0;transform:translateX(-50%) translateY(-6px);position:absolute;top:calc(100% + 4px);left:50%;background:#fff;border:1px solid var(--border);border-radius:12px;padding:8px;min-width:240px;box-shadow:0 8px 32px rgba(0,0,0,0.1);z-index:300;transition:opacity .18s ease,transform .18s ease;pointer-events:none;}
+.nav-dropdown.open{display:block;opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto;}
 .nav-dropdown a{display:block;padding:9px 14px;font-size:13px;color:var(--muted);text-decoration:none;border-radius:8px;transition:all .15s;}
 .nav-dropdown a:hover{background:var(--teal-lt);color:var(--teal);}
+/* bridge prevents gap from closing dropdown */
+.nav-has-dropdown::after{content:'';position:absolute;top:100%;left:0;right:0;height:12px;}
 
 
 /* HERO */
@@ -311,7 +313,7 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
         <div class="avatars">
           <div class="av">JR</div><div class="av">SM</div><div class="av">KL</div><div class="av">PD</div>
         </div>
-        <p class="proof-text"><strong>100+ businesses</strong> improved their operations this year</p>
+        <p class="proof-text"><strong>100+ businesses</strong> helped</p>
       </div>
     </div>
 
@@ -627,6 +629,16 @@ let T=0;
   if(colCtx){colCtx.clearRect(0,0,340,340);drawFalcon(colCtx,340,340,T*1.05,340/52,0.85,true);}
 })();
 document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});
+// Services dropdown — JS-driven so it stays open when moving mouse into it
+(function(){
+  const li = document.querySelector('.nav-has-dropdown');
+  const dd = li.querySelector('.nav-dropdown');
+  let closeTimer;
+  li.addEventListener('mouseenter', function(){ clearTimeout(closeTimer); dd.style.display='block'; requestAnimationFrame(()=>dd.classList.add('open')); });
+  li.addEventListener('mouseleave', function(){ closeTimer=setTimeout(()=>{ dd.classList.remove('open'); setTimeout(()=>{ if(!dd.classList.contains('open')) dd.style.display='none'; },180); },80); });
+  dd.addEventListener('mouseenter', function(){ clearTimeout(closeTimer); });
+  dd.addEventListener('mouseleave', function(){ closeTimer=setTimeout(()=>{ dd.classList.remove('open'); setTimeout(()=>{ if(!dd.classList.contains('open')) dd.style.display='none'; },180); },80); });
+})();
 </script>
 </body>
 </html>
