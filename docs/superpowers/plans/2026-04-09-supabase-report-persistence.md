@@ -9,8 +9,8 @@
 **Tech Stack:** Supabase (PostgreSQL via REST API), Vercel serverless functions (Node.js), vanilla HTML/JS
 
 **Supabase credentials (add to Vercel env vars):**
-- `SUPABASE_URL` = `https://ivkfzlxxsqzziqbjplpa.supabase.co`
-- `SUPABASE_SERVICE_KEY` = `sb_secret_zARSrr2H8xqXuw6UlqzICA_pdIc31eS`
+- `SUPABASE_URL` = your Supabase project URL
+- `SUPABASE_SERVICE_KEY` = your Supabase service role key (from Settings → API)
 
 ---
 
@@ -72,7 +72,7 @@ Go to Vercel → nexvora-website project → **Settings** → **Environment Vari
 - [ ] **Step 3: Add SUPABASE_SERVICE_KEY**
 
 - Key: `SUPABASE_SERVICE_KEY`
-- Value: `sb_secret_zARSrr2H8xqXuw6UlqzICA_pdIc31eS`
+- Value: your Supabase service role key (from Supabase → Settings → API)
 - Environment: Production, Preview, Development (check all)
 - Click **Save**
 
