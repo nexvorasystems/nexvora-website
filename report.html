@@ -810,25 +810,43 @@ function startCountdown(){
 /* ═══════════════════════════════════════════════════════
    MAIN RENDER
 ═══════════════════════════════════════════════════════ */
-function loadData(){
-  // Try URL param first (works from email link on any device)
+async function loadData(){
   const params=new URLSearchParams(window.location.search);
+
+  // Short ID param — fetch from Supabase
+  const id=params.get('id');
+  if(id){
+    try{
+      const res=await fetch(`https://ivkfzlxxsqzziqbjplpa.supabase.co/rest/v1/reports?id=eq.${id}&select=data`, {
+        headers:{
+          'apikey':'sb_publishable_oTul8fFYdu6TCyrF25hA5w_3T3kI-Wl',
+          'Authorization':'Bearer sb_publishable_oTul8fFYdu6TCyrF25hA5w_3T3kI-Wl'
+        }
+      });
+      if(res.ok){
+        const rows=await res.json();
+        if(rows&&rows[0]&&rows[0].data) return rows[0].data;
+      }
+    }catch(e){console.warn('[report] Supabase fetch failed:',e.message);}
+  }
+
+  // Legacy base64 param — works for old email links
   const encoded=params.get('d');
   if(encoded){
     try{
-      // Handle URL-safe base64 (- → +, _ → /, restore padding)
-      const b64 = encoded.replace(/-/g,'+').replace(/_/g,'/').padEnd(Math.ceil(encoded.length/4)*4,'=');
+      const b64=encoded.replace(/-/g,'+').replace(/_/g,'/').padEnd(Math.ceil(encoded.length/4)*4,'=');
       return JSON.parse(decodeURIComponent(escape(atob(b64))));
     }catch(e){}
   }
+
   // Fallback to localStorage (same device)
   const raw=localStorage.getItem('nexvora_assessment');
   if(raw){try{return JSON.parse(raw);}catch(e){}}
   return null;
 }
 
-function main(){
-  const d=loadData();
+async function main(){
+  const d=await loadData();
   if(!d){
     document.getElementById('reportWrap').innerHTML=`
       <div style="text-align:center;padding:80px 20px;">
