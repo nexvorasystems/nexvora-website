@@ -837,11 +837,27 @@ JSON format:
   document.getElementById('progLabel').textContent = 'Complete';
   addBubble(`Your report is ready, ${A.contact.name.split(' ')[0]}! Taking you there now...`, 'bot');
 
-  // Push to GHL — GHL sends the confirmation email with the personalized report link
+  // Save to Supabase first, get short ID, then call GHL with short URL
+  let shortUrl = reportUrl; // fallback to base64 URL if save fails
+  try {
+    const saveRes = await fetch('/api/save-report', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    if (saveRes.ok) {
+      const saveData = await saveRes.json();
+      if (saveData.id) {
+        shortUrl = `${window.location.origin}/r/${saveData.id}`;
+      }
+    }
+  } catch(e) { console.warn('[save-report] failed, using base64 URL:', e.message); }
+
+  // Push to GHL with the short URL (or base64 fallback)
   fetch('/api/ghl', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ...payload, reportUrl })
+    body: JSON.stringify({ ...payload, reportUrl: shortUrl })
   }).then(r => r.json()).then(d => console.log('[GHL]', d)).catch(e => console.warn('[GHL] failed:', e.message));
 
   await sleep(1200);
