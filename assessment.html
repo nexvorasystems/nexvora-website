@@ -648,6 +648,18 @@ async function main() {
   ]);
   addBubble({'survive':'Survive and stabilize','revenue':'Increase revenue','owner-dep':'Reduce owner dependency','team':'Build a team','automate':'Automate and scale','exit':'Exit or sell'}[A.q15], 'user');
 
+  await speak("And thinking bigger — what's your goal for the next 5 years?", 700);
+  A.q15b = await askChips([
+    {label:'Keep growing steadily',value:'steady'},
+    {label:'Build a larger company (team, locations)',value:'scale'},
+    {label:'Remove myself — run without me day-to-day',value:'remove-self'},
+    {label:'Sell the business',value:'exit'},
+    {label:'Pass it to family',value:'legacy'},
+    {label:'Not sure yet',value:'unsure'},
+  ]);
+  const q15bLabels = {'steady':'Keep growing steadily','scale':'Build a larger company','remove-self':'Remove myself from daily ops','exit':'Sell the business','legacy':'Pass to family','unsure':'Not sure yet'};
+  addBubble(q15bLabels[A.q15b] || A.q15b, 'user');
+
   /* ── OWNER ECONOMICS ── */
   setProgress(20, 'Owner economics');
   await speak(`Last section, ${first}. These questions help us calculate something most business owners have never seen about their own business.`, 900);
@@ -755,7 +767,7 @@ JSON format:
   hideTyping();
 
   // Store everything
-  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q10:A.q10, q11:A.q11, q11b:A.q11b, q11c:A.q11c, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q10:A.q10, q11:A.q11, q11b:A.q11b, q11c:A.q11c, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q15b:A.q15b, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
   // Encode payload into URL so the report link works from any device (email link)

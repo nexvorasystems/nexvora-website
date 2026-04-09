@@ -580,7 +580,77 @@ function renderAreaAnalysis(d,scores,aiSummary){
 }
 
 /* ═══════════════════════════════════════════════════════
-   SECTION 5: CTA + COUNTDOWN
+   SECTION 5: GROWTH STRATEGY
+═══════════════════════════════════════════════════════ */
+function renderStrategySection(d) {
+  if (!d.q15b) return;
+
+  const goal12Labels = {'survive':'Survive & Stabilize','revenue':'Increase Revenue','owner-dep':'Reduce Owner Dependency','team':'Build a Team','automate':'Automate & Scale','exit':'Exit or Sell'};
+  const goal5Labels = {'steady':'Grow Steadily','scale':'Build a Larger Company','remove-self':'Remove Myself from Daily Ops','exit':'Sell the Business','legacy':'Pass to Family','unsure':'Not Sure Yet'};
+
+  const g12 = d.q15 || '';
+  const g5 = d.q15b;
+
+  // Strategy matrix based on 5-year goal primarily
+  const strategies = {
+    'exit': {
+      headline: 'Your Path to Exit',
+      body: 'Preparing to sell requires the same foundation as scaling — documented processes, clean financials, a team that runs without you, and predictable revenue. Every system improvement you make now directly increases your sale price. Buyers pay 2–4x more for businesses with clean SOPs and owner-independent operations.',
+      priority: 'Document everything. Build a management layer. Make your financials readable to a buyer.'
+    },
+    'remove-self': {
+      headline: 'Building an Owner-Independent Business',
+      body: 'Removing yourself from daily operations is a process, not an event. It requires documented processes that anyone can follow, a team with clear roles and accountability, and reporting systems that let you see what\'s happening without being there.',
+      priority: 'SOPs first. Then accountability systems. Then delegation. In that order.'
+    },
+    'scale': {
+      headline: 'Scaling to a Larger Company',
+      body: 'Growth amplifies whatever systems you already have — good or bad. Businesses that scale successfully fix their foundation before adding revenue or headcount. The difference between a $500K business and a $3M business is almost always systems, not effort.',
+      priority: 'Identify your biggest operational bottleneck and fix it before your next growth push.'
+    },
+    'legacy': {
+      headline: 'Building a Legacy Business',
+      body: 'Passing a business to family requires the same preparation as selling it — documented processes, clean financials, and a team that doesn\'t depend entirely on you. The strongest gift you can give your family is a business that runs well without you in it.',
+      priority: 'Start documenting now. Build the systems while you\'re still there to teach them.'
+    },
+    'steady': {
+      headline: 'Sustainable Long-Term Growth',
+      body: 'Steady growth is the most underrated strategy. It compounds — small, consistent improvements across operations, customer retention, and team performance add up to dramatically different results over 5 years. The goal is a business that grows without heroics.',
+      priority: 'Systematize your best work. Make your customer experience consistent. Track the numbers that matter.'
+    },
+    'unsure': {
+      headline: 'Keeping Your Options Open',
+      body: 'Not knowing your 5-year goal is more common than people admit — and it\'s fine. The right move is to build a business that gives you options. A well-run, profitable business that doesn\'t depend on you personally is worth more, is easier to sell, and gives you more freedom to decide later.',
+      priority: 'Build systems and financial clarity. Options come from a strong foundation.'
+    }
+  };
+
+  // Check alignment between 12-month and 5-year goals
+  const alignmentNote = (() => {
+    if (g12 === 'exit' && g5 === 'exit') return 'Your 12-month and 5-year goals are aligned — preparing to sell requires the same work either way.';
+    if (g12 === 'owner-dep' && g5 === 'exit') return 'Removing owner dependency in the next 12 months is exactly the right first step toward a 5-year exit. You cannot sell a business where you are the business.';
+    if (g12 === 'owner-dep' && g5 === 'remove-self') return 'Your 12-month and 5-year goals are perfectly aligned. This is a focused, achievable path.';
+    if (g12 === 'survive' && (g5 === 'exit' || g5 === 'scale')) return 'There is a gap between where you are (stabilizing) and where you want to be (exit/scale). That gap is normal — and it starts closing the moment your systems improve.';
+    return null;
+  })();
+
+  const s = strategies[g5] || strategies['steady'];
+
+  const html = `
+    <h2 style="font-size:18px;font-weight:800;margin-bottom:12px;">Your Growth Strategy</h2>
+    <div style="font-size:12px;color:#718096;margin-bottom:12px;">12-Month Goal: <strong>${esc(goal12Labels[g12]||g12)}</strong> · 5-Year Goal: <strong>${esc(goal5Labels[g5]||g5)}</strong></div>
+    <div style="background:#0F2B4C;border-radius:12px;padding:24px 28px;color:#fff;margin-bottom:${alignmentNote?'12px':'0'};">
+      <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#0D9488;margin-bottom:8px;">STRATEGY</div>
+      <div style="font-size:17px;font-weight:800;margin-bottom:10px;">${esc(s.headline)}</div>
+      <p style="font-size:14px;color:rgba(255,255,255,0.75);line-height:1.75;margin-bottom:14px;">${esc(s.body)}</p>
+      <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:12px;font-size:13px;color:#0D9488;font-weight:600;">Priority: ${esc(s.priority)}</div>
+    </div>
+    ${alignmentNote ? `<div style="background:#EBF8FF;border:1px solid #BEE3F8;border-radius:10px;padding:14px 18px;font-size:13px;color:#2B6CB0;line-height:1.6;">${esc(alignmentNote)}</div>` : ''}`;
+  renderSection(html);
+}
+
+/* ═══════════════════════════════════════════════════════
+   SECTION 6: CTA + COUNTDOWN
 ═══════════════════════════════════════════════════════ */
 function renderCTA(d){
   const first=d.contact.name.split(' ')[0];
@@ -687,6 +757,7 @@ function main(){
   renderBenchmarks(d,d.ai_benchmark||'');
   renderOwnerEcon(d,econ);
   renderAreaAnalysis(d,scores,d.ai_summary||'');
+  renderStrategySection(d);
   renderCTA(d);
 
   // Animate bars after short delay
