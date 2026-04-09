@@ -520,6 +520,17 @@ function renderOwnerEcon(d,econ){
    SECTION 4: FULL AREA ANALYSIS
 ═══════════════════════════════════════════════════════ */
 function renderAreaAnalysis(d,scores,aiSummary){
+  const AI_NEXT_STEPS={
+    operations:'Your processes are documented — the next step is making them self-improving. AI can flag when a process step is taking longer than usual, surface training gaps automatically, and suggest updates based on customer feedback patterns.',
+    customer_experience:'Strong retention is your competitive moat. AI can make it stronger: automated review requests at exactly the right moment, predictive churn detection (who\'s at risk of not returning), and personalized re-engagement sequences.',
+    sales:'Your follow-up system is working. AI can multiply it: predictive lead scoring (which leads are most likely to close), automated proposal follow-ups, and a CRM that surfaces the right leads at the right time without manual triage.',
+    marketing:'You have multiple lead channels working. AI can optimize spend across them: automated A/B testing, campaign performance dashboards, and tools that show you which channel produces your best customers — not just the most leads.',
+    ai_automation:'You\'re ahead of 80% of small businesses on automation. The next level is predictive automation — systems that don\'t just react but anticipate: inventory, staffing, and scheduling based on demand forecasting.',
+    team_hr:'You have accountability systems in place. AI can enhance them: performance trend detection (who\'s improving before it becomes a problem), automated pulse surveys, and onboarding systems that adapt to each new hire.',
+    financial:'Monthly financial reviews give you a strong foundation. AI can make it real-time: automated alerts when margins drop below target, cash flow forecasting, and profitability analysis by job or service type automatically.',
+    reporting:'You have data visibility. AI can transform it: natural language queries, anomaly detection, and automated weekly summaries sent to your phone every Monday morning so you always know where you stand.',
+    growth:'Your scaling foundation is solid. AI can accelerate expansion: market analysis for new locations, automated competitor monitoring, and demand forecasting that tells you when you\'re ready to hire before you feel the pain.',
+  };
   const areaOrder=Object.entries(scores).sort((a,b)=>a[1]-b[1]);
   let areasHtml='';
   areaOrder.forEach(([key,score])=>{
@@ -622,6 +633,13 @@ function renderAreaAnalysis(d,scores,aiSummary){
         </div>`;
         areasHtml+=gapHtml;
       }
+    }
+    if(score>=70 && AI_NEXT_STEPS[key]){
+      const aiBox=`<div style="border:1px solid #0D9488;border-radius:10px;padding:16px 20px;margin-top:12px;background:rgba(13,148,136,0.04);">
+  <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#0D9488;margin-bottom:8px;">NEXT LEVEL — STAY AHEAD WITH AI</div>
+  <p style="font-size:14px;color:#4A5568;line-height:1.75;margin:0;">${AI_NEXT_STEPS[key]}</p>
+</div>`;
+      areasHtml+=aiBox;
     }
   });
   const summaryBlock=aiSummary?`<div class="exec-summary">${esc(aiSummary)}</div>`:'';
