@@ -526,6 +526,29 @@ async function main() {
   ], 1);
   addBubble(A.q9.map(v=>({'word-of-mouth':'Word of mouth','google':'Google search','social':'Social media','paid-ads':'Paid ads','other':'Other'}[v]||v)).join(', '), 'user');
 
+  // Paid ads follow-up
+  A.q9_adspend = null;
+  A.q9_leads = null;
+  if (A.q9.includes('paid-ads')) {
+    await speak("You mentioned paid ads. How much do you spend on ads per month approximately?", 700);
+    A.q9_adspend = await askNumber('$/month', 0, 100000);
+    addBubble('$' + Number(A.q9_adspend).toLocaleString() + '/month', 'user');
+
+    await speak("Do you know how many leads those ads generate per month?", 600);
+    const knowLeads = await askChips([
+      {label:"Yes, I track it", value:'yes'},
+      {label:"Not sure / I don't track it", value:'no'},
+    ]);
+    addBubble(knowLeads === 'yes' ? "Yes, I track it" : "Don't track it", 'user');
+    if (knowLeads === 'yes') {
+      await speak("Approximately how many leads per month?", 500);
+      A.q9_leads = await askNumber('leads/month', 1, 10000);
+      addBubble(A.q9_leads + ' leads/month', 'user');
+    } else {
+      await speak("That's okay — most business owners don't track this. We'll flag it in your report because knowing your cost-per-lead is one of the highest-leverage things you can measure.", 800);
+    }
+  }
+
   setProgress(14);
   await speak("What is your average online review rating?", 700);
   A.q10 = await askChips([
@@ -701,7 +724,7 @@ JSON format:
   hideTyping();
 
   // Store everything
-  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
   // Encode payload into URL so the report link works from any device (email link)

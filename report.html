@@ -496,6 +496,29 @@ function renderAreaAnalysis(d,scores,aiSummary){
         <p style="font-size:14px;color:#4A5568;line-height:1.7;margin:0;">${insight}</p>
       </div>`;
     }
+    if(key==='marketing' && d.q9 && Array.isArray(d.q9) && d.q9.includes('paid-ads') && d.q9_adspend){
+      const spend=d.q9_adspend;
+      const leads=d.q9_leads;
+      const cpl=leads?Math.round(spend/leads):null;
+      const cplText=cpl!==null?`$${cpl.toLocaleString()} cost per lead`:'Cost per lead: not tracked';
+      const roiNote=cpl===null
+        ?'You\'re spending on ads but not tracking how many leads they generate. This is a significant blind spot — you may be spending on campaigns that aren\'t converting at all.'
+        :cpl<50
+          ?'Under $50/lead is strong for local services. Focus on increasing lead volume and improving close rate.'
+          :cpl<150
+            ?'Your cost per lead is average. Optimizing your landing page and offer can typically cut this by 20–40%.'
+            :'High cost per lead. Your ads may be targeting too broadly or your landing page needs significant improvement.';
+      const adsHtml=`<div style="border:1px solid #0D9488;border-radius:10px;padding:16px 20px;margin-top:12px;background:rgba(13,148,136,0.04);">
+        <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#0D9488;margin-bottom:8px;">PAID ADS ANALYSIS</div>
+        <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:12px;">
+          <div><div style="font-size:20px;font-weight:800;color:#0F2B4C;">$${Number(spend).toLocaleString()}/mo</div><div style="font-size:12px;color:#718096;">Ad Spend</div></div>
+          ${leads?`<div><div style="font-size:20px;font-weight:800;color:#0F2B4C;">${Number(leads).toLocaleString()}</div><div style="font-size:12px;color:#718096;">Leads/Month</div></div>`:''}
+          <div><div style="font-size:20px;font-weight:800;color:#0F2B4C;">${cpl!==null?'$'+cpl.toLocaleString():'—'}</div><div style="font-size:12px;color:#718096;">Cost Per Lead</div></div>
+        </div>
+        <p style="font-size:14px;color:#4A5568;line-height:1.7;margin:0;">${roiNote}</p>
+      </div>`;
+      areasHtml+=adsHtml;
+    }
   });
   const summaryBlock=aiSummary?`<div class="exec-summary">${esc(aiSummary)}</div>`:'';
   const html=`<div class="section-body">
