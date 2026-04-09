@@ -126,8 +126,7 @@ ${d.message || '—'}
 <div style="font-family:-apple-system,Helvetica,sans-serif;max-width:580px;margin:0 auto;padding:32px 20px;color:#1A1A2E;background:#ffffff;">
   <img src="${SITE_URL}/assets/Logo no background.png" alt="Nexvora Systems" style="height:40px;margin-bottom:28px;"/>
   <h1 style="font-size:22px;font-weight:800;margin:0 0 12px;">Thank you for contacting us, ${firstName}.</h1>
-  <p style="font-size:15px;color:#4A5568;line-height:1.7;margin:0 0 16px;">We received your message and someone from our team will reach out to you as soon as possible.</p>
-  <p style="font-size:15px;color:#4A5568;line-height:1.7;margin:0 0 24px;">Please check your inbox — and your spam folder just in case.</p>
+  <p style="font-size:15px;color:#4A5568;line-height:1.7;margin:0 0 24px;">We received your message and someone from our team will reach out to you as soon as possible.</p>
   <p style="font-size:13px;color:#718096;line-height:1.6;margin:0 0 8px;">In the meantime, you can get a personalized picture of how your business is performing with our free assessment:</p>
   <a href="${SITE_URL}/assessment.html" style="display:inline-block;padding:14px 32px;background:#0D9488;color:#ffffff;font-weight:700;font-size:15px;border-radius:10px;text-decoration:none;margin-bottom:28px;">Take the Free Assessment →</a>
   <hr style="border:none;border-top:1px solid #E2DDD5;margin:0 0 20px;"/>
