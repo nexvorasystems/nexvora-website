@@ -496,6 +496,26 @@ function renderAreaAnalysis(d,scores,aiSummary){
         <p style="font-size:14px;color:#4A5568;line-height:1.7;margin:0;">${insight}</p>
       </div>`;
     }
+    if(key==='ai_automation' && (d.q11b || d.q11c)){
+      const taskMgmtRisk = (d.q11b === 'verbal' || d.q11b === 'chat');
+      const followUpRisk = (d.q11c === 'none' || d.q11c === 'memory');
+      const lines = [];
+      if(d.q11b){
+        const q11bLabels = {verbal:'Verbal only',chat:'Text/WhatsApp',spreadsheet:'Spreadsheet',
+          'pm-tool':'Project management tool','industry-software':'Industry software'};
+        lines.push(`<strong>Task Management:</strong> ${q11bLabels[d.q11b] || d.q11b}${taskMgmtRisk ? ' — <span style="color:#E53E3E;">High risk.</span> Verbal task management breaks down as teams grow and is impossible to audit.' : ' — Good foundation. Next step is connecting this to automated workflows.'}`);
+      }
+      if(d.q11c){
+        const q11cLabels = {none:'Nothing in place',memory:'I remember them',physical:'Physical notes',
+          spreadsheet:'Spreadsheet/calendar',crm:'CRM / automated'};
+        lines.push(`<strong>Follow-Up Tracking:</strong> ${q11cLabels[d.q11c] || d.q11c}${followUpRisk ? ' — <span style="color:#E53E3E;">Leads are slipping through.</span> When follow-up depends on memory, 40–60% of warm leads go cold.' : ' — Solid system. Automating this next saves 3–5 hours per week.'}`);
+      }
+      const automationHtml = `<div style="border:1px solid #0D9488;border-radius:10px;padding:16px 20px;margin-top:12px;background:rgba(13,148,136,0.04);">
+        <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#0D9488;margin-bottom:10px;">AUTOMATION OPPORTUNITY</div>
+        ${lines.map(l => `<p style="font-size:14px;color:#4A5568;line-height:1.7;margin:0 0 8px;">${l}</p>`).join('')}
+      </div>`;
+      areasHtml += automationHtml;
+    }
     if(key==='marketing' && d.q9 && Array.isArray(d.q9) && d.q9.includes('paid-ads') && d.q9_adspend){
       const spend=d.q9_adspend;
       const leads=d.q9_leads;

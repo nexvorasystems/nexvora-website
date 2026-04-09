@@ -572,6 +572,35 @@ async function main() {
   ], 1);
   addBubble(A.q11.includes('none') ? 'Mostly automated' : A.q11.join(', '), 'user');
 
+  // Task management + follow-up follow-up questions
+  A.q11b = null;
+  A.q11c = null;
+  if (!A.q11.includes('none')) {
+    await speak("Do you use any tool to manage tasks and track what your team is working on?", 600);
+    A.q11b = await askChips([
+      {label:'No — we handle it verbally',value:'verbal'},
+      {label:'Text or WhatsApp group',value:'chat'},
+      {label:'Spreadsheet or notes',value:'spreadsheet'},
+      {label:'Project management tool (Trello, Asana, etc.)',value:'pm-tool'},
+      {label:'Industry-specific software',value:'industry-software'},
+    ]);
+    const q11bLabels = {verbal:'Verbal only',chat:'Text/WhatsApp',spreadsheet:'Spreadsheet',
+      'pm-tool':'Project management tool','industry-software':'Industry software'};
+    addBubble(q11bLabels[A.q11b] || A.q11b, 'user');
+
+    await speak("How do you track customer follow-ups — making sure no one falls through the cracks?", 600);
+    A.q11c = await askChips([
+      {label:"We don't — people slip through",value:'none'},
+      {label:'I remember them myself',value:'memory'},
+      {label:'Sticky notes or whiteboard',value:'physical'},
+      {label:'Spreadsheet or calendar',value:'spreadsheet'},
+      {label:'CRM or automated system',value:'crm'},
+    ]);
+    const q11cLabels = {none:'Nothing in place',memory:'I remember them',physical:'Physical notes',
+      spreadsheet:'Spreadsheet/calendar',crm:'CRM / automated'};
+    addBubble(q11cLabels[A.q11c] || A.q11c, 'user');
+  }
+
   setProgress(16);
   await speak("How do you currently manage team performance?", 700);
   A.q12 = await askChips([
@@ -724,7 +753,7 @@ JSON format:
   hideTyping();
 
   // Store everything
-  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q10:A.q10, q11:A.q11, q11b:A.q11b, q11c:A.q11c, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
   // Encode payload into URL so the report link works from any device (email link)
