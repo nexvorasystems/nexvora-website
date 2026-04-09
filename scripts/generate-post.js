@@ -43,8 +43,9 @@ const service = SERVICE_BY_DAY[dayOfWeek];
 const region = getRegion(dayOfMonth);
 const cityList = region.cities.slice(0, 5).join(', ');
 
-// ── FOUNDER ROTATION ──────────────────────────────────────
-const founder = dayOfMonth % 2 === 0 ? 'Murat Zhandaurov' : 'Alexandr Godovanyuk';
+// ── FOUNDER — Sales topics by Alexandr, everything else by Murat ──
+const SALES_SERVICES = new Set(['Sales Systems']);
+const founder = SALES_SERVICES.has(service) ? 'Alexandr Godovanyuk' : 'Murat Zhandaurov';
 const wednesdayFounder = 'Murat Zhandaurov';
 
 // ── OPENAI CALL ───────────────────────────────────────────
