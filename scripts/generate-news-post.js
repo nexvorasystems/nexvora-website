@@ -430,5 +430,26 @@ Requirements:
   // 7. Update blog index
   updateBlogIndex(meta, imagePath);
 
+  // 8. Update sitemap
+  updateSitemap(meta.slug);
+
   console.log(`\nDone! News roundup: "${meta.title}"`);
 })();
+
+// ── UPDATE SITEMAP ────────────────────────────────────────
+function updateSitemap(slug) {
+  const sitemapPath = path.join(ROOT, 'sitemap.xml');
+  if (!fs.existsSync(sitemapPath)) return;
+  let sitemap = fs.readFileSync(sitemapPath, 'utf8');
+  if (sitemap.includes(`/posts/${slug}.html`)) return; // already in sitemap
+  const entry = `
+  <url>
+    <loc>https://nexvorasystems.us/posts/${slug}.html</loc>
+    <lastmod>${dateStr}</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.6</priority>
+  </url>`;
+  sitemap = sitemap.replace('</urlset>', entry + '\n</urlset>');
+  fs.writeFileSync(sitemapPath, sitemap);
+  console.log('sitemap.xml updated');
+}

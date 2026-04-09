@@ -268,6 +268,35 @@ blockquote strong{color:var(--navy);}
     <a href="../assessment.html">Start Free Assessment</a>
   </div>
 </div>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "${esc(meta.title)}",
+  "description": "${esc(meta.metaDescription)}",
+  "author": {
+    "@type": "Person",
+    "name": "${esc(meta.author)}",
+    "url": "https://nexvorasystems.us"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Nexvora Systems",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://nexvorasystems.us/assets/nexvora-logo.png"
+    }
+  },
+  "datePublished": "${meta.date}",
+  "dateModified": "${meta.date}",
+  "url": "https://nexvorasystems.us/posts/${meta.slug}.html",
+  "mainEntityOfPage": "https://nexvorasystems.us/posts/${meta.slug}.html"${imagePath ? `,
+  "image": {
+    "@type": "ImageObject",
+    "url": "https://nexvorasystems.us/${imagePath}"
+  }` : ''}
+}
+</script>
 </body>
 </html>`;
 }
@@ -498,5 +527,24 @@ async function writePost(meta, rawContent, serviceLabel, authorName) {
   }
 
   updateBlogIndex(written);
+  updateSitemap(written);
   console.log(`Done. ${written.length} post(s) generated.`);
 })();
+
+// ── UPDATE SITEMAP ────────────────────────────────────────
+function updateSitemap(entries) {
+  const sitemapPath = path.join(__dirname, '..', 'sitemap.xml');
+  if (!fs.existsSync(sitemapPath)) return;
+  let sitemap = fs.readFileSync(sitemapPath, 'utf8');
+  const insertMark = '</urlset>';
+  const newEntries = entries.map(e => `
+  <url>
+    <loc>https://nexvorasystems.us/posts/${e.slug}.html</loc>
+    <lastmod>${dateStr}</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.6</priority>
+  </url>`).join('\n');
+  sitemap = sitemap.replace(insertMark, newEntries + '\n' + insertMark);
+  fs.writeFileSync(sitemapPath, sitemap);
+  console.log('sitemap.xml updated');
+}
