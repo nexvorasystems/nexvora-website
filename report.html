@@ -254,7 +254,10 @@ function computeOwnerEcon(d){
   const weeklyHrs=parseFloat(d.q17)||40;
   const monthlyHrs=weeklyHrs*4.33;
   const ownerRate=ownerPay>0?(ownerPay/monthlyHrs):0;
-  const teamPay=resolveTeamPay(d.q19);
+  // Use segment-derived blended average when available, fall back to legacy q19
+  const teamPay = (d.q19_headcount > 0 && d.q19_total > 0)
+    ? Math.round(d.q19_total / d.q19_headcount)
+    : resolveTeamPay(d.q19);
   const teamRate=teamPay/(40*4.33);
   const diffPct=ownerRate>0?Math.round(((teamRate-ownerRate)/ownerRate)*100):null;
   return{ownerPay,weeklyHrs,monthlyHrs:Math.round(monthlyHrs),ownerRate:Math.round(ownerRate*100)/100,teamPay,teamRate:Math.round(teamRate*100)/100,diffPct};
@@ -431,6 +434,56 @@ function renderOwnerEcon(d,econ){
   const ownerRateDisplay=econ.ownerPay===0?'$0.00':('$'+econ.ownerRate.toFixed(2));
   const ownerMonthlyFmt=(econ.ownerPay||0).toLocaleString();
   const teamMonthlyFmt=econ.teamPay.toLocaleString();
+
+  // Team payroll segment breakdown
+  const segments = d.q19_segments || {};
+  const segNames = {admin:'Back Office / Admin',field:'Field Workers',sales:'Sales',
+    contractors:'Contractors (1099)',va:'Virtual Assistants',managers:'Managers'};
+  const segEntries = Object.entries(segments);
+  let segmentTableHtml = '';
+  if (segEntries.length > 0) {
+    const segRows = segEntries.map(([seg, {count, pay}]) => {
+      const total = count * pay;
+      return `<tr style="border-bottom:1px solid #E2DDD5;">
+        <td style="padding:10px 12px;font-size:14px;color:#4A5568;">${segNames[seg]||seg}</td>
+        <td style="padding:10px 12px;text-align:center;font-size:14px;color:#4A5568;">${count}</td>
+        <td style="padding:10px 12px;text-align:right;font-size:14px;color:#4A5568;">$${Number(pay).toLocaleString()}/mo each</td>
+        <td style="padding:10px 12px;text-align:right;font-size:14px;font-weight:700;color:#1A1A2E;">$${Number(total).toLocaleString()}/mo</td>
+      </tr>`;
+    }).join('');
+    const ownerPay = Number(d.q16) || 0;
+    const teamTotal = Number(d.q19_total) || 0;
+    const grandTotal = ownerPay + teamTotal;
+    const headcount = d.q19_headcount || 0;
+    const blendedAvg = headcount > 0 ? Math.round(teamTotal / headcount) : 0;
+    segmentTableHtml = `
+      <div style="margin-top:20px;">
+        <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#6B7280;margin-bottom:10px;">TEAM PAYROLL BREAKDOWN</div>
+        <table style="width:100%;border-collapse:collapse;border:1px solid #E2DDD5;border-radius:8px;overflow:hidden;">
+          <thead>
+            <tr style="background:#F7F5F0;border-bottom:2px solid #E2DDD5;">
+              <th style="padding:10px 12px;text-align:left;font-size:12px;font-weight:700;color:#1A1A2E;letter-spacing:0.5px;">Segment</th>
+              <th style="padding:10px 12px;text-align:center;font-size:12px;font-weight:700;color:#1A1A2E;letter-spacing:0.5px;">Count</th>
+              <th style="padding:10px 12px;text-align:right;font-size:12px;font-weight:700;color:#1A1A2E;letter-spacing:0.5px;">Per Person</th>
+              <th style="padding:10px 12px;text-align:right;font-size:12px;font-weight:700;color:#1A1A2E;letter-spacing:0.5px;">Monthly Total</th>
+            </tr>
+          </thead>
+          <tbody>${segRows}</tbody>
+          <tfoot>
+            <tr style="background:#F7F5F0;border-top:2px solid #E2DDD5;">
+              <td colspan="2" style="padding:10px 12px;font-size:13px;font-weight:700;color:#1A1A2E;">Total Team (${headcount} people · blended avg $${blendedAvg.toLocaleString()}/mo)</td>
+              <td style="padding:10px 12px;text-align:right;font-size:13px;color:#4A5568;"></td>
+              <td style="padding:10px 12px;text-align:right;font-size:14px;font-weight:800;color:#1A1A2E;">$${teamTotal.toLocaleString()}/mo</td>
+            </tr>
+            <tr style="background:#1A1A2E;">
+              <td colspan="3" style="padding:10px 12px;font-size:13px;font-weight:700;color:#F7F5F0;">Total Labor Cost (owner + team)</td>
+              <td style="padding:10px 12px;text-align:right;font-size:14px;font-weight:800;color:#F7F5F0;">$${grandTotal.toLocaleString()}/mo</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>`;
+  }
+
   const html=`
     <div class="section-body">
       <div class="section-label">Owner Economics · The Real Math</div>
@@ -443,7 +496,7 @@ function renderOwnerEcon(d,econ){
         <div class="econ-card team">
           <div class="econ-role">Your Team</div>
           <div class="econ-rate">$${econ.teamRate.toFixed(2)}<span>/hr</span></div>
-          <div class="econ-detail">~40 hrs/week · $${teamMonthlyFmt}/month<br/>Regular hours only</div>
+          <div class="econ-detail">~40 hrs/week · $${teamMonthlyFmt}/month avg<br/>Regular hours only</div>
         </div>
       </div>
       ${comparisonHtml}
@@ -457,6 +510,7 @@ function renderOwnerEcon(d,econ){
           <span class="econ-math-formula">$${teamMonthlyFmt} ÷ (40 hrs × 4.33 wks) = <strong>$${econ.teamRate.toFixed(2)}/hr</strong></span>
         </div>
       </div>
+      ${segmentTableHtml}
       <div class="econ-note">We are not here to tell you that you are overpaying your team or underpaying yourself. This is just the math. And this math is exactly why building the right systems is not a nice-to-have — it is the only way to change the equation.</div>
     </div>`;
   renderSection(html);

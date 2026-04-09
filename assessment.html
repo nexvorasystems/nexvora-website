@@ -708,9 +708,52 @@ async function main() {
   await speak(`Got it — that works out to about ${A.q17} hours per week.`, 500);
 
   setProgress(23);
-  await speak("What do your team members earn on average per month? Enter the approximate amount.", 700);
-  A.q19 = await askNumber('$/month', 0, 50000);
-  addBubble('$' + Number(A.q19).toLocaleString() + '/month', 'user');
+  A.q19_segments = {};
+  A.q19 = 0;
+  A.q19_total = 0;
+  A.q19_headcount = 0;
+
+  if (A.q5 !== 'solo') {
+    await speak("What types of workers make up your team? Select all that apply.", 700);
+    const teamTypes = await askMultiChips([
+      {label:'Back office / admin',value:'admin'},
+      {label:'Field technicians / service workers',value:'field'},
+      {label:'Sales staff',value:'sales'},
+      {label:'Contractors / 1099',value:'contractors'},
+      {label:'Virtual assistants (VAs)',value:'va'},
+      {label:'Managers',value:'managers'},
+    ], 1);
+    const teamTypeLabels = {admin:'Admin',field:'Field workers',sales:'Sales',contractors:'Contractors',va:'VAs',managers:'Managers'};
+    addBubble(teamTypes.map(v => teamTypeLabels[v] || v).join(', '), 'user');
+
+    const segLabels = {admin:'back office/admin',field:'field workers',sales:'sales staff',
+      contractors:'contractors (1099)',va:'virtual assistants',managers:'managers'};
+    let totalPay = 0;
+    let totalWorkers = 0;
+
+    for (const seg of teamTypes) {
+      await speak(`How many ${segLabels[seg] || seg} do you have?`, 500);
+      const count = await askNumber('people', 1, 500);
+      addBubble(count + ' people', 'user');
+
+      await speak(`What does each ${segLabels[seg] || seg} earn on average per month?`, 500);
+      const pay = await askNumber('$/month each', 0, 30000);
+      addBubble('$' + Number(pay).toLocaleString() + '/month each', 'user');
+
+      A.q19_segments[seg] = { count: Number(count), pay: Number(pay) };
+      totalPay += Number(count) * Number(pay);
+      totalWorkers += Number(count);
+    }
+
+    A.q19 = totalWorkers > 0 ? Math.round(totalPay / totalWorkers) : 0;
+    A.q19_total = totalPay;
+    A.q19_headcount = totalWorkers;
+  } else {
+    // Solo — no team
+    A.q19_segments = {};
+    A.q19_total = 0;
+    A.q19_headcount = 0;
+  }
 
   /* ── FINISH ── */
   await finishAssessment();
@@ -767,7 +810,7 @@ JSON format:
   hideTyping();
 
   // Store everything
-  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q10:A.q10, q11:A.q11, q11b:A.q11b, q11c:A.q11c, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q15b:A.q15b, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q10:A.q10, q11:A.q11, q11b:A.q11b, q11c:A.q11c, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q15b:A.q15b, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, q19_segments:A.q19_segments, q19_total:A.q19_total, q19_headcount:A.q19_headcount, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
   // Encode payload into URL so the report link works from any device (email link)
