@@ -417,6 +417,7 @@ async function main() {
   await speak("What type of business specifically?", 500);
   A.q1b = await askChips(subTypes);
   addBubble(subTypes.find(s => s.value === A.q1b)?.label || A.q1b, 'user');
+  A.q1b_label = subTypes.find(s => s.value === A.q1b)?.label || A.q1b;
 
   setProgress(6);
   await speak("What state is your business based in?", 600);
@@ -693,7 +694,7 @@ JSON format:
   hideTyping();
 
   // Store everything
-  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q10:A.q10, q11:A.q11, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
   // Encode payload into URL so the report link works from any device (email link)
