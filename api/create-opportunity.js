@@ -1,6 +1,7 @@
 /**
- * Nexvora Systems — Create GHL Opportunity after 30-min timer
- * Called from client-side timer when assessment is not completed within 30 minutes.
+ * Nexvora Systems — Create GHL Opportunity when assessment is not finished.
+ * Triggered immediately when user closes/leaves the page (via sendBeacon),
+ * or after 30-min timer as a fallback.
  * Places contact in "NOT FINISHED ASSESMENT" pipeline → "New Lead" stage.
  */
 
@@ -26,10 +27,32 @@ module.exports = async function handler(req, res) {
   const locationId = process.env.GHL_LOCATION_ID?.trim();
   if (!apiKey || !locationId) return res.json({ success: true, note: 'GHL skipped — env vars not set' });
 
-  const { contactId, name, email } = req.body || {};
-  if (!contactId) return res.status(400).json({ error: 'contactId required' });
+  let { contactId, name, email } = req.body || {};
+  if (!contactId && !email) return res.status(400).json({ error: 'contactId or email required' });
 
   const headers = ghlHeaders(apiKey);
+
+  // If no contactId, look up contact by email
+  if (!contactId && email) {
+    try {
+      const searchRes = await fetch(
+        `${GHL_BASE}/contacts/?locationId=${locationId}&email=${encodeURIComponent(email)}`,
+        { headers }
+      );
+      if (searchRes.ok) {
+        const searchData = await searchRes.json();
+        contactId = searchData.contacts?.[0]?.id;
+      }
+    } catch (e) {
+      console.warn('[create-opportunity] email lookup failed:', e.message);
+    }
+  }
+
+  if (!contactId) {
+    console.error('[create-opportunity] could not resolve contactId for email:', email);
+    return res.status(400).json({ error: 'Could not find contact' });
+  }
+
   const displayName = (name || email || 'Unknown').split(' ')[0];
 
   try {
@@ -71,16 +94,17 @@ module.exports = async function handler(req, res) {
     });
 
     if (!oppRes.ok) {
-      console.error('[create-opportunity] GHL failed:', oppRes.status);
+      const body = await oppRes.text();
+      console.error('[create-opportunity] GHL failed:', oppRes.status, body);
       return res.status(500).json({ error: 'Failed to create opportunity' });
     }
 
-    // Add a note about the 30-min timeout
+    // Add a note
     await fetch(`${GHL_BASE}/contacts/${contactId}/notes`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
-        body: `=== ASSESSMENT NOT COMPLETED — 30 MIN TIMER ===\nTime: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })} ET\nStatus: 30 minutes elapsed. User did not complete the assessment.\n===============================================`
+        body: `=== LEFT ASSESSMENT WITHOUT FINISHING ===\nTime: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })} ET\nStatus: User left or closed the page before completing the assessment.\n=========================================`
       })
     });
 

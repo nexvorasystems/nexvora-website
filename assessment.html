@@ -139,15 +139,41 @@ function stopTimer() {
   if (badge) badge.classList.remove('active');
 }
 
-/* ── FIRE OPPORTUNITY AFTER 30 MIN ───────────────────── */
+/* ── FIRE OPPORTUNITY ON PAGE CLOSE ─────────────────── */
+// sendBeacon fires even as the page is closing — most reliable method
+let beaconSent = false;
+function fireCloseBeacon() {
+  if (beaconSent || assessmentComplete || !A.contact?.email) return;
+  beaconSent = true;
+  const payload = JSON.stringify({
+    contactId: ghlContactId || null,
+    name: A.contact.name || '',
+    email: A.contact.email
+  });
+  navigator.sendBeacon('/api/create-opportunity', new Blob([payload], { type: 'application/json' }));
+}
+
+function registerCloseHandlers() {
+  // visibilitychange: fires when tab is hidden, minimized, or closed
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'hidden') fireCloseBeacon();
+  });
+  // beforeunload: fires on navigate away / tab close
+  window.addEventListener('beforeunload', fireCloseBeacon);
+}
+
+/* ── 30-MIN FALLBACK (tab left open) ────────────────── */
 function scheduleOpportunity() {
   opportunityTimer = setTimeout(() => {
-    if (assessmentComplete || !ghlContactId) return;
-    fetch('/api/create-opportunity', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ contactId: ghlContactId, name: A.contact?.name, email: A.contact?.email })
-    }).catch(() => {});
+    if (assessmentComplete || beaconSent) return;
+    // Use sendBeacon for the timeout too — more reliable than fetch
+    const payload = JSON.stringify({
+      contactId: ghlContactId || null,
+      name: A.contact?.name || '',
+      email: A.contact?.email
+    });
+    navigator.sendBeacon('/api/create-opportunity', new Blob([payload], { type: 'application/json' }));
+    beaconSent = true;
   }, TIMER_MS);
 }
 
@@ -430,7 +456,9 @@ async function main() {
     }
   }).catch(e => console.warn('[capture-lead] error:', e));
 
-  // Start 30-min countdown — opportunity created if not finished
+  // Register page-close beacon — fires immediately if user leaves
+  registerCloseHandlers();
+  // Start 30-min countdown display + fallback timer
   startCountdownTimer();
   scheduleOpportunity();
 
