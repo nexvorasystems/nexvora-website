@@ -1,7 +1,7 @@
 /**
  * Nexvora Systems — Partial Assessment Lead Capture
  * Called immediately after user enters name + email in assessment.
- * Creates/upserts GHL contact + adds to "Incomplete Assessment" pipeline.
+ * Creates/upserts GHL contact + adds to "NOT FINISHED ASSESMENT" pipeline → New Lead stage.
  */
 
 const GHL_BASE = 'https://services.leadconnectorhq.com';
@@ -29,7 +29,7 @@ module.exports = async function handler(req, res) {
     return res.json({ success: true, note: 'GHL skipped — env vars not set' });
   }
 
-  const { name, email, phone } = req.body || {};
+  const { name, email, phone, timezone } = req.body || {};
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
     return res.status(400).json({ error: 'Valid email required' });
   }
@@ -39,20 +39,24 @@ module.exports = async function handler(req, res) {
   const firstName = nameParts[0] || '';
   const lastName = nameParts.slice(1).join(' ') || '';
 
+  // Build upsert payload — include timezone if provided
+  const upsertPayload = {
+    locationId,
+    firstName,
+    lastName,
+    email,
+    phone: phone || '',
+    tags: ['assessment-started', 'website-lead'],
+    source: 'Website Assessment'
+  };
+  if (timezone) upsertPayload.timezone = timezone;
+
   try {
-    // 1. Upsert contact with "assessment-started" tag
+    // 1. Upsert contact
     const contactRes = await fetch(`${GHL_BASE}/contacts/upsert`, {
       method: 'POST',
       headers,
-      body: JSON.stringify({
-        locationId,
-        firstName,
-        lastName,
-        email,
-        phone: phone || '',
-        tags: ['assessment-started', 'website-lead'],
-        source: 'Website Assessment'
-      })
+      body: JSON.stringify(upsertPayload)
     });
 
     if (!contactRes.ok) {
@@ -69,51 +73,11 @@ module.exports = async function handler(req, res) {
       method: 'POST',
       headers,
       body: JSON.stringify({
-        body: `=== INCOMPLETE ASSESSMENT ===\nStarted: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })} ET\nName: ${name || '—'}\nEmail: ${email}\nPhone: ${phone || '—'}\nStatus: Started assessment but did not complete.\n===========================`
+        body: `=== ASSESSMENT NOT FINISHED ===\nStarted: ${new Date().toLocaleString('en-US', { timeZone: 'America/New_York' })} ET\nName: ${name || '—'}\nEmail: ${email}\nPhone: ${phone || '—'}\nTimezone: ${timezone || '—'}\nStatus: Started assessment — did not complete.\n==============================`
       })
     });
 
-    // 3. Find "Incomplete Assessment" pipeline and add opportunity
-    // Get all pipelines
-    const pipeRes = await fetch(`${GHL_BASE}/opportunities/pipelines?locationId=${locationId}`, {
-      headers
-    });
-
-    if (pipeRes.ok) {
-      const pipeData = await pipeRes.json();
-      const pipelines = pipeData.pipelines || [];
-
-      // Find pipeline named "Assessment" or create opportunity in first available
-      const assessPipeline = pipelines.find(p =>
-        p.name.toLowerCase().includes('assessment')
-      ) || pipelines[0];
-
-      if (assessPipeline) {
-        // Find "Incomplete" stage or use first stage
-        const incompleteStage = assessPipeline.stages?.find(s =>
-          s.name.toLowerCase().includes('incomplete') ||
-          s.name.toLowerCase().includes('started') ||
-          s.name.toLowerCase().includes('new')
-        ) || assessPipeline.stages?.[0];
-
-        if (incompleteStage) {
-          await fetch(`${GHL_BASE}/opportunities`, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify({
-              pipelineId: assessPipeline.id,
-              locationId,
-              name: `${firstName || email} — Incomplete Assessment`,
-              pipelineStageId: incompleteStage.id,
-              status: 'open',
-              contactId,
-              source: 'Website Assessment'
-            })
-          });
-        }
-      }
-    }
-
+    // Opportunity is created later via /api/create-opportunity after 30-min timer
     return res.json({ success: true, contactId });
   } catch (err) {
     console.error('[capture-lead] Error:', err.message);

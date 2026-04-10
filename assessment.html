@@ -72,6 +72,9 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .num-input{width:120px;padding:12px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:18px;font-weight:700;color:var(--text);background:var(--bg);font-family:inherit;outline:none;text-align:center;-webkit-appearance:none;-moz-appearance:textfield;}
 .num-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-lt);}
 .num-unit{font-size:14px;color:var(--muted);}
+.timer-badge{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;padding:4px 10px;border:1.5px solid var(--border);border-radius:99px;display:none;letter-spacing:.3px;}
+.timer-badge.active{display:inline-block;}
+.timer-badge.overtime{color:var(--red);border-color:var(--red);}
 @media(max-width:600px){nav{padding:0 16px;}.prog-label{display:none;}.bbl{font-size:14px;max-width:90%;}.chat-input-area{padding:12px 14px;}}
 </style>
 </head>
@@ -83,6 +86,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
     <span class="prog-label" id="progLabel">Getting started</span>
     <div class="prog-bar"><div class="prog-fill" id="progFill"></div></div>
   </div>
+  <span class="timer-badge" id="timerBadge">⏱ 30:00</span>
   <a href="index.html" class="nav-back">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     Back
@@ -102,6 +106,50 @@ const A = {}; // all answers
 const TOTAL_STEPS = 23; // 4 contact + 19 questions
 let currentStep = 0;
 const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+/* ── LEAD TRACKING ───────────────────────────────────── */
+let ghlContactId = null;
+let assessmentComplete = false;
+let opportunityTimer = null;
+const TIMER_MS = 30 * 60 * 1000; // 30 minutes
+
+/* ── COUNTDOWN TIMER DISPLAY ─────────────────────────── */
+let timerInterval = null;
+function startCountdownTimer() {
+  const badge = document.getElementById('timerBadge');
+  if (!badge) return;
+  badge.classList.add('active');
+  const endTime = Date.now() + TIMER_MS;
+  timerInterval = setInterval(() => {
+    const diff = endTime - Date.now();
+    const neg = diff < 0;
+    const abs = Math.abs(diff);
+    const totalSec = Math.floor(abs / 1000);
+    const min = Math.floor(totalSec / 60);
+    const sec = totalSec % 60;
+    const fmt = (neg ? '-' : '') + min + ':' + String(sec).padStart(2, '0');
+    badge.textContent = '⏱ ' + fmt;
+    badge.classList.toggle('overtime', neg);
+  }, 1000);
+}
+function stopTimer() {
+  if (timerInterval) { clearInterval(timerInterval); timerInterval = null; }
+  if (opportunityTimer) { clearTimeout(opportunityTimer); opportunityTimer = null; }
+  const badge = document.getElementById('timerBadge');
+  if (badge) badge.classList.remove('active');
+}
+
+/* ── FIRE OPPORTUNITY AFTER 30 MIN ───────────────────── */
+function scheduleOpportunity() {
+  opportunityTimer = setTimeout(() => {
+    if (assessmentComplete || !ghlContactId) return;
+    fetch('/api/create-opportunity', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ contactId: ghlContactId, name: A.contact?.name, email: A.contact?.email })
+    }).catch(() => {});
+  }, TIMER_MS);
+}
 
 /* ── PROGRESS ────────────────────────────────────────── */
 function setProgress(step, label) {
@@ -355,24 +403,72 @@ async function main() {
   addBubble(email, 'user');
   A.contact.email = email;
 
-  // ── EARLY LEAD CAPTURE — fire and forget, don't block UX ──
+  // ── EARLY LEAD CAPTURE — fire and forget, capture contactId for later ──
+  const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+  A.contact.timezone = timezone;
+
   fetch('/api/capture-lead', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name: A.contact.name, email })
-  }).catch(() => {}); // silent fail — never block the assessment
+    body: JSON.stringify({ name: A.contact.name, email, timezone })
+  }).then(r => r.json()).then(d => {
+    if (!d.contactId) { console.warn('[capture-lead] no contactId in response', d); return; }
+    ghlContactId = d.contactId;
+    console.log('[capture-lead] contactId:', ghlContactId);
+    // If phone/company were already collected before this resolved, send them now
+    const patch = {};
+    if (A.contact.phone) patch.phone = A.contact.phone;
+    if (A.contact.company) patch.company = A.contact.company;
+    if (Object.keys(patch).length) {
+      console.log('[update-lead] late patch (race):', patch);
+      fetch('/api/update-lead', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email: A.contact.email, ...patch })
+      }).then(r => r.json()).then(d => console.log('[update-lead] race result:', d))
+        .catch(e => console.warn('[update-lead] race error:', e));
+    }
+  }).catch(e => console.warn('[capture-lead] error:', e));
+
+  // Start 30-min countdown — opportunity created if not finished
+  startCountdownTimer();
+  scheduleOpportunity();
 
   setProgress(3);
   await speak("Your phone number?", 600);
   const phone = await askText("+1 (555) 000-0000", v => v.replace(/\D/g,'').length >= 7 ? null : "Please enter a valid phone number", 'tel');
   addBubble(phone, 'user');
   A.contact.phone = phone;
+  // Update GHL if contactId already arrived; otherwise .then() above will catch it
+  if (ghlContactId) {
+    console.log('[update-lead] sending phone for', ghlContactId);
+    fetch('/api/update-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: A.contact.email, phone })
+    }).then(r => r.json()).then(d => console.log('[update-lead] phone result:', d))
+      .catch(e => console.warn('[update-lead] phone error:', e));
+  } else {
+    console.log('[update-lead] phone queued — waiting for contactId');
+  }
 
   setProgress(4);
   await speak("And your company name? (optional — type 'skip' if you prefer)", 600);
   const company = await askText("Company name or 'skip'", null);
   addBubble(company.toLowerCase() === 'skip' ? '(skipped)' : company, 'user');
   A.contact.company = company.toLowerCase() === 'skip' ? '' : company;
+  // Update GHL if contactId already arrived; otherwise .then() above will catch it
+  if (ghlContactId && A.contact.company) {
+    console.log('[update-lead] sending company for', ghlContactId);
+    fetch('/api/update-lead', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: A.contact.email, company: A.contact.company })
+    }).then(r => r.json()).then(d => console.log('[update-lead] company result:', d))
+      .catch(e => console.warn('[update-lead] company error:', e));
+  } else if (!ghlContactId) {
+    console.log('[update-lead] company queued — waiting for contactId');
+  }
 
   /* ── PROFILE QUESTIONS ── */
   setProgress(5, 'About your business');
@@ -793,6 +889,8 @@ async function main() {
 
 /* ── FINISH + AI CALL ────────────────────────────────── */
 async function finishAssessment() {
+  assessmentComplete = true; // cancel the 30-min opportunity timer
+  stopTimer();
   clearInput();
   setProgress(23, 'Building your report');
   await speak(`Perfect, ${A.contact.name.split(' ')[0]}. I have everything I need. Give me a moment to put your report together.`, 900);
