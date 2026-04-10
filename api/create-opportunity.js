@@ -32,19 +32,20 @@ module.exports = async function handler(req, res) {
 
   const headers = ghlHeaders(apiKey);
 
-  // If no contactId, look up contact by email
+  // If no contactId, use upsert by email — proven to work, returns existing contact
   if (!contactId && email) {
     try {
-      const searchRes = await fetch(
-        `${GHL_BASE}/contacts/?locationId=${locationId}&email=${encodeURIComponent(email)}`,
-        { headers }
-      );
-      if (searchRes.ok) {
-        const searchData = await searchRes.json();
-        contactId = searchData.contacts?.[0]?.id;
+      const upsertRes = await fetch(`${GHL_BASE}/contacts/upsert`, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({ locationId, email })
+      });
+      if (upsertRes.ok) {
+        const upsertData = await upsertRes.json();
+        contactId = upsertData.contact?.id;
       }
     } catch (e) {
-      console.warn('[create-opportunity] email lookup failed:', e.message);
+      console.warn('[create-opportunity] upsert lookup failed:', e.message);
     }
   }
 

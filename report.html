@@ -108,7 +108,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .email-confirm{text-align:center;margin-top:18px;font-size:12px;color:rgba(255,255,255,0.35);}
 /* ── FOOTER ── */
 footer{background:var(--navy);color:#FAF8F5;padding:48px 28px 28px;margin-top:0;}
-.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:36px;margin-bottom:40px;}
+.footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr;gap:36px;margin-bottom:40px;}
 .footer-brand p{font-size:13px;margin-top:10px;color:rgba(250,248,245,0.5);}
 .footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:12px;}
 .footer-links{display:flex;flex-direction:column;gap:8px;}
@@ -122,8 +122,8 @@ footer{background:var(--navy);color:#FAF8F5;padding:48px 28px 28px;margin-top:0;
 </head>
 <body>
 <nav>
-  <a href="index.html"><img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:44px;width:auto;display:block;"/></a>
-  <a href="index.html" class="nav-back">
+  <a href="/"><img src="/assets/Logo no background.png" alt="Nexvora Systems" style="height:44px;width:auto;display:block;" onerror="this.style.display='none';this.nextSibling.style.display='block'"/><span style="display:none;font-size:18px;font-weight:800;color:#0F2B4C;">Nexvora<span style="color:#0D9488;">.</span></span></a>
+  <a href="/" class="nav-back">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     Back to Home
   </a>
@@ -136,41 +136,45 @@ footer{background:var(--navy);color:#FAF8F5;padding:48px 28px 28px;margin-top:0;
 <footer>
   <div class="footer-grid">
     <div class="footer-brand">
-      <a href="index.html"><img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:38px;width:auto;display:block;margin-bottom:10px;"/></a>
-      <p>Operational clarity for small businesses across Florida and all 50 states.</p>
+      <a href="/" style="color:#FAF8F5;display:block;margin-bottom:10px;text-decoration:none;font-size:20px;font-weight:800;">Nexvora<span style="color:#44CAA2;">.</span></a>
+      <p>AI-powered operational consulting for small and growing businesses.</p>
+      <p style="margin-top:8px;font-size:13px;"><a href="mailto:info@nexvorasystems.us" style="color:rgba(250,248,245,0.5);text-decoration:none;">info@nexvorasystems.us</a></p>
+      <p style="margin-top:4px;font-size:13px;"><a href="tel:+18136676464" style="color:rgba(250,248,245,0.5);text-decoration:none;">(813) 667-6464</a></p>
     </div>
     <div>
       <p class="footer-col-title">Company</p>
       <div class="footer-links">
-        <a href="about.html">About</a>
-        <a href="services.html">Services</a>
-        <a href="blog.html">Insights</a>
-        <a href="contact.html">Contact</a>
+        <a href="/about.html">About</a>
+        <a href="/services.html">Services</a>
+        <a href="/blog.html">Insights</a>
+        <a href="/contact.html">Contact</a>
+        <a href="/faq.html">FAQ</a>
+        <a href="/assessment.html" style="color:#44CAA2;">Free Assessment</a>
       </div>
     </div>
     <div>
       <p class="footer-col-title">Services</p>
       <div class="footer-links">
-        <a href="services/operations.html">Operations</a>
-        <a href="services/ai-automation.html">AI & Automation</a>
-        <a href="services/sales-systems.html">Sales Systems</a>
-        <a href="services/growth-scaling.html">Growth & Scaling</a>
-      </div>
-    </div>
-    <div>
-      <p class="footer-col-title">Contact</p>
-      <div class="footer-links">
-        <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a>
-        <a href="assessment.html">Free Assessment</a>
+        <a href="/services/operations.html">Operations</a>
+        <a href="/services/ai-automation.html">AI &amp; Automation</a>
+        <a href="/services/reporting-analytics.html">Reporting &amp; Analytics</a>
+        <a href="/services/sales-systems.html">Sales Systems</a>
+        <a href="/services/marketing.html">Marketing</a>
+        <a href="/services/customer-experience.html">Customer Experience</a>
+        <a href="/services/team-hr.html">Team &amp; HR</a>
+        <a href="/services/financial-efficiency.html">Financial Efficiency</a>
+        <a href="/services/growth-scaling.html">Growth &amp; Scaling</a>
       </div>
     </div>
   </div>
   <div class="footer-bottom">
-    <span>© 2025 Nexvora Systems LLC. All rights reserved.</span>
-    <span style="display:flex;gap:16px;flex-wrap:wrap;">
-      <a href="legal/terms.html" style="color:inherit;text-decoration:none;">Terms</a>
-      <a href="legal/privacy.html" style="color:inherit;text-decoration:none;">Privacy</a>
-    </span>
+    <span>© 2026 Nexvora Systems LLC. All rights reserved.</span>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;">
+      <a href="/legal/terms.html" style="color:inherit;text-decoration:none;">Terms &amp; Conditions</a>
+      <a href="/legal/privacy.html" style="color:inherit;text-decoration:none;">Privacy Policy</a>
+      <a href="/legal/cookies.html" style="color:inherit;text-decoration:none;">Cookie Policy</a>
+      <a href="/legal/disclaimer.html" style="color:inherit;text-decoration:none;">Disclaimer</a>
+    </div>
   </div>
 </footer>
 
@@ -732,7 +736,7 @@ function renderStrategySection(d) {
 
   const s = strategies[g5] || strategies['steady'];
 
-  const html = `
+  const html = `<div class="section-body">
     <h2 style="font-size:18px;font-weight:800;margin-bottom:12px;">Your Growth Strategy</h2>
     <div style="font-size:12px;color:#718096;margin-bottom:12px;">12-Month Goal: <strong>${esc(goal12Labels[g12]||g12)}</strong> · 5-Year Goal: <strong>${esc(goal5Labels[g5]||g5)}</strong></div>
     <div style="background:#0F2B4C;border-radius:12px;padding:24px 28px;color:#fff;margin-bottom:${alignmentNote?'12px':'0'};">
@@ -741,7 +745,8 @@ function renderStrategySection(d) {
       <p style="font-size:14px;color:rgba(255,255,255,0.75);line-height:1.75;margin-bottom:14px;">${esc(s.body)}</p>
       <div style="border-top:1px solid rgba(255,255,255,0.15);padding-top:12px;font-size:13px;color:#0D9488;font-weight:600;">Priority: ${esc(s.priority)}</div>
     </div>
-    ${alignmentNote ? `<div style="background:#EBF8FF;border:1px solid #BEE3F8;border-radius:10px;padding:14px 18px;font-size:13px;color:#2B6CB0;line-height:1.6;">${esc(alignmentNote)}</div>` : ''}`;
+    ${alignmentNote ? `<div style="background:#EBF8FF;border:1px solid #BEE3F8;border-radius:10px;padding:14px 18px;font-size:13px;color:#2B6CB0;line-height:1.6;">${esc(alignmentNote)}</div>` : ''}
+  </div>`;
   renderSection(html);
 }
 
@@ -780,7 +785,7 @@ function renderCTA(d){
     <a href="https://api.leadconnectorhq.com/widget/booking/bGQ7oVjEW8HdbcQYTTUF" target="_blank" class="cta-btn-primary">Schedule Your ${offerActive?'Complimentary':'Strategy'} Call</a>
     <div class="cta-actions">
       <button class="cta-btn-secondary" id="pdfBtn" onclick="downloadPDF(this)">Download PDF</button>
-      <a href="index.html" class="cta-btn-secondary">Back to Home</a>
+      <a href="/" class="cta-btn-secondary">Back to Home</a>
     </div>
     <div class="email-confirm" id="emailConfirm">Report sent to ${esc(d.contact.email)} · Not seeing it? Check your spam folder.</div>
   </div>`;
