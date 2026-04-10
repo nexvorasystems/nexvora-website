@@ -80,7 +80,7 @@ module.exports = async function handler(req, res) {
     if (!newLeadStage) return res.status(500).json({ error: 'No stage found' });
 
     // Create the opportunity
-    const oppRes = await fetch(`${GHL_BASE}/opportunities`, {
+    const oppRes = await fetch(`${GHL_BASE}/opportunities/`, {
       method: 'POST',
       headers,
       body: JSON.stringify({
