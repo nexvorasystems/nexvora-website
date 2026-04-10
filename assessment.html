@@ -154,11 +154,9 @@ function fireCloseBeacon() {
 }
 
 function registerCloseHandlers() {
-  // visibilitychange: fires when tab is hidden, minimized, or closed
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'hidden') fireCloseBeacon();
-  });
-  // beforeunload: fires on navigate away / tab close
+  // pagehide: fires only on actual page unload (close/navigate), NOT on tab switch
+  window.addEventListener('pagehide', fireCloseBeacon);
+  // beforeunload: fires on navigate away / tab close (desktop fallback)
   window.addEventListener('beforeunload', fireCloseBeacon);
 }
 
