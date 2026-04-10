@@ -764,23 +764,23 @@ function renderCTA(d){
       <div class="offer-box">
         <div class="offer-tag">Limited Time — Assessment Completers Only</div>
         <div class="offer-prices">
-          <div class="offer-old">$899 / 60 min</div>
+          <div class="offer-old">$599 / 25 min</div>
           <div class="offer-new">Complimentary</div>
         </div>
-        <div class="offer-note">Standard strategy call rate is $899. Complete your assessment today and schedule at no cost.<br/>If you choose to work with us, the full call value is credited toward your engagement.</div>
+        <div class="offer-note">Standard strategy call rate is $599. Complete your assessment today and schedule at no cost.<br/>If you choose to work with us, the full call value is credited toward your engagement.</div>
         <div class="countdown" id="countdown"></div>
       </div>`;
   } else {
     offerHtml=`
       <div class="offer-box">
         <div class="offer-tag">Strategy Call</div>
-        <div class="offer-prices"><div class="offer-new" style="color:#44CAA2;font-size:24px;">$899 / 60 min</div></div>
-        <div class="offer-note">60-minute strategy session with Murat or Alexandr. If you choose to work with us, this call fee is credited toward your engagement.</div>
+        <div class="offer-prices"><div class="offer-new" style="color:#44CAA2;font-size:24px;">$599 / 25 min</div></div>
+        <div class="offer-note">25-minute strategy session with Murat and Alexandr. If you choose to work with us, this call fee is credited toward your engagement.</div>
       </div>`;
   }
   const html=`<div class="cta-section">
     <h2>Ready to change<br><strong>the math?</strong></h2>
-    <div class="cta-sub">Murat or Alexandr will personally review this report with you and show you exactly where to start, ${esc(first)}.</div>
+    <div class="cta-sub">Murat and Alexandr will personally review this report and will answer all your questions, ${esc(first)}.</div>
     ${offerHtml}
     <a href="https://api.leadconnectorhq.com/widget/booking/bGQ7oVjEW8HdbcQYTTUF" target="_blank" class="cta-btn-primary">Schedule Your ${offerActive?'Complimentary':'Strategy'} Call</a>
     <div class="cta-actions">
