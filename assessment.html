@@ -355,6 +355,13 @@ async function main() {
   addBubble(email, 'user');
   A.contact.email = email;
 
+  // ── EARLY LEAD CAPTURE — fire and forget, don't block UX ──
+  fetch('/api/capture-lead', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ name: A.contact.name, email })
+  }).catch(() => {}); // silent fail — never block the assessment
+
   setProgress(3);
   await speak("Your phone number?", 600);
   const phone = await askText("+1 (555) 000-0000", v => v.replace(/\D/g,'').length >= 7 ? null : "Please enter a valid phone number", 'tel');
