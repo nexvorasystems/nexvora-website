@@ -589,16 +589,8 @@ IMPORTANT OUTPUT RULES:
 }
 
 function buildImagePrompt(articleTitle, city) {
-  const locationHint = city ? `${city}, ${region.state}` : region.name;
-  const visuals = TOPIC_VISUALS[topic] || 'business dashboard and professional workspace on screen';
-  return `Professional editorial photograph for a business blog article: "${articleTitle}".
-Setting: Modern clean office in ${locationHint}, natural light, minimal decor.
-Scene: A focused small business professional reviewing ${visuals}.
-Style: Realistic editorial photography, clean composition, professional.
-Mood: Confident, productive, modern.
-Format: Wide landscape (16:9) for website blog header.
-No text overlays, no logos, no religious symbols, no political symbols, no watermarks.
-Sharp, well-lit, photorealistic.`;
+  const visuals = TOPIC_VISUALS[topic] || 'business dashboard on laptop screen';
+  return `Corporate office interior photography. A business professional in business casual clothing sitting at a modern desk inside an office building, ${visuals}. Indoor setting only. Office furniture, desk, computer screens, professional environment. Clean modern interior. Natural window light. No outdoor scenes. No nature. No hiking. No backpacks. No streets. No parks. Photorealistic corporate photography. Wide 16:9 format. No text, no logos, no watermarks.`;
 }
 
 // ── SLUG + ESCAPE ─────────────────────────────────────────────────────────────
