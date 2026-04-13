@@ -753,6 +753,78 @@ function renderStrategySection(d) {
 /* ═══════════════════════════════════════════════════════
    SECTION 6: CTA + COUNTDOWN
 ═══════════════════════════════════════════════════════ */
+async function renderOnlinePresence(d){
+  const company = d.contact.company || '';
+  const city = d.q2_city || '';
+  const name = d.contact.name.split(' ')[0];
+
+  // Build search links
+  const q = encodeURIComponent(company || d.contact.name);
+  const cityQ = city ? encodeURIComponent(city) : '';
+  const googleLink = `https://www.google.com/search?q=${q}+${cityQ}`;
+  const mapsLink = `https://www.google.com/maps/search/${q}+${cityQ}`;
+  const yelpLink = `https://www.yelp.com/search?find_desc=${q}&find_loc=${cityQ}`;
+  const redditLink = `https://www.reddit.com/search/?q=${encodeURIComponent('"' + (company || d.contact.name) + '"')}`;
+
+  // Try Reddit public API
+  let redditHtml = '';
+  if (company) {
+    try {
+      const res = await fetch(`https://www.reddit.com/search.json?q=${encodeURIComponent('"' + company + '"')}&limit=5&sort=relevance`, {
+        headers: { 'Accept': 'application/json' }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        const posts = (data.data && data.data.children) ? data.data.children.slice(0, 3) : [];
+        if (posts.length > 0) {
+          const items = posts.map(p => {
+            const pd = p.data;
+            return `<div style="border-bottom:1px solid var(--border);padding:10px 0;last-child:border:none">
+              <a href="https://reddit.com${esc(pd.permalink)}" target="_blank" rel="noopener" style="font-size:13px;font-weight:700;color:var(--teal);text-decoration:none;line-height:1.4;display:block;">${esc(pd.title)}</a>
+              <div style="font-size:11px;color:var(--dim);margin-top:3px;">r/${esc(pd.subreddit)} · ${pd.score} upvotes</div>
+            </div>`;
+          }).join('');
+          redditHtml = `
+            <div style="margin-top:14px;">
+              <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;">Reddit mentions found</div>
+              ${items}
+              <a href="${redditLink}" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;font-size:12px;color:var(--teal);text-decoration:none;font-weight:600;">See all Reddit results →</a>
+            </div>`;
+        } else {
+          redditHtml = `<div style="margin-top:14px;font-size:13px;color:var(--dim);">No Reddit mentions found for "${esc(company)}" — that's actually common for local businesses. It means your reputation lives offline, which also means there's an opportunity to build it online.</div>`;
+        }
+      }
+    } catch(e) { /* Reddit blocked or unavailable — skip silently */ }
+  }
+
+  const html = `<div class="section-card">
+    <div class="section-body">
+      <div class="section-label">What we found about you online</div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px;">We ran a quick online search for ${esc(company || name)}. Here's what's out there — and links to check it yourself.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
+        <a href="${googleLink}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          Google Search
+        </a>
+        <a href="${mapsLink}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+          Google Maps
+        </a>
+        <a href="${yelpLink}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          Yelp
+        </a>
+        <a href="${redditLink}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
+          Reddit
+        </a>
+      </div>
+      ${redditHtml}
+    </div>
+  </div>`;
+  renderSection(html);
+}
+
 function renderCTA(d){
   const first=d.contact.name.split(' ')[0];
   const OFFER_END=new Date('2026-05-01T00:00:00');
@@ -877,6 +949,7 @@ async function main(){
   renderOwnerEcon(d,econ);
   renderAreaAnalysis(d,scores,d.ai_summary||'');
   renderStrategySection(d);
+  await renderOnlinePresence(d);
   renderCTA(d);
 
   // Animate bars after short delay

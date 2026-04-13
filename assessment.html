@@ -32,7 +32,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .brow{display:flex;align-items:flex-end;gap:10px;}
 .brow.bot{justify-content:flex-start;}
 .brow.user{justify-content:flex-end;}
-.avatar{width:34px;height:34px;min-width:34px;border-radius:50%;background:linear-gradient(135deg,#0F2B4C,#0D9488);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;}
+.avatar{width:34px;height:34px;min-width:34px;border-radius:50%;background:linear-gradient(135deg,#0F2B4C,#0D9488);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800;color:#fff;overflow:hidden;flex-shrink:0;}
+.avatar img{width:100%;height:100%;object-fit:cover;display:block;border-radius:50%;}
 .bbl{max-width:84%;padding:13px 17px;border-radius:18px;font-size:15px;line-height:1.65;}
 .bbl.bot{background:var(--bg-card);border:1px solid var(--border);border-bottom-left-radius:4px;color:var(--text);}
 .bbl.user{background:var(--teal);color:#fff;border-bottom-right-radius:4px;}
@@ -201,7 +202,7 @@ function addBubble(text, type, isHtml=false) {
   const row = document.createElement('div');
   row.className = `brow ${type}`;
   const content = isHtml ? text : esc(text);
-  if (type === 'bot') row.innerHTML = `<div class="avatar">NX</div><div class="bbl bot">${content}</div>`;
+  if (type === 'bot') row.innerHTML = `<div class="avatar"><img src="assets/murat.jpg" alt="Murat" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'MZ'}))"/></div><div class="bbl bot">${content}</div>`;
   else row.innerHTML = `<div class="bbl user">${content}</div>`;
   inner.appendChild(row);
   scrollBottom();
@@ -215,7 +216,7 @@ function showTyping() {
   const inner = document.getElementById('chatInner');
   typingEl = document.createElement('div');
   typingEl.className = 'brow bot';
-  typingEl.innerHTML = `<div class="avatar">NX</div><div class="bbl bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
+  typingEl.innerHTML = `<div class="avatar"><img src="assets/murat.jpg" alt="Murat" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'MZ'}))"/></div><div class="bbl bot"><div class="typing-dots"><span></span><span></span><span></span></div></div>`;
   inner.appendChild(typingEl);
   scrollBottom();
 }
@@ -404,13 +405,40 @@ function askState() {
   });
 }
 
+/* ── OPTIONAL TEXT INPUT (with Skip button) ──────────── */
+function askTextOptional(placeholder) {
+  return new Promise(resolve => {
+    const area = document.getElementById('inputArea');
+    const inner = document.getElementById('inputInner');
+    inner.innerHTML = `
+      <div class="input-row">
+        <input class="chat-input" id="ci" type="text" placeholder="${placeholder}" autocomplete="off"/>
+        <button class="send-btn" id="csend" disabled>
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+        </button>
+      </div>
+      <div style="padding-top:6px;">
+        <button id="cskip" style="background:none;border:none;font-size:13px;color:var(--dim);cursor:pointer;text-decoration:underline;padding:4px 0;font-family:inherit;">Skip this question</button>
+      </div>`;
+    area.style.display = '';
+    const inp = document.getElementById('ci');
+    const btn = document.getElementById('csend');
+    inp.addEventListener('input', () => { btn.disabled = !inp.value.trim(); });
+    const submit = val => { clearInput(); resolve(val); };
+    inp.addEventListener('keydown', e => { if (e.key === 'Enter' && inp.value.trim()) submit(inp.value.trim()); });
+    btn.addEventListener('click', () => { if (inp.value.trim()) submit(inp.value.trim()); });
+    document.getElementById('cskip').addEventListener('click', () => submit(''));
+    setTimeout(() => { inp.focus(); scrollToLast(); }, 80);
+  });
+}
+
 /* ── MAIN FLOW ───────────────────────────────────────── */
 async function main() {
   setProgress(0, 'Getting started');
   await sleep(400);
-  await speak("Hi, I'm Nex — your Nexvora advisor. I'll ask you a few questions about your business and put together a personalized report. It takes about 5 minutes.", 900);
-  await sleep(200);
-  await speak("Let's start with some contact info so we can send you the report.", 700);
+  await speak(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;"><img src="assets/murat.jpg" alt="Murat" style="width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'"/><div><div style="font-weight:800;font-size:15px;color:var(--text);">Murat Zhandaurov</div><div style="font-size:12px;color:var(--dim);">Co-Founder, Nexvora Systems</div></div></div>Hey — I'm Murat. My partner Alexandr and I built this assessment after working with dozens of business owners who were all dealing with the same invisible problems.<br><br>Your answers come directly to us. We read every one personally. This takes about 5 minutes.`, 1200, true);
+  await sleep(300);
+  await speak("Let's start with a few quick contact details so we can send you the report.", 700);
 
   /* ── CONTACT INFO ── */
   await sleep(300);
@@ -479,10 +507,10 @@ async function main() {
   }
 
   setProgress(4);
-  await speak("And your company name? (optional — type 'skip' if you prefer)", 600);
-  const company = await askText("Company name or 'skip'", null);
-  addBubble(company.toLowerCase() === 'skip' ? '(skipped)' : company, 'user');
-  A.contact.company = company.toLowerCase() === 'skip' ? '' : company;
+  await speak("And your company name?", 600);
+  const company = await askTextOptional("Company name (optional)");
+  addBubble(company ? company : '(skipped)', 'user');
+  A.contact.company = company;
   // Update GHL if contactId already arrived; otherwise .then() above will catch it
   if (ghlContactId && A.contact.company) {
     console.log('[update-lead] sending company for', ghlContactId);
@@ -517,6 +545,19 @@ async function main() {
     'retail':'Retail','health-wellness':'Health & Wellness','professional-services':'Professional Services',
     'auto':'Auto Services','real-estate':'Real Estate'
   }[A.q1], 'user');
+
+  // Industry-specific reaction
+  const INDUSTRY_REACTIONS = {
+    'home-services': `Home services — high repeat potential, strong word-of-mouth market. Let's see what's holding you back.`,
+    'construction': `Construction — strong revenue per job, but cash flow and ops are usually where things get tight. Let's take a look.`,
+    'food-bev': `Food and beverage — tight margins, high turnover. The businesses that win here run very tight systems. Let's see where yours stands.`,
+    'retail': `Retail — inventory, foot traffic, and online pressure all at once. A lot moving at the same time.`,
+    'health-wellness': `Health and wellness — strong loyalty potential. Scheduling and retention are usually the gaps. Let's check yours.`,
+    'professional-services': `Professional services — time is your inventory. Billing efficiency and lead conversion are everything here.`,
+    'auto': `Auto services — strong local demand, but reviews and repeat visits drive almost all revenue. We'll look at both.`,
+    'real-estate': `Real estate — relationship-driven, market-dependent. Your pipeline and follow-up systems are the whole game.`,
+  };
+  await speak(INDUSTRY_REACTIONS[A.q1] || `Good. Let's dig into how your business runs.`, 700);
 
   // Sub-type question
   const SUB_TYPES = {
@@ -574,6 +615,10 @@ async function main() {
   await speak("What state is your business based in?", 600);
   A.q2 = await askState();
   addBubble((ALL_STATES.find(s=>s.abbr===A.q2)||{name:A.q2}).name, 'user');
+
+  await speak("And which city?", 500);
+  A.q2_city = await askText("Your city", v => v.trim().length >= 2 ? null : "Please enter your city");
+  addBubble(A.q2_city, 'user');
 
   setProgress(7);
   await speak("How long has your business been operating?", 600);
@@ -657,6 +702,7 @@ async function main() {
   }
 
   setProgress(12);
+  await speak(`You're halfway through, ${first}. The next questions go deeper — this is where we find the real gaps most business owners never see.`, 800);
   await speak("What happens after someone shows interest but doesn't buy immediately?", 700);
   A.q8 = await askChips([
     {label:"Nothing — they go cold",value:'nothing'},
@@ -811,6 +857,11 @@ async function main() {
   const q15bLabels = {'steady':'Keep growing steadily','scale':'Build a larger company','remove-self':'Remove myself from daily ops','exit':'Sell the business','legacy':'Pass to family','unsure':'Not sure yet'};
   addBubble(q15bLabels[A.q15b] || A.q15b, 'user');
 
+  await speak("One last thing before we get into numbers — what's the single biggest thing holding your business back right now? Be as specific as you want.", 800);
+  const pain = await askTextOptional("Type your answer (or skip)");
+  if (pain) { addBubble(pain, 'user'); } else { addBubble('(skipped)', 'user'); }
+  A.q_pain = pain;
+
   /* ── OWNER ECONOMICS ── */
   setProgress(20, 'Owner economics');
   await speak(`Last section, ${first}. These questions help us calculate something most business owners have never seen about their own business.`, 900);
@@ -919,7 +970,7 @@ async function finishAssessment() {
   stopTimer();
   clearInput();
   setProgress(23, 'Building your report');
-  await speak(`Perfect, ${A.contact.name.split(' ')[0]}. I have everything I need. Give me a moment to put your report together.`, 900);
+  await speak(`Perfect, ${A.contact.name.split(' ')[0]}. Murat and Alexandr will personally review your answers. Give us a moment to put your report together.`, 900);
   showTyping();
   await sleep(500);
 
@@ -966,7 +1017,7 @@ JSON format:
   hideTyping();
 
   // Store everything
-  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q10:A.q10, q11:A.q11, q11b:A.q11b, q11c:A.q11c, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q15b:A.q15b, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, q19_segments:A.q19_segments, q19_total:A.q19_total, q19_headcount:A.q19_headcount, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q2_city:A.q2_city, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q10:A.q10, q11:A.q11, q11b:A.q11b, q11c:A.q11c, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q15b:A.q15b, q_pain:A.q_pain||'', q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, q19_segments:A.q19_segments, q19_total:A.q19_total, q19_headcount:A.q19_headcount, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
   // Encode payload into URL so the report link works from any device (email link)
