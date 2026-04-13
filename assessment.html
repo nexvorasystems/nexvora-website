@@ -511,6 +511,20 @@ async function main() {
   const company = await askTextOptional("Company name (optional)");
   addBubble(company ? company : '(skipped)', 'user');
   A.contact.company = company;
+  A.company_confirmed = false;
+  if (company) {
+    await speak(`Got it — we'll search for <strong>${company.replace(/</g,'&lt;')}</strong> online and pull up what's out there in your report. Does that look right?`, 700, true);
+    const confirmChoice = await askChips([
+      {label:"Yes, that's my business", value:'yes'},
+      {label:"Can't find it / skip", value:'no'},
+    ]);
+    addBubble(confirmChoice === 'yes' ? "Yes, that's my business" : "Can't find it / skip", 'user');
+    if (confirmChoice === 'yes') {
+      A.company_confirmed = true;
+    } else {
+      await speak("No problem — we'll note it in your report and you can share more on your strategy call.", 600);
+    }
+  }
   // Update GHL if contactId already arrived; otherwise .then() above will catch it
   if (ghlContactId && A.contact.company) {
     console.log('[update-lead] sending company for', ghlContactId);
@@ -1017,7 +1031,7 @@ JSON format:
   hideTyping();
 
   // Store everything
-  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q2_city:A.q2_city, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q10:A.q10, q11:A.q11, q11b:A.q11b, q11c:A.q11c, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q15b:A.q15b, q_pain:A.q_pain||'', q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, q19_segments:A.q19_segments, q19_total:A.q19_total, q19_headcount:A.q19_headcount, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q2_city:A.q2_city, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q10:A.q10, q11:A.q11, q11b:A.q11b, q11c:A.q11c, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q15b:A.q15b, q_pain:A.q_pain||'', company_confirmed:A.company_confirmed||false, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, q19_segments:A.q19_segments, q19_total:A.q19_total, q19_headcount:A.q19_headcount, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
   // Encode payload into URL so the report link works from any device (email link)

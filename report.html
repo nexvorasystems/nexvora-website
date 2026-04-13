@@ -758,14 +758,22 @@ async function renderOnlinePresence(d){
   const city = d.q2_city || '';
   const state = d.q2 || '';
 
-  // If no company name — show a soft note, skip all searching
+  // No company name provided — soft note
   if (!company) {
-    const html = `<div class="section-card">
-      <div class="section-body">
-        <div class="section-label">What we found about you online</div>
-        <p style="font-size:14px;color:var(--muted);line-height:1.7;">You didn't share your company name, so we weren't able to look you up online. If you'd like us to check your online presence — reviews, listings, and what people are saying — mention it on your strategy call and we'll do a live audit with you.</p>
-      </div>
-    </div>`;
+    const html = `<div class="section-card"><div class="section-body">
+      <div class="section-label">What we found about you online</div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.7;">You didn't share your company name, so we weren't able to look you up online. If you'd like us to check your reviews, listings, and online presence — mention it on your strategy call and we'll do a live audit with you.</p>
+    </div></div>`;
+    renderSection(html);
+    return;
+  }
+
+  // Company provided but not confirmed — couldn't match it
+  if (!d.company_confirmed) {
+    const html = `<div class="section-card"><div class="section-body">
+      <div class="section-label">What we found about you online</div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.7;">We weren't able to confirm <strong style="color:var(--text);">${esc(company)}</strong> online. This sometimes happens with newer businesses or ones that operate under a different name digitally. Bring it up on your strategy call — we'll do a live search with you and show you exactly what potential customers see.</p>
+    </div></div>`;
     renderSection(html);
     return;
   }
