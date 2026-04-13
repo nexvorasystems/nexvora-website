@@ -769,6 +769,24 @@ async function main() {
     }
   }
 
+  // Closing rate
+  A.q9_close = null;
+  await speak("Do you know your closing rate — what percentage of leads or inquiries turn into paying customers?", 700);
+  const knowClose = await askChips([
+    {label:"Yes, I know it", value:'yes'},
+    {label:"Not sure / don't track it", value:'no'},
+  ]);
+  addBubble(knowClose === 'yes' ? "Yes, I know it" : "Don't track it", 'user');
+  if (knowClose === 'yes') {
+    await speak("What's your closing rate approximately?", 500);
+    A.q9_close = await askNumber('%', 1, 100);
+    addBubble(A.q9_close + '%', 'user');
+  } else {
+    const industryCloseRates = {'home-services':'20–35%','construction':'25–40%','food-bev':'N/A','retail':'N/A','health-wellness':'40–60%','professional-services':'20–35%','auto':'30–50%','real-estate':'5–15%'};
+    const benchmark = industryCloseRates[A.q1] || '20–40%';
+    await speak(`No worries — most business owners don't track this either. In ${({'home-services':'home services','construction':'construction','health-wellness':'health & wellness','professional-services':'professional services','auto':'auto services','real-estate':'real estate','food-bev':'food & beverage','retail':'retail'}[A.q1]||'your industry')}, typical closing rates run ${benchmark}. We'll flag this in your report — it's one of the fastest ways to grow revenue without spending more on ads.`, 900);
+  }
+
   setProgress(14);
   await speak("What is your average online review rating?", 700);
   A.q10 = await askChips([
@@ -1040,7 +1058,7 @@ JSON format:
   hideTyping();
 
   // Store everything
-  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q2_city:A.q2_city, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q10:A.q10, q11:A.q11, q11b:A.q11b, q11c:A.q11c, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q15b:A.q15b, q_pain:A.q_pain||'', company_confirmed:A.company_confirmed||false, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, q19_segments:A.q19_segments, q19_total:A.q19_total, q19_headcount:A.q19_headcount, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q2_city:A.q2_city, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q9_close:A.q9_close, q10:A.q10, q11:A.q11, q11b:A.q11b, q11c:A.q11c, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q15b:A.q15b, q_pain:A.q_pain||'', company_confirmed:A.company_confirmed||false, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, q19_segments:A.q19_segments, q19_total:A.q19_total, q19_headcount:A.q19_headcount, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
   // Encode payload into URL so the report link works from any device (email link)

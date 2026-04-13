@@ -778,66 +778,133 @@ async function renderOnlinePresence(d){
     return;
   }
 
-  // Build location string for queries: "company city state"
+  const NEG_WORDS = ['scam','fraud','terrible','horrible','worst','avoid','rip off','ripoff','fake','lied','dishonest','awful','never again','lawsuit','sued','complaint','warning','beware','do not use','stay away','unprofessional','garbage'];
+  const POS_WORDS = ['great','amazing','excellent','recommend','best','love','fantastic','professional','outstanding','perfect','top notch','highly recommend','five star','5 star','trustworthy'];
+
+  function sentiment(text) {
+    const t = text.toLowerCase();
+    const neg = NEG_WORDS.filter(w => t.includes(w)).length;
+    const pos = POS_WORDS.filter(w => t.includes(w)).length;
+    if (neg > pos) return 'negative';
+    if (pos > neg) return 'positive';
+    return 'neutral';
+  }
+
   const location = [city, state].filter(Boolean).join(', ');
   const searchTerm = location ? `${company} ${location}` : company;
   const googleLink = `https://www.google.com/search?q=${encodeURIComponent(searchTerm)}`;
+  const googleReviewsLink = `https://www.google.com/search?q=${encodeURIComponent(searchTerm + ' reviews')}`;
   const mapsLink = `https://www.google.com/maps/search/${encodeURIComponent(searchTerm)}`;
   const yelpLink = `https://www.yelp.com/search?find_desc=${encodeURIComponent(company)}&find_loc=${encodeURIComponent(location || state)}`;
+  const bbbLink = `https://www.bbb.org/search?find_text=${encodeURIComponent(company)}&find_loc=${encodeURIComponent(location || state)}`;
   const redditLink = `https://www.reddit.com/search/?q=${encodeURIComponent('"' + company + '"')}`;
 
-  // Try Reddit public API — search by company name only (location narrows too much on Reddit)
-  let redditHtml = '';
+  // Reddit search
+  let redditPosts = [];
+  let redditFailed = false;
   try {
-    const res = await fetch(`https://www.reddit.com/search.json?q=${encodeURIComponent('"' + company + '"')}&limit=5&sort=relevance`, {
-      headers: { 'Accept': 'application/json' }
-    });
+    const res = await fetch(`https://www.reddit.com/search.json?q=${encodeURIComponent('"' + company + '"')}&limit=8&sort=relevance`, { headers: { 'Accept': 'application/json' } });
     if (res.ok) {
       const data = await res.json();
-      const posts = (data.data && data.data.children) ? data.data.children.slice(0, 3) : [];
-      if (posts.length > 0) {
-        const items = posts.map(p => {
-          const pd = p.data;
-          return `<div style="border-bottom:1px solid var(--border);padding:10px 0;">
-            <a href="https://reddit.com${esc(pd.permalink)}" target="_blank" rel="noopener" style="font-size:13px;font-weight:700;color:var(--teal);text-decoration:none;line-height:1.4;display:block;">${esc(pd.title)}</a>
-            <div style="font-size:11px;color:var(--dim);margin-top:3px;">r/${esc(pd.subreddit)} · ${pd.score} upvotes</div>
-          </div>`;
-        }).join('');
-        redditHtml = `
-          <div style="margin-top:18px;">
-            <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;">Reddit mentions found</div>
-            ${items}
-            <a href="${redditLink}" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;font-size:12px;color:var(--teal);text-decoration:none;font-weight:600;">See all Reddit results →</a>
-          </div>`;
-      } else {
-        redditHtml = `<div style="margin-top:14px;padding:12px 16px;background:var(--bg-surface);border-radius:10px;font-size:13px;color:var(--muted);line-height:1.7;">No Reddit mentions found for <strong style="color:var(--text);">${esc(company)}</strong> — common for local businesses. It means your reputation lives offline, which also means there's real upside in building it online.</div>`;
-      }
+      redditPosts = (data.data && data.data.children) ? data.data.children.slice(0, 5) : [];
     }
-  } catch(e) { /* Reddit unavailable — skip silently */ }
+  } catch(e) { redditFailed = true; }
+
+  const negPosts = redditPosts.filter(p => sentiment(p.data.title + ' ' + (p.data.selftext||'')) === 'negative');
+  const posPosts = redditPosts.filter(p => sentiment(p.data.title + ' ' + (p.data.selftext||'')) === 'positive');
+  const neutralPosts = redditPosts.filter(p => sentiment(p.data.title + ' ' + (p.data.selftext||'')) === 'neutral');
+
+  // Build negative alert
+  let negAlert = '';
+  if (negPosts.length > 0) {
+    const negItems = negPosts.map(p => {
+      const pd = p.data;
+      return `<div style="padding:10px 0;border-bottom:1px solid rgba(239,68,68,0.15);">
+        <a href="https://reddit.com${esc(pd.permalink)}" target="_blank" rel="noopener" style="font-size:13px;font-weight:700;color:#DC2626;text-decoration:none;line-height:1.4;display:block;">${esc(pd.title)}</a>
+        <div style="font-size:11px;color:var(--dim);margin-top:3px;">r/${esc(pd.subreddit)} · ${pd.score} upvotes · <a href="https://reddit.com${esc(pd.permalink)}" target="_blank" rel="noopener" style="color:var(--teal);text-decoration:none;">Read thread →</a></div>
+      </div>`;
+    }).join('');
+    negAlert = `<div style="background:#FEF2F2;border:1px solid #FECACA;border-radius:12px;padding:18px 20px;margin-bottom:18px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#DC2626" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        <span style="font-size:13px;font-weight:800;color:#DC2626;">Negative mentions found — you need to know this</span>
+      </div>
+      <p style="font-size:13px;color:#7F1D1D;line-height:1.7;margin-bottom:14px;">We found what appear to be negative discussions about <strong>${esc(company)}</strong> on Reddit. These are the kinds of conversations potential customers read before deciding whether to hire you. <strong>Please verify we found the right business</strong> — search results are based on the name you provided.</p>
+      ${negItems}
+      <a href="${redditLink}" target="_blank" rel="noopener" style="display:inline-block;margin-top:12px;font-size:12px;color:#DC2626;text-decoration:none;font-weight:600;">See all Reddit results →</a>
+    </div>`;
+  }
+
+  // Build positive/neutral posts
+  let posHtml = '';
+  const goodPosts = [...posPosts, ...neutralPosts].slice(0, 3);
+  if (goodPosts.length > 0) {
+    const items = goodPosts.map(p => {
+      const pd = p.data;
+      return `<div style="padding:10px 0;border-bottom:1px solid var(--border);">
+        <a href="https://reddit.com${esc(pd.permalink)}" target="_blank" rel="noopener" style="font-size:13px;font-weight:700;color:var(--teal);text-decoration:none;line-height:1.4;display:block;">${esc(pd.title)}</a>
+        <div style="font-size:11px;color:var(--dim);margin-top:3px;">r/${esc(pd.subreddit)} · ${pd.score} upvotes</div>
+      </div>`;
+    }).join('');
+    posHtml = `<div style="margin-bottom:18px;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;">Other Reddit mentions</div>
+      ${items}
+    </div>`;
+  }
+
+  // No mentions at all
+  let noMentions = '';
+  if (!redditFailed && redditPosts.length === 0) {
+    noMentions = `<div style="padding:14px 16px;background:var(--bg-surface);border-radius:10px;font-size:13px;color:var(--muted);line-height:1.7;margin-bottom:18px;">
+      <strong style="color:var(--text);">No Reddit mentions found</strong> for "${esc(company)}". This is actually common for local businesses — most of your reputation is happening in Google reviews and word of mouth, not online forums. That's a manageable situation, and it means you have a clean slate to build from.
+    </div>`;
+  }
+
+  // Review context from assessment
+  const reviewContext = d.q10 ? (() => {
+    const labels = {'no-reviews':'no reviews yet','1-3':'a 1–3 star rating','3-4':'a 3–4 star rating','4-4.5':'a 4–4.5 star rating','4.5-5':'a 4.5–5 star rating'};
+    const colors = {'no-reviews':'#718096','1-3':'#DC2626','3-4':'#D97706','4-4.5':'#059669','4.5-5':'#059669'};
+    const notes = {
+      'no-reviews': 'You have no online reviews yet. Every competitor with even 10 reviews has a significant advantage over you in local search. This is your most urgent visibility issue.',
+      '1-3': 'A 1–3 star rating is actively costing you customers. Research shows 86% of people read reviews before visiting a business — most will choose a competitor with higher ratings.',
+      '3-4': 'A 3–4 star average is below the threshold most customers use as a filter. Many people set minimum 4-star filters on Google Maps and Yelp.',
+      '4-4.5': 'A 4–4.5 star rating is solid. Most customers will consider you, but the gap between 4.2 and 4.7 stars can still matter for first impressions.',
+      '4.5-5': 'A 4.5–5 star rating is strong. This is a real competitive advantage — protect it by making reviews part of your process, not an afterthought.',
+    };
+    return `<div style="padding:16px 18px;border-radius:10px;background:var(--bg-surface);border-left:3px solid ${colors[d.q10]||'var(--border)'};margin-bottom:18px;">
+      <div style="font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:${colors[d.q10]||'var(--muted)'};margin-bottom:6px;">Your review rating — ${labels[d.q10]||d.q10}</div>
+      <p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0;">${notes[d.q10]||''}</p>
+    </div>`;
+  })() : '';
+
+  const disclaimer = `<div style="margin-top:18px;padding:12px 16px;background:var(--bg-surface);border-radius:8px;font-size:12px;color:var(--dim);line-height:1.6;">
+    <strong style="color:var(--muted);">Note:</strong> These results are based on the name you provided ("${esc(company)}"). Please verify the links above show your business — if results look off, let us know on your strategy call and we'll do a live lookup together.
+  </div>`;
+
+  const linkBtn = (href, icon, label) => `<a href="${href}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;">${icon}${label}</a>`;
+  const iconSearch = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>`;
+  const iconMap = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>`;
+  const iconStar = `<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>`;
 
   const html = `<div class="section-card">
     <div class="section-body">
-      <div class="section-label">What we found about you online</div>
-      <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:18px;">We searched for <strong style="color:var(--text);">${esc(searchTerm)}</strong>. Here's what came up — and quick links to check each platform yourself.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:10px;">
-        <a href="${googleLink}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-          Google Search
-        </a>
-        <a href="${mapsLink}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-          Google Maps
-        </a>
-        <a href="${yelpLink}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-          Yelp
-        </a>
-        <a href="${redditLink}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 8v4M12 16h.01"/></svg>
-          Reddit
-        </a>
+      <div class="section-label">Online presence research</div>
+      <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px;">We searched for <strong style="color:var(--text);">${esc(searchTerm)}</strong> across Google, Yelp, BBB, and Reddit. Here's what potential customers see when they look you up.</p>
+
+      ${reviewContext}
+      ${negAlert}
+      ${posHtml}
+      ${noMentions}
+
+      <div style="font-size:12px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--dim);margin-bottom:10px;">Check your listings</div>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px;">
+        ${linkBtn(googleReviewsLink, iconStar, 'Google Reviews')}
+        ${linkBtn(mapsLink, iconMap, 'Google Maps')}
+        ${linkBtn(yelpLink, iconStar, 'Yelp')}
+        ${linkBtn(bbbLink, iconSearch, 'BBB')}
+        ${linkBtn(redditLink, iconSearch, 'Reddit')}
       </div>
-      ${redditHtml}
+      ${disclaimer}
     </div>
   </div>`;
   renderSection(html);
