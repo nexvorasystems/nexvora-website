@@ -432,165 +432,190 @@ function buildPillarPrompt(cities, usedKeywords) {
   const cityList  = cities.slice(0, 6).join(', ');
   const avoidList = [...usedKeywords].slice(0, 20).join(', ');
 
-  return `You are the lead content strategist for Nexvora Systems, a business consulting company specializing in AI, automation, and operational systems for small and medium businesses.
+  return `You are the lead content strategist and writer for Nexvora Systems, a business consulting company that helps small and medium business owners in ${region.name} implement AI, automation, CRM, and operational systems to grow revenue and free up time.
 
-Today: ${dateStr}
-Region: ${region.name} (${region.state})
-Topic: ${topic}
-Cities to reference: ${cityList}
+Today: ${dateStr} | Region: ${region.name} (${region.state}) | Topic: ${topic}
 Author: ${pillarFounder}
-Article type: PILLAR ARTICLE
-
-${avoidList ? `Do NOT use these keyword angles (already published): ${avoidList}` : ''}
-
-Write one comprehensive PILLAR article for nexvorasystems.us.
-
-OUTPUT — start with these exact header lines:
-Title: [broad regional title, ${region.name} + ${topic}]
-Meta Title: [under 60 chars, keyword first]
-Meta Description: [under 155 chars, compelling, includes primary keyword]
-Slug: [kebab-case, keyword-region-first, no date]
-Primary Keyword: [one specific phrase not in the avoid list above]
-Secondary Keywords: [5 comma-separated phrases]
-Cities Mentioned: ${cityList}
+${avoidList ? `\nDo NOT target these keyword angles (already published): ${avoidList}\n` : ''}
+OUTPUT — write these header lines first, exactly as shown:
+Title: [specific, search-intent title: ${topic} for Small Businesses in ${region.name}]
+Meta Title: [under 60 chars, primary keyword first]
+Meta Description: [under 155 chars, includes primary keyword + clear benefit]
+Slug: [kebab-case, keyword-first, no date, no "nexvora"]
+Primary Keyword: [one specific phrase, not in avoid list]
+Secondary Keywords: [5 comma-separated related phrases]
 Article Type: Pillar
 Estimated Reading Time: [X min read]
 
-Then write the full article with these exact H2 sections:
-## Introduction
-## The Real Problem ${topic} Solves for ${region.name} Businesses
-## Why Most Small Businesses in ${region.name} Are Falling Behind
-## The Exact Systems That Fix It
-## Step-by-Step: How to Implement This in Your Business
-## What Results Look Like (Real Numbers)
-## How Nexvora Systems Helps ${region.name} Businesses
+WORD COUNT REQUIREMENT: This article MUST be between 3,200 and 4,000 words. Count carefully. Do not stop writing until you reach 3,200 words minimum. Every section below has a minimum word count — you must hit it.
+
+Write the full article using EXACTLY these sections in this order. Each section must meet its minimum word count:
+
+## Introduction (minimum 200 words)
+Open with a direct, specific statement about the problem ${topic} causes for small business owners in ${region.name}. Name 2-3 cities. Explain who this article is for and exactly what they will learn. No fluff. No "in today's world." No "are you struggling."
+
+## The Real Problem: Why ${topic} Breaks Down for ${region.name} Small Businesses (minimum 400 words)
+Explain in detail why small businesses in ${region.name} specifically struggle with ${topic}. Name real business types: HVAC companies, cleaning services, plumbing contractors, medical offices, law firms, real estate teams, auto shops. Name cities: ${cityList}. Give 3-4 specific scenarios showing exactly how the problem plays out. Use numbers where possible.
+
+## What This Is Actually Costing You Every Month (minimum 350 words)
+Break down the real financial and operational cost of NOT having good ${topic} systems. Give specific dollar estimates. Examples: "A Tampa HVAC company with 8 technicians losing 3 leads per week at an average job value of $800 is losing $115,200 per year." Do the math. Make it real. Include at least 2 blockquotes in this format:
+> **The data:** [specific stat or calculation]
+
+## The ${topic} Systems That Actually Work for Small Businesses (minimum 500 words)
+List and explain 4-6 specific tools, systems, or processes that fix the problem. For each one: what it is, how it works, what type of business it fits, what result it produces. Be specific — name actual software tools where relevant (HubSpot, GoHighLevel, QuickBooks, Jobber, ServiceTitan, etc.). Do not be vague.
+
+## Step-by-Step: How to Build This in Your Business (minimum 500 words)
+Write a detailed numbered implementation plan. At least 6 steps. Each step must explain: what to do, how to do it, how long it takes, what it costs, and what result to expect. This is the most practical section — write it like instructions a business owner can follow starting Monday morning.
+
+## Real Results: What Happens When You Get This Right (minimum 300 words)
+Give 3 realistic before/after scenarios for different business types in ${region.name}. Each scenario: business type, city, problem they had, what they implemented, specific result (time saved, revenue gained, leads recovered). Make the numbers believable and specific.
+
+## Common Mistakes ${region.name} Business Owners Make With ${topic} (minimum 250 words)
+List 4-5 specific mistakes with explanation of why each one happens and what it costs. Be direct. No softening language.
+
+## How Nexvora Systems Helps ${region.name} Businesses (minimum 200 words)
+Explain specifically what Nexvora does, how the process works, what business owners get. Mention ${pillarFounder} once naturally. End with CTA: [Start Your Free Business Assessment](https://nexvorasystems.us/assessment.html)
+
 ## Related Articles
-## Frequently Asked Questions
-## Final Thoughts
+Include exactly 3 internal links in this format — these will be replaced with real URLs after publishing:
+- [SUPPORT_LINK_1]
+- [SUPPORT_LINK_2]
+- [SUPPORT_LINK_3]
 
-Rules:
-- 3,000-4,000 words total
-- Direct operator tone — write like a successful business owner, not a marketer
-- No long dashes or em dashes in the text
-- No phrases like "game-changer", "in today's landscape", "dive in", "delve"
-- Specific numbers, real examples, step-by-step throughout
-- Reference cities naturally: ${cityList}
-- Mention ${pillarFounder} once naturally as a founder insight or quote
-- Related Articles section: include 3 suggested internal links as placeholders with format [Article Title About City + Topic](/suggested-slug.html)
-- FAQ: 5-7 questions in this exact format:
+## Frequently Asked Questions (minimum 300 words total across all answers)
+Write 6 FAQ questions that match real Google searches about ${topic} for small businesses. Format EXACTLY like this — one Q then one A, blank line between each pair:
+
 **Q:** Question here?
-**A:** Answer here.
+**A:** Detailed answer here. Minimum 3 sentences per answer.
 
-(blank line between each Q&A pair)
-- Use 2-3 blockquotes for key stats: > **The data:** your stat here
-- Final CTA: [Start Free Assessment](https://nexvorasystems.us/assessment.html)
-- Primary keyword density 0.8-1.2%
-- Optimize for Google featured snippets and AI search tools`;
+**Q:** Next question?
+**A:** Detailed answer here.
+
+## Final Thoughts (minimum 150 words)
+Summarize the key action items. Reinforce urgency without being dramatic. End with: [Start Your Free Business Assessment](https://nexvorasystems.us/assessment.html)
+
+TONE RULES — follow these strictly:
+- Write like a successful business operator talking to another operator
+- Use "you" and "your business" throughout
+- Specific numbers, specific business types, specific cities
+- No long dashes or em dashes anywhere in the article
+- Never use: "game-changer", "delve", "in today's landscape", "it's worth noting", "seamlessly", "leverage" as a verb, "robust"
+- Short paragraphs — 3-4 sentences max per paragraph
+- Optimized for Google featured snippets, AI search (ChatGPT, Perplexity, Claude), and voice search`;
 }
 
 function buildSupportPrompt(city, pillarTitle, pillarSlug, usedKeywords, index) {
   const avoidList = [...usedKeywords].slice(0, 20).join(', ');
   const author = index === 0 ? pillarFounder : 'Murat Zhandaurov';
+  const pillarUrl = `https://nexvorasystems.us/posts/${pillarSlug}.html`;
 
   const angles = [
-    `how ${city} businesses are losing leads and revenue by not having proper ${topic} systems`,
-    `the specific ${topic} problems holding ${city} service businesses back from growing`,
-    `a practical step-by-step ${topic} setup that ${city} small business owners can start this week`,
+    `how ${city} service businesses are losing customers and revenue right now by not having ${topic} systems, with a practical fix`,
+    `the specific ${topic} mistakes that keep ${city} small business owners working 60-hour weeks without growing, and how to stop`,
+    `a step-by-step ${topic} setup built specifically for ${city} business owners who are ready to stop guessing and start growing`,
   ];
   const angle = angles[index % angles.length];
 
-  return `You are a content writer for Nexvora Systems, a business consulting firm.
+  return `You are a content writer for Nexvora Systems, a business consulting firm that helps small business owners in ${region.name} implement AI, automation, and operational systems.
 
-Today: ${dateStr}
-Region: ${region.name} (${region.state})
-City: ${city}
-Topic: ${topic}
-Specific angle: ${angle}
+Today: ${dateStr} | City: ${city}, ${region.state} | Topic: ${topic}
+Article angle: ${angle}
 Author: ${author}
-Article type: SUPPORT ARTICLE
-Pillar article: "${pillarTitle}" (slug: ${pillarSlug})
+${avoidList ? `\nDo NOT target these keyword angles (already published): ${avoidList}\n` : ''}
+This is a SUPPORT article that links to the PILLAR article:
+Pillar title: "${pillarTitle}"
+Pillar URL: ${pillarUrl}
 
-${avoidList ? `Do NOT use these keyword angles (already published): ${avoidList}` : ''}
-
-Write one focused SUPPORT article targeting ${city}, ${region.state}.
-
-OUTPUT — start with these exact header lines:
-Title: [city-specific title, includes ${city} and ${topic}]
-Meta Title: [under 60 chars, ${city} + keyword]
-Meta Description: [under 155 chars, mentions ${city}, compelling]
-Slug: [kebab-case, starts with city name]
-Primary Keyword: [one phrase that includes "${city}"]
-Secondary Keywords: [4 comma-separated phrases]
+OUTPUT — write these header lines first, exactly as shown:
+Title: [specific title: includes "${city}" and "${topic}", search-intent focused]
+Meta Title: [under 60 chars, starts with ${city}]
+Meta Description: [under 155 chars, mentions ${city}, includes keyword, has benefit hook]
+Slug: [kebab-case, starts with city slug, includes topic keyword]
+Primary Keyword: [one phrase that includes "${city}" and relates to ${topic}]
+Secondary Keywords: [4 comma-separated related phrases including ${city}]
 City: ${city}
 Article Type: Support
 Estimated Reading Time: [X min read]
 
-Then write the article with these exact H2 sections:
-## Introduction
-## Why ${city} Businesses Struggle With ${topic}
-## The Real Cost of Getting This Wrong in ${city}
-## What the Fix Looks Like
-## Step-by-Step: How to Start in ${city}
-## What ${city} Business Owners Can Expect
-## How Nexvora Systems Helps ${city} Businesses
-## Related Reading
+WORD COUNT REQUIREMENT: This article MUST be between 1,400 and 1,800 words. Do not stop until you reach 1,400 words minimum. Every section has a minimum — hit it.
+
+Write the full article using EXACTLY these sections. Each section must meet its minimum word count:
+
+## Introduction (minimum 150 words)
+Open with a specific, direct statement about the ${topic} problem facing small businesses in ${city}, ${region.state}. Name 2-3 specific business types common in ${city}. Explain what this article covers and what the reader will be able to do after reading it. Include this exact link naturally in the last paragraph: For a complete overview of ${topic} systems for ${region.name} businesses, read our full guide: [${pillarTitle}](${pillarUrl})
+
+## Why ${city} Businesses Struggle With ${topic} (minimum 250 words)
+Explain the specific reasons ${city} businesses have this problem. What is unique about ${city}'s business environment, industries, or market that makes this worse? Name real local business types. Give 2-3 specific scenarios. Use numbers.
+
+## What It Is Costing ${city} Business Owners (minimum 200 words)
+Break down the real cost — financial and operational — with specific numbers for ${city}-sized businesses. At least 1 blockquote:
+> **The data:** [specific stat or calculation relevant to ${city} businesses]
+
+## What the Fix Looks Like for a ${city} Business (minimum 250 words)
+Describe exactly what a proper ${topic} system looks like for a business the size and type common in ${city}. Name specific tools. Explain what changes, what gets easier, what results appear in the first 30-60-90 days.
+
+## Step-by-Step: Getting Started in ${city} (minimum 300 words)
+Write a numbered action plan with at least 5 steps. Each step: what to do, how long it takes, what it costs, what to expect. Written as if talking directly to a ${city} business owner who is ready to act this week.
+
+## How Nexvora Systems Works With ${city} Businesses (minimum 150 words)
+Explain what Nexvora does specifically for businesses like those in ${city}. Mention ${author} once naturally. Include this exact link: [Start Your Free Business Assessment](https://nexvorasystems.us/assessment.html)
+
 ## Frequently Asked Questions
-## Final Thoughts
+Write 4 FAQ questions specific to ${city} businesses and ${topic}. Format EXACTLY:
 
-Rules:
-- 1,200-1,800 words total
-- Focus exclusively on ${city} — local business types, local examples, local context
-- Use different business examples than other support articles
-- Direct operator tone — no corporate language
+**Q:** Question specific to ${city}?
+**A:** Detailed answer, minimum 2-3 sentences.
+
+**Q:** Next question?
+**A:** Detailed answer.
+
+## Final Thoughts (minimum 100 words)
+Short, direct close. Key takeaway. End with: [Start Your Free Business Assessment](https://nexvorasystems.us/assessment.html)
+Also include: For the complete ${region.name} guide, read: [${pillarTitle}](${pillarUrl})
+
+TONE RULES:
+- Write directly to a ${city} business owner
+- Specific numbers, specific business types, specific to ${city}
 - No long dashes or em dashes
-- No generic filler phrases
-- Mention ${author} once naturally
-- Related Reading section: include [${pillarTitle}](/${pillarSlug}.html) as a link
-- FAQ: 3-5 questions in this exact format:
-**Q:** Question here?
-**A:** Answer here.
-
-(blank line between each Q&A pair)
-- 1-2 blockquotes for key stats: > **The data:** your stat here
-- Final CTA: [Start Free Assessment](https://nexvorasystems.us/assessment.html)
-- Primary keyword must include the word "${city}"
-- Optimize for local SEO and voice search`;
+- Never use: "game-changer", "delve", "leverage" as verb, "robust", "seamlessly"
+- Short paragraphs — 3-4 sentences max
+- Optimized for local Google search, AI search tools, and voice search`;
 }
 
-function buildSEOReviewPrompt(articleText, articleType) {
-  const preview = articleText.slice(0, 7000);
-  return `You are an expert SEO editor reviewing a ${articleType} article for Nexvora Systems (nexvorasystems.us).
+function buildSEOReviewPrompt(articleText, articleType, minWords) {
+  return `You are an expert SEO editor for Nexvora Systems (nexvorasystems.us).
 
-Topic: ${topic} | Region: ${region.name}
+You are reviewing a ${articleType} article about: ${topic} | Region: ${region.name}
 
-ARTICLE TO REVIEW:
-${preview}
+CURRENT ARTICLE:
+${articleText}
 
-Your task — improve and return the full article:
-1. Strengthen the SEO Title if it can be more specific or keyword-rich
-2. Fix Meta Title: must be under 60 chars, keyword-first
-3. Fix Meta Description: under 155 chars, includes primary keyword, has a clear benefit hook
-4. Remove any AI-sounding phrases (game-changer, delve, in today's landscape, it's worth noting)
-5. Make headings more specific and search-intent focused
-6. Ensure FAQ questions match real Google searches
-7. Confirm internal link references are present
-8. Remove repetitive phrases or sentences
-9. Make tone more direct and operator-like throughout
+YOUR TASKS — improve and return the COMPLETE article:
+1. Fix Meta Title: must be under 60 chars, primary keyword first
+2. Fix Meta Description: under 155 chars, keyword + clear benefit hook
+3. Remove AI-sounding phrases: game-changer, delve, in today's landscape, it's worth noting, seamlessly, robust, leverage (as verb)
+4. Make all H2/H3 headings more specific and search-intent focused
+5. Ensure FAQ questions match real searches people type into Google
+6. Strengthen any weak paragraphs — add specifics, numbers, examples
+7. Make tone more direct throughout — less corporate, more operator-to-operator
+8. Verify all internal links are present and formatted correctly
 
-IMPORTANT OUTPUT RULES:
-- Return the FULL article — all sections, all content
-- Keep the exact header format (Title:, Meta Title:, Meta Description:, Slug:, Primary Keyword:, Secondary Keywords:, etc.)
-- Keep all ## and ### headings
+STRICT OUTPUT RULES:
+- Return the COMPLETE article — every section, every word
+- Keep exact header format (Title:, Meta Title:, Meta Description:, Slug:, Primary Keyword:, Secondary Keywords:, City:, Article Type:, Estimated Reading Time:)
+- Keep all ## headings exactly as written
 - Keep all blockquotes (> **The data:**)
-- Keep all FAQ formatting (**Q:** / **A:**)
-- Do NOT shorten the article by more than 10%
-- Do NOT add new sections
-- Do NOT add your own commentary before or after the article`;
+- Keep all FAQ pairs (**Q:** / **A:**)
+- Keep all internal links exactly as written
+- Do NOT cut content — the article must stay at or above ${minWords} words
+- Do NOT add commentary before or after the article
+- Do NOT add new sections`;
 }
 
 function buildImagePrompt(articleTitle, city) {
-  const visuals = TOPIC_VISUALS[topic] || 'business dashboard on laptop screen';
-  return `Corporate office interior photography. A business professional in business casual clothing sitting at a modern desk inside an office building, ${visuals}. Indoor setting only. Office furniture, desk, computer screens, professional environment. Clean modern interior. Natural window light. No outdoor scenes. No nature. No hiking. No backpacks. No streets. No parks. Photorealistic corporate photography. Wide 16:9 format. No text, no logos, no watermarks.`;
+  const visuals = TOPIC_VISUALS[topic] || 'business analytics dashboard on laptop screen';
+  const location = city ? `${city}, ${region.state}` : region.name;
+  return `Professional corporate photography. Interior of a modern small business office in ${location}. A focused business owner or manager in their 30s-40s wearing business casual clothing, sitting at a clean wooden desk, looking at ${visuals}. Bright natural light from windows. Modern minimalist office decor. No clutter. Sharp focus on the person and screen. The mood is confident and productive. Wide landscape format 16:9. Photorealistic, editorial quality. Absolutely no outdoor scenes, no nature, no streets, no parks. No text overlays. No logos. No watermarks.`;
 }
 
 // ── SLUG + ESCAPE ─────────────────────────────────────────────────────────────
@@ -871,15 +896,16 @@ function updateSitemap(entries) {
   console.log('\n[Step 4] Writing pillar article with Claude Sonnet...');
   let pillarRaw;
   try {
-    pillarRaw = await callClaude(buildPillarPrompt(region.cities, usedKeywords));
+    pillarRaw = await callClaude(buildPillarPrompt(region.cities, usedKeywords), 12000);
   } catch(err) {
     console.error('Claude pillar error:', err.message);
     process.exit(1);
   }
+  console.log(`  Pillar word count: ${pillarRaw.split(/\s+/).length}`);
 
   console.log('[Step 5] GPT-4o SEO review of pillar...');
   try {
-    pillarRaw = await callGPT(buildSEOReviewPrompt(pillarRaw, 'pillar'));
+    pillarRaw = await callGPT(buildSEOReviewPrompt(pillarRaw, 'pillar', 3200), 8000);
   } catch(err) {
     console.warn('GPT review failed, using Claude output:', err.message);
   }
@@ -929,15 +955,16 @@ function updateSitemap(entries) {
 
     let suppRaw;
     try {
-      suppRaw = await callClaude(buildSupportPrompt(city, pillarMeta.title, pillarMeta.slug, usedKeywords, i));
+      suppRaw = await callClaude(buildSupportPrompt(city, pillarMeta.title, pillarMeta.slug, usedKeywords, i), 6000);
     } catch(err) {
       console.error(`Claude support ${i+1} error:`, err.message);
       continue;
     }
+    console.log(`  Support word count: ${suppRaw.split(/\s+/).length}`);
 
     console.log(`  GPT-4o SEO review for ${city}...`);
     try {
-      suppRaw = await callGPT(buildSEOReviewPrompt(suppRaw, 'support'));
+      suppRaw = await callGPT(buildSEOReviewPrompt(suppRaw, 'support', 1400), 4000);
     } catch(err) {
       console.warn('GPT review failed, using Claude output:', err.message);
     }
@@ -979,6 +1006,23 @@ function updateSitemap(entries) {
     notionPages.push({ id: suppNotionId, slug: suppMeta.slug });
     written.push(suppMeta);
     usedKeywords.add(suppMeta.primaryKeyword?.toLowerCase());
+  }
+
+  // ── REPLACE SUPPORT LINK PLACEHOLDERS IN PILLAR ───────────────────────────
+  const supportArticles = written.filter(a => a.articleType === 'Support');
+  if (supportArticles.length > 0) {
+    console.log('\n[Step 7.4] Updating pillar with real support article links...');
+    const pillarFilePath = path.join(postsDir, pillarMeta.slug + '.html');
+    let pillarHtml = fs.readFileSync(pillarFilePath, 'utf8');
+    supportArticles.forEach((supp, i) => {
+      const placeholder = `[SUPPORT_LINK_${i + 1}]`;
+      const realLink = `<a href="/posts/${supp.slug}.html">${esc(supp.title)}</a>`;
+      pillarHtml = pillarHtml.split(placeholder).join(realLink);
+    });
+    // Clear any unused placeholders
+    pillarHtml = pillarHtml.replace(/\[SUPPORT_LINK_\d+\]/g, '');
+    fs.writeFileSync(pillarFilePath, pillarHtml);
+    console.log(`  Pillar links updated: ${supportArticles.length} support articles linked`);
   }
 
   // ── FINALIZE ──────────────────────────────────────────────────────────────
