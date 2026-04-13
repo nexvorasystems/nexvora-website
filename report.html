@@ -756,52 +756,62 @@ function renderStrategySection(d) {
 async function renderOnlinePresence(d){
   const company = d.contact.company || '';
   const city = d.q2_city || '';
-  const name = d.contact.name.split(' ')[0];
+  const state = d.q2 || '';
 
-  // Build search links
-  const q = encodeURIComponent(company || d.contact.name);
-  const cityQ = city ? encodeURIComponent(city) : '';
-  const googleLink = `https://www.google.com/search?q=${q}+${cityQ}`;
-  const mapsLink = `https://www.google.com/maps/search/${q}+${cityQ}`;
-  const yelpLink = `https://www.yelp.com/search?find_desc=${q}&find_loc=${cityQ}`;
-  const redditLink = `https://www.reddit.com/search/?q=${encodeURIComponent('"' + (company || d.contact.name) + '"')}`;
-
-  // Try Reddit public API
-  let redditHtml = '';
-  if (company) {
-    try {
-      const res = await fetch(`https://www.reddit.com/search.json?q=${encodeURIComponent('"' + company + '"')}&limit=5&sort=relevance`, {
-        headers: { 'Accept': 'application/json' }
-      });
-      if (res.ok) {
-        const data = await res.json();
-        const posts = (data.data && data.data.children) ? data.data.children.slice(0, 3) : [];
-        if (posts.length > 0) {
-          const items = posts.map(p => {
-            const pd = p.data;
-            return `<div style="border-bottom:1px solid var(--border);padding:10px 0;last-child:border:none">
-              <a href="https://reddit.com${esc(pd.permalink)}" target="_blank" rel="noopener" style="font-size:13px;font-weight:700;color:var(--teal);text-decoration:none;line-height:1.4;display:block;">${esc(pd.title)}</a>
-              <div style="font-size:11px;color:var(--dim);margin-top:3px;">r/${esc(pd.subreddit)} · ${pd.score} upvotes</div>
-            </div>`;
-          }).join('');
-          redditHtml = `
-            <div style="margin-top:14px;">
-              <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;">Reddit mentions found</div>
-              ${items}
-              <a href="${redditLink}" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;font-size:12px;color:var(--teal);text-decoration:none;font-weight:600;">See all Reddit results →</a>
-            </div>`;
-        } else {
-          redditHtml = `<div style="margin-top:14px;font-size:13px;color:var(--dim);">No Reddit mentions found for "${esc(company)}" — that's actually common for local businesses. It means your reputation lives offline, which also means there's an opportunity to build it online.</div>`;
-        }
-      }
-    } catch(e) { /* Reddit blocked or unavailable — skip silently */ }
+  // If no company name — show a soft note, skip all searching
+  if (!company) {
+    const html = `<div class="section-card">
+      <div class="section-body">
+        <div class="section-label">What we found about you online</div>
+        <p style="font-size:14px;color:var(--muted);line-height:1.7;">You didn't share your company name, so we weren't able to look you up online. If you'd like us to check your online presence — reviews, listings, and what people are saying — mention it on your strategy call and we'll do a live audit with you.</p>
+      </div>
+    </div>`;
+    renderSection(html);
+    return;
   }
+
+  // Build location string for queries: "company city state"
+  const location = [city, state].filter(Boolean).join(', ');
+  const searchTerm = location ? `${company} ${location}` : company;
+  const googleLink = `https://www.google.com/search?q=${encodeURIComponent(searchTerm)}`;
+  const mapsLink = `https://www.google.com/maps/search/${encodeURIComponent(searchTerm)}`;
+  const yelpLink = `https://www.yelp.com/search?find_desc=${encodeURIComponent(company)}&find_loc=${encodeURIComponent(location || state)}`;
+  const redditLink = `https://www.reddit.com/search/?q=${encodeURIComponent('"' + company + '"')}`;
+
+  // Try Reddit public API — search by company name only (location narrows too much on Reddit)
+  let redditHtml = '';
+  try {
+    const res = await fetch(`https://www.reddit.com/search.json?q=${encodeURIComponent('"' + company + '"')}&limit=5&sort=relevance`, {
+      headers: { 'Accept': 'application/json' }
+    });
+    if (res.ok) {
+      const data = await res.json();
+      const posts = (data.data && data.data.children) ? data.data.children.slice(0, 3) : [];
+      if (posts.length > 0) {
+        const items = posts.map(p => {
+          const pd = p.data;
+          return `<div style="border-bottom:1px solid var(--border);padding:10px 0;">
+            <a href="https://reddit.com${esc(pd.permalink)}" target="_blank" rel="noopener" style="font-size:13px;font-weight:700;color:var(--teal);text-decoration:none;line-height:1.4;display:block;">${esc(pd.title)}</a>
+            <div style="font-size:11px;color:var(--dim);margin-top:3px;">r/${esc(pd.subreddit)} · ${pd.score} upvotes</div>
+          </div>`;
+        }).join('');
+        redditHtml = `
+          <div style="margin-top:18px;">
+            <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;">Reddit mentions found</div>
+            ${items}
+            <a href="${redditLink}" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;font-size:12px;color:var(--teal);text-decoration:none;font-weight:600;">See all Reddit results →</a>
+          </div>`;
+      } else {
+        redditHtml = `<div style="margin-top:14px;padding:12px 16px;background:var(--bg-surface);border-radius:10px;font-size:13px;color:var(--muted);line-height:1.7;">No Reddit mentions found for <strong style="color:var(--text);">${esc(company)}</strong> — common for local businesses. It means your reputation lives offline, which also means there's real upside in building it online.</div>`;
+      }
+    }
+  } catch(e) { /* Reddit unavailable — skip silently */ }
 
   const html = `<div class="section-card">
     <div class="section-body">
       <div class="section-label">What we found about you online</div>
-      <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px;">We ran a quick online search for ${esc(company || name)}. Here's what's out there — and links to check it yourself.</p>
-      <div style="display:flex;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
+      <p style="font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:18px;">We searched for <strong style="color:var(--text);">${esc(searchTerm)}</strong>. Here's what came up — and quick links to check each platform yourself.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:10px;">
         <a href="${googleLink}" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:7px;padding:10px 16px;background:var(--bg-surface);border:1px solid var(--border);border-radius:10px;font-size:13px;font-weight:600;color:var(--text);text-decoration:none;">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           Google Search
