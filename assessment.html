@@ -513,14 +513,20 @@ async function main() {
   A.contact.company = company;
   A.company_confirmed = false;
   if (company) {
-    await speak("What city is your business in?", 500);
+    await speak("What state is your business in?", 500);
+    A.q2 = await askState();
+    addBubble((ALL_STATES.find(s=>s.abbr===A.q2)||{name:A.q2}).name, 'user');
+
+    await speak("And which city?", 400);
     const bizCity = await askText("City", v => v.trim().length >= 2 ? null : "Please enter your city");
     addBubble(bizCity, 'user');
     A.q2_city = bizCity;
 
-    const mapQ = encodeURIComponent(company + ' ' + bizCity);
+    const mapQ = encodeURIComponent(company + ' ' + bizCity + ' ' + A.q2);
     const safeCompany = company.replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    await speak(`Here's what we found for <strong>${safeCompany}</strong> in ${bizCity.replace(/</g,'&lt;')} — does this look like your business?<br><br><iframe src="https://maps.google.com/maps?q=${mapQ}&output=embed&iwloc=near" width="100%" height="200" style="border:0;border-radius:8px;display:block;" loading="lazy" allowfullscreen></iframe>`, 1000, true);
+    const safeCity = bizCity.replace(/</g,'&lt;');
+    const stateName = (ALL_STATES.find(s=>s.abbr===A.q2)||{name:A.q2}).name;
+    await speak(`Here's what we found for <strong>${safeCompany}</strong> in ${safeCity}, ${stateName} — does this look like your business?<br><br><iframe src="https://maps.google.com/maps?q=${mapQ}&output=embed&iwloc=near" width="100%" height="200" style="border:0;border-radius:8px;display:block;" loading="lazy" allowfullscreen></iframe>`, 1000, true);
     const confirmChoice = await askChips([
       {label:"Yes, that's my business", value:'yes'},
       {label:"Not finding it / skip", value:'no'},
@@ -633,10 +639,11 @@ async function main() {
   A.q1b = A.q1b_label.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
 
   setProgress(6);
-  await speak("What state is your business based in?", 600);
-  A.q2 = await askState();
-  addBubble((ALL_STATES.find(s=>s.abbr===A.q2)||{name:A.q2}).name, 'user');
-
+  if (!A.q2) {
+    await speak("What state is your business based in?", 600);
+    A.q2 = await askState();
+    addBubble((ALL_STATES.find(s=>s.abbr===A.q2)||{name:A.q2}).name, 'user');
+  }
   if (!A.q2_city) {
     await speak("And which city?", 500);
     A.q2_city = await askText("Your city", v => v.trim().length >= 2 ? null : "Please enter your city");
