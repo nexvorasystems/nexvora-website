@@ -646,6 +646,7 @@ function parseMeta(raw) {
 function buildHTML(meta, bodyMarkdown, imagePath) {
   let cleaned = bodyMarkdown
     .replace(/^---+\s*$/gm, '')                                  // remove --- horizontal rules (don't cut content after them)
+    .replace(/(\*\*Step \d+[:.][^*]*\*\*)/g, '\n\n$1')          // each Step starts on its own paragraph
     .replace(/\n+\*?\*?10 SEO keywords[\s\S]*$/im, '')
     .replace(/\n+\*?\*?SEO keywords[\s\S]*$/im, '')
     .replace(/\n+\*?\*?Social media[\s\S]*$/im, '')

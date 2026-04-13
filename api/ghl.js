@@ -228,7 +228,7 @@ module.exports = async function handler(req, res) {
 
     // 6. Send SMS via GHL (only if phone number provided)
     if (d.contact.phone) {
-      const smsReportUrl = `${SITE_URL}/report.html`;
+      const smsReportUrl = reportUrl; // same URL as email — includes report ID or base64 data
       const smsBody = `Hi ${first}! Your Nexvora Business Health Report is ready. View it here: ${smsReportUrl}\n\nQuestions? Book a free strategy call: https://api.leadconnectorhq.com/widget/booking/bGQ7oVjEW8HdbcQYTTUF`;
       const smsRes = await fetch(`${GHL_BASE}/conversations/messages`, {
         method: 'POST',
