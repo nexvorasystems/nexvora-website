@@ -878,8 +878,8 @@ function updateSitemap(entries) {
 
   // 3. Select cities
   console.log('[Step 3] Selecting cities (avoiding recent repeats)...');
-  const [pillarCity, city1, city2, city3] = selectCities(region.cities, recentArticles, 4);
-  const supportCities = [city1, city2, city3];
+  const [pillarCity, city1] = selectCities(region.cities, recentArticles, 2);
+  const supportCities = [city1]; // TEST MODE: 1 support article only
   console.log(`  Pillar region: ${region.name}`);
   console.log(`  Support cities: ${supportCities.join(', ')}`);
 
