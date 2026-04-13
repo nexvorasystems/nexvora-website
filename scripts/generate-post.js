@@ -678,7 +678,7 @@ function buildHTML(meta, bodyMarkdown, imagePath) {
     .map(block => {
       block = block.trim();
       if (!block) return '';
-      if (block.startsWith('<')) return block;
+      if (/^<(h[1-6]|ul|ol|li|blockquote|div|table|pre|figure)/i.test(block)) return block;
       return `<p>${block}</p>`;
     })
     .join('\n');
