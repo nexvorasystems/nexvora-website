@@ -276,13 +276,16 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
   .hamburger{display:flex;}
 }
 @media(max-width:480px){
-  .stats{grid-template-columns:1fr;}
   .svc-grid{grid-template-columns:1fr;}
   .hero-actions{flex-direction:column;align-items:flex-start;}
   .btn-p,.btn-g{width:100%;text-align:center;}
   .proof{flex-direction:column;align-items:flex-start;gap:8px;}
   .section,.section-alt{padding:56px 0;}
   .bubble{display:none;}
+  /* Keep stats 3-column on mobile but compact */
+  .stat-cell{padding:14px 8px;}
+  .stat-n{font-size:18px;}
+  .stat-l{font-size:10px;line-height:1.3;}
 }
 </style>
 </head>
