@@ -97,6 +97,30 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
 @media(max-width:900px){.sub-grid,.benefits{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){:root{--nav-h:56px;}nav{padding:0 20px;}.nav-links,.nav-cta{display:none;}.hamburger{display:flex;}.page-hero,.container{padding-left:20px;padding-right:20px;}.footer-grid{grid-template-columns:1fr;gap:28px;}footer{padding:40px 20px 24px;}.cta-block{padding:48px 24px;}}
 @media(max-width:480px){.sub-grid,.benefits{grid-template-columns:1fr;}}
+.sub-full-list{display:flex;flex-direction:column;gap:20px;}
+.sub-full-item{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px;display:grid;grid-template-columns:56px 1fr;gap:24px;align-items:start;transition:border-color .2s,box-shadow .2s;}
+.sub-full-item:hover{border-color:var(--teal-mid);box-shadow:0 4px 20px rgba(0,0,0,0.05);}
+.sub-full-left{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.sub-full-num{font-size:10px;font-weight:800;letter-spacing:2px;color:var(--teal);text-align:center;}
+.sub-full-item h3{font-size:18px;font-weight:700;color:var(--text);margin-bottom:12px;letter-spacing:-.3px;}
+.sub-full-item .sub-desc{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:14px;}
+.included-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.included-list{display:flex;flex-direction:column;gap:6px;padding:0;list-style:none;}
+.included-list li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);line-height:1.5;}
+.included-list li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:40px;}
+.process-step{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;}
+.process-step-num{font-size:28px;font-weight:800;color:rgba(13,148,136,0.15);line-height:1;margin-bottom:12px;}
+.process-step h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.process-step p{font-size:13px;color:var(--muted);line-height:1.6;}
+.faq-list{display:flex;flex-direction:column;gap:12px;margin-top:40px;}
+.faq-item{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;}
+.faq-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.7;}
+@media(max-width:900px){.sub-full-item{grid-template-columns:1fr;}.process-steps{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.process-steps{grid-template-columns:1fr;}}
+  .sub-learn-more{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:13px;font-weight:700;color:var(--teal);text-decoration:none;transition:gap .2s;}
+.sub-learn-more:hover{gap:10px;}
   </style>
 </head>
 <body>
@@ -119,35 +143,35 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
             <div class="nav-dd-right-outer"><div class="nav-dd-right">
               <div class="nav-dd-sub" id="dd-sub-ops">
                 <a href="../services/operations-business-systems.html" class="dd-view-all">View all →</a>
-                <a href="../services/operations-business-systems.html">Process &amp; SOPs</a>
-                <a href="../services/operations-business-systems.html">Sales Systems</a>
-                <a href="../services/operations-business-systems.html">Team &amp; HR</a>
-                <a href="../services/operations-business-systems.html">Financial Clarity</a>
-                <a href="../services/operations-business-systems.html">Growth Planning</a>
+                <a href="../services/operations/process-sops.html">Process &amp; SOPs</a>
+                <a href="../services/operations/sales-systems.html">Sales Systems</a>
+                <a href="../services/operations/team-hr.html">Team &amp; HR</a>
+                <a href="../services/operations/financial-clarity.html">Financial Clarity</a>
+                <a href="../services/operations/growth-planning.html">Growth Planning</a>
               </div>
               <div class="nav-dd-sub" id="dd-sub-ai">
                 <a href="../services/ai-automation.html" class="dd-view-all">View all →</a>
-                <a href="../services/ai-automation.html">Workflow Automation</a>
-                <a href="../services/ai-automation.html">AI Chatbots &amp; Bots</a>
-                <a href="../services/ai-automation.html">CRM &amp; Tool Integrations</a>
-                <a href="../services/ai-automation.html">Reporting &amp; Dashboards</a>
-                <a href="../services/ai-automation.html">AI Strategy</a>
+                <a href="../services/ai/workflow-automation.html">Workflow Automation</a>
+                <a href="../services/ai/chatbots-bots.html">AI Chatbots &amp; Bots</a>
+                <a href="../services/ai/crm-integrations.html">CRM &amp; Tool Integrations</a>
+                <a href="../services/ai/reporting-dashboards.html">Reporting &amp; Dashboards</a>
+                <a href="../services/ai/ai-strategy.html">AI Strategy</a>
               </div>
               <div class="nav-dd-sub" id="dd-sub-mkt">
                 <a href="../services/marketing-leads.html" class="dd-view-all">View all →</a>
-                <a href="../services/marketing-leads.html">Lead Generation Systems</a>
-                <a href="../services/marketing-leads.html">Paid Advertising</a>
-                <a href="../services/marketing-leads.html">Content &amp; SEO</a>
-                <a href="../services/marketing-leads.html">Email Marketing</a>
-                <a href="../services/marketing-leads.html">Social Media Management</a>
+                <a href="../services/marketing/lead-generation-systems.html">Lead Generation Systems</a>
+                <a href="../services/marketing/paid-advertising.html">Paid Advertising</a>
+                <a href="../services/marketing/content-seo.html">Content &amp; SEO</a>
+                <a href="../services/marketing/email-marketing.html">Email Marketing</a>
+                <a href="../services/marketing/social-media-management.html">Social Media Management</a>
               </div>
               <div class="nav-dd-sub" id="dd-sub-web">
                 <a href="../services/web-design.html" class="dd-view-all">View all →</a>
-                <a href="../services/web-design.html">Website Design &amp; Development</a>
-                <a href="../services/web-design.html">Copywriting &amp; Messaging</a>
-                <a href="../services/web-design.html">Brand Identity</a>
-                <a href="../services/web-design.html">Local SEO</a>
-                <a href="../services/web-design.html">Landing Pages</a>
+                <a href="../services/web/website-design-development.html">Website Design &amp; Development</a>
+                <a href="../services/web/copywriting-messaging.html">Copywriting &amp; Messaging</a>
+                <a href="../services/web/brand-identity.html">Brand Identity</a>
+                <a href="../services/web/local-seo.html">Local SEO</a>
+                <a href="../services/web/landing-pages.html">Landing Pages</a>
               </div>
             </div></div>
           </div>
@@ -189,81 +213,212 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
 <div class="section-alt">
   <div class="container">
     <p class="sec-label">What's Included</p>
-    <h2 class="sec-title">Five Marketing Services</h2>
-    <p class="sec-sub">Every business needs a different mix. We figure out what works for yours and build systems that compound over time.</p>
-    <div class="sub-grid">
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
+    <h2 class="sec-title">Five Marketing Services That Work Together</h2>
+    <p class="sec-sub">Every business needs a different mix. We figure out what works for yours and build systems that compound over time — not one-off campaigns that fade.</p>
+    <div class="sub-full-list">
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
+          <span class="sub-full-num">01</span>
         </div>
-        <h3>Lead Generation Systems</h3>
-        <p>We build the systems, funnels, and processes that turn your marketing spend into a consistent, predictable flow of qualified leads.</p>
-      </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg>
+        <div>
+          <h3>Lead Generation Systems</h3>
+          <p class="sub-desc">Lead generation isn't a single tactic — it's a system. Most businesses try one channel (ads, referrals, or cold outreach) and when it slows down, so does their pipeline. A real lead generation system combines multiple channels, has clear handoffs between stages, and consistently produces qualified prospects without requiring your manual effort every day.</p>
+          <p class="sub-desc">We design and build your lead generation infrastructure: the funnels, the landing pages, the nurture sequences, and the tracking. Everything connects to your CRM so no lead ever falls through the cracks and you can see exactly where every prospect is in the process.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Lead generation audit and channel gap analysis</li>
+            <li>Multi-channel lead flow design and strategy</li>
+            <li>Landing page and conversion funnel build</li>
+            <li>Lead magnet strategy and asset creation</li>
+            <li>CRM integration and lead capture automation</li>
+            <li>Conversion tracking and attribution setup</li>
+          </ul>
+          <a href="marketing/lead-generation-systems.html" class="sub-learn-more">Learn more about this service →</a>
         </div>
-        <h3>Paid Advertising</h3>
-        <p>Google Ads and Meta campaigns built for small business budgets — focused on actual leads and calls, not vanity metrics.</p>
       </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><path d="M3 11l19-9-9 19-2-8-8-2z"/></svg></div>
+          <span class="sub-full-num">02</span>
         </div>
-        <h3>Content &amp; SEO</h3>
-        <p>Blog content, local SEO, and organic strategy that brings clients searching for your services to your website — without paying for every click.</p>
-      </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+        <div>
+          <h3>Paid Advertising</h3>
+          <p class="sub-desc">Paid ads work — when they're set up correctly. Most small businesses either waste money on campaigns not optimized for conversions, or give up after a bad experience with a generic agency that treated them like a large account with a small budget. We build and manage Google Ads and Meta campaigns specifically for lead generation, not brand awareness or impressions.</p>
+          <p class="sub-desc">Every dollar is tracked. You'll know exactly how much a qualified lead costs, which campaigns are producing ROI, and where to invest more. We optimize monthly based on what the data shows — and we speak in plain English, not agency jargon.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Campaign strategy, goal-setting, and audience targeting</li>
+            <li>Google Search Ads (local and service-area targeting)</li>
+            <li>Meta Ads (Facebook and Instagram)</li>
+            <li>Conversion tracking and pixel setup</li>
+            <li>Landing page optimization for ad traffic</li>
+            <li>Monthly performance reporting with plain-English insights</li>
+          </ul>
+          <a href="marketing/paid-advertising.html" class="sub-learn-more">Learn more about this service →</a>
         </div>
-        <h3>Email Marketing</h3>
-        <p>Automated email sequences that nurture leads, follow up on quotes, and keep past clients coming back — running in the background without manual effort.</p>
       </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div>
+          <span class="sub-full-num">03</span>
         </div>
-        <h3>Social Media Management</h3>
-        <p>Consistent, professional presence on the platforms your clients use — built and managed so you don't have to think about it.</p>
+        <div>
+          <h3>Content &amp; SEO</h3>
+          <p class="sub-desc">SEO builds an asset that pays you back for years. While paid ads stop working the moment you stop paying, content and SEO create a compounding system where your website becomes more valuable over time. We create blog content, optimize your pages for local and national search terms, and build the technical foundation that search engines reward with higher rankings.</p>
+          <p class="sub-desc">For Florida small businesses, local SEO is particularly powerful — potential clients actively searching for your services in your area, ready to buy, finding you instead of your competitor. We focus on keywords that bring qualified traffic, not just volume.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Keyword research and content strategy</li>
+            <li>Monthly blog content creation (written for humans and SEO)</li>
+            <li>On-page SEO optimization for all key pages</li>
+            <li>Local SEO and service-area targeting</li>
+            <li>Technical SEO audit and fixes</li>
+            <li>Monthly rankings and organic traffic reporting</li>
+          </ul>
+          <a href="marketing/content-seo.html" class="sub-learn-more">Learn more about this service →</a>
+        </div>
       </div>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg></div>
+          <span class="sub-full-num">04</span>
+        </div>
+        <div>
+          <h3>Email Marketing</h3>
+          <p class="sub-desc">Email is still the highest-ROI marketing channel — when used properly. The problem is most businesses either send inconsistent newsletters nobody reads, or they have no email strategy at all. We build automated email sequences that do the heavy lifting: nurturing new leads, following up on quotes, re-engaging past clients, and staying top-of-mind with your audience — all running in the background without daily effort.</p>
+          <p class="sub-desc">Once built, these sequences run on autopilot. A new lead opts in and automatically receives a targeted nurture sequence. A quote goes unanswered and 3 follow-up emails go out automatically. A past client goes quiet for 90 days and a re-engagement campaign kicks in. You don't touch it — it just runs.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Email platform setup and optimization (GHL, Klaviyo, or Mailchimp)</li>
+            <li>New lead nurture sequence (5–7 emails)</li>
+            <li>Quote and proposal follow-up automation</li>
+            <li>Re-engagement campaign for cold or past leads</li>
+            <li>Monthly newsletter template and content strategy</li>
+            <li>List segmentation and deliverability optimization</li>
+          </ul>
+          <a href="marketing/email-marketing.html" class="sub-learn-more">Learn more about this service →</a>
+        </div>
+      </div>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></div>
+          <span class="sub-full-num">05</span>
+        </div>
+        <div>
+          <h3>Social Media Management</h3>
+          <p class="sub-desc">Social media is not optional for small businesses anymore — but it doesn't have to consume your time. We manage your presence on the 2–3 platforms your clients actually use, creating and scheduling professional content that represents your brand consistently week after week. You show up everywhere your clients are without spending your own time on it.</p>
+          <p class="sub-desc">We focus on organic social that builds trust and authority over time, not vanity metrics. Every post serves a purpose: educating your audience, demonstrating your expertise, generating engagement, or driving visitors toward taking action on your website.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Platform audit and channel strategy (2–3 platforms)</li>
+            <li>Monthly content calendar and approval process</li>
+            <li>Graphic and video content creation</li>
+            <li>Scheduling, posting, and community management</li>
+            <li>Story and reel production (where applicable)</li>
+            <li>Monthly performance reporting</li>
+          </ul>
+          <a href="marketing/social-media-management.html" class="sub-learn-more">Learn more about this service →</a>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
 <div class="section">
   <div class="container">
-    <p class="sec-label">The Result</p>
-    <h2 class="sec-title">Marketing That Pays For Itself</h2>
+    <p class="sec-label">How We Work</p>
+    <h2 class="sec-title">Strategy First, Execution Always</h2>
+    <p class="sec-sub">We don't start running ads on day one. We build the foundation first so every dollar you spend works harder.</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="process-step-num">01</div>
+        <h4>Marketing Audit</h4>
+        <p>We assess your current marketing — what's working, what's not, where leads are coming from, and where you're losing them. No assumptions.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">02</div>
+        <h4>Strategy &amp; Channel Plan</h4>
+        <p>We build a prioritized marketing plan based on your industry, location, budget, and goals. You know exactly what we'll do and why before we spend a dollar.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">03</div>
+        <h4>Build the Systems</h4>
+        <p>We build the funnels, sequences, campaigns, and content — everything that makes your marketing work automatically, not just when you're thinking about it.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">04</div>
+        <h4>Optimize Monthly</h4>
+        <p>Every month we review performance, identify what to improve, and update the strategy. Marketing compounds over time — we don't set it and forget it.</p>
+      </div>
+    </div>
+
+    <p class="sec-label" style="margin-top:64px;">The Result</p>
+    <h2 class="sec-title">Marketing That Pays for Itself</h2>
     <p class="sec-sub">Good marketing isn't an expense — it's the most measurable investment in your business.</p>
     <div class="benefits">
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
-          <h4>You stop relying on referrals alone</h4>
-          <p>A working lead gen system means you control how busy your business is, not just wait for referrals.</p>
+          <h4>You control your pipeline</h4>
+          <p>A working lead generation system means you decide how busy your business is — you're not at the mercy of referrals or word of mouth.</p>
         </div>
       </div>
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
-          <h4>You know what's working</h4>
-          <p>Every dollar tracked. You'll know exactly which channel is bringing in clients and what it costs.</p>
+          <h4>Every dollar tracked</h4>
+          <p>You'll know exactly which channel is producing clients, what each lead costs, and what your return on marketing spend actually is.</p>
         </div>
       </div>
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
-          <h4>Leads come to you</h4>
-          <p>Content and SEO bring clients actively searching for your service, not cold outreach.</p>
+          <h4>Clients come to you</h4>
+          <p>Content, SEO, and targeted ads bring clients who are actively searching for your service — no cold outreach, no chasing people down.</p>
         </div>
       </div>
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
           <h4>Marketing runs itself</h4>
-          <p>Automations, scheduled posts, and email sequences run without daily manual work.</p>
+          <p>Automations, scheduled posts, and email sequences run without daily manual effort — so your marketing keeps working even when you're not thinking about it.</p>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-alt">
+  <div class="container">
+    <p class="sec-label">Common Questions</p>
+    <h2 class="sec-title">Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <p class="faq-q">How much should we budget for paid advertising?</p>
+        <p class="faq-a">We work with Florida small businesses at various budget levels. Google Ads campaigns typically start at $500–$1,500/month in ad spend, and Meta Ads at $300–$800/month. We'll recommend a realistic budget based on your industry's cost-per-click and your revenue goals. Our management fee is separate from ad spend.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">How long before we see results from SEO?</p>
+        <p class="faq-a">SEO is a long-term investment — meaningful ranking improvements typically appear within 60–120 days, with compounding growth over 6–12 months. Local SEO (Google Business Profile optimization) tends to show results faster — often within 30–60 days. We set realistic expectations upfront and track progress monthly.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Do we need to be on every social media platform?</p>
+        <p class="faq-a">No. We focus on the 2–3 platforms where your ideal clients actually spend time. For most Florida small businesses, that's Facebook, Instagram, and sometimes LinkedIn or Google Business Profile. Being consistent on the right platforms beats being mediocre on all of them.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">What makes your approach different from a traditional marketing agency?</p>
+        <p class="faq-a">Most agencies optimize for retaining your budget, not maximizing your ROI. We optimize for results — we want you to see real lead flow and revenue growth, because that's what keeps you as a client. We also integrate marketing with your operations and sales systems, so leads that come in actually get followed up and converted.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Can you take over marketing from our current provider?</p>
+        <p class="faq-a">Yes. We do a full audit of what your current provider has built, identify what's working and what isn't, and take over management. We'll give you an honest assessment — if something is working, we'll keep it and improve it. We don't tear everything down just to rebuild it our way.</p>
       </div>
     </div>
   </div>

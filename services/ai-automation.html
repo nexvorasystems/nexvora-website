@@ -97,6 +97,30 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
 @media(max-width:900px){.sub-grid,.benefits{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){:root{--nav-h:56px;}nav{padding:0 20px;}.nav-links,.nav-cta{display:none;}.hamburger{display:flex;}.page-hero,.container{padding-left:20px;padding-right:20px;}.footer-grid{grid-template-columns:1fr;gap:28px;}footer{padding:40px 20px 24px;}.cta-block{padding:48px 24px;}}
 @media(max-width:480px){.sub-grid,.benefits{grid-template-columns:1fr;}}
+.sub-full-list{display:flex;flex-direction:column;gap:20px;}
+.sub-full-item{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px;display:grid;grid-template-columns:56px 1fr;gap:24px;align-items:start;transition:border-color .2s,box-shadow .2s;}
+.sub-full-item:hover{border-color:var(--teal-mid);box-shadow:0 4px 20px rgba(0,0,0,0.05);}
+.sub-full-left{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.sub-full-num{font-size:10px;font-weight:800;letter-spacing:2px;color:var(--teal);text-align:center;}
+.sub-full-item h3{font-size:18px;font-weight:700;color:var(--text);margin-bottom:12px;letter-spacing:-.3px;}
+.sub-full-item .sub-desc{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:14px;}
+.included-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.included-list{display:flex;flex-direction:column;gap:6px;padding:0;list-style:none;}
+.included-list li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);line-height:1.5;}
+.included-list li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:40px;}
+.process-step{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;}
+.process-step-num{font-size:28px;font-weight:800;color:rgba(13,148,136,0.15);line-height:1;margin-bottom:12px;}
+.process-step h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.process-step p{font-size:13px;color:var(--muted);line-height:1.6;}
+.faq-list{display:flex;flex-direction:column;gap:12px;margin-top:40px;}
+.faq-item{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;}
+.faq-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.7;}
+@media(max-width:900px){.sub-full-item{grid-template-columns:1fr;}.process-steps{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.process-steps{grid-template-columns:1fr;}}
+  .sub-learn-more{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:13px;font-weight:700;color:var(--teal);text-decoration:none;transition:gap .2s;}
+.sub-learn-more:hover{gap:10px;}
   </style>
 </head>
 <body>
@@ -119,35 +143,35 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
             <div class="nav-dd-right-outer"><div class="nav-dd-right">
               <div class="nav-dd-sub" id="dd-sub-ops">
                 <a href="../services/operations-business-systems.html" class="dd-view-all">View all →</a>
-                <a href="../services/operations-business-systems.html">Process &amp; SOPs</a>
-                <a href="../services/operations-business-systems.html">Sales Systems</a>
-                <a href="../services/operations-business-systems.html">Team &amp; HR</a>
-                <a href="../services/operations-business-systems.html">Financial Clarity</a>
-                <a href="../services/operations-business-systems.html">Growth Planning</a>
+                <a href="../services/operations/process-sops.html">Process &amp; SOPs</a>
+                <a href="../services/operations/sales-systems.html">Sales Systems</a>
+                <a href="../services/operations/team-hr.html">Team &amp; HR</a>
+                <a href="../services/operations/financial-clarity.html">Financial Clarity</a>
+                <a href="../services/operations/growth-planning.html">Growth Planning</a>
               </div>
               <div class="nav-dd-sub" id="dd-sub-ai">
                 <a href="../services/ai-automation.html" class="dd-view-all">View all →</a>
-                <a href="../services/ai-automation.html">Workflow Automation</a>
-                <a href="../services/ai-automation.html">AI Chatbots &amp; Bots</a>
-                <a href="../services/ai-automation.html">CRM &amp; Tool Integrations</a>
-                <a href="../services/ai-automation.html">Reporting &amp; Dashboards</a>
-                <a href="../services/ai-automation.html">AI Strategy</a>
+                <a href="../services/ai/workflow-automation.html">Workflow Automation</a>
+                <a href="../services/ai/chatbots-bots.html">AI Chatbots &amp; Bots</a>
+                <a href="../services/ai/crm-integrations.html">CRM &amp; Tool Integrations</a>
+                <a href="../services/ai/reporting-dashboards.html">Reporting &amp; Dashboards</a>
+                <a href="../services/ai/ai-strategy.html">AI Strategy</a>
               </div>
               <div class="nav-dd-sub" id="dd-sub-mkt">
                 <a href="../services/marketing-leads.html" class="dd-view-all">View all →</a>
-                <a href="../services/marketing-leads.html">Lead Generation Systems</a>
-                <a href="../services/marketing-leads.html">Paid Advertising</a>
-                <a href="../services/marketing-leads.html">Content &amp; SEO</a>
-                <a href="../services/marketing-leads.html">Email Marketing</a>
-                <a href="../services/marketing-leads.html">Social Media Management</a>
+                <a href="../services/marketing/lead-generation-systems.html">Lead Generation Systems</a>
+                <a href="../services/marketing/paid-advertising.html">Paid Advertising</a>
+                <a href="../services/marketing/content-seo.html">Content &amp; SEO</a>
+                <a href="../services/marketing/email-marketing.html">Email Marketing</a>
+                <a href="../services/marketing/social-media-management.html">Social Media Management</a>
               </div>
               <div class="nav-dd-sub" id="dd-sub-web">
                 <a href="../services/web-design.html" class="dd-view-all">View all →</a>
-                <a href="../services/web-design.html">Website Design &amp; Development</a>
-                <a href="../services/web-design.html">Copywriting &amp; Messaging</a>
-                <a href="../services/web-design.html">Brand Identity</a>
-                <a href="../services/web-design.html">Local SEO</a>
-                <a href="../services/web-design.html">Landing Pages</a>
+                <a href="../services/web/website-design-development.html">Website Design &amp; Development</a>
+                <a href="../services/web/copywriting-messaging.html">Copywriting &amp; Messaging</a>
+                <a href="../services/web/brand-identity.html">Brand Identity</a>
+                <a href="../services/web/local-seo.html">Local SEO</a>
+                <a href="../services/web/landing-pages.html">Landing Pages</a>
               </div>
             </div></div>
           </div>
@@ -190,80 +214,211 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
   <div class="container">
     <p class="sec-label">What's Included</p>
     <h2 class="sec-title">Five Ways We Automate Your Business</h2>
-    <p class="sec-sub">We don't just install a tool and leave. We identify what to automate, build it, and make sure it actually works.</p>
-    <div class="sub-grid">
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+    <p class="sec-sub">We don't just install a tool and leave. We identify what to automate, build it, and make sure it runs reliably — so your team can focus on work that actually requires a human.</p>
+    <div class="sub-full-list">
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg></div>
+          <span class="sub-full-num">01</span>
         </div>
-        <h3>Workflow Automation</h3>
-        <p>We map your most repetitive tasks — follow-ups, reminders, data entry, reporting — and automate them so they run without anyone touching them.</p>
-      </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        <div>
+          <h3>Workflow Automation</h3>
+          <p class="sub-desc">Every business has tasks that get done manually, repeatedly, that a machine could do instead. Data entry, email follow-ups, appointment reminders, lead routing, invoice creation — these take real time every day and often get missed when someone is busy. We map your most time-consuming manual processes and automate them using platforms like Make, Zapier, and GoHighLevel.</p>
+          <p class="sub-desc">The result is work that happens automatically, every time, without anyone touching it. Your team's time gets freed up for the work that actually requires a human — building relationships, solving problems, and growing the business.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Manual workflow audit across all key business processes</li>
+            <li>Automation blueprints for your top time-wasting tasks</li>
+            <li>Build and deploy using Make (Integromat), Zapier, or GoHighLevel</li>
+            <li>Form-to-CRM lead capture automation</li>
+            <li>Invoice, payment notification, and billing workflows</li>
+            <li>Error monitoring setup and ongoing maintenance</li>
+          </ul>
+          <a href="ai/workflow-automation.html" class="sub-learn-more">Learn more about this service →</a>
         </div>
-        <h3>AI Chatbots &amp; Bots</h3>
-        <p>Custom bots for your website, CRM, or internal tools that answer questions, qualify leads, and handle routine requests around the clock.</p>
       </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
+          <span class="sub-full-num">02</span>
         </div>
-        <h3>CRM &amp; Tool Integrations</h3>
-        <p>We connect your existing tools — CRM, email, scheduling, invoicing — so data flows automatically and nothing falls through the cracks.</p>
-      </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+        <div>
+          <h3>AI Chatbots &amp; Bots</h3>
+          <p class="sub-desc">A chatbot on your website can answer questions, qualify leads, book appointments, and collect contact information — 24 hours a day, 7 days a week, without anyone on your team doing anything. We build AI-powered bots that are trained specifically on your business: your services, your pricing FAQs, your booking process.</p>
+          <p class="sub-desc">This isn't a generic chat widget — it's a custom AI assistant that knows your business and responds the way you'd want to. Leads that come in at 11pm get a real, intelligent response instead of waiting until morning. The conversation starts immediately. More conversations mean more conversions.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Custom AI chatbot trained on your business information</li>
+            <li>Lead qualification and scoring logic</li>
+            <li>Appointment booking integration (calendar sync)</li>
+            <li>FAQ and objection handling configuration</li>
+            <li>CRM integration for automatic lead capture</li>
+            <li>Analytics dashboard and conversation monitoring</li>
+          </ul>
+          <a href="ai/chatbots-bots.html" class="sub-learn-more">Learn more about this service →</a>
         </div>
-        <h3>Reporting &amp; Dashboards</h3>
-        <p>Automated reports and live dashboards so you see your business performance in real time without manually pulling numbers.</p>
       </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><circle cx="18" cy="18" r="3"/><circle cx="6" cy="6" r="3"/><path d="M6 21V9a9 9 0 0 0 9 9"/></svg></div>
+          <span class="sub-full-num">03</span>
         </div>
-        <h3>AI Strategy &amp; Implementation</h3>
-        <p>We identify where AI can save you the most time and money, then implement the right tools in the right order — no wasted spend.</p>
+        <div>
+          <h3>CRM &amp; Tool Integrations</h3>
+          <p class="sub-desc">Most businesses use 5–10 different tools — and most of them don't talk to each other. Information lives in silos, people duplicate data entry, and things fall through the cracks when one tool doesn't know what happened in another. We connect your tech stack so your tools work together seamlessly, not in isolation.</p>
+          <p class="sub-desc">Whether that's your website form feeding directly into your CRM, your accounting software creating invoices automatically when a deal closes, or your team getting Slack notifications when a new lead comes in — we build the connections that eliminate manual data transfer and reduce errors.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Full tech stack audit and integration mapping</li>
+            <li>Connection architecture design</li>
+            <li>Build using Zapier, Make, or native APIs</li>
+            <li>Website form to CRM two-way sync</li>
+            <li>Cross-platform data sync (no more double entry)</li>
+            <li>Full documentation and team training</li>
+          </ul>
+          <a href="ai/crm-integrations.html" class="sub-learn-more">Learn more about this service →</a>
+        </div>
       </div>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
+          <span class="sub-full-num">04</span>
+        </div>
+        <div>
+          <h3>Reporting &amp; Dashboards</h3>
+          <p class="sub-desc">You can't manage what you can't see. Most small business owners have data spread across multiple platforms — Google Analytics, their CRM, their accounting software, their ad accounts — and no single place to look for the full picture. We build live dashboards that pull everything together so you always know exactly how your business is performing.</p>
+          <p class="sub-desc">This is about replacing the feeling of "I think things are going well" with "I know exactly what's happening." Real-time data on leads, revenue, conversion rates, and operational metrics — all in one place, updated automatically, accessible from anywhere.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Business KPI dashboard design and build</li>
+            <li>Data source connections (GA4, CRM, ad accounts, etc.)</li>
+            <li>Automated weekly and monthly report delivery</li>
+            <li>Revenue and pipeline tracking setup</li>
+            <li>Team performance dashboards</li>
+            <li>Alert setup for key metric changes</li>
+          </ul>
+          <a href="ai/reporting-dashboards.html" class="sub-learn-more">Learn more about this service →</a>
+        </div>
+      </div>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <span class="sub-full-num">05</span>
+        </div>
+        <div>
+          <h3>AI Strategy</h3>
+          <p class="sub-desc">Most small businesses don't know where to start with AI — and the vendors who want to sell them AI tools aren't objective guides. We conduct an unbiased AI audit of your business, identify the highest-ROI opportunities, and build a 90-day implementation roadmap you can execute without a dedicated technical team or six-figure budget.</p>
+          <p class="sub-desc">This isn't about adopting AI for the sake of it. It's about finding the 2–3 automations or AI tools that would have the biggest impact on your specific business, and sequencing them in the right order so you get results fast without overwhelm.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Full AI opportunity audit across your business</li>
+            <li>Tool evaluation and objective vendor comparison</li>
+            <li>Implementation prioritization framework (ROI-ranked)</li>
+            <li>90-day AI implementation roadmap</li>
+            <li>Team readiness and change management plan</li>
+            <li>Ongoing advisory support during rollout</li>
+          </ul>
+          <a href="ai/ai-strategy.html" class="sub-learn-more">Learn more about this service →</a>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
 <div class="section">
   <div class="container">
-    <p class="sec-label">The Result</p>
-    <h2 class="sec-title">40+ Hours Saved Per Month</h2>
-    <p class="sec-sub">On average our clients reclaim 40+ hours per month across their team by automating the right tasks.</p>
+    <p class="sec-label">How We Work</p>
+    <h2 class="sec-title">We Build It. You Run It.</h2>
+    <p class="sec-sub">We're not a software vendor. We're the team that figures out what to automate, builds it properly, and makes sure your team actually uses it.</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="process-step-num">01</div>
+        <h4>Automation Audit</h4>
+        <p>We map every manual, repetitive task in your business and score them by time cost and automation potential. You see exactly what's worth automating and why.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">02</div>
+        <h4>Design &amp; Plan</h4>
+        <p>We design the automation architecture — what connects to what, how data flows, and what the trigger/action sequences look like. You approve before we build.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">03</div>
+        <h4>Build &amp; Test</h4>
+        <p>We build every automation, test it thoroughly with real data, and verify it handles edge cases. Nothing goes live until it works exactly as intended.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">04</div>
+        <h4>Monitor &amp; Optimize</h4>
+        <p>After launch we monitor automation performance, catch any failures, and optimize based on real usage. You get a system that improves over time.</p>
+      </div>
+    </div>
+
+    <p class="sec-label" style="margin-top:64px;">The Result</p>
+    <h2 class="sec-title">Your Business Runs While You Sleep</h2>
+    <p class="sec-sub">Every hour saved by automation is an hour your team can spend on higher-value work — or an hour you get back.</p>
     <div class="benefits">
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
-          <h4>Leads never slip through</h4>
-          <p>Automated follow-ups and nurture sequences mean every lead gets contacted at the right time.</p>
+          <h4>Hours back every week</h4>
+          <p>Our clients save an average of 8–15 hours per week per team member on manual, repetitive tasks that are now fully automated.</p>
         </div>
       </div>
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
-          <h4>Your team does less admin</h4>
-          <p>Routine tasks like data entry, scheduling, and reporting happen automatically.</p>
+          <h4>Zero leads fall through</h4>
+          <p>Every new lead triggers an immediate, automated response sequence. No more missed follow-ups because someone was busy or forgot.</p>
         </div>
       </div>
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
-          <h4>You respond faster</h4>
-          <p>AI bots handle initial inquiries 24/7 so prospects get answers instantly.</p>
+          <h4>Fewer errors, more consistency</h4>
+          <p>Automated processes don't get tired, distracted, or inconsistent. The same thing happens correctly, every time, without exception.</p>
         </div>
       </div>
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
-          <h4>You have real-time visibility</h4>
-          <p>Dashboards show you what's working without anyone compiling spreadsheets.</p>
+          <h4>Real-time business visibility</h4>
+          <p>With live dashboards pulling all your data together, you always know what's happening in your business — no more flying blind.</p>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-alt">
+  <div class="container">
+    <p class="sec-label">Common Questions</p>
+    <h2 class="sec-title">Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <p class="faq-q">Do we need a technical team to maintain the automations after you build them?</p>
+        <p class="faq-a">No. We build automations that non-technical business owners and managers can understand and monitor. We also provide documentation and training so your team knows what to do if something needs to change. For ongoing maintenance, most clients either handle it themselves or engage us on a monthly retainer.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">What tools and platforms do you work with?</p>
+        <p class="faq-a">We work with Make (Integromat), Zapier, GoHighLevel, HubSpot, Slack, Google Workspace, QuickBooks, Xero, Stripe, Calendly, Typeform, and dozens of other platforms. If your tools have an API or a native Zapier/Make integration, we can connect them. We'll assess your existing stack and recommend the best approach.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">How long does it take to see results from AI and automation?</p>
+        <p class="faq-a">Most clients see meaningful time savings within the first 30 days. The first automations we build are typically the highest-impact, easiest-to-implement ones — so you start seeing ROI fast. More complex automations and AI integrations may take 60–90 days to fully deploy and optimize.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">We're not a tech company — is AI automation right for us?</p>
+        <p class="faq-a">Yes — and in fact, non-tech businesses often have the most to gain from automation because they're doing the most manual work. If you have any repetitive tasks, forms that go into spreadsheets, emails you send repeatedly, or data you copy between systems — automation will save you time and money.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">What's the difference between using a chatbot and just having a contact form?</p>
+        <p class="faq-a">A contact form is passive — the visitor fills it out and waits. A chatbot is active — it immediately engages, answers questions, qualifies the lead, and can book an appointment or provide pricing information on the spot. Studies consistently show chatbots convert 2–4x more visitors than static contact forms, especially outside business hours.</p>
       </div>
     </div>
   </div>

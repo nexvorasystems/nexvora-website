@@ -97,6 +97,30 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
 @media(max-width:900px){.sub-grid,.benefits{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){:root{--nav-h:56px;}nav{padding:0 20px;}.nav-links,.nav-cta{display:none;}.hamburger{display:flex;}.page-hero,.container{padding-left:20px;padding-right:20px;}.footer-grid{grid-template-columns:1fr;gap:28px;}footer{padding:40px 20px 24px;}.cta-block{padding:48px 24px;}}
 @media(max-width:480px){.sub-grid,.benefits{grid-template-columns:1fr;}}
+.sub-full-list{display:flex;flex-direction:column;gap:20px;}
+.sub-full-item{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px;display:grid;grid-template-columns:56px 1fr;gap:24px;align-items:start;transition:border-color .2s,box-shadow .2s;}
+.sub-full-item:hover{border-color:var(--teal-mid);box-shadow:0 4px 20px rgba(0,0,0,0.05);}
+.sub-full-left{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.sub-full-num{font-size:10px;font-weight:800;letter-spacing:2px;color:var(--teal);text-align:center;}
+.sub-full-item h3{font-size:18px;font-weight:700;color:var(--text);margin-bottom:12px;letter-spacing:-.3px;}
+.sub-full-item .sub-desc{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:14px;}
+.included-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.included-list{display:flex;flex-direction:column;gap:6px;padding:0;list-style:none;}
+.included-list li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);line-height:1.5;}
+.included-list li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:40px;}
+.process-step{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;}
+.process-step-num{font-size:28px;font-weight:800;color:rgba(13,148,136,0.15);line-height:1;margin-bottom:12px;}
+.process-step h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.process-step p{font-size:13px;color:var(--muted);line-height:1.6;}
+.faq-list{display:flex;flex-direction:column;gap:12px;margin-top:40px;}
+.faq-item{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;}
+.faq-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.7;}
+@media(max-width:900px){.sub-full-item{grid-template-columns:1fr;}.process-steps{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.process-steps{grid-template-columns:1fr;}}
+  .sub-learn-more{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:13px;font-weight:700;color:var(--teal);text-decoration:none;transition:gap .2s;}
+.sub-learn-more:hover{gap:10px;}
   </style>
 </head>
 <body>
@@ -119,35 +143,35 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
             <div class="nav-dd-right-outer"><div class="nav-dd-right">
               <div class="nav-dd-sub" id="dd-sub-ops">
                 <a href="../services/operations-business-systems.html" class="dd-view-all">View all →</a>
-                <a href="../services/operations-business-systems.html">Process &amp; SOPs</a>
-                <a href="../services/operations-business-systems.html">Sales Systems</a>
-                <a href="../services/operations-business-systems.html">Team &amp; HR</a>
-                <a href="../services/operations-business-systems.html">Financial Clarity</a>
-                <a href="../services/operations-business-systems.html">Growth Planning</a>
+                <a href="../services/operations/process-sops.html">Process &amp; SOPs</a>
+                <a href="../services/operations/sales-systems.html">Sales Systems</a>
+                <a href="../services/operations/team-hr.html">Team &amp; HR</a>
+                <a href="../services/operations/financial-clarity.html">Financial Clarity</a>
+                <a href="../services/operations/growth-planning.html">Growth Planning</a>
               </div>
               <div class="nav-dd-sub" id="dd-sub-ai">
                 <a href="../services/ai-automation.html" class="dd-view-all">View all →</a>
-                <a href="../services/ai-automation.html">Workflow Automation</a>
-                <a href="../services/ai-automation.html">AI Chatbots &amp; Bots</a>
-                <a href="../services/ai-automation.html">CRM &amp; Tool Integrations</a>
-                <a href="../services/ai-automation.html">Reporting &amp; Dashboards</a>
-                <a href="../services/ai-automation.html">AI Strategy</a>
+                <a href="../services/ai/workflow-automation.html">Workflow Automation</a>
+                <a href="../services/ai/chatbots-bots.html">AI Chatbots &amp; Bots</a>
+                <a href="../services/ai/crm-integrations.html">CRM &amp; Tool Integrations</a>
+                <a href="../services/ai/reporting-dashboards.html">Reporting &amp; Dashboards</a>
+                <a href="../services/ai/ai-strategy.html">AI Strategy</a>
               </div>
               <div class="nav-dd-sub" id="dd-sub-mkt">
                 <a href="../services/marketing-leads.html" class="dd-view-all">View all →</a>
-                <a href="../services/marketing-leads.html">Lead Generation Systems</a>
-                <a href="../services/marketing-leads.html">Paid Advertising</a>
-                <a href="../services/marketing-leads.html">Content &amp; SEO</a>
-                <a href="../services/marketing-leads.html">Email Marketing</a>
-                <a href="../services/marketing-leads.html">Social Media Management</a>
+                <a href="../services/marketing/lead-generation-systems.html">Lead Generation Systems</a>
+                <a href="../services/marketing/paid-advertising.html">Paid Advertising</a>
+                <a href="../services/marketing/content-seo.html">Content &amp; SEO</a>
+                <a href="../services/marketing/email-marketing.html">Email Marketing</a>
+                <a href="../services/marketing/social-media-management.html">Social Media Management</a>
               </div>
               <div class="nav-dd-sub" id="dd-sub-web">
                 <a href="../services/web-design.html" class="dd-view-all">View all →</a>
-                <a href="../services/web-design.html">Website Design &amp; Development</a>
-                <a href="../services/web-design.html">Copywriting &amp; Messaging</a>
-                <a href="../services/web-design.html">Brand Identity</a>
-                <a href="../services/web-design.html">Local SEO</a>
-                <a href="../services/web-design.html">Landing Pages</a>
+                <a href="../services/web/website-design-development.html">Website Design &amp; Development</a>
+                <a href="../services/web/copywriting-messaging.html">Copywriting &amp; Messaging</a>
+                <a href="../services/web/brand-identity.html">Brand Identity</a>
+                <a href="../services/web/local-seo.html">Local SEO</a>
+                <a href="../services/web/landing-pages.html">Landing Pages</a>
               </div>
             </div></div>
           </div>
@@ -190,80 +214,216 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
   <div class="container">
     <p class="sec-label">What's Included</p>
     <h2 class="sec-title">Five Digital Presence Services</h2>
-    <p class="sec-sub">Your website is your most important sales tool. We make sure it works as hard as you do.</p>
-    <div class="sub-grid">
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+    <p class="sec-sub">Your website is your most important sales tool — open 24/7, reaching clients you've never met. We make sure it works as hard as you do.</p>
+    <div class="sub-full-list">
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg></div>
+          <span class="sub-full-num">01</span>
         </div>
-        <h3>Website Design &amp; Development</h3>
-        <p>Clean, fast, mobile-first websites built to convert — not just look good. Every page is designed around what your clients need to see to take action.</p>
-      </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+        <div>
+          <h3>Website Design &amp; Development</h3>
+          <p class="sub-desc">Your website is often the first — and sometimes only — chance to convince a potential client you're the right choice. Most small business websites explain what you do but don't persuade visitors to take action, because they were built by developers who aren't marketers. We build websites from the ground up with conversion as the primary goal, not just aesthetics.</p>
+          <p class="sub-desc">Every page is designed around what your ideal client needs to see, hear, and feel to move forward. Fast load times, mobile-first design, clear calls to action, and a user experience that makes it obvious what to do next — whether that's calling you, filling out a form, or booking a consultation.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Full website design and development (5–10 pages)</li>
+            <li>Mobile-first and fully responsive layout</li>
+            <li>CMS setup so you can update content yourself</li>
+            <li>Google Analytics 4 and conversion tracking integration</li>
+            <li>Contact forms, lead capture, and CRM connection</li>
+            <li>Page speed optimization (targeting 90+ Lighthouse score)</li>
+            <li>30-day post-launch support included</li>
+          </ul>
+          <a href="web/website-design-development.html" class="sub-learn-more">Learn more about this service →</a>
         </div>
-        <h3>Copywriting &amp; Messaging</h3>
-        <p>We write the words on your website so visitors immediately understand what you do, who you help, and why you're the right choice.</p>
       </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
+          <span class="sub-full-num">02</span>
         </div>
-        <h3>Brand Identity</h3>
-        <p>Logo, colors, and visual identity that positions you as professional and credible — consistent across your website, proposals, and materials.</p>
-      </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        <div>
+          <h3>Copywriting &amp; Messaging</h3>
+          <p class="sub-desc">Most business owners struggle to write about themselves — not because they don't know their business, but because it's hard to see your own value from the inside. We interview you, research your clients and competitors, and write website copy that speaks directly to your ideal client's pain points and goals in language they actually use.</p>
+          <p class="sub-desc">Good copy doesn't just describe — it persuades. Every headline, paragraph, and call-to-action is written to move a visitor from "maybe" to "I need to contact these people." We handle the homepage, service pages, about page, and any other key pages that need to convert visitors into leads.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Stakeholder interviews and client research</li>
+            <li>Messaging framework and core value proposition</li>
+            <li>Homepage copy</li>
+            <li>Service page copy (up to 4 pages)</li>
+            <li>About page copy</li>
+            <li>Calls-to-action and button text optimization</li>
+            <li>Two rounds of revisions included</li>
+          </ul>
+          <a href="web/copywriting-messaging.html" class="sub-learn-more">Learn more about this service →</a>
         </div>
-        <h3>Local SEO</h3>
-        <p>We optimize your Google Business Profile and website so clients in your area find you when they search for your service.</p>
       </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><path d="M15 15s1-4-5-4-5 4-5 4"/><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="8" y1="21" x2="16" y2="21"/></svg>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
+          <span class="sub-full-num">03</span>
         </div>
-        <h3>Landing Pages</h3>
-        <p>Dedicated pages for specific services, locations, or campaigns — built to convert paid traffic and organic visitors into leads.</p>
+        <div>
+          <h3>Brand Identity</h3>
+          <p class="sub-desc">A professional brand isn't just aesthetics — it's a business asset. When your logo, colors, and visual identity are consistent and polished, potential clients perceive you as more credible before you've said a single word. We build brand identities that position you as the obvious professional choice in your market, not just another option.</p>
+          <p class="sub-desc">This includes everything you need to show up consistently and confidently: a primary logo with variations for different contexts, a defined color palette, typography that suits your brand, and a brand guide your team can reference so your visual identity stays consistent across every touchpoint — website, proposals, social media, signage.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Logo design (primary logo + horizontal and icon variations)</li>
+            <li>Color palette with hex, RGB, and CMYK values</li>
+            <li>Typography selection and pairing guide</li>
+            <li>Brand guide document (PDF + digital)</li>
+            <li>Business card design</li>
+            <li>Email signature template</li>
+            <li>Social media profile graphics (cover + avatar)</li>
+          </ul>
+          <a href="web/brand-identity.html" class="sub-learn-more">Learn more about this service →</a>
+        </div>
       </div>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg></div>
+          <span class="sub-full-num">04</span>
+        </div>
+        <div>
+          <h3>Local SEO</h3>
+          <p class="sub-desc">When someone in Tampa Bay searches for "business consultant near me" or "AI automation services Florida," the business that appears first gets the call. Local SEO is the process of optimizing your online presence specifically for local and service-area searches — and it's one of the most cost-effective marketing investments a Florida small business can make.</p>
+          <p class="sub-desc">We optimize your Google Business Profile, build local citations across the directories that matter, ensure your website sends the right signals to Google, and develop a review generation strategy that builds your reputation while improving your local rankings. Most clients see meaningful ranking improvements within 60–90 days.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Google Business Profile setup and full optimization</li>
+            <li>Local keyword research and targeting</li>
+            <li>Citation building across 50+ relevant directories</li>
+            <li>NAP consistency audit and correction</li>
+            <li>Website local SEO optimization (schema, location pages)</li>
+            <li>Review generation strategy and templates</li>
+            <li>Monthly local rankings report and competitor analysis</li>
+          </ul>
+          <a href="web/local-seo.html" class="sub-learn-more">Learn more about this service →</a>
+        </div>
+      </div>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/><path d="M9 8h6M9 12h4"/></svg></div>
+          <span class="sub-full-num">05</span>
+        </div>
+        <div>
+          <h3>Landing Pages</h3>
+          <p class="sub-desc">Your main website isn't always the right destination for every visitor. Paid ad traffic, email campaigns, and specific services all convert significantly better when they land on a focused page designed for one purpose — not a full website with menus, links, and distractions that lead visitors away from the action you want them to take.</p>
+          <p class="sub-desc">We build dedicated landing pages for specific services, geographic areas, or campaign objectives — every element designed to maximize conversion. Whether it's a service-specific page, a geo-targeted page for a city or county, or a seasonal campaign page, we handle the strategy, copy, design, and technical setup.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Landing page strategy, messaging, and copy</li>
+            <li>Page design and development</li>
+            <li>A/B testing setup (two-variant testing)</li>
+            <li>Form and CRM integration</li>
+            <li>Google Ads and Meta pixel integration</li>
+            <li>Conversion tracking and goal setup in GA4</li>
+            <li>Performance reporting dashboard</li>
+          </ul>
+          <a href="web/landing-pages.html" class="sub-learn-more">Learn more about this service →</a>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
 <div class="section">
   <div class="container">
-    <p class="sec-label">The Result</p>
+    <p class="sec-label">How We Work</p>
+    <h2 class="sec-title">Design That Converts, Not Just Impresses</h2>
+    <p class="sec-sub">Beautiful websites that don't generate leads are expensive brochures. We build for results from day one.</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="process-step-num">01</div>
+        <h4>Discovery &amp; Strategy</h4>
+        <p>We learn your business, your ideal clients, your competitors, and your goals. Every design and copy decision flows from this foundation.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">02</div>
+        <h4>Design &amp; Copy</h4>
+        <p>We present wireframes and copy drafts for your approval before building anything. You see exactly how the site will look and what it will say before we write a line of code.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">03</div>
+        <h4>Build &amp; Test</h4>
+        <p>We build the site, test across all devices and browsers, optimize for speed, and set up all tracking and integrations before going live.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">04</div>
+        <h4>Launch &amp; Optimize</h4>
+        <p>After launch we monitor performance, track conversion rates, and make optimization updates in the first 30 days. We don't disappear after delivery.</p>
+      </div>
+    </div>
+
+    <p class="sec-label" style="margin-top:64px;">The Result</p>
     <h2 class="sec-title">A Website That Works While You Sleep</h2>
-    <p class="sec-sub">Most small business websites explain what you do but don't convert. We fix that.</p>
+    <p class="sec-sub">Most small business websites explain what you do but don't convert visitors into leads. We fix that — permanently.</p>
     <div class="benefits">
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
           <h4>First impressions that build trust</h4>
-          <p>Visitors decide in 3 seconds whether to stay or leave. We make sure they stay.</p>
+          <p>Visitors decide within 3 seconds whether to stay or leave. A professional design, clear messaging, and fast load time make sure they stay.</p>
         </div>
       </div>
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
           <h4>Words that sell for you</h4>
-          <p>Professional copy positions you clearly against competitors and answers the questions clients actually have.</p>
+          <p>Professional copy positions you clearly, answers the questions clients actually have, and guides them toward contacting you — without a salesperson in the room.</p>
         </div>
       </div>
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
           <h4>Found on Google</h4>
-          <p>Local SEO means clients searching for your service in your area find you — not your competitor.</p>
+          <p>Local SEO means clients searching for your service in your area find you instead of your competitor — a compounding advantage that grows every month.</p>
         </div>
       </div>
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
           <h4>Leads from your website</h4>
-          <p>Clear calls to action, fast load times, and mobile-first design turn visitors into actual inquiries.</p>
+          <p>Clear calls to action, fast load times, mobile-first design, and conversion-optimized landing pages turn visitors into actual inquiries and booked appointments.</p>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-alt">
+  <div class="container">
+    <p class="sec-label">Common Questions</p>
+    <h2 class="sec-title">Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <p class="faq-q">How long does it take to build a website?</p>
+        <p class="faq-a">Most websites take 4–8 weeks from kickoff to launch. This includes discovery, copywriting, design approval, development, and testing. Timelines depend on how quickly feedback is provided and the complexity of the project. We give you a detailed timeline in our proposal so you know exactly what to expect.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">What platform do you build websites on?</p>
+        <p class="faq-a">We recommend the platform that best fits your needs and budget. Most small business sites work well with Webflow, WordPress, or custom HTML/CSS depending on complexity. We explain the trade-offs of each platform in plain English so you make an informed choice — not whichever one is easiest for us to build.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Do we need to redesign our whole website, or can you just fix what's not working?</p>
+        <p class="faq-a">You don't always need a full redesign. Sometimes a targeted copy refresh, better calls-to-action, and speed improvements can dramatically increase conversions from your existing site. We audit your current site first and recommend only what's actually necessary. Full redesigns are recommended when the foundation (structure, messaging, or technology) needs to be replaced.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">What happens after the website launches?</p>
+        <p class="faq-a">We provide 30 days of post-launch support included in every project — bug fixes, content updates, and optimization adjustments. After that, most clients either maintain the site themselves (we train you) or engage us on a monthly maintenance retainer. We also offer ongoing SEO and conversion rate optimization services.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Can you work with our existing brand, or do we need to start from scratch?</p>
+        <p class="faq-a">We work with what you have if it's solid, and we'll tell you honestly if we think a brand refresh would help. Many clients come with a logo and color scheme they love — we build around that. For clients with no existing brand or a brand that's working against them, we include brand identity as part of the engagement.</p>
       </div>
     </div>
   </div>

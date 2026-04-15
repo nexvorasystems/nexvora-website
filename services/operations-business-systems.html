@@ -97,6 +97,30 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
 @media(max-width:900px){.sub-grid,.benefits{grid-template-columns:repeat(2,1fr);}}
 @media(max-width:768px){:root{--nav-h:56px;}nav{padding:0 20px;}.nav-links,.nav-cta{display:none;}.hamburger{display:flex;}.page-hero,.container{padding-left:20px;padding-right:20px;}.footer-grid{grid-template-columns:1fr;gap:28px;}footer{padding:40px 20px 24px;}.cta-block{padding:48px 24px;}}
 @media(max-width:480px){.sub-grid,.benefits{grid-template-columns:1fr;}}
+.sub-full-list{display:flex;flex-direction:column;gap:20px;}
+.sub-full-item{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;padding:32px;display:grid;grid-template-columns:56px 1fr;gap:24px;align-items:start;transition:border-color .2s,box-shadow .2s;}
+.sub-full-item:hover{border-color:var(--teal-mid);box-shadow:0 4px 20px rgba(0,0,0,0.05);}
+.sub-full-left{display:flex;flex-direction:column;align-items:center;gap:10px;}
+.sub-full-num{font-size:10px;font-weight:800;letter-spacing:2px;color:var(--teal);text-align:center;}
+.sub-full-item h3{font-size:18px;font-weight:700;color:var(--text);margin-bottom:12px;letter-spacing:-.3px;}
+.sub-full-item .sub-desc{font-size:14px;color:var(--muted);line-height:1.75;margin-bottom:14px;}
+.included-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:10px;}
+.included-list{display:flex;flex-direction:column;gap:6px;padding:0;list-style:none;}
+.included-list li{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);line-height:1.5;}
+.included-list li::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;}
+.process-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:20px;margin-top:40px;}
+.process-step{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:24px;}
+.process-step-num{font-size:28px;font-weight:800;color:rgba(13,148,136,0.15);line-height:1;margin-bottom:12px;}
+.process-step h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:8px;}
+.process-step p{font-size:13px;color:var(--muted);line-height:1.6;}
+.faq-list{display:flex;flex-direction:column;gap:12px;margin-top:40px;}
+.faq-item{background:var(--bg-card);border:1px solid var(--border);border-radius:12px;padding:22px 24px;}
+.faq-q{font-size:15px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.faq-a{font-size:14px;color:var(--muted);line-height:1.7;}
+@media(max-width:900px){.sub-full-item{grid-template-columns:1fr;}.process-steps{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:480px){.process-steps{grid-template-columns:1fr;}}
+  .sub-learn-more{display:inline-flex;align-items:center;gap:6px;margin-top:16px;font-size:13px;font-weight:700;color:var(--teal);text-decoration:none;transition:gap .2s;}
+.sub-learn-more:hover{gap:10px;}
   </style>
 </head>
 <body>
@@ -119,35 +143,35 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
             <div class="nav-dd-right-outer"><div class="nav-dd-right">
               <div class="nav-dd-sub" id="dd-sub-ops">
                 <a href="../services/operations-business-systems.html" class="dd-view-all">View all →</a>
-                <a href="../services/operations-business-systems.html">Process &amp; SOPs</a>
-                <a href="../services/operations-business-systems.html">Sales Systems</a>
-                <a href="../services/operations-business-systems.html">Team &amp; HR</a>
-                <a href="../services/operations-business-systems.html">Financial Clarity</a>
-                <a href="../services/operations-business-systems.html">Growth Planning</a>
+                <a href="../services/operations/process-sops.html">Process &amp; SOPs</a>
+                <a href="../services/operations/sales-systems.html">Sales Systems</a>
+                <a href="../services/operations/team-hr.html">Team &amp; HR</a>
+                <a href="../services/operations/financial-clarity.html">Financial Clarity</a>
+                <a href="../services/operations/growth-planning.html">Growth Planning</a>
               </div>
               <div class="nav-dd-sub" id="dd-sub-ai">
                 <a href="../services/ai-automation.html" class="dd-view-all">View all →</a>
-                <a href="../services/ai-automation.html">Workflow Automation</a>
-                <a href="../services/ai-automation.html">AI Chatbots &amp; Bots</a>
-                <a href="../services/ai-automation.html">CRM &amp; Tool Integrations</a>
-                <a href="../services/ai-automation.html">Reporting &amp; Dashboards</a>
-                <a href="../services/ai-automation.html">AI Strategy</a>
+                <a href="../services/ai/workflow-automation.html">Workflow Automation</a>
+                <a href="../services/ai/chatbots-bots.html">AI Chatbots &amp; Bots</a>
+                <a href="../services/ai/crm-integrations.html">CRM &amp; Tool Integrations</a>
+                <a href="../services/ai/reporting-dashboards.html">Reporting &amp; Dashboards</a>
+                <a href="../services/ai/ai-strategy.html">AI Strategy</a>
               </div>
               <div class="nav-dd-sub" id="dd-sub-mkt">
                 <a href="../services/marketing-leads.html" class="dd-view-all">View all →</a>
-                <a href="../services/marketing-leads.html">Lead Generation Systems</a>
-                <a href="../services/marketing-leads.html">Paid Advertising</a>
-                <a href="../services/marketing-leads.html">Content &amp; SEO</a>
-                <a href="../services/marketing-leads.html">Email Marketing</a>
-                <a href="../services/marketing-leads.html">Social Media Management</a>
+                <a href="../services/marketing/lead-generation-systems.html">Lead Generation Systems</a>
+                <a href="../services/marketing/paid-advertising.html">Paid Advertising</a>
+                <a href="../services/marketing/content-seo.html">Content &amp; SEO</a>
+                <a href="../services/marketing/email-marketing.html">Email Marketing</a>
+                <a href="../services/marketing/social-media-management.html">Social Media Management</a>
               </div>
               <div class="nav-dd-sub" id="dd-sub-web">
                 <a href="../services/web-design.html" class="dd-view-all">View all →</a>
-                <a href="../services/web-design.html">Website Design &amp; Development</a>
-                <a href="../services/web-design.html">Copywriting &amp; Messaging</a>
-                <a href="../services/web-design.html">Brand Identity</a>
-                <a href="../services/web-design.html">Local SEO</a>
-                <a href="../services/web-design.html">Landing Pages</a>
+                <a href="../services/web/website-design-development.html">Website Design &amp; Development</a>
+                <a href="../services/web/copywriting-messaging.html">Copywriting &amp; Messaging</a>
+                <a href="../services/web/brand-identity.html">Brand Identity</a>
+                <a href="../services/web/local-seo.html">Local SEO</a>
+                <a href="../services/web/landing-pages.html">Landing Pages</a>
               </div>
             </div></div>
           </div>
@@ -190,50 +214,152 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
   <div class="container">
     <p class="sec-label">What's Included</p>
     <h2 class="sec-title">Five Areas, One Engagement</h2>
-    <p class="sec-sub">You don't need to buy five separate services. We look at all five together because they're connected.</p>
-    <div class="sub-grid">
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+    <p class="sec-sub">You don't need to buy five separate services. We look at all five together — because they're deeply connected, and that's where the real leverage is.</p>
+    <div class="sub-full-list">
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div>
+          <span class="sub-full-num">01</span>
         </div>
-        <h3>Process &amp; SOPs</h3>
-        <p>We document how your business runs and build standard procedures so work gets done right every time, with or without you.</p>
-      </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+        <div>
+          <h3>Process &amp; SOPs</h3>
+          <p class="sub-desc">Your business has too much knowledge living in people's heads — including yours. When there's no documented process, every task gets done differently depending on who does it, mistakes repeat, and nothing runs without you. We map how your business actually operates, identify the gaps, and build standard operating procedures your team can follow without being micromanaged.</p>
+          <p class="sub-desc">We turn "I'll show you how I do it" into written, tested, and repeatable systems. Whether it's how you onboard a new client, handle a customer complaint, or run your weekly operations meeting — every process gets documented, organized, and made easy to follow.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Full process audit and workflow mapping</li>
+            <li>SOP documentation for all key business processes</li>
+            <li>Team training materials and reference guides</li>
+            <li>Checklists and templates for recurring tasks</li>
+            <li>Digital SOP library setup (Notion or similar platform)</li>
+            <li>Quarterly process review and update schedule</li>
+          </ul>
+          <a href="operations/process-sops.html" class="sub-learn-more">Learn more about this service →</a>
         </div>
-        <h3>Sales Systems</h3>
-        <p>We set up your CRM, follow-up sequences, and pipeline so fewer leads fall through and more turn into revenue.</p>
       </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg></div>
+          <span class="sub-full-num">02</span>
         </div>
-        <h3>Team &amp; HR</h3>
-        <p>Clear roles, accountability systems, and hiring processes so your team runs well without constant oversight.</p>
-      </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/><line x1="12" y1="8" x2="12" y2="12"/><path d="M9 12h6"/><path d="M12 16v-4"/></svg>
+        <div>
+          <h3>Sales Systems</h3>
+          <p class="sub-desc">Most small businesses lose revenue not because of bad leads, but because of poor follow-up. A lead comes in, someone gets busy, and two weeks later the opportunity is gone. We fix that by setting up your CRM correctly, building automated follow-up sequences, and creating a structured sales process your team actually follows consistently.</p>
+          <p class="sub-desc">A real sales system means you know where every lead is in the pipeline, what the next step is, and whether your conversion rates are improving. No more guessing, no more lost opportunities, no more relying on someone's memory.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>CRM setup and configuration (GoHighLevel, HubSpot, or your existing tool)</li>
+            <li>Pipeline stages mapped to your actual sales process</li>
+            <li>Automated follow-up sequences (email + SMS)</li>
+            <li>Lead scoring and prioritization system</li>
+            <li>Quote and proposal templates</li>
+            <li>Sales dashboard and conversion rate reporting</li>
+          </ul>
+          <a href="operations/sales-systems.html" class="sub-learn-more">Learn more about this service →</a>
         </div>
-        <h3>Financial Clarity</h3>
-        <p>We identify cost leaks, improve cash flow visibility, and help you make decisions based on real numbers.</p>
       </div>
-      <div class="sub-card">
-        <div class="sub-card-icon">
-          <svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+          <span class="sub-full-num">03</span>
         </div>
-        <h3>Growth Planning</h3>
-        <p>We build the systems your business needs before you scale so growth doesn't create more problems than it solves.</p>
+        <div>
+          <h3>Team &amp; HR</h3>
+          <p class="sub-desc">As your business grows, the "everyone does everything" approach breaks down. People don't know what they're responsible for, accountability is inconsistent, and problems end up landing on your desk. We build the organizational structure your team needs to perform at a high level without constant oversight from you.</p>
+          <p class="sub-desc">That means clear org charts, written job descriptions, onboarding processes for new hires, and performance accountability systems. The goal is simple: your team knows what's expected, how they'll be measured, and what good looks like.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Org chart and role documentation</li>
+            <li>Job descriptions for all key positions</li>
+            <li>New hire onboarding process and checklist</li>
+            <li>Performance review framework and scorecards</li>
+            <li>Accountability and KPI tracking per role</li>
+            <li>Team communication standards and meeting structure</li>
+          </ul>
+          <a href="operations/team-hr.html" class="sub-learn-more">Learn more about this service →</a>
+        </div>
       </div>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+          <span class="sub-full-num">04</span>
+        </div>
+        <div>
+          <h3>Financial Clarity</h3>
+          <p class="sub-desc">Many small business owners generate real revenue but still feel financially stressed — because they don't have full visibility into their numbers. Cost leaks, pricing issues, and cash flow blind spots are more common than most business owners realize. We help you get a clear picture of your financial health and identify where you're losing money you didn't know about.</p>
+          <p class="sub-desc">This isn't accounting — it's financial decision-making clarity. We help you understand your margins, identify unprofitable services or clients, and give you the dashboards to monitor financial health on an ongoing basis so every decision is grounded in real data.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>Profit &amp; loss review and gap analysis</li>
+            <li>Cash flow mapping and 90-day forecasting</li>
+            <li>Pricing and margin analysis per service line</li>
+            <li>Cost structure audit (find the leaks)</li>
+            <li>Financial KPI dashboard setup</li>
+            <li>Monthly numbers review cadence and template</li>
+          </ul>
+          <a href="operations/financial-clarity.html" class="sub-learn-more">Learn more about this service →</a>
+        </div>
+      </div>
+
+      <div class="sub-full-item">
+        <div class="sub-full-left">
+          <div class="sub-card-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg></div>
+          <span class="sub-full-num">05</span>
+        </div>
+        <div>
+          <h3>Growth Planning</h3>
+          <p class="sub-desc">Most small businesses try to scale before their operations can handle it — and end up more chaotic, not more profitable. Growth planning is about building the infrastructure your business needs before growth arrives, so when revenue increases, the business can absorb it without breaking down under the pressure.</p>
+          <p class="sub-desc">We create a 90-day growth roadmap based on your current constraints, revenue goals, and team capacity. Every quarter you should know exactly what to focus on and why — not just react to whatever fire is burning that week.</p>
+          <p class="included-label">What's included</p>
+          <ul class="included-list">
+            <li>90-day strategic planning session</li>
+            <li>Bottleneck and constraint analysis</li>
+            <li>Revenue and capacity modeling</li>
+            <li>KPI and goal-setting framework</li>
+            <li>Priority roadmap for next 3 quarters</li>
+            <li>Quarterly review and reset process</li>
+          </ul>
+          <a href="operations/growth-planning.html" class="sub-learn-more">Learn more about this service →</a>
+        </div>
+      </div>
+
     </div>
   </div>
 </div>
 
 <div class="section">
   <div class="container">
-    <p class="sec-label">Why It Works</p>
+    <p class="sec-label">How We Work</p>
+    <h2 class="sec-title">A Clear Process, Every Time</h2>
+    <p class="sec-sub">We don't parachute in with a generic framework. Every engagement starts with understanding your specific business.</p>
+    <div class="process-steps">
+      <div class="process-step">
+        <div class="process-step-num">01</div>
+        <h4>Business Assessment</h4>
+        <p>We start with your free Business Health Assessment — 10 minutes that gives us a clear picture of where your biggest gaps and opportunities are.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">02</div>
+        <h4>Deep Discovery</h4>
+        <p>We spend time inside your business — talking to you and your team, reviewing your current systems, and mapping how work actually flows today.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">03</div>
+        <h4>Build &amp; Implement</h4>
+        <p>We build the systems, write the SOPs, set up the tools, and document everything. We don't just advise — we do the work alongside you.</p>
+      </div>
+      <div class="process-step">
+        <div class="process-step-num">04</div>
+        <h4>Train &amp; Hand Off</h4>
+        <p>We train your team on everything we build, ensure it's adopted in practice, and stay available for questions as your team gets comfortable.</p>
+      </div>
+    </div>
+
+    <p class="sec-label" style="margin-top:64px;">Why It Works</p>
     <h2 class="sec-title">Everything Is Connected</h2>
     <p class="sec-sub">Fixing one area in isolation rarely works. Operations, sales, team, and finance all affect each other.</p>
     <div class="benefits">
@@ -241,29 +367,58 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
         <div class="benefit-dot"></div>
         <div>
           <h4>You stop being the bottleneck</h4>
-          <p>When your team has clear systems and SOPs, they don't need you for every decision.</p>
+          <p>When your team has clear systems and SOPs, they don't need you for every decision — your time goes toward growth, not daily firefighting.</p>
         </div>
       </div>
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
           <h4>Revenue becomes predictable</h4>
-          <p>A structured sales system means consistent lead flow and fewer lost opportunities.</p>
+          <p>A structured sales system means consistent lead flow, predictable conversion rates, and fewer opportunities falling through the cracks.</p>
         </div>
       </div>
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
           <h4>Your team performs without you</h4>
-          <p>Clear roles and accountability mean your business runs whether you're in the office or not.</p>
+          <p>Clear roles, accountability systems, and documented processes mean your business runs whether you're in the office or on the road.</p>
         </div>
       </div>
       <div class="benefit">
         <div class="benefit-dot"></div>
         <div>
-          <h4>You make confident financial decisions</h4>
-          <p>When you understand your numbers, you stop guessing and start growing intentionally.</p>
+          <h4>Confident financial decisions</h4>
+          <p>When you understand your numbers — margins, cash flow, cost structure — you stop guessing and start growing with intention.</p>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="section-alt">
+  <div class="container">
+    <p class="sec-label">Common Questions</p>
+    <h2 class="sec-title">Frequently Asked Questions</h2>
+    <div class="faq-list">
+      <div class="faq-item">
+        <p class="faq-q">How long does an Operations &amp; Business Systems engagement typically take?</p>
+        <p class="faq-a">Most engagements run 60–90 days for the initial build-out. This covers discovery, system design, SOP creation, tool setup, and team training. Some clients continue with monthly retainers for ongoing optimization and quarterly planning sessions.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Do we need to be using specific software or tools?</p>
+        <p class="faq-a">No. We work with whatever tools you're already using, or recommend the right ones based on your budget and needs. We've worked with GoHighLevel, HubSpot, Notion, Monday.com, QuickBooks, and dozens of other platforms. We're tool-agnostic — the process is what matters.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">We're a small team — will this be too much for us to implement?</p>
+        <p class="faq-a">This is built for small teams. We don't create complexity — we reduce it. The SOPs and systems we build are designed to be simple enough for a 3-person team and scalable enough for a 30-person team. We also do the implementation work alongside you, so you're not left with a 200-page manual and no guidance.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">What if we've already tried documenting our processes before and it didn't stick?</p>
+        <p class="faq-a">This is the most common situation we walk into. Documentation that doesn't get used is usually too complicated, not accessible where work happens, or wasn't trained properly. We build for adoption — short, practical, embedded in your team's workflow — not a binder nobody opens.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">How is this different from hiring a business coach?</p>
+        <p class="faq-a">Coaches give advice. We do the work. We build the actual SOPs, set up the actual CRM, write the actual job descriptions, and create the actual dashboards. You walk away with real assets your business uses every day — not just a list of recommendations.</p>
       </div>
     </div>
   </div>
