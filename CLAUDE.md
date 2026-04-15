@@ -17,6 +17,11 @@ Stack: Vanilla HTML/CSS/JS, Vercel serverless functions (Node.js), Supabase, GHL
 - `blog.html` — Blog index (cards auto-injected at `<!-- POSTS_START -->`)
 - `posts/` — Individual blog post HTML files
 - `legal/privacy.html` — Privacy policy
+- `services.html` — Main services page (4 flagship service cards, 2-col grid)
+- `services/operations-business-systems.html` — Service 01: Operations & Business Systems
+- `services/ai-automation.html` — Service 02: AI & Automation
+- `services/marketing-leads.html` — Service 03: Marketing & Lead Generation
+- `services/web-design.html` — Service 04: Web Design & Digital Presence
 
 ### API (Vercel serverless functions)
 - `api/ghl.js` — Assessment submission: upserts GHL contact, adds note, creates opportunity, sends email + SMS
@@ -45,14 +50,16 @@ Stack: Vanilla HTML/CSS/JS, Vercel serverless functions (Node.js), Supabase, GHL
 ### Daily Posts — `scripts/generate-post.js`
 Runs via GitHub Actions (`.github/workflows/daily-post.yml`) every day at **6:00 AM PST** (14:00 UTC).
 
-**Service rotation by day of week:**
+**Service rotation by day of week (mapped to 4 flagship services):**
 - Mon: AI & Automation
-- Tue: Operations
-- Wed: Reporting & Analytics
-- Thu: Sales Systems (author: Alexandr Godovanyuk)
-- Fri: Marketing
-- Sat: Financial Efficiency
-- Sun: Operations
+- Tue: Operations & Business Systems
+- Wed: AI & Automation
+- Thu: Operations & Business Systems (author: Alexandr Godovanyuk)
+- Fri: Marketing & Lead Generation
+- Sat: Web Design & Digital Presence
+- Sun: Operations & Business Systems
+
+**Note:** Old service names (Reporting & Analytics, Sales Systems, Financial Efficiency, Customer Experience, Growth & Scaling, Team & HR) are replaced. The 4 flagship services are: Operations & Business Systems, AI & Automation, Marketing & Lead Generation, Web Design & Digital Presence.
 
 **Mon/Wed/Fri:** Also generates a bonus AI & Automation post.
 
