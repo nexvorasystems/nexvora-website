@@ -1,0 +1,525 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<link rel="icon" href="/assets/nexvora-logo.png" type="image/png"/>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TY0PZHVN0L"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-TY0PZHVN0L');</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Free Website Audit Report — Nexvora Systems</title>
+<meta name="description" content="Get a free instant website audit. See your performance score, SEO health, Core Web Vitals, and mobile readiness — powered by Google PageSpeed Insights."/>
+<meta name="robots" content="noindex"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
+  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
+  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.1);--navy:#0F2B4C;
+  --green:#10B981;--yellow:#F59E0B;--red:#EF4444;--orange:#F97316;
+  --nav-h:72px;
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.96);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 28px;gap:16px;}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .15s;margin-left:auto;}
+.nav-back:hover{color:var(--teal);}
+.nav-logo{display:flex;align-items:center;gap:0;}
+
+/* WRAP */
+.audit-wrap{padding:calc(var(--nav-h) + 40px) 20px 80px;max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:20px;}
+
+/* LOADING */
+.audit-loading{background:var(--bg-card);border:1px solid var(--border);border-radius:20px;padding:60px 40px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:20px;}
+.audit-spinner{width:48px;height:48px;border-radius:50%;border:3px solid rgba(13,148,136,0.15);border-top-color:var(--teal);animation:spin 0.8s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg);}}
+.audit-loading h2{font-size:20px;font-weight:800;color:var(--text);}
+.audit-loading p{font-size:14px;color:var(--muted);max-width:380px;line-height:1.7;}
+.audit-progress{width:100%;max-width:340px;height:4px;background:var(--bg-surface);border-radius:4px;overflow:hidden;}
+.audit-progress-bar{height:100%;background:linear-gradient(90deg,#0D9488,#22D3EE);border-radius:4px;animation:progressAnim 40s linear forwards;}
+@keyframes progressAnim{from{width:0%}to{width:92%}}
+.audit-step-list{display:flex;flex-direction:column;gap:8px;width:100%;max-width:360px;text-align:left;}
+.audit-step{font-size:13px;color:var(--muted);display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:8px;transition:all .3s;}
+.audit-step.done{color:var(--green);}
+.audit-step.active{color:var(--teal);background:var(--teal-lt);font-weight:600;}
+.audit-step-icon{width:18px;height:18px;flex-shrink:0;}
+
+/* ERROR */
+.audit-error{background:var(--bg-card);border:1px solid #FCA5A5;border-radius:20px;padding:48px 36px;text-align:center;display:none;}
+.audit-error h2{font-size:20px;font-weight:800;color:var(--red);margin-bottom:12px;}
+.audit-error p{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:20px;}
+.audit-error-btn{display:inline-flex;align-items:center;gap:8px;padding:12px 24px;background:var(--teal);color:#fff;border-radius:10px;text-decoration:none;font-size:14px;font-weight:700;}
+
+/* REPORT (hidden until loaded) */
+.audit-report{display:none;flex-direction:column;gap:20px;}
+.audit-report.show{display:flex;}
+
+/* REPORT HEADER */
+.audit-header{background:linear-gradient(135deg,#0F2B4C 0%,#0D9488 100%);border-radius:20px;padding:32px;color:#fff;overflow:hidden;position:relative;}
+.audit-header::after{content:'';position:absolute;top:-40px;right:-40px;width:220px;height:220px;border-radius:50%;background:rgba(255,255,255,0.04);}
+.audit-header-top{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:8px;}
+.audit-header h1{font-size:clamp(18px,3vw,24px);font-weight:800;letter-spacing:-0.5px;margin-bottom:4px;}
+.audit-header-url{font-size:14px;color:rgba(255,255,255,0.55);margin-bottom:24px;word-break:break-all;}
+.audit-scores-row{display:flex;gap:12px;flex-wrap:wrap;}
+.audit-score-box{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:16px 20px;text-align:center;min-width:100px;flex:1;}
+.audit-score-n{font-size:32px;font-weight:800;letter-spacing:-1px;line-height:1;}
+.audit-score-l{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-top:5px;}
+.score-good{color:#44CAA2;}
+.score-ok{color:#FCD34D;}
+.score-bad{color:#F87171;}
+
+/* GRADE BANNER */
+.audit-grade-banner{display:flex;align-items:center;gap:20px;padding:20px 28px;background:var(--bg-card);border:1px solid var(--border);border-radius:16px;}
+.audit-grade-circle{width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;flex-shrink:0;}
+.grade-a{background:#D1FAE5;color:#065F46;}
+.grade-b{background:#FEF3C7;color:#92400E;}
+.grade-c{background:#FEE2E2;color:#991B1B;}
+.grade-d{background:#FEE2E2;color:#7F1D1D;}
+.audit-grade-text h2{font-size:17px;font-weight:800;color:var(--text);margin-bottom:4px;}
+.audit-grade-text p{font-size:13px;color:var(--muted);line-height:1.6;}
+
+/* SECTION CARDS */
+.audit-card{background:var(--bg-card);border:1px solid var(--border);border-radius:16px;overflow:hidden;}
+.audit-card-head{padding:20px 24px 0;}
+.audit-card-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:6px;}
+.audit-card-title{font-size:17px;font-weight:800;color:var(--text);margin-bottom:16px;}
+.audit-card-body{padding:0 24px 24px;}
+
+/* CWV GRID */
+.cwv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.cwv-box{background:var(--bg-surface);border-radius:12px;padding:16px;text-align:center;}
+.cwv-val{font-size:22px;font-weight:800;letter-spacing:-0.5px;}
+.cwv-name{font-size:11px;color:var(--muted);margin-top:4px;}
+.cwv-status{font-size:10px;font-weight:700;letter-spacing:0.5px;margin-top:6px;padding:2px 8px;border-radius:4px;display:inline-block;}
+.cwv-good{color:#065F46;background:#D1FAE5;}
+.cwv-ok{color:#92400E;background:#FEF3C7;}
+.cwv-bad{color:#991B1B;background:#FEE2E2;}
+
+/* CHECKLIST */
+.audit-checklist{display:flex;flex-direction:column;gap:10px;}
+.audit-check{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-radius:10px;background:var(--bg-surface);}
+.audit-check-icon{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:11px;font-weight:800;margin-top:1px;}
+.check-pass{background:#D1FAE5;color:#065F46;}
+.check-warn{background:#FEF3C7;color:#92400E;}
+.check-fail{background:#FEE2E2;color:#991B1B;}
+.audit-check-content{flex:1;}
+.audit-check-name{font-size:14px;font-weight:700;color:var(--text);margin-bottom:2px;}
+.audit-check-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* OPPORTUNITIES */
+.opp-list{display:flex;flex-direction:column;gap:10px;}
+.opp-item{border:1px solid var(--border);border-radius:10px;padding:14px 16px;display:flex;align-items:flex-start;gap:12px;}
+.opp-badge{font-size:10px;font-weight:800;letter-spacing:0.5px;padding:4px 8px;border-radius:6px;white-space:nowrap;flex-shrink:0;margin-top:2px;}
+.opp-high{background:#FEE2E2;color:#991B1B;}
+.opp-med{background:#FEF3C7;color:#92400E;}
+.opp-low{background:#D1FAE5;color:#065F46;}
+.opp-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.opp-desc{font-size:12px;color:var(--muted);line-height:1.5;}
+
+/* CTA */
+.audit-cta{background:linear-gradient(135deg,#0F2B4C,#0D9488);border-radius:20px;padding:40px 36px;text-align:center;color:#fff;}
+.audit-cta h2{font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:10px;}
+.audit-cta p{font-size:14px;color:rgba(255,255,255,0.65);max-width:440px;margin:0 auto 24px;line-height:1.7;}
+.audit-cta-btn{display:inline-flex;align-items:center;gap:8px;padding:15px 32px;background:#fff;color:#0D9488;border-radius:12px;text-decoration:none;font-size:15px;font-weight:800;transition:all .2s;}
+.audit-cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2);}
+.audit-cta-sub{font-size:12px;color:rgba(255,255,255,0.4);margin-top:14px;}
+
+@media(max-width:640px){
+  .cwv-grid{grid-template-columns:repeat(2,1fr);}
+  .audit-scores-row{gap:8px;}
+  .audit-score-box{min-width:80px;padding:12px 10px;}
+  .audit-score-n{font-size:26px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="nav-logo">
+    <img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:42px;width:auto;display:block;"/>
+  </a>
+  <a href="javascript:history.back()" class="nav-back">
+    ← Back
+  </a>
+</nav>
+
+<div class="audit-wrap">
+
+  <!-- LOADING STATE -->
+  <div class="audit-loading" id="auditLoading">
+    <div class="audit-spinner"></div>
+    <h2>Analyzing your website…</h2>
+    <p>Running a full performance, SEO, and mobile audit. This takes 30–60 seconds.</p>
+    <div class="audit-progress"><div class="audit-progress-bar"></div></div>
+    <div class="audit-step-list" id="auditSteps">
+      <div class="audit-step active" id="step1">
+        <svg class="audit-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        Fetching page speed data…
+      </div>
+      <div class="audit-step" id="step2">
+        <svg class="audit-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+        Checking SEO signals…
+      </div>
+      <div class="audit-step" id="step3">
+        <svg class="audit-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="2" width="14" height="20" rx="2" ry="2"/><line x1="12" y1="18" x2="12" y2="18"/></svg>
+        Testing mobile experience…
+      </div>
+      <div class="audit-step" id="step4">
+        <svg class="audit-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        Analyzing best practices…
+      </div>
+      <div class="audit-step" id="step5">
+        <svg class="audit-step-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+        Generating your report…
+      </div>
+    </div>
+  </div>
+
+  <!-- ERROR STATE -->
+  <div class="audit-error" id="auditError">
+    <h2>Couldn't audit this URL</h2>
+    <p id="auditErrorMsg">We couldn't reach that website. Make sure the URL is correct and the site is live, then try again.</p>
+    <a href="javascript:history.back()" class="audit-error-btn">← Try Again</a>
+  </div>
+
+  <!-- REPORT (shown after load) -->
+  <div class="audit-report" id="auditReport">
+
+    <!-- HEADER -->
+    <div class="audit-header">
+      <div class="audit-header-top">Nexvora Systems — Free Website Audit</div>
+      <h1>Website Audit Report</h1>
+      <div class="audit-header-url" id="reportUrl"></div>
+      <div class="audit-scores-row">
+        <div class="audit-score-box"><div class="audit-score-n" id="scorePerfM">—</div><div class="audit-score-l">Performance<br>Mobile</div></div>
+        <div class="audit-score-box"><div class="audit-score-n" id="scorePerfD">—</div><div class="audit-score-l">Performance<br>Desktop</div></div>
+        <div class="audit-score-box"><div class="audit-score-n" id="scoreSeo">—</div><div class="audit-score-l">SEO Score</div></div>
+        <div class="audit-score-box"><div class="audit-score-n" id="scoreAcc">—</div><div class="audit-score-l">Accessibility</div></div>
+        <div class="audit-score-box"><div class="audit-score-n" id="scoreBp">—</div><div class="audit-score-l">Best<br>Practices</div></div>
+      </div>
+    </div>
+
+    <!-- GRADE -->
+    <div class="audit-grade-banner">
+      <div class="audit-grade-circle" id="gradeCircle">—</div>
+      <div class="audit-grade-text">
+        <h2 id="gradeTitle">Calculating overall grade…</h2>
+        <p id="gradeDesc"></p>
+      </div>
+    </div>
+
+    <!-- CORE WEB VITALS -->
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <div class="audit-card-label">Core Web Vitals — Mobile</div>
+        <div class="audit-card-title">Page Speed & User Experience Metrics</div>
+      </div>
+      <div class="audit-card-body">
+        <div class="cwv-grid" id="cwvGrid">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- SEO CHECKLIST -->
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <div class="audit-card-label">SEO Health Check</div>
+        <div class="audit-card-title">Technical SEO & Discoverability</div>
+      </div>
+      <div class="audit-card-body">
+        <div class="audit-checklist" id="seoChecklist">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- TOP OPPORTUNITIES -->
+    <div class="audit-card">
+      <div class="audit-card-head">
+        <div class="audit-card-label">Top Opportunities</div>
+        <div class="audit-card-title">What to Fix First</div>
+      </div>
+      <div class="audit-card-body">
+        <div class="opp-list" id="oppList">
+          <!-- filled by JS -->
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="audit-cta">
+      <h2>Ready to Fix These Issues?</h2>
+      <p>Nexvora Systems helps Florida small businesses build faster, higher-ranking websites that actually convert visitors into customers. Founded by Murat Zhandaurov and Alexandr Godonvayuk — operators who've built real businesses.</p>
+      <a href="assessment.html" class="audit-cta-btn">
+        Get a Free Business Assessment
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <div class="audit-cta-sub">No commitment · Free 20-minute call · Tampa Bay, Florida</div>
+    </div>
+
+  </div><!-- /audit-report -->
+</div>
+
+<script>
+(async function () {
+  const params = new URLSearchParams(window.location.search);
+  const rawUrl = params.get('url');
+
+  if (!rawUrl) {
+    window.location.href = 'index.html';
+    return;
+  }
+
+  let siteUrl;
+  try {
+    siteUrl = new URL(rawUrl);
+  } catch {
+    showError('Invalid URL. Please go back and try again.');
+    return;
+  }
+
+  document.getElementById('reportUrl').textContent = siteUrl.href;
+  document.title = 'Audit: ' + siteUrl.hostname + ' — Nexvora Systems';
+
+  // Animate steps
+  const steps = ['step1','step2','step3','step4','step5'];
+  const delays = [0, 7000, 15000, 23000, 32000];
+  delays.forEach((d, i) => {
+    setTimeout(() => {
+      if (i > 0) {
+        const prev = document.getElementById(steps[i-1]);
+        if (prev) { prev.classList.remove('active'); prev.classList.add('done'); }
+      }
+      const cur = document.getElementById(steps[i]);
+      if (cur) cur.classList.add('active');
+    }, d);
+  });
+
+  // Fetch PSI — mobile + desktop in parallel
+  const PSI = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed';
+  const encoded = encodeURIComponent(siteUrl.href);
+
+  let mobile, desktop;
+  try {
+    const [mRes, dRes] = await Promise.all([
+      fetch(`${PSI}?url=${encoded}&strategy=mobile`),
+      fetch(`${PSI}?url=${encoded}&strategy=desktop`)
+    ]);
+    if (!mRes.ok && !dRes.ok) throw new Error('PSI API error');
+    mobile = mRes.ok ? await mRes.json() : null;
+    desktop = dRes.ok ? await dRes.json() : null;
+  } catch (err) {
+    showError('We couldn\'t analyze this website. The site may be blocking external requests, or the URL may be incorrect. Please try again with a different URL.');
+    return;
+  }
+
+  if (!mobile && !desktop) {
+    showError('No data returned for this URL. Make sure the site is publicly accessible.');
+    return;
+  }
+
+  const data = mobile || desktop;
+  const lhr = data.lighthouseResult;
+  if (!lhr) {
+    showError('Could not retrieve Lighthouse data. The site may be unreachable.');
+    return;
+  }
+
+  // Helper
+  function score(val) {
+    if (val === null || val === undefined) return null;
+    return Math.round(val * 100);
+  }
+  function scoreColor(n) {
+    if (n === null) return '';
+    if (n >= 90) return 'score-good';
+    if (n >= 50) return 'score-ok';
+    return 'score-bad';
+  }
+  function auditScore(audits, key) {
+    const a = audits && audits[key];
+    return a ? a.score : null;
+  }
+  function auditDisplay(audits, key) {
+    const a = audits && audits[key];
+    return a ? (a.displayValue || '—') : '—';
+  }
+  function cwvClass(n, good, ok) {
+    if (n === null || n === undefined) return 'cwv-ok';
+    // Parse number from string like "1.2 s" or "123 ms"
+    const val = parseFloat(n);
+    if (isNaN(val)) return 'cwv-ok';
+    if (val <= good) return 'cwv-good';
+    if (val <= ok) return 'cwv-ok';
+    return 'cwv-bad';
+  }
+  function cwvStatus(n, good, ok) {
+    const cls = cwvClass(n, good, ok);
+    return { 'cwv-good': 'Good', 'cwv-ok': 'Needs Work', 'cwv-bad': 'Poor' }[cls];
+  }
+
+  const cats = lhr.categories || {};
+  const audits = lhr.audits || {};
+
+  const mCats = mobile && mobile.lighthouseResult ? mobile.lighthouseResult.categories : cats;
+  const dCats = desktop && desktop.lighthouseResult ? desktop.lighthouseResult.categories : cats;
+  const mAudits = mobile && mobile.lighthouseResult ? mobile.lighthouseResult.audits : audits;
+
+  const perfM = score(mCats.performance && mCats.performance.score);
+  const perfD = score(dCats.performance && dCats.performance.score);
+  const seo   = score(cats.seo && cats.seo.score);
+  const acc   = score(cats.accessibility && cats.accessibility.score);
+  const bp    = score(cats['best-practices'] && cats['best-practices'].score);
+
+  // Fill header scores
+  function fillScore(id, n) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.textContent = n !== null ? n : '—';
+    el.className = 'audit-score-n ' + scoreColor(n);
+  }
+  fillScore('scorePerfM', perfM);
+  fillScore('scorePerfD', perfD);
+  fillScore('scoreSeo', seo);
+  fillScore('scoreAcc', acc);
+  fillScore('scoreBp', bp);
+
+  // Overall grade
+  const scores = [perfM, seo, acc, bp].filter(x => x !== null);
+  const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+  const gradeEl = document.getElementById('gradeCircle');
+  const gradeTitle = document.getElementById('gradeTitle');
+  const gradeDesc = document.getElementById('gradeDesc');
+  let grade, gradeClass, gradeT, gradeD;
+  if (avg === null) {
+    grade = '?'; gradeClass = 'grade-b';
+    gradeT = 'Unable to calculate grade';
+    gradeD = 'Some audit data was unavailable.';
+  } else if (avg >= 90) {
+    grade = 'A'; gradeClass = 'grade-a';
+    gradeT = 'Excellent — Your site is well-optimized';
+    gradeD = 'Your website scores well across performance, SEO, and accessibility. Minor improvements could push it even further.';
+  } else if (avg >= 75) {
+    grade = 'B'; gradeClass = 'grade-b';
+    gradeT = 'Good — But there\'s room to improve';
+    gradeD = 'Your site is performing reasonably well but has specific issues that, when fixed, could meaningfully increase traffic and conversions.';
+  } else if (avg >= 50) {
+    grade = 'C'; gradeClass = 'grade-c';
+    gradeT = 'Fair — Significant issues detected';
+    gradeD = 'Your website has multiple issues affecting how Google ranks it and how visitors experience it. These should be addressed soon.';
+  } else {
+    grade = 'D'; gradeClass = 'grade-d';
+    gradeT = 'Poor — Your site needs urgent attention';
+    gradeD = 'Critical performance and SEO issues are likely hurting your search rankings and driving potential customers away. Nexvora Systems can help fix this.';
+  }
+  gradeEl.textContent = grade;
+  gradeEl.className = 'audit-grade-circle ' + gradeClass;
+  gradeTitle.textContent = gradeT;
+  gradeDesc.textContent = gradeD;
+
+  // Core Web Vitals
+  const cwvData = [
+    { key: 'first-contentful-paint',    label: 'FCP',  good: 1.8,  ok: 3.0, unit: 's'  },
+    { key: 'largest-contentful-paint',  label: 'LCP',  good: 2.5,  ok: 4.0, unit: 's'  },
+    { key: 'total-blocking-time',       label: 'TBT',  good: 200,  ok: 600, unit: 'ms' },
+    { key: 'cumulative-layout-shift',   label: 'CLS',  good: 0.1,  ok: 0.25,unit: ''  },
+    { key: 'speed-index',               label: 'SI',   good: 3.4,  ok: 5.8, unit: 's'  },
+    { key: 'interactive',               label: 'TTI',  good: 3.8,  ok: 7.3, unit: 's'  },
+  ];
+  const cwvHtml = cwvData.map(c => {
+    const val = auditDisplay(mAudits, c.key);
+    const numMatch = val.match(/[\d.]+/);
+    const num = numMatch ? parseFloat(numMatch[0]) : null;
+    const cls = cwvClass(num, c.good, c.ok);
+    const status = cwvStatus(num, c.good, c.ok);
+    return `<div class="cwv-box">
+      <div class="cwv-val ${cls === 'cwv-good' ? 'score-good' : cls === 'cwv-ok' ? 'score-ok' : 'score-bad'}">${val}</div>
+      <div class="cwv-name">${c.label}</div>
+      <span class="cwv-status ${cls}">${status}</span>
+    </div>`;
+  }).join('');
+  document.getElementById('cwvGrid').innerHTML = cwvHtml;
+
+  // SEO Checklist
+  const seoChecks = [
+    { key: 'uses-https',       label: 'HTTPS Security',        passDesc: 'Your site uses HTTPS — secure for visitors and trusted by Google.',    failDesc: 'Your site is not using HTTPS. This is a critical security issue that also hurts rankings.' },
+    { key: 'document-title',   label: 'Page Title Tag',        passDesc: 'Your page has a title tag. Make sure it includes your primary keyword.', failDesc: 'Missing page title. Google uses the title tag as the main signal for what your page is about.' },
+    { key: 'meta-description', label: 'Meta Description',      passDesc: 'Meta description found. This appears in search results below your title.', failDesc: 'No meta description. Add one to improve click-through rates from Google search results.' },
+    { key: 'viewport',         label: 'Mobile Viewport',       passDesc: 'Viewport meta tag is set. Your site is configured for mobile devices.',  failDesc: 'Missing viewport meta tag. Your site may not display correctly on mobile phones.' },
+    { key: 'is-crawlable',     label: 'Google Crawlable',      passDesc: 'Your site is not blocking Google. Search engines can index your pages.', failDesc: 'Your site may be blocking Google. Check your robots.txt and meta robots tags.' },
+    { key: 'link-text',        label: 'Descriptive Link Text', passDesc: 'Links have descriptive text — good for users and SEO.',                 failDesc: 'Some links use generic text like "click here". Use descriptive anchor text for better SEO.' },
+    { key: 'image-alt',        label: 'Image Alt Text',        passDesc: 'Images have alt text — good for SEO and accessibility.',               failDesc: 'Some images are missing alt text. Add descriptions to improve SEO and accessibility.' },
+    { key: 'structured-data',  label: 'Structured Data (Schema)', passDesc: 'Structured data detected. Helps Google understand your content.',   failDesc: 'No structured data found. Adding schema markup can earn rich results in Google.' },
+  ];
+  const seoHtml = seoChecks.map(c => {
+    const audit = mAudits[c.key];
+    const s = audit ? audit.score : null;
+    let icon, cls;
+    if (s === 1)         { icon = '✓'; cls = 'check-pass'; }
+    else if (s === 0)    { icon = '✗'; cls = 'check-fail'; }
+    else if (s !== null) { icon = '!'; cls = 'check-warn'; }
+    else                 { icon = '?'; cls = 'check-warn'; }
+    const desc = (s === 1) ? c.passDesc : c.failDesc;
+    return `<div class="audit-check">
+      <div class="audit-check-icon ${cls}">${icon}</div>
+      <div class="audit-check-content">
+        <div class="audit-check-name">${c.label}</div>
+        <div class="audit-check-desc">${desc}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('seoChecklist').innerHTML = seoHtml;
+
+  // Opportunities (failed audits)
+  const oppChecks = [
+    { key: 'uses-optimized-images',       title: 'Optimize Images',           desc: 'Large unoptimized images slow your page. Compress and convert to WebP format.', priority: 'High' },
+    { key: 'render-blocking-resources',   title: 'Remove Render-Blocking Resources', desc: 'JavaScript or CSS files are delaying page load. Defer non-critical scripts.', priority: 'High' },
+    { key: 'unused-javascript',           title: 'Remove Unused JavaScript',  desc: 'Unused JS is loading but not needed. Remove or defer it to speed up the page.',  priority: 'High' },
+    { key: 'unused-css-rules',            title: 'Remove Unused CSS',         desc: 'Your stylesheets contain unused rules that are increasing page weight.',          priority: 'Medium' },
+    { key: 'uses-text-compression',       title: 'Enable Text Compression',   desc: 'Enable GZIP or Brotli compression on your server to reduce file transfer size.', priority: 'Medium' },
+    { key: 'uses-long-cache-ttl',         title: 'Improve Browser Caching',   desc: 'Set longer cache expiration for static assets so returning visitors load faster.', priority: 'Medium' },
+    { key: 'efficient-animated-content',  title: 'Optimize Animated Content', desc: 'Use video formats instead of GIFs for animations to reduce file size.',          priority: 'Low' },
+    { key: 'uses-passive-event-listeners',title: 'Use Passive Event Listeners', desc: 'Add passive event listeners to improve scroll performance on mobile.',          priority: 'Low' },
+  ];
+
+  const failed = oppChecks.filter(o => {
+    const a = mAudits[o.key];
+    return a && a.score !== null && a.score < 1;
+  });
+
+  const always = [
+    { title: 'Add Schema.org Markup',       desc: 'Add LocalBusiness, Service, and FAQPage structured data to your pages to earn rich results in Google.', priority: 'High' },
+    { title: 'Create Location-Specific Pages', desc: 'If you serve multiple cities, create dedicated pages for each to rank for local searches.',            priority: 'Medium' },
+    { title: 'Build More Backlinks',        desc: 'Quality links from local directories, partners, and news sites increase your domain authority.',          priority: 'Medium' },
+  ];
+
+  const oppItems = [...failed.slice(0, 5), ...always].slice(0, 6);
+  const oppHtml = oppItems.map(o => {
+    const cls = o.priority === 'High' ? 'opp-high' : o.priority === 'Medium' ? 'opp-med' : 'opp-low';
+    return `<div class="opp-item">
+      <span class="opp-badge ${cls}">${o.priority}</span>
+      <div>
+        <div class="opp-title">${o.title}</div>
+        <div class="opp-desc">${o.desc}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('oppList').innerHTML = oppHtml || '<p style="color:var(--muted);font-size:14px;">No major opportunities detected — your site is well optimized!</p>';
+
+  // Show report
+  document.getElementById('auditLoading').style.display = 'none';
+  const reportEl = document.getElementById('auditReport');
+  reportEl.classList.add('show');
+
+})();
+
+function showError(msg) {
+  document.getElementById('auditLoading').style.display = 'none';
+  const e = document.getElementById('auditError');
+  e.style.display = 'block';
+  if (msg) document.getElementById('auditErrorMsg').textContent = msg;
+}
+</script>
+</body>
+</html>
