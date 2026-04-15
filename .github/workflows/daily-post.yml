@@ -2,8 +2,8 @@ name: Daily Blog Post Generator
 
 on:
   schedule:
-    # 6:00 AM PST = 14:00 UTC
-    - cron: '0 14 * * *'
+    # 6:00 AM PDT = 13:00 UTC
+    - cron: '0 13 * * *'
   workflow_dispatch: # allow manual trigger from GitHub UI
 
 jobs:
