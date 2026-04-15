@@ -57,11 +57,11 @@ nav{
 .nav-cta:hover{filter:brightness(1.08);transform:translateY(-1px);}
 /* SERVICES DROPDOWN */
 .nav-has-dropdown{position:relative;padding-bottom:4px;margin-bottom:-4px;}
-.nav-dropdown{visibility:hidden;opacity:0;pointer-events:none;position:absolute;top:calc(100% - 4px);left:50%;transform:translateX(-50%) translateY(-4px);background:#fff;border:1px solid var(--border);border-radius:12px;padding:0;overflow:hidden;min-width:240px;box-shadow:0 8px 32px rgba(0,0,0,0.1);z-index:300;transition:opacity .2s ease,transform .2s ease,visibility 0s linear .4s;}
-.nav-has-dropdown:hover .nav-dropdown{visibility:visible;opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .2s ease,transform .2s ease,visibility 0s linear 0s;}
+.nav-dropdown{visibility:hidden;opacity:0;pointer-events:none;position:absolute;top:calc(100% - 4px);left:50%;transform:translateX(-50%) translateY(-4px);background:#fff;border:1px solid var(--border);border-radius:12px;padding:0;overflow:hidden;min-width:240px;box-shadow:0 8px 32px rgba(0,0,0,0.1);z-index:300;transition:opacity .22s ease,transform .22s ease,visibility 0s linear .22s;}
+.nav-has-dropdown:hover .nav-dropdown{visibility:visible;opacity:1;pointer-events:auto;transform:translateX(-50%) translateY(0);transition:opacity .28s ease,transform .28s ease,visibility 0s linear 0s;}
 .nav-dd-inner{display:flex;}
 .nav-dd-left{min-width:230px;padding:8px;border-right:1px solid var(--border);}
-.nav-dd-right{display:none;flex:1;padding:8px;min-width:220px;}
+.nav-dd-right{overflow:hidden;max-width:0;padding:0;transition:max-width .28s ease,padding .28s ease,opacity .22s ease;opacity:0;flex-shrink:0;}.nav-dd-right.dd-show{max-width:280px;padding:8px;opacity:1;}
 .nav-dd-item{display:flex;align-items:center;justify-content:space-between;padding:9px 14px;font-size:13px;color:var(--muted);text-decoration:none;border-radius:8px;transition:all .15s;white-space:nowrap;}
 .nav-dd-item:hover,.nav-dd-item.dd-active{background:var(--teal-lt);color:var(--teal);}
 .dd-chevron{font-size:15px;opacity:0.5;flex-shrink:0;}
@@ -730,7 +730,7 @@ let T=0;
   if(colCtx){colCtx.clearRect(0,0,340,340);drawFalcon(colCtx,340,340,T*1.05,340/52,0.85,true);}
 })();
 document.getElementById('hamburger').addEventListener('click',function(){this.classList.toggle('open');document.getElementById('mobileMenu').classList.toggle('open');});
-(function(){var items=document.querySelectorAll('.nav-dd-item');var right=document.querySelector('.nav-dd-right');items.forEach(function(item){item.addEventListener('mouseenter',function(){items.forEach(function(i){i.classList.remove('dd-active');});document.querySelectorAll('.nav-dd-sub').forEach(function(s){s.classList.remove('dd-active');});item.classList.add('dd-active');var sub=document.getElementById('dd-sub-'+item.getAttribute('data-sub'));if(sub){sub.classList.add('dd-active');}if(right){right.style.display='block';}});});var wrap=document.querySelector('.nav-has-dropdown');if(wrap){wrap.addEventListener('mouseleave',function(){items.forEach(function(i){i.classList.remove('dd-active');});document.querySelectorAll('.nav-dd-sub').forEach(function(s){s.classList.remove('dd-active');});if(right){right.style.display='none';}});}})();
+(function(){var items=document.querySelectorAll('.nav-dd-item');var right=document.querySelector('.nav-dd-right');items.forEach(function(item){item.addEventListener('mouseenter',function(){items.forEach(function(i){i.classList.remove('dd-active');});document.querySelectorAll('.nav-dd-sub').forEach(function(s){s.classList.remove('dd-active');});item.classList.add('dd-active');var sub=document.getElementById('dd-sub-'+item.getAttribute('data-sub'));if(sub){sub.classList.add('dd-active');}if(right){right.classList.add('dd-show');}});});var wrap=document.querySelector('.nav-has-dropdown');if(wrap){wrap.addEventListener('mouseleave',function(){items.forEach(function(i){i.classList.remove('dd-active');});document.querySelectorAll('.nav-dd-sub').forEach(function(s){s.classList.remove('dd-active');});if(right){right.classList.remove('dd-show');}});}})();
 </script>
 <script type="application/ld+json">
 {
