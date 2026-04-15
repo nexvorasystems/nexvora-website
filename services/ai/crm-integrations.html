@@ -63,27 +63,52 @@
           {
             "@type": "Question",
             "name": "What tools and platforms do you integrate?",
-            "acceptedAnswer": {"@type":"Answer","text":"We integrate with CRMs (GoHighLevel, HubSpot, Salesforce, Zoho, Pipedrive), accounting platforms (QuickBooks, Xero, FreshBooks), scheduling tools (Calendly, Acuity), communication platforms (Slack, Gmail, Outlook), e-commerce platforms (Shopify, WooCommerce), payment processors (Stripe, PayPal), and hundreds of other tools via Make, Zapier, or direct API connections."}
+            "acceptedAnswer": {"@type":"Answer","text":"We integrate with CRMs (GoHighLevel, HubSpot, Salesforce, Zoho, Pipedrive), accounting platforms (QuickBooks, Xero, FreshBooks), scheduling tools (Calendly, Acuity, Google Calendar), communication platforms (Slack, Gmail, Outlook), e-commerce platforms (Shopify, WooCommerce), payment processors (Stripe, PayPal, Square), form builders (Typeform, Gravity Forms, JotForm), and hundreds of other tools via Make, Zapier, or direct API connections."}
           },
           {
             "@type": "Question",
             "name": "How long does an integration project take?",
-            "acceptedAnswer": {"@type":"Answer","text":"Simple two-tool integrations (e.g., website form to CRM) typically take 1–2 weeks. Multi-tool stack integrations connecting 4–8 platforms generally take 4–8 weeks from audit to full deployment. Timeline varies based on the complexity of data mapping, the number of tools involved, and whether any custom API work is required."}
+            "acceptedAnswer": {"@type":"Answer","text":"Simple two-tool integrations — for example, connecting your website contact form directly to your CRM — typically take 1–2 weeks. Multi-tool stack integrations connecting 4–8 platforms generally take 4–8 weeks from audit to full deployment. The timeline depends on data mapping complexity, number of tools, and whether any custom API work is required. Nexvora Systems gives you a specific, itemized estimate after the initial audit."}
           },
           {
             "@type": "Question",
-            "name": "What if a tool doesn't have a direct integration?",
-            "acceptedAnswer": {"@type":"Answer","text":"If a tool doesn't have a native Zapier or Make connector, we work directly with its API to build a custom integration. Most modern business software has an API. If a tool has no API and no native integration options, we'll identify an alternative tool in your stack that accomplishes the same goal while being integration-ready."}
+            "name": "What if one of our tools doesn't have a direct integration?",
+            "acceptedAnswer": {"@type":"Answer","text":"If a tool doesn't have a native Zapier or Make connector, we work directly with its API to build a custom integration. Most modern business software exposes an API. In the rare case a tool has no API and no native integration options, we'll identify an alternative that accomplishes the same function while being integration-ready — and we make that recommendation honestly, not to sell unnecessary work."}
           },
           {
             "@type": "Question",
             "name": "How do you handle data security during integration?",
-            "acceptedAnswer": {"@type":"Answer","text":"We use OAuth authentication wherever available, never store API keys in insecure locations, and follow platform-specific security best practices for every integration we build. All data connections are scoped to minimum required permissions. We also provide documentation of every access point so you maintain full visibility into what is connected and how."}
+            "acceptedAnswer": {"@type":"Answer","text":"We use OAuth authentication wherever available, never store API keys in insecure locations, and follow platform-specific security best practices for every integration we build. All data connections are scoped to minimum required permissions — we request only what's needed for the integration to function. We provide complete documentation of every access point so you maintain full visibility and control over what is connected to what."}
           },
           {
             "@type": "Question",
-            "name": "Can you integrate our existing CRM even if it's already set up?",
-            "acceptedAnswer": {"@type":"Answer","text":"Yes. We work with your existing CRM configuration — we don't require a rebuild or migration. Our integration work connects your current CRM to other tools in your stack, ensures data flows correctly in both directions, and adds automation logic without disrupting what's already working in your CRM setup."}
+            "name": "Can you integrate our existing CRM without rebuilding it?",
+            "acceptedAnswer": {"@type":"Answer","text":"Yes. Nexvora Systems works within your existing CRM configuration — no rebuild or migration required unless your current setup has structural problems that would cause integrations to fail. We connect your current CRM to other tools in your stack, establish bidirectional data flows, and add automation logic without disrupting what's already working."}
+          },
+          {
+            "@type": "Question",
+            "name": "What's the difference between Make, Zapier, and a direct API integration?",
+            "acceptedAnswer": {"@type":"Answer","text":"Zapier is fastest to set up and connects the widest range of apps with minimal configuration — ideal for straightforward connections between popular tools. Make (formerly Integromat) handles more complex workflows with conditional logic, data transformation, and multi-step sequences. Direct API integrations are built when no native connector exists or when you need maximum control and performance. We evaluate your situation and choose the right approach — often a combination."}
+          },
+          {
+            "@type": "Question",
+            "name": "What happens if an integration breaks or data stops syncing?",
+            "acceptedAnswer": {"@type":"Answer","text":"Every integration Nexvora builds includes error monitoring and sync failure alerts. If a connection breaks, you receive an immediate notification — and if you're on a maintenance retainer, our team is alerted simultaneously. All major platforms log every data transfer and flag failures in real time. We document every integration completely so any issue can be diagnosed and resolved quickly."}
+          },
+          {
+            "@type": "Question",
+            "name": "Can you connect tools that we've been using separately for years?",
+            "acceptedAnswer": {"@type":"Answer","text":"Yes — this is one of the most common scenarios we work with. Businesses accumulate tools over time, each added to solve a specific problem, and end up with a disconnected stack. We audit your entire tech stack, map every data flow that should be happening but isn't, and build the connections that unify everything — without replacing your existing tools or retraining your team."}
+          },
+          {
+            "@type": "Question",
+            "name": "Do you offer ongoing maintenance after the integrations are built?",
+            "acceptedAnswer": {"@type":"Answer","text":"Yes. Nexvora Systems offers optional monthly maintenance retainers covering monitoring, error resolution, updates when platforms change their APIs, and adjustments when your business processes evolve. Many clients manage independently after receiving our documentation and training — that's completely fine. For those who want ongoing support, the retainer gives you a team that knows your stack and responds quickly."}
+          },
+          {
+            "@type": "Question",
+            "name": "How do I know which integrations will have the biggest impact for my business?",
+            "acceptedAnswer": {"@type":"Answer","text":"That's exactly what our tech stack audit answers. Nexvora Systems maps every tool you use, identifies every manual data transfer your team currently performs, and ranks each potential integration by time cost and error risk. The highest-impact integrations get prioritized first. You see a clear picture of expected ROI for each connection before we build anything, so every investment is justified by a concrete outcome."}
           }
         ]
       }
@@ -502,43 +527,113 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
   </div>
 </div>
 
-<!-- FAQ -->
+<!-- Founder Story -->
+<div class="section">
+  <div class="container">
+    <p class="sec-label">Built From Experience</p>
+    <h2 class="sec-title">We Solved This Problem in Our Own Business</h2>
+    <p style="font-size:16px;color:var(--muted);line-height:1.75;max-width:740px;margin-bottom:20px;">When Murat Zhandaurov and Alexandr Godonvayuk were running 2425 Cleaners at scale across Tampa Bay, they had the classic disconnected stack problem: leads coming through the website weren't automatically entering the CRM; job completions in the scheduling tool weren't triggering invoices in QuickBooks; team notifications required someone to manually relay information between systems. Every gap cost time and introduced errors.</p>
+    <p style="font-size:16px;color:var(--muted);line-height:1.75;max-width:740px;margin-bottom:20px;">Connecting those systems — website to CRM, CRM to accounting, accounting to project management — eliminated hours of manual data entry every week and dramatically reduced the errors that came with it. When a job was completed, the invoice generated automatically. When a lead came in, it entered the pipeline immediately. Nothing fell through the cracks because there were no more cracks to fall through.</p>
+    <p style="font-size:16px;color:var(--muted);line-height:1.75;max-width:740px;">That's the same outcome Nexvora Systems builds for Florida small businesses today. We know exactly which integration gaps are most expensive, because we've fixed them in a real operation — not just in a client's sandbox environment.</p>
+  </div>
+</div>
+
+<!-- Real Business Impact -->
 <div class="section-alt">
+  <div class="container">
+    <p class="sec-label">Real Business Impact</p>
+    <h2 class="sec-title">What a Connected Tech Stack Actually Delivers</h2>
+    <p class="sec-sub">These are the specific, measurable outcomes Florida small businesses see once their tools are properly integrated.</p>
+    <div class="benefits">
+      <div class="benefit">
+        <div class="benefit-dot"></div>
+        <div>
+          <h4>Zero duplicate data entry</h4>
+          <p>When every tool shares data automatically, your team stops entering the same customer name, email, and deal value into three different systems. That time goes back to revenue-generating work.</p>
+        </div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-dot"></div>
+        <div>
+          <h4>One complete view of every customer</h4>
+          <p>When your CRM, accounting, and scheduling tools are integrated, you see the full customer story — bookings, invoices, communications, history — in one place, without logging into multiple platforms.</p>
+        </div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-dot"></div>
+        <div>
+          <h4>Handoffs that never fail</h4>
+          <p>When a deal closes, the invoice is created automatically. When a payment comes in, the project status updates. When a form is submitted, the lead enters the CRM. Nothing depends on someone remembering to do it.</p>
+        </div>
+      </div>
+      <div class="benefit">
+        <div class="benefit-dot"></div>
+        <div>
+          <h4>Data you can actually trust</h4>
+          <p>When records stop being manually transferred between systems, the typos, outdated entries, and inconsistencies disappear. Your decisions are based on accurate, real-time data across every platform.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FAQ -->
+<div class="section">
   <div class="container">
     <p class="sec-label">Common Questions</p>
     <h2 class="sec-title">Frequently Asked Questions</h2>
     <div class="faq-list">
       <div class="faq-item">
         <p class="faq-q">What tools and platforms do you integrate?</p>
-        <p class="faq-a">We integrate with CRMs (GoHighLevel, HubSpot, Salesforce, Zoho, Pipedrive), accounting platforms (QuickBooks, Xero, FreshBooks), scheduling tools (Calendly, Acuity, Google Calendar), communication platforms (Slack, Gmail, Outlook), e-commerce platforms (Shopify, WooCommerce), payment processors (Stripe, PayPal, Square), and hundreds of other tools via Make, Zapier, or direct API connections.</p>
+        <p class="faq-a">We integrate with CRMs (GoHighLevel, HubSpot, Salesforce, Zoho, Pipedrive), accounting platforms (QuickBooks, Xero, FreshBooks), scheduling tools (Calendly, Acuity, Google Calendar), communication platforms (Slack, Gmail, Outlook), e-commerce platforms (Shopify, WooCommerce), payment processors (Stripe, PayPal, Square), form builders (Typeform, Gravity Forms, JotForm), and hundreds of other tools via Make, Zapier, or direct API connections. If your tool has an API or a native Zapier/Make connector, we can almost certainly integrate it.</p>
       </div>
       <div class="faq-item">
         <p class="faq-q">How long does an integration project take?</p>
-        <p class="faq-a">Simple two-tool integrations — for example, connecting your website contact form to your CRM — typically take 1–2 weeks. Multi-tool stack integrations connecting 4–8 platforms generally take 4–8 weeks from audit to full deployment. The timeline depends on the complexity of data mapping, the number of tools involved, and whether any custom API work is required. We give you a specific estimate after the initial audit.</p>
+        <p class="faq-a">Simple two-tool integrations — for example, connecting your website contact form directly to your CRM — typically take 1–2 weeks. Multi-tool stack integrations connecting 4–8 platforms generally take 4–8 weeks from audit to full deployment. The timeline depends on the complexity of data mapping, the number of tools involved, and whether any custom API work is required. Nexvora Systems gives you a specific, itemized estimate after the initial audit — no vague timelines.</p>
       </div>
       <div class="faq-item">
-        <p class="faq-q">What if a tool doesn't have a direct integration?</p>
-        <p class="faq-a">If a tool doesn't have a native Zapier or Make connector, we work directly with its API to build a custom integration. Most modern business software has an API. In the rare case a tool has no API and no native integration options, we'll identify an alternative tool in your stack that accomplishes the same function while being integration-ready — and we'll make that recommendation honestly, not just to sell more work.</p>
+        <p class="faq-q">What if one of our tools doesn't have a direct integration?</p>
+        <p class="faq-a">If a tool doesn't have a native Zapier or Make connector, we work directly with its API to build a custom integration. Most modern business software exposes an API. In the rare case a tool has no API and no native integration options, we'll identify an alternative in your stack that accomplishes the same function while being integration-ready — and we make that recommendation honestly, not to sell unnecessary work. We've never encountered a legitimate business tool that we couldn't connect in some form.</p>
       </div>
       <div class="faq-item">
         <p class="faq-q">How do you handle data security during integration?</p>
-        <p class="faq-a">We use OAuth authentication wherever available, never store API keys in insecure locations, and follow platform-specific security best practices for every integration we build. All data connections are scoped to minimum required permissions — we request only what's needed for the integration to function. We also provide complete documentation of every access point so you maintain full visibility into what is connected to what.</p>
+        <p class="faq-a">We use OAuth authentication wherever available, never store API keys in insecure locations, and follow platform-specific security best practices for every integration we build. All data connections are scoped to minimum required permissions — we request only what's needed for the integration to function, nothing more. We provide complete documentation of every access point and credential so you maintain full visibility and control over what is connected to what.</p>
       </div>
       <div class="faq-item">
-        <p class="faq-q">Can you integrate our existing CRM even if it's already set up?</p>
-        <p class="faq-a">Yes. We work within your existing CRM configuration — we don't require a rebuild or migration unless your current setup has fundamental problems that would cause the integrations to fail. We connect your current CRM to other tools in your stack, establish bidirectional data flows, and add automation logic without disrupting what's already working. Businesses throughout Tampa Bay and Florida come to us with established CRMs and we integrate them successfully every time.</p>
+        <p class="faq-q">Can you integrate our existing CRM without rebuilding it?</p>
+        <p class="faq-a">Yes. Nexvora Systems works within your existing CRM configuration — we don't require a rebuild or migration unless your current setup has structural problems that would cause the integrations to fail. We connect your current CRM to other tools in your stack, establish bidirectional data flows, and add automation logic without disrupting what's already working. Businesses throughout Tampa Bay and Florida come to us with established CRMs and we integrate them successfully every time.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">What's the difference between using Make, Zapier, and a direct API integration?</p>
+        <p class="faq-a">Zapier is the fastest to set up and connects the widest range of apps with minimal configuration — ideal for straightforward, reliable connections between popular tools. Make (formerly Integromat) handles more complex workflows with conditional logic, data transformation, and multi-step sequences that Zapier can't manage. Direct API integrations are built when no native connector exists or when you need maximum control, flexibility, or performance. We evaluate your situation and choose the right approach — often a combination — rather than defaulting to whatever is easiest for us to build.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">What happens if an integration breaks or data stops syncing?</p>
+        <p class="faq-a">Every integration Nexvora builds includes error monitoring and sync failure alerts. If a connection breaks, you receive an immediate notification — and if you're on a maintenance retainer, our team is alerted simultaneously. All major platforms log every data transfer and flag failures in real time. We also document every integration completely so any issue can be diagnosed and resolved quickly, even by someone who wasn't involved in building it originally.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Can you connect tools that we've been using separately for years?</p>
+        <p class="faq-a">Yes — this is one of the most common scenarios we work with. Businesses accumulate tools over time, each added to solve a specific problem, and end up with a disconnected stack where nothing talks to anything else. We audit your entire tech stack, map every data flow that should be happening but isn't, and build the connections that unify everything. The process doesn't require replacing your existing tools or retraining your team on new software.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">Do you offer ongoing maintenance after the integrations are built?</p>
+        <p class="faq-a">Yes. Nexvora Systems offers optional monthly maintenance retainers that cover monitoring, error resolution, updates when platforms change their APIs, and adjustments when your business processes evolve. Many clients choose to manage their integrations independently after receiving our documentation and training — and that's completely fine. For businesses that want ongoing support, the retainer option gives you a team that knows your stack and responds quickly when something needs attention.</p>
+      </div>
+      <div class="faq-item">
+        <p class="faq-q">How do I know which integrations will have the biggest impact for my business?</p>
+        <p class="faq-a">That's exactly what our tech stack audit answers. During the initial engagement, Nexvora Systems maps every tool you use, identifies every manual data transfer your team currently performs, and ranks each potential integration by time cost and error risk. The highest-impact integrations — the ones that save the most time or eliminate the costliest errors — get prioritized first. You see a clear picture of expected ROI for each connection before we build anything, so every investment is justified by a concrete outcome.</p>
       </div>
     </div>
   </div>
 </div>
 
 <!-- CTA -->
-<div class="section">
+<div class="section-alt">
   <div class="container">
     <div class="cta-block">
       <p class="sec-label">Get Started</p>
       <h2>Stop Entering Data Twice — <strong>Let Your Tools Do It</strong></h2>
-      <p>Take the free assessment and we'll map your current tech stack, identify every integration gap, and show you exactly how to fix it.</p>
+      <p>Take the free assessment and Nexvora Systems will map your current tech stack, identify every integration gap, and show you exactly what a connected system would look like for your business.</p>
       <a href="../../assessment.html" class="btn-p">Take the Free Assessment</a>
     </div>
   </div>
