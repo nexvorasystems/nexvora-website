@@ -308,19 +308,30 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
     }, d);
   });
 
-  // Fetch PSI — mobile + desktop in parallel
+  // Fetch PSI — sequential to avoid rate limit (1 QPS without API key)
   const PSI = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed';
   const encoded = encodeURIComponent(siteUrl.href);
+  const sleep = ms => new Promise(r => setTimeout(r, ms));
+
+  async function fetchPSI(strategy, retries = 2) {
+    for (let i = 0; i <= retries; i++) {
+      try {
+        const res = await fetch(`${PSI}?url=${encoded}&strategy=${strategy}`);
+        if (res.status === 429) { await sleep(2000 * (i + 1)); continue; }
+        if (!res.ok) { await sleep(1000 * (i + 1)); continue; }
+        const json = await res.json();
+        if (json.lighthouseResult) return json;
+        await sleep(1000);
+      } catch (e) { await sleep(1000 * (i + 1)); }
+    }
+    return null;
+  }
 
   let mobile, desktop;
   try {
-    const [mRes, dRes] = await Promise.all([
-      fetch(`${PSI}?url=${encoded}&strategy=mobile`),
-      fetch(`${PSI}?url=${encoded}&strategy=desktop`)
-    ]);
-    if (!mRes.ok && !dRes.ok) throw new Error('PSI API error');
-    mobile = mRes.ok ? await mRes.json() : null;
-    desktop = dRes.ok ? await dRes.json() : null;
+    mobile = await fetchPSI('mobile');
+    await sleep(1200); // wait between requests to respect 1 QPS limit
+    desktop = await fetchPSI('desktop');
   } catch (err) {
     showError('We couldn\'t analyze this website. The site may be blocking external requests, or the URL may be incorrect. Please try again with a different URL.');
     return;
