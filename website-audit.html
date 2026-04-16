@@ -273,9 +273,12 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
     return;
   }
 
+  // Auto-add https:// if missing (e.g. user typed "mybusiness.com")
+  const normalizedUrl = /^https?:\/\//i.test(rawUrl) ? rawUrl : 'https://' + rawUrl;
+
   let siteUrl;
   try {
-    siteUrl = new URL(rawUrl);
+    siteUrl = new URL(normalizedUrl);
   } catch {
     showError('Invalid URL. Please go back and try again.');
     return;
