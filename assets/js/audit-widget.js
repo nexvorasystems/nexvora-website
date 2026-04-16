@@ -435,13 +435,18 @@
     document.getElementById('nxSpinner').style.display = 'block';
     document.getElementById('nxSubmitArrow').style.display = 'none';
     document.getElementById('nxSubmitText').textContent = 'Submitting…';
-    const auditParams = new URLSearchParams({ url, name, email });
+
+    // Generate unique report ID upfront so GHL email can include the final URL
+    const chars = 'abcdefghijklmnopqrstuvwxyz0123456789';
+    const reportId = Array.from({length: 8}, () => chars[Math.floor(Math.random() * chars.length)]).join('');
+
+    const auditParams = new URLSearchParams({ url, name, email, id: reportId });
     const auditUrl = `${AUDIT_PAGE}?${auditParams.toString()}`;
     try {
       await fetch(`${API_BASE}/api/audit-lead`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, websiteUrl: url, reportUrl: auditUrl }),
+        body: JSON.stringify({ name, email, websiteUrl: url, reportUrl: auditUrl, reportId }),
         signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined
       });
     } catch (err) {

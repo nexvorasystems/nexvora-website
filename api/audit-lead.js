@@ -34,7 +34,7 @@ module.exports = async function handler(req, res) {
     return res.json({ success: true, note: 'GHL skipped — env vars not set' });
   }
 
-  const { name, email, websiteUrl, reportUrl } = req.body || {};
+  const { name, email, websiteUrl, reportUrl, reportId } = req.body || {};
 
   if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
     return res.status(400).json({ error: 'Valid email required' });
@@ -47,7 +47,9 @@ module.exports = async function handler(req, res) {
   const nameParts = name.trim().split(/\s+/);
   const firstName = nameParts[0] || '';
   const lastName = nameParts.slice(1).join(' ') || '';
-  const auditReportUrl = reportUrl || `${SITE_URL}/website-audit.html?url=${encodeURIComponent(websiteUrl || '')}`;
+  const auditReportUrl = reportId
+    ? `${SITE_URL}/audit/${reportId}`
+    : reportUrl || `${SITE_URL}/website-audit.html?url=${encodeURIComponent(websiteUrl || '')}`;
 
   try {
     // 1. Upsert contact (matches existing by email)
