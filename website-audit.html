@@ -265,6 +265,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 (async function () {
   const params = new URLSearchParams(window.location.search);
   const rawUrl = params.get('url');
+  const auditName = params.get('name') || '';
+  const auditEmail = params.get('email') || '';
 
   if (!rawUrl) {
     window.location.href = 'index.html';
@@ -281,6 +283,13 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 
   document.getElementById('reportUrl').textContent = siteUrl.href;
   document.title = 'Audit: ' + siteUrl.hostname + ' — Nexvora Systems';
+
+  // Personalise CTA if we have a name
+  if (auditName) {
+    const firstName = auditName.trim().split(' ')[0];
+    const ctaH2 = document.querySelector('.audit-cta h2');
+    if (ctaH2) ctaH2.textContent = firstName + ', ready to fix these issues?';
+  }
 
   // Animate steps
   const steps = ['step1','step2','step3','step4','step5'];
