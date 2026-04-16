@@ -116,6 +116,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .opp-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
 .opp-desc{font-size:12px;color:var(--muted);line-height:1.5;}
 
+/* STATS STRIP */
+.audit-stats-strip{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;}
+.stat-box{background:var(--bg-card);border:1px solid var(--border);border-radius:14px;padding:16px 18px;text-align:center;}
+.stat-val{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-0.5px;line-height:1;}
+.stat-lbl{font-size:11px;color:var(--muted);margin-top:5px;font-weight:600;}
+.stat-sub{font-size:10px;color:var(--dim);margin-top:2px;}
+
+/* PAGE DETAILS GRID */
+.page-details-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+.pd-item{background:var(--bg-surface);border-radius:10px;padding:14px 16px;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.pd-label{font-size:13px;color:var(--muted);font-weight:600;}
+.pd-value{font-size:14px;font-weight:800;color:var(--text);text-align:right;}
+.pd-value.good{color:var(--green);}
+.pd-value.warn{color:#F59E0B;}
+.pd-value.bad{color:var(--red);}
+
 /* CTA */
 .audit-cta{background:linear-gradient(135deg,#0F2B4C,#0D9488);border-radius:20px;padding:40px 36px;text-align:center;color:#fff;}
 .audit-cta h2{font-size:22px;font-weight:800;letter-spacing:-0.5px;margin-bottom:10px;}
@@ -123,6 +139,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .audit-cta-btn{display:inline-flex;align-items:center;gap:8px;padding:15px 32px;background:#fff;color:#0D9488;border-radius:12px;text-decoration:none;font-size:15px;font-weight:800;transition:all .2s;}
 .audit-cta-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2);}
 .audit-cta-sub{font-size:12px;color:rgba(255,255,255,0.4);margin-top:14px;}
+
+@media(max-width:640px){
+  .audit-stats-strip{grid-template-columns:repeat(2,1fr);}
+  .page-details-grid{grid-template-columns:1fr;}
+}
 
 @media(max-width:640px){
   .cwv-grid{grid-template-columns:repeat(2,1fr);}
@@ -199,6 +220,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
       </div>
     </div>
 
+    <!-- QUICK STATS STRIP -->
+    <div class="audit-stats-strip" id="auditStatsStrip">
+      <!-- filled by JS -->
+    </div>
+
     <!-- GRADE -->
     <div class="audit-grade-banner">
       <div class="audit-grade-circle" id="gradeCircle">—</div>
@@ -215,9 +241,29 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
         <div class="audit-card-title">Page Speed & User Experience Metrics</div>
       </div>
       <div class="audit-card-body">
-        <div class="cwv-grid" id="cwvGrid">
-          <!-- filled by JS -->
-        </div>
+        <div class="cwv-grid" id="cwvGrid"></div>
+      </div>
+    </div>
+
+    <!-- DESKTOP vs MOBILE -->
+    <div class="audit-card" id="desktopCard" style="display:none;">
+      <div class="audit-card-head">
+        <div class="audit-card-label">Desktop Performance</div>
+        <div class="audit-card-title">Mobile vs Desktop Comparison</div>
+      </div>
+      <div class="audit-card-body">
+        <div class="cwv-grid" id="cwvGridDesktop"></div>
+      </div>
+    </div>
+
+    <!-- PAGE DETAILS -->
+    <div class="audit-card" id="pageDetailsCard" style="display:none;">
+      <div class="audit-card-head">
+        <div class="audit-card-label">Page Technical Details</div>
+        <div class="audit-card-title">Size, Requests & Resource Breakdown</div>
+      </div>
+      <div class="audit-card-body">
+        <div class="page-details-grid" id="pageDetailsGrid"></div>
       </div>
     </div>
 
@@ -228,9 +274,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
         <div class="audit-card-title">Technical SEO & Discoverability</div>
       </div>
       <div class="audit-card-body">
-        <div class="audit-checklist" id="seoChecklist">
-          <!-- filled by JS -->
-        </div>
+        <div class="audit-checklist" id="seoChecklist"></div>
       </div>
     </div>
 
@@ -238,18 +282,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
     <div class="audit-card">
       <div class="audit-card-head">
         <div class="audit-card-label">Top Opportunities</div>
-        <div class="audit-card-title">What to Fix First</div>
+        <div class="audit-card-title">What to Fix First — with Estimated Savings</div>
       </div>
       <div class="audit-card-body">
-        <div class="opp-list" id="oppList">
-          <!-- filled by JS -->
-        </div>
+        <div class="opp-list" id="oppList"></div>
       </div>
     </div>
 
     <!-- CTA -->
     <div class="audit-cta">
-      <h2>Ready to Fix These Issues?</h2>
+      <h2 id="ctaHeading">Ready to Fix These Issues?</h2>
       <p>Nexvora Systems helps Florida small businesses build faster, higher-ranking websites that actually convert visitors into customers. Founded by Murat Zhandaurov and Alexandr Godonvayuk — operators who've built real businesses.</p>
       <a href="assessment.html" class="audit-cta-btn">
         Get a Free Business Assessment
@@ -438,20 +480,22 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
     return { 'cwv-good': 'Good', 'cwv-ok': 'Needs Work', 'cwv-bad': 'Poor' }[cls];
   }
 
-  const cats = lhr.categories || {};
-  const audits = lhr.audits || {};
+  const mLhr    = mobile?.lighthouseResult;
+  const dLhr    = desktop?.lighthouseResult;
+  const lhr     = mLhr || dLhr;
+  const cats    = lhr.categories || {};
+  const mAudits = mLhr?.audits || lhr.audits || {};
+  const dAudits = dLhr?.audits || {};
+  const mCats   = mLhr?.categories || cats;
+  const dCats   = dLhr?.categories || cats;
 
-  const mCats = mobile && mobile.lighthouseResult ? mobile.lighthouseResult.categories : cats;
-  const dCats = desktop && desktop.lighthouseResult ? desktop.lighthouseResult.categories : cats;
-  const mAudits = mobile && mobile.lighthouseResult ? mobile.lighthouseResult.audits : audits;
+  const perfM = score(mCats.performance?.score);
+  const perfD = score(dCats.performance?.score);
+  const seo   = score((mCats.seo || dCats.seo)?.score);
+  const acc   = score((mCats.accessibility || dCats.accessibility)?.score);
+  const bp    = score((mCats['best-practices'] || dCats['best-practices'])?.score);
 
-  const perfM = score(mCats.performance && mCats.performance.score);
-  const perfD = score(dCats.performance && dCats.performance.score);
-  const seo   = score(cats.seo && cats.seo.score);
-  const acc   = score(cats.accessibility && cats.accessibility.score);
-  const bp    = score(cats['best-practices'] && cats['best-practices'].score);
-
-  // Fill header scores
+  // ── Header scores ──────────────────────────────────────────────────────────
   function fillScore(id, n) {
     const el = document.getElementById(id);
     if (!el) return;
@@ -464,132 +508,186 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
   fillScore('scoreAcc', acc);
   fillScore('scoreBp', bp);
 
-  // Overall grade
-  const scores = [perfM, seo, acc, bp].filter(x => x !== null);
-  const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : null;
+  // ── Overall grade ──────────────────────────────────────────────────────────
+  const allScores = [perfM, seo, acc, bp].filter(x => x !== null);
+  const avg = allScores.length ? Math.round(allScores.reduce((a,b)=>a+b,0)/allScores.length) : null;
   const gradeEl = document.getElementById('gradeCircle');
-  const gradeTitle = document.getElementById('gradeTitle');
-  const gradeDesc = document.getElementById('gradeDesc');
   let grade, gradeClass, gradeT, gradeD;
-  if (avg === null) {
-    grade = '?'; gradeClass = 'grade-b';
-    gradeT = 'Unable to calculate grade';
-    gradeD = 'Some audit data was unavailable.';
-  } else if (avg >= 90) {
-    grade = 'A'; gradeClass = 'grade-a';
-    gradeT = 'Excellent — Your site is well-optimized';
-    gradeD = 'Your website scores well across performance, SEO, and accessibility. Minor improvements could push it even further.';
-  } else if (avg >= 75) {
-    grade = 'B'; gradeClass = 'grade-b';
-    gradeT = 'Good — But there\'s room to improve';
-    gradeD = 'Your site is performing reasonably well but has specific issues that, when fixed, could meaningfully increase traffic and conversions.';
-  } else if (avg >= 50) {
-    grade = 'C'; gradeClass = 'grade-c';
-    gradeT = 'Fair — Significant issues detected';
-    gradeD = 'Your website has multiple issues affecting how Google ranks it and how visitors experience it. These should be addressed soon.';
-  } else {
-    grade = 'D'; gradeClass = 'grade-d';
-    gradeT = 'Poor — Your site needs urgent attention';
-    gradeD = 'Critical performance and SEO issues are likely hurting your search rankings and driving potential customers away. Nexvora Systems can help fix this.';
-  }
+  if (avg === null)    { grade='?'; gradeClass='grade-b'; gradeT='Unable to calculate grade'; gradeD='Some audit data was unavailable.'; }
+  else if (avg >= 90) { grade='A'; gradeClass='grade-a'; gradeT='Excellent — Your site is well-optimized'; gradeD='Your website scores well across performance, SEO, and accessibility. Minor improvements could push it even further.'; }
+  else if (avg >= 75) { grade='B'; gradeClass='grade-b'; gradeT='Good — But there\'s room to improve'; gradeD='Your site is performing reasonably well but has specific issues that, when fixed, could meaningfully increase traffic and conversions.'; }
+  else if (avg >= 50) { grade='C'; gradeClass='grade-c'; gradeT='Fair — Significant issues detected'; gradeD='Your website has multiple issues affecting how Google ranks it and how visitors experience it. These should be addressed soon.'; }
+  else                { grade='D'; gradeClass='grade-d'; gradeT='Poor — Your site needs urgent attention'; gradeD='Critical performance and SEO issues are likely hurting your search rankings and driving potential customers away. Nexvora Systems can help fix this.'; }
   gradeEl.textContent = grade;
   gradeEl.className = 'audit-grade-circle ' + gradeClass;
-  gradeTitle.textContent = gradeT;
-  gradeDesc.textContent = gradeD;
+  document.getElementById('gradeTitle').textContent = gradeT;
+  document.getElementById('gradeDesc').textContent = gradeD;
 
-  // Core Web Vitals
+  // ── Quick stats strip ──────────────────────────────────────────────────────
+  const pageBytes   = mAudits['total-byte-weight']?.numericValue || 0;
+  const pageKB      = pageBytes ? (pageBytes / 1024).toFixed(0) : null;
+  const pageMB      = pageBytes > 1048576 ? (pageBytes / 1048576).toFixed(2) + ' MB' : pageKB ? pageKB + ' KB' : '—';
+  const reqCount    = mAudits['network-requests']?.details?.items?.length || null;
+  const serverResp  = mAudits['server-response-time']?.displayValue || mAudits['network-server-latency']?.displayValue || '—';
+  const seoFails    = ['uses-https','document-title','meta-description','viewport','is-crawlable','link-text','image-alt','structured-data','canonical','hreflang','font-size','tap-targets']
+                      .filter(k => { const a = mAudits[k]; return a && a.score !== null && a.score < 1; }).length;
+  const perfFails   = ['first-contentful-paint','largest-contentful-paint','total-blocking-time','cumulative-layout-shift','speed-index','interactive']
+                      .filter(k => { const a = mAudits[k]; return a && a.score !== null && a.score < 0.9; }).length;
+  const totalIssues = seoFails + perfFails;
+
+  document.getElementById('auditStatsStrip').innerHTML = `
+    <div class="stat-box"><div class="stat-val">${totalIssues > 0 ? totalIssues : '0'}</div><div class="stat-lbl">Issues Found</div><div class="stat-sub">${totalIssues > 5 ? 'Needs attention' : totalIssues > 0 ? 'Minor issues' : 'All clear'}</div></div>
+    <div class="stat-box"><div class="stat-val">${pageMB}</div><div class="stat-lbl">Page Size</div><div class="stat-sub">${pageBytes > 2097152 ? 'Too heavy' : pageBytes > 1048576 ? 'Acceptable' : 'Lightweight'}</div></div>
+    <div class="stat-box"><div class="stat-val">${reqCount !== null ? reqCount : '—'}</div><div class="stat-lbl">HTTP Requests</div><div class="stat-sub">${reqCount > 80 ? 'Too many' : reqCount > 50 ? 'Moderate' : reqCount !== null ? 'Optimized' : ''}</div></div>
+    <div class="stat-box"><div class="stat-val">${serverResp}</div><div class="stat-lbl">Server Response</div><div class="stat-sub">Time to first byte</div></div>`;
+
+  // ── Core Web Vitals ────────────────────────────────────────────────────────
   const cwvData = [
-    { key: 'first-contentful-paint',    label: 'FCP',  good: 1.8,  ok: 3.0, unit: 's'  },
-    { key: 'largest-contentful-paint',  label: 'LCP',  good: 2.5,  ok: 4.0, unit: 's'  },
-    { key: 'total-blocking-time',       label: 'TBT',  good: 200,  ok: 600, unit: 'ms' },
-    { key: 'cumulative-layout-shift',   label: 'CLS',  good: 0.1,  ok: 0.25,unit: ''  },
-    { key: 'speed-index',               label: 'SI',   good: 3.4,  ok: 5.8, unit: 's'  },
-    { key: 'interactive',               label: 'TTI',  good: 3.8,  ok: 7.3, unit: 's'  },
+    { key:'first-contentful-paint',   label:'FCP',  full:'First Contentful Paint', good:1.8,  ok:3.0,  unit:'s'  },
+    { key:'largest-contentful-paint', label:'LCP',  full:'Largest Contentful Paint',good:2.5, ok:4.0,  unit:'s'  },
+    { key:'total-blocking-time',      label:'TBT',  full:'Total Blocking Time',    good:200,  ok:600,  unit:'ms' },
+    { key:'cumulative-layout-shift',  label:'CLS',  full:'Cumulative Layout Shift',good:0.1,  ok:0.25, unit:''   },
+    { key:'speed-index',              label:'SI',   full:'Speed Index',            good:3.4,  ok:5.8,  unit:'s'  },
+    { key:'interactive',              label:'TTI',  full:'Time to Interactive',    good:3.8,  ok:7.3,  unit:'s'  },
   ];
-  const cwvHtml = cwvData.map(c => {
-    const val = auditDisplay(mAudits, c.key);
-    const numMatch = val.match(/[\d.]+/);
-    const num = numMatch ? parseFloat(numMatch[0]) : null;
-    const cls = cwvClass(num, c.good, c.ok);
-    const status = cwvStatus(num, c.good, c.ok);
-    return `<div class="cwv-box">
-      <div class="cwv-val ${cls === 'cwv-good' ? 'score-good' : cls === 'cwv-ok' ? 'score-ok' : 'score-bad'}">${val}</div>
-      <div class="cwv-name">${c.label}</div>
-      <span class="cwv-status ${cls}">${status}</span>
-    </div>`;
-  }).join('');
-  document.getElementById('cwvGrid').innerHTML = cwvHtml;
+  function cwvHtml(auditsObj) {
+    return cwvData.map(c => {
+      const val = auditDisplay(auditsObj, c.key);
+      const numMatch = val.match(/[\d.]+/);
+      const num = numMatch ? parseFloat(numMatch[0]) : null;
+      const cls = cwvClass(num, c.good, c.ok);
+      const status = cwvStatus(num, c.good, c.ok);
+      const scoreClr = cls==='cwv-good'?'score-good':cls==='cwv-ok'?'score-ok':'score-bad';
+      return `<div class="cwv-box">
+        <div class="cwv-val ${scoreClr}">${val}</div>
+        <div class="cwv-name">${c.label}</div>
+        <div class="cwv-name" style="font-size:9px;opacity:.6;margin-top:1px;">${c.full}</div>
+        <span class="cwv-status ${cls}">${status}</span>
+      </div>`;
+    }).join('');
+  }
+  document.getElementById('cwvGrid').innerHTML = cwvHtml(mAudits);
 
-  // SEO Checklist
+  // ── Desktop CWV (if available) ─────────────────────────────────────────────
+  if (dLhr && perfD !== null) {
+    document.getElementById('desktopCard').style.display = '';
+    document.getElementById('cwvGridDesktop').innerHTML = cwvHtml(dAudits);
+  }
+
+  // ── Page technical details ─────────────────────────────────────────────────
+  const jsBytes  = mAudits['total-byte-weight']?.details?.items?.find(i => i.resourceType === 'Script')?.transferSize;
+  const cssBytes = mAudits['total-byte-weight']?.details?.items?.find(i => i.resourceType === 'Stylesheet')?.transferSize;
+  const imgBytes = mAudits['total-byte-weight']?.details?.items?.find(i => i.resourceType === 'Image')?.transferSize;
+  const unusedJS  = mAudits['unused-javascript']?.displayValue || null;
+  const unusedCSS = mAudits['unused-css-rules']?.displayValue || null;
+  const bootTime  = mAudits['bootup-time']?.displayValue || null;
+  const domSize   = mAudits['dom-size']?.numericValue || null;
+
+  const fmt = b => b ? (b > 1048576 ? (b/1048576).toFixed(2)+' MB' : (b/1024).toFixed(0)+' KB') : null;
+
+  const pdItems = [
+    { label:'Total Page Weight', value: pageMB, cls: pageBytes > 2097152 ? 'bad' : pageBytes > 1048576 ? 'warn' : 'good' },
+    { label:'HTTP Requests',     value: reqCount !== null ? reqCount : '—', cls: reqCount > 80 ? 'bad' : reqCount > 50 ? 'warn' : 'good' },
+    { label:'Server Response',   value: serverResp, cls: '' },
+    { label:'JavaScript Size',   value: fmt(jsBytes) || (bootTime ? 'Boot: ' + bootTime : '—'), cls: '' },
+    { label:'Unused JavaScript', value: unusedJS || '—', cls: unusedJS ? 'warn' : '' },
+    { label:'Unused CSS',        value: unusedCSS || '—', cls: unusedCSS ? 'warn' : '' },
+    { label:'Image Weight',      value: fmt(imgBytes) || '—', cls: '' },
+    { label:'DOM Elements',      value: domSize ? domSize.toLocaleString() : '—', cls: domSize > 1500 ? 'warn' : '' },
+  ].filter(i => i.value && i.value !== '—');
+
+  if (pdItems.length >= 3) {
+    document.getElementById('pageDetailsCard').style.display = '';
+    document.getElementById('pageDetailsGrid').innerHTML = pdItems.map(i =>
+      `<div class="pd-item"><span class="pd-label">${i.label}</span><span class="pd-value ${i.cls}">${i.value}</span></div>`
+    ).join('');
+  }
+
+  // ── SEO Checklist ──────────────────────────────────────────────────────────
   const seoChecks = [
-    { key: 'uses-https',       label: 'HTTPS Security',        passDesc: 'Your site uses HTTPS — secure for visitors and trusted by Google.',    failDesc: 'Your site is not using HTTPS. This is a critical security issue that also hurts rankings.' },
-    { key: 'document-title',   label: 'Page Title Tag',        passDesc: 'Your page has a title tag. Make sure it includes your primary keyword.', failDesc: 'Missing page title. Google uses the title tag as the main signal for what your page is about.' },
-    { key: 'meta-description', label: 'Meta Description',      passDesc: 'Meta description found. This appears in search results below your title.', failDesc: 'No meta description. Add one to improve click-through rates from Google search results.' },
-    { key: 'viewport',         label: 'Mobile Viewport',       passDesc: 'Viewport meta tag is set. Your site is configured for mobile devices.',  failDesc: 'Missing viewport meta tag. Your site may not display correctly on mobile phones.' },
-    { key: 'is-crawlable',     label: 'Google Crawlable',      passDesc: 'Your site is not blocking Google. Search engines can index your pages.', failDesc: 'Your site may be blocking Google. Check your robots.txt and meta robots tags.' },
-    { key: 'link-text',        label: 'Descriptive Link Text', passDesc: 'Links have descriptive text — good for users and SEO.',                 failDesc: 'Some links use generic text like "click here". Use descriptive anchor text for better SEO.' },
-    { key: 'image-alt',        label: 'Image Alt Text',        passDesc: 'Images have alt text — good for SEO and accessibility.',               failDesc: 'Some images are missing alt text. Add descriptions to improve SEO and accessibility.' },
-    { key: 'structured-data',  label: 'Structured Data (Schema)', passDesc: 'Structured data detected. Helps Google understand your content.',   failDesc: 'No structured data found. Adding schema markup can earn rich results in Google.' },
+    { key:'uses-https',       label:'HTTPS Security',           passDesc:'Your site uses HTTPS — trusted by Google and secure for visitors.',          failDesc:'Not using HTTPS. This is a critical security issue that directly hurts search rankings.' },
+    { key:'document-title',   label:'Page Title Tag',           passDesc:'Page title found. Make sure it includes your primary keyword for this page.',  failDesc:'No page title found. Google uses the title as the primary signal for what your page covers.' },
+    { key:'meta-description', label:'Meta Description',         passDesc:'Meta description present — this text appears in Google search results.',       failDesc:'No meta description. Add one (150–160 chars) to improve click-through rates from search.' },
+    { key:'viewport',         label:'Mobile Viewport',          passDesc:'Mobile viewport is configured correctly.',                                      failDesc:'Missing viewport meta tag. Your site likely looks broken on phones and tablets.' },
+    { key:'is-crawlable',     label:'Google Can Crawl This Page',passDesc:'No crawl blocks detected — Google can index this page.',                      failDesc:'This page may be blocked from Google. Check robots.txt and meta robots tags immediately.' },
+    { key:'canonical',        label:'Canonical URL',            passDesc:'Canonical tag present — prevents duplicate content issues.',                    failDesc:'No canonical tag. Duplicate versions of this page may compete against each other in Google.' },
+    { key:'link-text',        label:'Descriptive Link Text',    passDesc:'Links use descriptive anchor text — good for users and SEO.',                   failDesc:'Generic link text detected ("click here", "learn more"). Use keyword-rich anchor text.' },
+    { key:'image-alt',        label:'Image Alt Text',           passDesc:'Images have alt attributes — helps SEO and screen readers.',                   failDesc:'Images are missing alt text. This hurts both accessibility and image search rankings.' },
+    { key:'structured-data',  label:'Structured Data (Schema)', passDesc:'Schema markup found — eligible for rich results in Google.',                   failDesc:'No structured data. Add LocalBusiness, Service, or FAQPage schema to stand out in search.' },
+    { key:'font-size',        label:'Readable Font Sizes',      passDesc:'Text is legible on mobile devices.',                                            failDesc:'Some text is too small to read on mobile. Google may downrank pages with poor mobile UX.' },
+    { key:'tap-targets',      label:'Tap Target Spacing',       passDesc:'Buttons and links are well-spaced for mobile taps.',                            failDesc:'Buttons or links are too close together on mobile, making them hard to tap accurately.' },
+    { key:'hreflang',         label:'Language Declaration',     passDesc:'Language/region targeting is configured.',                                      failDesc:'No hreflang or lang attribute. Declare your target language to help Google serve the right audience.' },
   ];
   const seoHtml = seoChecks.map(c => {
     const audit = mAudits[c.key];
     const s = audit ? audit.score : null;
     let icon, cls;
-    if (s === 1)         { icon = '✓'; cls = 'check-pass'; }
-    else if (s === 0)    { icon = '✗'; cls = 'check-fail'; }
-    else if (s !== null) { icon = '!'; cls = 'check-warn'; }
-    else                 { icon = '?'; cls = 'check-warn'; }
-    const desc = (s === 1) ? c.passDesc : c.failDesc;
+    if (s === 1)         { icon='✓'; cls='check-pass'; }
+    else if (s === 0)    { icon='✗'; cls='check-fail'; }
+    else if (s !== null) { icon='!'; cls='check-warn'; }
+    else                 { icon='?'; cls='check-warn'; }
     return `<div class="audit-check">
       <div class="audit-check-icon ${cls}">${icon}</div>
       <div class="audit-check-content">
         <div class="audit-check-name">${c.label}</div>
-        <div class="audit-check-desc">${desc}</div>
+        <div class="audit-check-desc">${s === 1 ? c.passDesc : c.failDesc}</div>
       </div>
     </div>`;
   }).join('');
   document.getElementById('seoChecklist').innerHTML = seoHtml;
 
-  // Opportunities (failed audits)
+  // ── Opportunities with savings ─────────────────────────────────────────────
   const oppChecks = [
-    { key: 'uses-optimized-images',       title: 'Optimize Images',           desc: 'Large unoptimized images slow your page. Compress and convert to WebP format.', priority: 'High' },
-    { key: 'render-blocking-resources',   title: 'Remove Render-Blocking Resources', desc: 'JavaScript or CSS files are delaying page load. Defer non-critical scripts.', priority: 'High' },
-    { key: 'unused-javascript',           title: 'Remove Unused JavaScript',  desc: 'Unused JS is loading but not needed. Remove or defer it to speed up the page.',  priority: 'High' },
-    { key: 'unused-css-rules',            title: 'Remove Unused CSS',         desc: 'Your stylesheets contain unused rules that are increasing page weight.',          priority: 'Medium' },
-    { key: 'uses-text-compression',       title: 'Enable Text Compression',   desc: 'Enable GZIP or Brotli compression on your server to reduce file transfer size.', priority: 'Medium' },
-    { key: 'uses-long-cache-ttl',         title: 'Improve Browser Caching',   desc: 'Set longer cache expiration for static assets so returning visitors load faster.', priority: 'Medium' },
-    { key: 'efficient-animated-content',  title: 'Optimize Animated Content', desc: 'Use video formats instead of GIFs for animations to reduce file size.',          priority: 'Low' },
-    { key: 'uses-passive-event-listeners',title: 'Use Passive Event Listeners', desc: 'Add passive event listeners to improve scroll performance on mobile.',          priority: 'Low' },
+    { key:'uses-optimized-images',      title:'Optimize Images',                  desc:'Unoptimized images are the #1 cause of slow pages. Convert to WebP and compress.',        priority:'High' },
+    { key:'render-blocking-resources',  title:'Remove Render-Blocking Resources', desc:'JS or CSS files are blocking the page from painting. Defer or async-load non-critical files.',priority:'High' },
+    { key:'unused-javascript',          title:'Remove Unused JavaScript',         desc:'JavaScript is being loaded but never executed. Remove or defer it to reduce parse time.',    priority:'High' },
+    { key:'unused-css-rules',           title:'Remove Unused CSS',                desc:'Stylesheets contain rules that no element on the page uses. Strip them to reduce weight.',   priority:'Medium' },
+    { key:'uses-text-compression',      title:'Enable Text Compression (GZIP/Brotli)',desc:'Text-based files (HTML, CSS, JS) are not compressed. Enable GZIP or Brotli on your server.',priority:'Medium' },
+    { key:'uses-long-cache-ttl',        title:'Improve Browser Caching',          desc:'Static assets have short cache lifetimes. Returning visitors re-download files unnecessarily.',priority:'Medium' },
+    { key:'uses-rel-preconnect',        title:'Preconnect to Third-Party Origins', desc:'Add rel=preconnect for fonts, analytics, and CDN domains to reduce connection time.',        priority:'Medium' },
+    { key:'efficient-animated-content', title:'Replace GIFs with Video',          desc:'Animated GIFs are far larger than equivalent MP4/WebM. Convert to video format.',           priority:'Low' },
+    { key:'uses-passive-event-listeners',title:'Use Passive Event Listeners',     desc:'Scroll event listeners are blocking scroll performance. Mark them as passive.',             priority:'Low' },
+    { key:'offscreen-images',           title:'Lazy-Load Offscreen Images',       desc:'Images below the fold are loaded immediately. Lazy-load them so they only load when needed.',priority:'Medium' },
   ];
 
   const failed = oppChecks.filter(o => {
     const a = mAudits[o.key];
     return a && a.score !== null && a.score < 1;
+  }).map(o => {
+    const a = mAudits[o.key];
+    const savings = a?.displayValue || null;
+    return { ...o, savings };
   });
 
   const always = [
-    { title: 'Add Schema.org Markup',       desc: 'Add LocalBusiness, Service, and FAQPage structured data to your pages to earn rich results in Google.', priority: 'High' },
-    { title: 'Create Location-Specific Pages', desc: 'If you serve multiple cities, create dedicated pages for each to rank for local searches.',            priority: 'Medium' },
-    { title: 'Build More Backlinks',        desc: 'Quality links from local directories, partners, and news sites increase your domain authority.',          priority: 'Medium' },
+    { title:'Add LocalBusiness Schema Markup', desc:'Add structured data so Google can display your business name, hours, reviews, and services directly in search results.', priority:'High', savings:null },
+    { title:'Create City/Service-Area Pages',  desc:'Build individual landing pages for each city or service area you target. Each page can rank independently for local searches.', priority:'Medium', savings:null },
+    { title:'Build Quality Backlinks',         desc:'Links from local directories (Yelp, Google Business), partners, and local press increase domain authority and rankings.', priority:'Medium', savings:null },
   ];
 
-  const oppItems = [...failed.slice(0, 5), ...always].slice(0, 6);
-  const oppHtml = oppItems.map(o => {
+  const oppItems = [...failed.slice(0, 6), ...always].slice(0, 8);
+  document.getElementById('oppList').innerHTML = oppItems.length ? oppItems.map(o => {
     const cls = o.priority === 'High' ? 'opp-high' : o.priority === 'Medium' ? 'opp-med' : 'opp-low';
+    const savingsBadge = o.savings ? `<span style="font-size:11px;color:var(--teal);font-weight:700;margin-left:6px;">💡 ${o.savings}</span>` : '';
     return `<div class="opp-item">
       <span class="opp-badge ${cls}">${o.priority}</span>
-      <div>
-        <div class="opp-title">${o.title}</div>
+      <div style="flex:1;">
+        <div class="opp-title">${o.title}${savingsBadge}</div>
         <div class="opp-desc">${o.desc}</div>
       </div>
     </div>`;
-  }).join('');
-  document.getElementById('oppList').innerHTML = oppHtml || '<p style="color:var(--muted);font-size:14px;">No major opportunities detected — your site is well optimized!</p>';
+  }).join('') : '<p style="color:var(--muted);font-size:14px;">No major opportunities detected — your site is well optimized!</p>';
 
-  // Show report
+  // ── Update CTA heading with first name ────────────────────────────────────
+  if (auditName) {
+    const firstName = auditName.trim().split(' ')[0];
+    const ctaH = document.getElementById('ctaHeading');
+    if (ctaH) ctaH.textContent = `${firstName}, here's how to turn these issues into more customers.`;
+  }
+
+  // ── Show report ───────────────────────────────────────────────────────────
   document.getElementById('auditLoading').style.display = 'none';
-  const reportEl = document.getElementById('auditReport');
-  reportEl.classList.add('show');
+  document.getElementById('auditReport').classList.add('show');
 
   // ── Save to Supabase (fire & forget) ─────────────────────────────────────
   if (reportId && auditEmail && params.get('_saved') !== '1') {
@@ -600,15 +698,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
         body: JSON.stringify({
           id: reportId,
           contact: { name: auditName, email: auditEmail, url: siteUrl.href },
-          scores: {
-            mobile: mobile?.lighthouseResult?.categories?.performance?.score,
-            desktop: desktop?.lighthouseResult?.categories?.performance?.score
-          },
-          issues: oppItems.map(o => ({ title: o.title, priority: o.priority })),
-          seoChecks: seoChecks.map(c => ({ label: c.label, pass: c.pass }))
+          scores: { mobile: mCats.performance?.score, desktop: dCats.performance?.score, seo: (mCats.seo||dCats.seo)?.score },
+          issues: oppItems.map(o => ({ title: o.title, priority: o.priority, savings: o.savings || null })),
+          seoChecks: seoChecks.map(c => ({ label: c.label, pass: (mAudits[c.key]?.score === 1) }))
         })
       });
-      // Update URL bar to the clean shareable link
       window.history.replaceState({}, '', `/audit/${reportId}`);
     } catch(e) {
       console.warn('[audit] Save failed (non-fatal):', e.message);
