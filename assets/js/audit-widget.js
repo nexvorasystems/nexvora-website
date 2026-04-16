@@ -11,64 +11,93 @@
 
   // ── CSS ─────────────────────────────────────────────
   const css = `
-  /* PULSING CIRCLE BUTTON */
+  /* FLOATING PILL BUTTON */
   .nx-tab {
     position: fixed;
-    right: 28px;
+    right: 24px;
     bottom: 32px;
     z-index: 9000;
     cursor: pointer;
     user-select: none;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: center;
+    gap: 0;
   }
-  /* outer ripple rings */
-  .nx-tab::before,
-  .nx-tab::after {
-    content: '';
+  /* pulsing glow ring behind the circle icon */
+  .nx-tab-ring {
     position: absolute;
+    bottom: 36px;
+    width: 52px; height: 52px;
     border-radius: 50%;
-    background: rgba(13,148,136,0.25);
-    animation: nxRipple 2.4s ease-out infinite;
+    background: rgba(13,148,136,0.3);
+    animation: nxRipple 2.2s ease-out infinite;
+    pointer-events: none;
   }
-  .nx-tab::before { width: 80px; height: 80px; animation-delay: 0s; }
-  .nx-tab::after  { width: 80px; height: 80px; animation-delay: 1.2s; }
+  .nx-tab-ring2 {
+    position: absolute;
+    bottom: 36px;
+    width: 52px; height: 52px;
+    border-radius: 50%;
+    background: rgba(13,148,136,0.15);
+    animation: nxRipple 2.2s ease-out infinite;
+    animation-delay: 1.1s;
+    pointer-events: none;
+  }
   @keyframes nxRipple {
-    0%   { transform: scale(1);    opacity: .7; }
-    100% { transform: scale(2.2);  opacity: 0;  }
+    0%   { transform: scale(1);   opacity: 1; }
+    100% { transform: scale(2.6); opacity: 0; }
   }
+  /* pill card */
   .nx-tab-inner {
     position: relative;
-    width: 80px; height: 80px;
-    border-radius: 50%;
-    background: linear-gradient(135deg, #0D9488, #0f766e);
+    background: #0D9488;
     color: #fff;
-    display: flex; flex-direction: column;
-    align-items: center; justify-content: center; gap: 2px;
-    box-shadow: 0 8px 32px rgba(13,148,136,0.55);
+    border-radius: 100px;
+    padding: 10px 18px 10px 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    box-shadow: 0 6px 28px rgba(13,148,136,0.5), 0 2px 8px rgba(0,0,0,0.12);
     animation: nxBreath 3s ease-in-out infinite;
-    transition: box-shadow .2s;
+    white-space: nowrap;
   }
   .nx-tab:hover .nx-tab-inner {
-    box-shadow: 0 12px 40px rgba(13,148,136,0.75);
+    background: #0f766e;
+    box-shadow: 0 10px 36px rgba(13,148,136,0.7), 0 2px 8px rgba(0,0,0,0.15);
     animation-play-state: paused;
-    transform: scale(1.08);
+    transform: translateY(-2px) scale(1.03);
   }
   @keyframes nxBreath {
-    0%,100% { transform: scale(1);    box-shadow: 0 8px 32px rgba(13,148,136,0.55); }
-    50%      { transform: scale(1.12); box-shadow: 0 12px 44px rgba(13,148,136,0.7); }
+    0%,100% { transform: scale(1)    translateY(0);  box-shadow: 0 6px 28px rgba(13,148,136,0.5); }
+    50%      { transform: scale(1.05) translateY(-3px); box-shadow: 0 10px 36px rgba(13,148,136,0.65); }
   }
-  .nx-tab-label {
-    font-size: 9px; font-weight: 900; letter-spacing: 1.2px;
-    text-transform: uppercase; text-align: center; line-height: 1.3;
+  /* icon circle inside pill */
+  .nx-tab-icon {
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(255,255,255,0.18);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
   }
+  .nx-tab-icon svg { width: 18px; height: 18px; }
+  /* text */
+  .nx-tab-text { display: flex; flex-direction: column; gap: 1px; }
+  .nx-tab-title {
+    font-size: 13px; font-weight: 800; letter-spacing: -.2px;
+    color: #fff; line-height: 1;
+  }
+  .nx-tab-sub {
+    font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.7);
+    line-height: 1;
+  }
+  /* FREE badge */
   .nx-tab-badge {
-    font-size: 8px; font-weight: 900; letter-spacing: .5px;
-    padding: 2px 6px; border-radius: 4px; margin-top: 2px;
+    font-size: 9px; font-weight: 900; letter-spacing: .8px;
+    text-transform: uppercase; padding: 3px 7px; border-radius: 6px;
+    flex-shrink: 0;
   }
-  .nx-tab-badge.free { background: #fff; color: #0D9488; }
-  .nx-tab-badge.paid { background: rgba(255,255,255,0.2); color: #fff; }
+  .nx-tab-badge.free { background: rgba(255,255,255,0.22); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
+  .nx-tab-badge.paid { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
   @keyframes nxPulse { 0%,100%{opacity:1} 50%{opacity:.65} }
 
   /* OVERLAY */
@@ -191,9 +220,9 @@
   @keyframes nxSpin { to { transform: rotate(360deg); } }
 
   @media(max-width:480px) {
-    .nx-tab { right: 16px; bottom: 20px; }
-    .nx-tab-inner { width: 68px; height: 68px; }
-    .nx-tab::before,.nx-tab::after { width: 68px; height: 68px; }
+    .nx-tab { right: 12px; bottom: 20px; }
+    .nx-tab-title { font-size: 12px; }
+    .nx-tab-sub { display: none; }
     .nx-card { border-radius: 16px; }
     .nx-head { padding: 20px 20px 16px; }
     .nx-body { padding: 18px 18px 22px; }
@@ -209,8 +238,19 @@
   tab.setAttribute('role', 'button');
   tab.setAttribute('aria-label', 'Get Free Website Audit');
   tab.innerHTML = `
+    <div class="nx-tab-ring"></div>
+    <div class="nx-tab-ring2"></div>
     <div class="nx-tab-inner">
-      <span class="nx-tab-label">Website<br>Audit</span>
+      <div class="nx-tab-icon">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="7"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          <line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/>
+        </svg>
+      </div>
+      <div class="nx-tab-text">
+        <span class="nx-tab-title">Website Audit</span>
+        <span class="nx-tab-sub">Free performance &amp; SEO scan</span>
+      </div>
       <span class="nx-tab-badge ${isFree() ? 'free' : 'paid'}">${isFree() ? 'FREE' : PRICE}</span>
     </div>`;
   document.body.appendChild(tab);
