@@ -56,11 +56,64 @@ blockquote strong{color:var(--navy);}
 </head>
 <body>
 <nav>
-  <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:44px;width:auto;display:block;"/></a>
-  <a href="../blog.html" class="nav-back">
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-    Back to Insights
-  </a>
+  <div class="nav-inner">
+    <a href="../index.html"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:56px;width:auto;display:block;"/></a>
+    <ul class="nav-links">
+      <li><a href="../index.html">Home</a></li>
+      <li><a href="../about.html">About</a></li>
+      <li class="nav-has-dropdown">
+        <a href="../services.html">Services</a>
+        <div class="nav-dropdown">
+          <div class="nav-dd-inner">
+            <div class="nav-dd-left">
+              <a href="../services/operations-business-systems.html" class="nav-dd-item" data-sub="ops">Operations &amp; Business Systems <span class="dd-chevron">›</span></a>
+              <a href="../services/ai-automation.html" class="nav-dd-item" data-sub="ai">AI &amp; Automation <span class="dd-chevron">›</span></a>
+              <a href="../services/marketing-leads.html" class="nav-dd-item" data-sub="mkt">Marketing &amp; Lead Generation <span class="dd-chevron">›</span></a>
+              <a href="../services/web-design.html" class="nav-dd-item" data-sub="web">Web Design &amp; Digital Presence <span class="dd-chevron">›</span></a>
+            </div>
+            <div class="nav-dd-right-outer"><div class="nav-dd-right">
+              <div class="nav-dd-sub" id="dd-sub-ops">
+                <a href="../services/operations-business-systems.html" class="dd-view-all">View all →</a>
+                <a href="../services/operations/process-sops.html">Process &amp; SOPs</a>
+                <a href="../services/operations/sales-systems.html">Sales Systems</a>
+                <a href="../services/operations/team-hr.html">Team &amp; HR</a>
+                <a href="../services/operations/financial-clarity.html">Financial Clarity</a>
+                <a href="../services/operations/growth-planning.html">Growth Planning</a>
+              </div>
+              <div class="nav-dd-sub" id="dd-sub-ai">
+                <a href="../services/ai-automation.html" class="dd-view-all">View all →</a>
+                <a href="../services/ai/workflow-automation.html">Workflow Automation</a>
+                <a href="../services/ai/chatbots-bots.html">AI Chatbots &amp; Bots</a>
+                <a href="../services/ai/crm-integrations.html">CRM &amp; Tool Integrations</a>
+                <a href="../services/ai/reporting-dashboards.html">Reporting &amp; Dashboards</a>
+                <a href="../services/ai/ai-strategy.html">AI Strategy</a>
+              </div>
+              <div class="nav-dd-sub" id="dd-sub-mkt">
+                <a href="../services/marketing-leads.html" class="dd-view-all">View all →</a>
+                <a href="../services/marketing/lead-generation-systems.html">Lead Generation Systems</a>
+                <a href="../services/marketing/paid-advertising.html">Paid Advertising</a>
+                <a href="../services/marketing/content-seo.html">Content &amp; SEO</a>
+                <a href="../services/marketing/email-marketing.html">Email Marketing</a>
+                <a href="../services/marketing/social-media-management.html">Social Media Management</a>
+              </div>
+              <div class="nav-dd-sub" id="dd-sub-web">
+                <a href="../services/web-design.html" class="dd-view-all">View all →</a>
+                <a href="../services/web/website-design-development.html">Website Design &amp; Development</a>
+                <a href="../services/web/copywriting-messaging.html">Copywriting &amp; Messaging</a>
+                <a href="../services/web/brand-identity.html">Brand Identity</a>
+                <a href="../services/web/local-seo.html">Local SEO</a>
+                <a href="../services/web/landing-pages.html">Landing Pages</a>
+              </div>
+            </div></div>
+          </div>
+        </div>
+      </li>
+      <li><a href="../blog.html" class="active">Insights</a></li>
+      <li><a href="../contact.html">Contact</a></li>
+    </ul>
+    <a href="../assessment.html" class="nav-cta">Free Assessment</a>
+    <button class="hamburger" id="hamburger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </div>
 </nav>
 <div class="post-wrap">
   <div class="post-meta">

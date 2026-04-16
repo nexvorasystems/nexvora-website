@@ -11,10 +11,13 @@
     },
     "api/psi.js": {
       "maxDuration": 45
+    },
+    "api/generate-report.js": {
+      "maxDuration": 120
     }
   },
   "rewrites": [
-    { "source": "/r/:id", "destination": "/report.html?id=:id" },
+    { "source": "/r/:id", "destination": "/api/get-generated-report?id=:id" },
     { "source": "/audit/:id", "destination": "/website-audit.html?id=:id" },
     { "source": "/reports/:slug", "destination": "/reports/:slug.html" }
   ]
