@@ -101,12 +101,16 @@
     .nxa-tab-sub { display: none; }
   }
 
-  /* Center footer-bottom content so pill button doesn't overlap legal links */
+  /* Push footer up so fixed pill button doesn't overlap legal links */
+  footer {
+    padding-bottom: 90px !important;
+  }
   .footer-bottom {
     flex-direction: column !important;
     align-items: center !important;
     gap: 12px !important;
     text-align: center;
+    justify-content: center !important;
   }
   `;
 
