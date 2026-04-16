@@ -683,35 +683,7 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
 (function(){var items=document.querySelectorAll('.nav-dd-item');var outer=document.querySelector('.nav-dd-right-outer');var timer;function reset(){items.forEach(function(i){i.classList.remove('dd-active');});document.querySelectorAll('.nav-dd-sub').forEach(function(s){s.classList.remove('dd-active');});if(outer){outer.classList.remove('dd-show');}}items.forEach(function(item){item.addEventListener('mouseenter',function(){clearTimeout(timer);items.forEach(function(i){i.classList.remove('dd-active');});document.querySelectorAll('.nav-dd-sub').forEach(function(s){s.classList.remove('dd-active');});item.classList.add('dd-active');var sub=document.getElementById('dd-sub-'+item.getAttribute('data-sub'));if(sub){sub.classList.add('dd-active');}if(outer){outer.classList.add('dd-show');}});});var wrap=document.querySelector('.nav-has-dropdown');if(wrap){wrap.addEventListener('mouseleave',function(){timer=setTimeout(reset,100);});wrap.addEventListener('mouseenter',function(){clearTimeout(timer);});}})();</script>
 
 
-<!-- Floating Assessment Button -->
-<style>
-#floatAssess{position:fixed;bottom:28px;right:28px;z-index:9000;display:flex;flex-direction:column;align-items:flex-end;gap:10px;}
-#floatLabel{background:#0F2B4C;color:#fff;font-size:13px;font-weight:700;padding:9px 16px;border-radius:10px;white-space:nowrap;box-shadow:0 4px 18px rgba(0,0,0,0.18);opacity:0;transform:translateY(6px);transition:opacity .3s,transform .3s;pointer-events:none;}
-#floatLabel.show{opacity:1;transform:translateY(0);}
-#floatLink{display:flex;align-items:center;justify-content:center;width:56px;height:56px;border-radius:50%;background:#0D9488;box-shadow:0 4px 20px rgba(13,148,136,0.45);text-decoration:none;animation:floatPulse 2.8s ease-in-out infinite;}
-#floatLink:hover{background:#0b7a71;}
-#floatLink img{width:30px;height:30px;object-fit:contain;filter:brightness(0) invert(1);}
-@keyframes floatPulse{
-  0%,100%{box-shadow:0 4px 20px rgba(13,148,136,0.45);background:#0D9488;}
-  50%{box-shadow:0 4px 32px rgba(13,148,136,0.75),0 0 0 8px rgba(13,148,136,0.12);background:#0fb8a9;}
-}
-@media(max-width:480px){#floatAssess{bottom:16px;right:16px;}}
-</style>
-<div id="floatAssess">
-  <div id="floatLabel">Free Assessment →</div>
-  <a href="../assessment.html" id="floatLink" title="Free Assessment">
-    <img src="../assets/Logo no background.png" alt="Nexvora"/>
-  </a>
-</div>
-<script>
-(function(){
-  var label=document.getElementById('floatLabel');
-  var shown=false;
-  function showLabel(){if(!shown){shown=true;label.classList.add('show');setTimeout(function(){label.classList.remove('show');setTimeout(function(){shown=false;},400);},3500);}}
-  setTimeout(showLabel,3000);
-  setInterval(showLabel,12000);
-})();
-</script>
-<!-- End Floating Button -->
+
+<script src="../assets/js/assess-widget.js?v=1" defer></script>
 </body>
 </html>
