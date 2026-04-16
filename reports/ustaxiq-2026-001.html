@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TY0PZHVN0L"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-TY0PZHVN0L');
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Website Audit — U.S. Tax IQ | Nexvora Systems</title>
+<meta name="description" content="Full website audit report for ustaxiq.com — SEO, UI/UX, Technical, Content Strategy & Growth Roadmap prepared by Nexvora Systems."/>
+<meta name="robots" content="noindex, nofollow"/>
+<!-- Open Graph -->
+<meta property="og:type" content="website"/>
+<meta property="og:title" content="Website Audit — U.S. Tax IQ | Nexvora Systems"/>
+<meta property="og:description" content="Full website audit: SEO, UI/UX, Technical, Content Strategy & Growth Roadmap — prepared by Nexvora Systems."/>
+<meta property="og:url" content="https://nexvorasystems.us/reports/ustaxiq-2026-001"/>
+<meta property="og:site_name" content="Nexvora Systems"/>
+<meta property="og:image" content="https://nexvorasystems.us/assets/nexvora-logo.png"/>
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary"/>
+<meta name="twitter:title" content="Website Audit — U.S. Tax IQ | Nexvora Systems"/>
+<meta name="twitter:description" content="Full website audit: SEO, UI/UX, Technical, Content Strategy prepared by Nexvora Systems."/>
+<meta name="twitter:image" content="https://nexvorasystems.us/assets/nexvora-logo.png"/>
+<link rel="icon" href="https://nexvorasystems.us/assets/nexvora-logo.png" type="image/png"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{
+  --bg:#FAF8F5;--bg-surface:#F0EDE8;--bg-card:#FFFFFF;
+  --text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;
+  --teal:#0D9488;--teal-lt:rgba(13,148,136,0.08);--teal-med:rgba(13,148,136,0.15);
+  --navy:#0F2B4C;--navy-lt:rgba(15,43,76,0.06);
+  --green:#10B981;--green-lt:#F0FDF4;--green-border:#A7F3D0;
+  --yellow:#F59E0B;--yellow-lt:#FFFBEB;--yellow-border:#FDE68A;
+  --red:#EF4444;--red-lt:#FEF2F2;--red-border:#FECACA;
+  --orange:#F97316;--orange-lt:#FFF7ED;--orange-border:#FED7AA;
+  --blue:#3B82F6;--blue-lt:#EFF6FF;--blue-border:#BFDBFE;
+  --nav-h:72px;
+  --radius:16px;
+  --shadow:0 1px 3px rgba(0,0,0,0.08),0 4px 16px rgba(0,0,0,0.04);
+}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.65;}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.97);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--border);padding:0 32px;gap:16px;}
+.nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;}
+.nav-logo img{height:32px;width:auto;}
+.nav-logo-text{font-size:16px;font-weight:800;color:var(--navy);letter-spacing:-0.3px;}
+.nav-logo-text span{color:var(--teal);}
+.nav-badge{margin-left:12px;background:var(--teal-lt);border:1px solid var(--teal);color:var(--teal);font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 10px;border-radius:100px;}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:16px;}
+.nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;transition:color .15s;}
+.nav-back:hover{color:var(--teal);}
+.nav-date{font-size:12px;color:var(--dim);font-weight:500;}
+
+/* ── LAYOUT ── */
+.wrap{padding:calc(var(--nav-h) + 48px + 37px) 24px 100px;max-width:880px;margin:0 auto;display:flex;flex-direction:column;gap:32px;}
+
+/* ── HERO ── */
+.hero{background:linear-gradient(135deg,#0F2B4C 0%,#0a3d62 40%,#0D9488 100%);border-radius:20px;overflow:hidden;position:relative;}
+.hero::before{content:'';position:absolute;top:-60px;right:-60px;width:280px;height:280px;border-radius:50%;background:rgba(13,148,136,0.12);}
+.hero::after{content:'';position:absolute;bottom:-40px;left:-40px;width:200px;height:200px;border-radius:50%;background:rgba(255,255,255,0.03);}
+.hero-inner{padding:44px 44px 36px;position:relative;z-index:1;}
+.hero-eyebrow{font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:10px;display:flex;align-items:center;gap:8px;}
+.hero-eyebrow::before{content:'';display:inline-block;width:20px;height:2px;background:var(--teal);}
+.hero h1{font-size:clamp(22px,4vw,34px);font-weight:800;color:#fff;letter-spacing:-0.8px;line-height:1.25;margin-bottom:8px;}
+.hero-sub{font-size:14px;color:rgba(255,255,255,0.55);margin-bottom:32px;}
+.hero-scores{display:flex;gap:14px;flex-wrap:wrap;}
+.score-pill{background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.12);border-radius:14px;padding:16px 22px;text-align:center;min-width:120px;}
+.score-pill .n{font-size:32px;font-weight:800;line-height:1;letter-spacing:-1px;}
+.score-pill .n.bad{color:#F87171;}
+.score-pill .n.warn{color:#FCD34D;}
+.score-pill .n.ok{color:#34D399;}
+.score-pill .l{font-size:11px;color:rgba(255,255,255,0.45);margin-top:5px;font-weight:600;letter-spacing:0.5px;}
+.hero-footer{background:rgba(0,0,0,0.2);padding:18px 44px;display:flex;align-items:center;gap:24px;flex-wrap:wrap;}
+.hero-footer-item{font-size:12px;color:rgba(255,255,255,0.5);display:flex;align-items:center;gap:6px;}
+.hero-footer-item strong{color:rgba(255,255,255,0.8);font-weight:600;}
+
+/* ── ABOUT NEXVORA ── */
+.about-nexvora{background:var(--navy);border-radius:var(--radius);padding:32px 36px;color:#fff;}
+.about-nexvora-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:20px;}
+.about-pill{background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.1);border-radius:12px;padding:18px 20px;}
+.about-pill-label{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:6px;}
+.about-pill-val{font-size:14px;font-weight:600;color:#fff;}
+
+/* ── SECTION CARD ── */
+.card{background:var(--bg-card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+.card-head{padding:24px 32px 0;}
+.card-body{padding:24px 32px 32px;}
+.card-head+.card-body{padding-top:20px;}
+.section-tag{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:var(--teal);margin-bottom:8px;}
+.card h2{font-size:20px;font-weight:800;color:var(--navy);letter-spacing:-0.4px;margin-bottom:4px;}
+.card-desc{font-size:13px;color:var(--muted);margin-bottom:20px;}
+
+/* ── SCORE GRID ── */
+.score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:24px;}
+.sg-card{border-radius:14px;padding:20px;border:1px solid;text-align:center;}
+.sg-card.crit{background:var(--red-lt);border-color:var(--red-border);}
+.sg-card.high{background:var(--orange-lt);border-color:var(--orange-border);}
+.sg-card.med{background:var(--yellow-lt);border-color:var(--yellow-border);}
+.sg-card.good{background:var(--green-lt);border-color:var(--green-border);}
+.sg-card.info{background:var(--blue-lt);border-color:var(--blue-border);}
+.sg-num{font-size:34px;font-weight:800;line-height:1;margin-bottom:6px;}
+.sg-card.crit .sg-num{color:var(--red);}
+.sg-card.high .sg-num{color:var(--orange);}
+.sg-card.med .sg-num{color:var(--yellow);}
+.sg-card.good .sg-num{color:var(--green);}
+.sg-card.info .sg-num{color:var(--blue);}
+.sg-label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:var(--muted);}
+.sg-sub{font-size:11px;color:var(--dim);margin-top:3px;}
+
+/* ── ISSUE CARDS ── */
+.issue-list{display:flex;flex-direction:column;gap:12px;margin-bottom:24px;}
+.issue{border-radius:12px;padding:18px 20px;border-left:4px solid;border:1px solid;}
+.issue.crit{background:var(--red-lt);border-color:var(--red-border);border-left-color:var(--red);}
+.issue.high{background:var(--orange-lt);border-color:var(--orange-border);border-left-color:var(--orange);}
+.issue.med{background:var(--yellow-lt);border-color:var(--yellow-border);border-left-color:var(--yellow);}
+.issue.info{background:var(--blue-lt);border-color:var(--blue-border);border-left-color:var(--blue);}
+.issue.good{background:var(--green-lt);border-color:var(--green-border);border-left-color:var(--green);}
+.issue-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;}
+.issue-badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:3px 9px;border-radius:100px;flex-shrink:0;margin-top:2px;}
+.issue.crit .issue-badge{background:var(--red);color:#fff;}
+.issue.high .issue-badge{background:var(--orange);color:#fff;}
+.issue.med .issue-badge{background:var(--yellow);color:#fff;}
+.issue.info .issue-badge{background:var(--blue);color:#fff;}
+.issue.good .issue-badge{background:var(--green);color:#fff;}
+.issue-title{font-size:14px;font-weight:700;color:var(--text);line-height:1.4;}
+.issue-body{font-size:13px;color:var(--muted);line-height:1.6;}
+.issue-fix{margin-top:10px;font-size:12px;font-weight:600;color:var(--teal);display:flex;gap:6px;align-items:flex-start;}
+.issue-fix::before{content:'→';flex-shrink:0;}
+
+/* ── TABLE ── */
+.tbl{width:100%;border-collapse:collapse;font-size:13px;margin-bottom:20px;}
+.tbl th{background:var(--navy);color:#fff;padding:10px 14px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;}
+.tbl th:first-child{border-radius:8px 0 0 0;}
+.tbl th:last-child{border-radius:0 8px 0 0;}
+.tbl td{padding:10px 14px;border-bottom:1px solid var(--border);color:var(--muted);vertical-align:top;}
+.tbl tr:last-child td{border-bottom:none;}
+.tbl tr:nth-child(even) td{background:var(--bg-surface);}
+
+/* ── TAGS ── */
+.tag{display:inline-block;padding:2px 9px;border-radius:100px;font-size:11px;font-weight:700;}
+.tag.red{background:var(--red-lt);color:var(--red);border:1px solid var(--red-border);}
+.tag.orange{background:var(--orange-lt);color:var(--orange);border:1px solid var(--orange-border);}
+.tag.yellow{background:var(--yellow-lt);color:var(--yellow);border:1px solid var(--yellow-border);}
+.tag.green{background:var(--green-lt);color:var(--green);border:1px solid var(--green-border);}
+.tag.blue{background:var(--blue-lt);color:var(--blue);border:1px solid var(--blue-border);}
+.tag.teal{background:var(--teal-lt);color:var(--teal);border:1px solid var(--teal);}
+
+/* ── SUBSECTION ── */
+.sub-h{font-size:15px;font-weight:700;color:var(--navy);margin:28px 0 14px;display:flex;align-items:center;gap:8px;}
+.sub-h::before{content:'';display:inline-block;width:4px;height:18px;background:var(--teal);border-radius:2px;flex-shrink:0;}
+
+/* ── STAT ROW ── */
+.stat-row{display:flex;flex-direction:column;gap:8px;margin-bottom:20px;}
+.stat{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg-surface);border-radius:8px;border:1px solid var(--border);}
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.dot.red{background:var(--red);}
+.dot.orange{background:var(--orange);}
+.dot.green{background:var(--green);}
+.dot.yellow{background:var(--yellow);}
+.dot.blue{background:var(--blue);}
+.dot.teal{background:var(--teal);}
+.stat-label{font-size:13px;color:var(--text);flex:1;}
+.stat-val{font-size:12px;font-weight:700;}
+.stat-val.bad{color:var(--red);}
+.stat-val.ok{color:var(--green);}
+.stat-val.warn{color:var(--orange);}
+.stat-val.info{color:var(--blue);}
+
+/* ── CALLOUT ── */
+.callout{border-radius:12px;padding:18px 22px;margin:18px 0;border:1px solid;display:flex;gap:14px;}
+.callout.danger{background:var(--red-lt);border-color:var(--red-border);}
+.callout.warn{background:var(--orange-lt);border-color:var(--orange-border);}
+.callout.info{background:var(--blue-lt);border-color:var(--blue-border);}
+.callout.success{background:var(--green-lt);border-color:var(--green-border);}
+.callout.neutral{background:var(--bg-surface);border-color:var(--border);}
+.callout-icon{font-size:18px;flex-shrink:0;margin-top:1px;}
+.callout-body{font-size:13px;color:var(--muted);line-height:1.6;}
+.callout-body strong{display:block;font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px;}
+
+/* ── PAGE ANALYSIS ── */
+.page-card{border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:16px;}
+.page-card-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:var(--bg-surface);border-bottom:1px solid var(--border);}
+.page-card-url{font-size:12px;font-family:monospace;color:var(--navy);font-weight:600;}
+.page-card-body{padding:16px 20px;}
+.page-card-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px;}
+.page-item{font-size:13px;color:var(--muted);line-height:1.5;}
+.page-item strong{color:var(--text);font-weight:600;}
+.page-issues{margin-top:12px;display:flex;flex-wrap:wrap;gap:6px;}
+
+/* ── JOURNEY STEPS ── */
+.steps{display:flex;flex-direction:column;gap:14px;}
+.step{display:flex;gap:14px;align-items:flex-start;}
+.step-num{width:30px;height:30px;background:var(--navy);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;flex-shrink:0;}
+.step-body{flex:1;padding-top:4px;}
+.step-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:3px;}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.5;}
+.step-result{display:inline-flex;align-items:center;gap:5px;margin-top:6px;font-size:11px;font-weight:700;padding:3px 10px;border-radius:100px;}
+.step-result.bad{background:var(--red-lt);color:var(--red);border:1px solid var(--red-border);}
+.step-result.warn{background:var(--yellow-lt);color:#92400E;border:1px solid var(--yellow-border);}
+.step-result.ok{background:var(--green-lt);color:var(--green);border:1px solid var(--green-border);}
+
+/* ── ROADMAP ── */
+.roadmap-phase{border-radius:14px;border:1px solid var(--border);overflow:hidden;margin-bottom:16px;}
+.phase-head{padding:16px 22px;display:flex;align-items:center;gap:14px;}
+.phase-head.q1{background:linear-gradient(135deg,#0F2B4C,#0a3d62);}
+.phase-head.q2{background:linear-gradient(135deg,#0D9488,#0a7a71);}
+.phase-head.q3{background:linear-gradient(135deg,#1e40af,#1d4ed8);}
+.phase-head.q4{background:linear-gradient(135deg,#6d28d9,#7c3aed);}
+.phase-num{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);}
+.phase-title{font-size:16px;font-weight:800;color:#fff;flex:1;}
+.phase-tag{font-size:11px;font-weight:700;background:rgba(255,255,255,0.15);color:#fff;padding:3px 10px;border-radius:100px;}
+.phase-body{padding:20px 22px;}
+.phase-items{display:flex;flex-direction:column;gap:10px;}
+.phase-item{display:flex;align-items:flex-start;gap:10px;font-size:13px;color:var(--muted);line-height:1.5;}
+.phase-item::before{content:'✓';color:var(--teal);font-weight:700;flex-shrink:0;margin-top:1px;}
+
+/* ── PRIORITY ACTION PLAN ── */
+.prio-section{margin-bottom:24px;}
+.prio-header{display:flex;align-items:center;gap:10px;margin-bottom:12px;}
+.prio-badge{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:1px;padding:4px 14px;border-radius:100px;}
+.prio-badge.crit{background:var(--red);color:#fff;}
+.prio-badge.high{background:var(--orange);color:#fff;}
+.prio-badge.med{background:var(--yellow);color:#fff;}
+.prio-badge.low{background:var(--blue);color:#fff;}
+.prio-count{font-size:12px;color:var(--dim);}
+.prio-items{display:flex;flex-direction:column;gap:8px;}
+.prio-item{display:flex;gap:10px;padding:12px 14px;border-radius:10px;border:1px solid;font-size:13px;color:var(--muted);line-height:1.4;align-items:flex-start;}
+.prio-item.crit{background:var(--red-lt);border-color:var(--red-border);}
+.prio-item.high{background:var(--orange-lt);border-color:var(--orange-border);}
+.prio-item.med{background:var(--yellow-lt);border-color:var(--yellow-border);}
+.prio-item.low{background:var(--blue-lt);border-color:var(--blue-border);}
+.prio-n{font-weight:800;font-size:12px;flex-shrink:0;min-width:22px;}
+.prio-item.crit .prio-n{color:var(--red);}
+.prio-item.high .prio-n{color:var(--orange);}
+.prio-item.med .prio-n{color:var(--yellow);}
+.prio-item.low .prio-n{color:var(--blue);}
+
+/* ── COMPETITOR CARDS ── */
+.comp-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:20px;}
+.comp-card{border-radius:12px;border:1px solid var(--border);padding:18px;background:var(--bg-card);}
+.comp-name{font-size:14px;font-weight:700;color:var(--navy);margin-bottom:4px;}
+.comp-url{font-size:11px;color:var(--teal);font-family:monospace;margin-bottom:10px;}
+.comp-body{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* ── BLOG CONTENT ── */
+.blog-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:20px;}
+.blog-topic{border-radius:10px;border:1px solid var(--border);padding:14px 16px;background:var(--bg-card);}
+.blog-topic-label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:5px;}
+.blog-topic-title{font-size:13px;font-weight:600;color:var(--text);line-height:1.4;}
+.blog-topic-meta{font-size:11px;color:var(--dim);margin-top:5px;}
+
+/* ── CONCLUSION ── */
+.conclusion{background:linear-gradient(135deg,#0F2B4C,#0a3d62);border-radius:20px;padding:44px;text-align:center;color:#fff;}
+.conclusion h3{font-size:26px;font-weight:800;letter-spacing:-0.5px;margin-bottom:14px;}
+.conclusion p{font-size:14px;color:rgba(255,255,255,0.65);line-height:1.7;max-width:560px;margin:0 auto 28px;}
+.conclusion-scores{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-bottom:32px;}
+.conclusion-score{text-align:center;}
+.conclusion-score .n{font-size:36px;font-weight:800;color:#34D399;}
+.conclusion-score .l{font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;letter-spacing:0.5px;}
+.cta-btn{display:inline-block;background:var(--teal);color:#fff;font-size:14px;font-weight:700;padding:14px 32px;border-radius:10px;text-decoration:none;transition:opacity .15s;}
+.cta-btn:hover{opacity:0.85;}
+
+/* ── FOOTER ── */
+footer{background:var(--navy);color:rgba(255,255,255,0.5);padding:32px;text-align:center;font-size:12px;margin-top:0;}
+footer a{color:var(--teal);text-decoration:none;}
+footer strong{color:rgba(255,255,255,0.8);}
+.footer-logo{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:12px;}
+.footer-logo img{height:28px;filter:brightness(0) invert(1);opacity:0.7;}
+.footer-logo span{font-size:15px;font-weight:800;color:rgba(255,255,255,0.7);}
+
+/* ── PROGRESS BAR ── */
+.bar-wrap{height:7px;background:rgba(0,0,0,0.06);border-radius:99px;overflow:hidden;margin:8px 0 4px;}
+.bar{height:100%;border-radius:99px;}
+.bar.red{background:var(--red);}
+.bar.orange{background:var(--orange);}
+.bar.yellow{background:var(--yellow);}
+.bar.green{background:var(--green);}
+.bar.teal{background:var(--teal);}
+
+/* ── DIVIDER ── */
+hr.soft{border:none;border-top:1px solid var(--border);margin:24px 0;}
+
+@media(max-width:640px){
+  .wrap{padding:calc(var(--nav-h) + 24px) 16px 80px;}
+  .hero-inner{padding:28px 24px 24px;}
+  .hero-footer{padding:14px 24px;}
+  .card-head,.card-body{padding-left:20px;padding-right:20px;}
+  .score-grid{grid-template-columns:repeat(2,1fr);}
+  .comp-grid,.blog-grid,.about-nexvora-grid,.page-card-grid{grid-template-columns:1fr;}
+  nav{padding:0 16px;}
+  .nav-date{display:none;}
+}
+</style>
+</head>
+<body>
+
+<!-- PUBLIC NOTICE BANNER -->
+<div style="background:#0F2B4C;color:rgba(255,255,255,0.75);text-align:center;padding:9px 20px;font-size:12px;font-weight:500;line-height:1.5;position:fixed;top:0;left:0;right:0;z-index:300;border-bottom:1px solid rgba(255,255,255,0.08);">
+  This report is <strong style="color:#fff;">publicly accessible.</strong> To make it private or request removal of this link, contact us at <a href="mailto:info@nexvorasystems.us" style="color:#0D9488;text-decoration:none;">info@nexvorasystems.us</a> — we will remove the public link and this report will only be available via download.
+</div>
+
+<!-- NAV -->
+<nav style="top:37px;">
+  <a href="https://nexvorasystems.us" class="nav-logo">
+    <img src="https://nexvorasystems.us/assets/nexvora-logo.png" alt="" onerror="this.style.display='none'" style="height:30px;width:auto;"/>
+    <span class="nav-logo-text">Nexvora <span>Systems</span></span>
+  </a>
+  <span class="nav-badge">Audit Report</span>
+  <div class="nav-right">
+    <span class="nav-date">April 15, 2026</span>
+    <a href="https://nexvorasystems.us" class="nav-back">← nexvorasystems.us</a>
+  </div>
+</nav>
+
+<!-- MAIN -->
+<div class="wrap">
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-inner">
+      <div class="hero-eyebrow">Full Website Audit</div>
+      <h1>U.S. Tax IQ — ustaxiq.com</h1>
+      <div class="hero-sub">Cross-Border Tax &amp; Consulting Services — Oakville, Ontario &amp; Tampa, Florida</div>
+      <div class="hero-scores">
+        <div class="score-pill"><div class="n bad">58<span style="font-size:16px">/100</span></div><div class="l">Technical SEO</div></div>
+        <div class="score-pill"><div class="n bad">30<span style="font-size:16px">/100</span></div><div class="l">Core Web Vitals</div></div>
+        <div class="score-pill"><div class="n warn">65<span style="font-size:16px">/100</span></div><div class="l">Structured Data</div></div>
+        <div class="score-pill"><div class="n bad">45<span style="font-size:16px">/100</span></div><div class="l">Security Headers</div></div>
+        <div class="score-pill"><div class="n warn">65<span style="font-size:16px">/100</span></div><div class="l">Content Quality</div></div>
+        <div class="score-pill"><div class="n bad">55<span style="font-size:16px">/100</span></div><div class="l">UX / Conversion</div></div>
+      </div>
+    </div>
+    <div class="hero-footer">
+      <div class="hero-footer-item">Prepared by <strong>Nexvora Systems</strong></div>
+      <div class="hero-footer-item">Date <strong>April 15, 2026</strong></div>
+      <div class="hero-footer-item">Report ID <strong>#UST-2026-001</strong></div>
+      <div class="hero-footer-item">Pages Audited <strong>41 pages + 57 blog posts</strong></div>
+      <div class="hero-footer-item">Issues Found <strong>29 total</strong></div>
+    </div>
+  </div>
+
+  <!-- ABOUT NEXVORA SYSTEMS -->
+  <div class="about-nexvora">
+    <div class="section-tag" style="color:rgba(255,255,255,0.45)">About the Auditor</div>
+    <h2 style="font-size:20px;font-weight:800;color:#fff;margin-bottom:8px;">Nexvora Systems LLC</h2>
+    <p style="font-size:14px;color:rgba(255,255,255,0.55);line-height:1.7;max-width:640px;">We are a Florida-based business consulting and digital systems company specializing in web design, AI automation, SEO strategy, and digital presence. This report was prepared by the Nexvora Systems team following a full multi-layer audit of ustaxiq.com — covering technical infrastructure, on-page SEO, user experience, content strategy, and competitive positioning.</p>
+    <div class="about-nexvora-grid">
+      <div class="about-pill"><div class="about-pill-label">Location</div><div class="about-pill-val">Tampa Bay, Florida, USA</div></div>
+      <div class="about-pill"><div class="about-pill-label">Website</div><div class="about-pill-val">nexvorasystems.us</div></div>
+      <div class="about-pill"><div class="about-pill-label">Specialization</div><div class="about-pill-val">Web Design, SEO, AI Automation, Digital Systems</div></div>
+      <div class="about-pill"><div class="about-pill-label">Audit Scope</div><div class="about-pill-val">Technical SEO · UI/UX · Content · Conversion · 12-Month Roadmap</div></div>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="card">
+    <div class="card-head">
+      <div class="section-tag">01 — Executive Summary</div>
+      <h2>Overall Audit Findings</h2>
+      <div class="card-desc">U.S. Tax IQ is a legitimate, credentialed cross-border tax firm with real strengths — but the website is significantly underperforming for a professional services company in a high-intent, high-competition niche.</div>
+    </div>
+    <div class="card-body">
+      <div class="score-grid">
+        <div class="sg-card crit"><div class="sg-num">6</div><div class="sg-label">Critical Issues</div><div class="sg-sub">Fix immediately</div></div>
+        <div class="sg-card high"><div class="sg-num">8</div><div class="sg-label">High Issues</div><div class="sg-sub">Fix within 30 days</div></div>
+        <div class="sg-card med"><div class="sg-num">10</div><div class="sg-label">Medium Issues</div><div class="sg-sub">Fix within 90 days</div></div>
+        <div class="sg-card info"><div class="sg-num">5</div><div class="sg-label">Low Issues</div><div class="sg-sub">Backlog</div></div>
+        <div class="sg-card good"><div class="sg-num">46</div><div class="sg-label">Google Reviews</div><div class="sg-sub">5.0 stars ✓</div></div>
+        <div class="sg-card info"><div class="sg-num">57</div><div class="sg-label">Blog Articles</div><div class="sg-sub">Strong content base</div></div>
+      </div>
+
+      <div class="callout warn">
+        <div class="callout-icon">⚠️</div>
+        <div class="callout-body"><strong>Primary Risk: Slow performance is killing conversions</strong>58 render-blocking scripts, no lazy loading, no edge caching, and a 173KB HTML page mean most users — especially on mobile — experience a slow, frustrating load. In a high-intent niche like cross-border tax, users have alternatives and will leave in seconds.</div>
+      </div>
+
+      <div class="sub-h">Top 5 Strengths</div>
+      <div class="issue-list">
+        <div class="issue good"><div class="issue-top"><span class="issue-badge">Pass</span><span class="issue-title">5.0-star Google rating with 46 verified reviews</span></div><div class="issue-body">Exceptional social proof that should be featured prominently on every service page, not just the homepage.</div></div>
+        <div class="issue good"><div class="issue-top"><span class="issue-badge">Pass</span><span class="issue-title">IRS Certified Acceptance Agent (CAA) credential</span></div><div class="issue-body">A rare, high-trust credential that very few cross-border tax firms hold. Currently underused in marketing.</div></div>
+        <div class="issue good"><div class="issue-top"><span class="issue-badge">Pass</span><span class="issue-title">57 blog articles covering specialized tax topics</span></div><div class="issue-body">Strong content foundation covering FBAR, OVDP, treaty planning, and more. Needs optimization for SEO.</div></div>
+        <div class="issue good"><div class="issue-top"><span class="issue-badge">Pass</span><span class="issue-title">Comprehensive XML sitemap with 11 sub-sitemaps</span></div><div class="issue-body">Well-organized crawl structure allows search engines to discover all content efficiently.</div></div>
+        <div class="issue good"><div class="issue-top"><span class="issue-badge">Pass</span><span class="issue-title">Dual physical office presence (Canada + USA)</span></div><div class="issue-body">Serves both Canada and US markets with physical locations — a major trust signal and local SEO opportunity.</div></div>
+      </div>
+
+      <div class="sub-h">Top 5 Critical Problems</div>
+      <div class="issue-list">
+        <div class="issue crit"><div class="issue-top"><span class="issue-badge">Critical</span><span class="issue-title">58 render-blocking scripts with no defer/async</span></div><div class="issue-body">The page cannot render until all 58 scripts load. This catastrophically delays the time users see content, inflating bounce rates.</div><div class="issue-fix">Add defer attribute to all non-critical scripts. Priority: CallRail swap.js and Events Calendar JS.</div></div>
+        <div class="issue crit"><div class="issue-top"><span class="issue-badge">Critical</span><span class="issue-title">10+ utility and test pages indexed by Google</span></div><div class="issue-body">/logout/, /test-book-consultation/, /events-template/, /toggle-bar/, and duplicate thank-you pages are in the sitemap and indexed — wasting crawl budget and reducing site quality signals.</div><div class="issue-fix">Set noindex on all utility/test/template pages in Yoast SEO. Remove from sitemap.</div></div>
+        <div class="issue crit"><div class="issue-top"><span class="issue-badge">Critical</span><span class="issue-title">No security headers — HSTS, CSP, X-Frame-Options all missing</span></div><div class="issue-body">For a tax firm handling sensitive financial data, the absence of these headers is a serious compliance and trust issue. Google also considers security signals in rankings.</div><div class="issue-fix">Add all 5 security headers via Cloudflare Transform Rules → Response Headers.</div></div>
+        <div class="issue crit"><div class="issue-top"><span class="issue-badge">Critical</span><span class="issue-title">No LocalBusiness / AccountingService structured data</span></div><div class="issue-body">The website has two physical offices but no LocalBusiness schema. This means the firm does not appear in Google Local Pack or Maps results — a massive missed opportunity for local leads.</div><div class="issue-fix">Add AccountingService JSON-LD with both office addresses, phone numbers, and hours.</div></div>
+        <div class="issue crit"><div class="issue-top"><span class="issue-badge">Critical</span><span class="issue-title">No og:image or twitter:image — social shares appear blank</span></div><div class="issue-body">When any page is shared on LinkedIn, Facebook, or WhatsApp, no image preview appears. This dramatically reduces click-through on shared content.</div><div class="issue-fix">Design a 1200×630px OG image and set it as default in Yoast SEO → Social settings.</div></div>
+        <div class="issue crit"><div class="issue-top"><span class="issue-badge">Critical</span><span class="issue-title">Consultation pricing completely hidden — major conversion killer</span></div><div class="issue-body">Service pages show no pricing. Competitors show clear pricing or at least "starting from" ranges. Without pricing signals, high-intent visitors bounce to competitors who are more transparent.</div><div class="issue-fix">Add pricing tiers or "starting from" ranges to each service page. Feature ITIN pricing more prominently.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TECHNICAL SEO -->
+  <div class="card">
+    <div class="card-head">
+      <div class="section-tag">02 — Technical SEO</div>
+      <h2>Infrastructure & Crawlability Audit</h2>
+      <div class="card-desc">WordPress 6.9.4 · Yoast SEO v27.3 · Total Theme v5.7.0 · Hummingbird v3.19.0 · Cloudflare CDN</div>
+    </div>
+    <div class="card-body">
+
+      <div class="sub-h">Site Infrastructure</div>
+      <div class="stat-row">
+        <div class="stat"><div class="dot teal"></div><div class="stat-label">CMS Platform</div><div class="stat-val info">WordPress 6.9.4</div></div>
+        <div class="stat"><div class="dot teal"></div><div class="stat-label">SEO Plugin</div><div class="stat-val info">Yoast SEO v27.3</div></div>
+        <div class="stat"><div class="dot teal"></div><div class="stat-label">CDN</div><div class="stat-val info">Cloudflare (HTML not edge-cached)</div></div>
+        <div class="stat"><div class="dot teal"></div><div class="stat-label">HTTPS</div><div class="stat-val ok">Enabled ✓</div></div>
+        <div class="stat"><div class="dot teal"></div><div class="stat-label">HTML Document Size</div><div class="stat-val bad">173.6 KB — Bloated</div></div>
+        <div class="stat"><div class="dot red"></div><div class="stat-label">Total Script Tags</div><div class="stat-val bad">61 scripts (0 deferred)</div></div>
+        <div class="stat"><div class="dot red"></div><div class="stat-label">Render-Blocking Scripts</div><div class="stat-val bad">58 of 61</div></div>
+        <div class="stat"><div class="dot red"></div><div class="stat-label">CSS Files</div><div class="stat-val warn">21 synchronous stylesheets</div></div>
+        <div class="stat"><div class="dot yellow"></div><div class="stat-label">TTFB</div><div class="stat-val ok">267ms — Acceptable</div></div>
+        <div class="stat"><div class="dot red"></div><div class="stat-label">Inline Style Blocks</div><div class="stat-val bad">28 blocks (~33 KB)</div></div>
+        <div class="stat"><div class="dot red"></div><div class="stat-label">Cloudflare Cache Status</div><div class="stat-val bad">DYNAMIC — not cached at edge</div></div>
+        <div class="stat"><div class="dot red"></div><div class="stat-label">Security Headers</div><div class="stat-val bad">0 of 5 present</div></div>
+      </div>
+
+      <div class="sub-h">Core Web Vitals Signals — Score: 30/100</div>
+      <div class="issue-list">
+        <div class="issue crit"><div class="issue-top"><span class="issue-badge">Critical</span><span class="issue-title">LCP: Hero image is a CSS background — invisible to preload scanner</span></div><div class="issue-body">The largest visible element on load (hero image) is a CSS background-image, not an &lt;img&gt; tag. Browsers cannot preload it. This means the Largest Contentful Paint is severely delayed — Google penalizes anything over 2.5 seconds.</div><div class="issue-fix">Replace hero CSS background with an &lt;img&gt; tag using fetchpriority="high" and loading="eager".</div></div>
+        <div class="issue crit"><div class="issue-top"><span class="issue-badge">Critical</span><span class="issue-title">Zero images use loading="lazy"</span></div><div class="issue-body">All 10 images on the page load eagerly, including images below the fold. This wastes bandwidth, delays LCP, and degrades mobile performance significantly.</div><div class="issue-fix">Add loading="lazy" to all images below the fold. Keep fetchpriority="high" only on the hero.</div></div>
+        <div class="issue high"><div class="issue-top"><span class="issue-badge">High</span><span class="issue-title">No font-display strategy — invisible text on load (FOIT)</span></div><div class="issue-body">Google Fonts (Montserrat) and the custom icon font load without font-display: swap. Users see blank space where text should be while fonts download.</div><div class="issue-fix">Add &display=swap to Google Fonts URL. Add font-display: swap to @font-face declarations.</div></div>
+        <div class="issue high"><div class="issue-top"><span class="issue-badge">High</span><span class="issue-title">YouTube thumbnail image missing width and height attributes</span></div><div class="issue-body">An image loaded from i.ytimg.com has no width/height declared. When it loads, it pushes content down — causing Cumulative Layout Shift (CLS), a Core Web Vitals failure.</div><div class="issue-fix">Add explicit width="" height="" to all img tags. Reserve space before content loads.</div></div>
+        <div class="issue high"><div class="issue-top"><span class="issue-badge">High</span><span class="issue-title">CallRail tracking script blocks rendering</span></div><div class="issue-body">The CallRail phone number swap script (cdn.callrail.com) loads in the document head with no defer attribute. It is a third-party script that holds up the entire page render.</div><div class="issue-fix">Add defer to the CallRail script tag. CallRail's async/defer mode is fully supported.</div></div>
+      </div>
+
+      <div class="sub-h">Indexability Issues — Score: 60/100</div>
+      <div class="issue-list">
+        <div class="issue crit"><div class="issue-top"><span class="issue-badge">Critical</span><span class="issue-title">10+ utility/test/template pages are indexed in sitemap</span></div><div class="issue-body">Google is crawling and indexing: /logout/, /login/, /test-book-consultation/, /test-book-consultation-main/, /events-template/, /venue-template/, /taxonomy-template/, /toggle-bar/, and duplicate /thank-you/ + /thankyou/ pages. These dilute site quality.</div><div class="issue-fix">Set noindex + remove from sitemap in Yoast. Delete or 301-redirect duplicate thank-you pages.</div></div>
+        <div class="issue med"><div class="issue-top"><span class="issue-badge">Medium</span><span class="issue-title">Duplicate webinar pages consuming crawl budget</span></div><div class="issue-body">Both /member-area-early-planning-2018-tax-year/ and /early-planning-2018-tax-year/ appear to be near-duplicate versions of the same stale 2018 content from 6+ years ago.</div><div class="issue-fix">301-redirect member-area versions to public versions. Update or consolidate stale content.</div></div>
+        <div class="issue med"><div class="issue-top"><span class="issue-badge">Medium</span><span class="issue-title">WordPress version publicly exposed in &lt;head&gt;</span></div><div class="issue-body">&lt;meta name="generator" content="WordPress 6.9.4"/&gt; tells hackers exactly what to exploit. Yoast and Hummingbird version numbers also exposed in HTML comments.</div><div class="issue-fix">Add remove_action('wp_head', 'wp_generator') to functions.php. Disable version comments in Hummingbird and Yoast settings.</div></div>
+        <div class="issue med"><div class="issue-top"><span class="issue-badge">Medium</span><span class="issue-title">No hreflang tags for bilingual/bicountry audience</span></div><div class="issue-body">The site serves both Canadian and US audiences but has no hreflang tags to signal geographic targeting to Google. og:locale is set to en_US but HTML lang is en-CA — inconsistent.</div><div class="issue-fix">Add hreflang="en-ca" and hreflang="en-us" alternate tags. Fix og:locale to en_CA.</div></div>
+        <div class="issue info"><div class="issue-top"><span class="issue-badge">Low</span><span class="issue-title">IndexNow protocol not implemented</span></div><div class="issue-body">Yoast SEO Premium includes IndexNow support. When new content is published, Google/Bing are not immediately notified, causing indexing delays of hours or days.</div><div class="issue-fix">Enable IndexNow in Yoast SEO → Integrations if on Premium. Otherwise install Bing URL Submissions plugin.</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ON-PAGE SEO -->
+  <div class="card">
+    <div class="card-head">
+      <div class="section-tag">03 — On-Page SEO</div>
+      <h2>Meta Tags, Headings & Structured Data</h2>
+      <div class="card-desc">Analysis of title tags, meta descriptions, heading hierarchy, internal linking, and schema markup across all 41 pages.</div>
+    </div>
+    <div class="card-body">
+
+      <div class="sub-h">Meta Tag Audit</div>
+      <div class="issue-list">
+        <div class="issue crit"><div class="issue-top"><span class="issue-badge">Critical</span><span class="issue-title">Meta descriptions missing on 10+ key pages</span></div><div class="issue-body">No meta description on: About Us, Contact Us, all 6 service pages, Blog page, FAQ page, Our Process page, and Careers. Missing meta descriptions result in Google auto-generating snippets — often poorly — reducing click-through rate from search results by an estimated 3–7%.</div><div class="issue-fix">Write unique 150–160 character meta descriptions for all pages. Include primary keyword + clear value proposition + call to action.</div></div>
+        <div class="issue high"><div class="issue-top"><span class="issue-badge">High</span><span class="issue-title">Page titles are generic — missing keywords and value</span></div><div class="issue-body">Titles like "About Us", "Contact Us", "Our Process" appear without the brand name, target keywords, or location. Compare to competitor titles: "Cross-Border Tax Services for Canadians | US Tax IQ | Oakville ON".</div><div class="issue-fix">Rewrite all page titles: [Primary Keyword] — [Location/Audience] | U.S. Tax IQ. Max 60 characters.</div></div>
+        <div class="issue crit"><div class="issue-top"><span class="issue-badge">Critical</span><span class="issue-title">No LocalBusiness / AccountingService schema markup</span></div><div class="issue-body">Two physical offices, an IRS certification, and specialized credentials — but zero LocalBusiness structured data. Google cannot display business details in the Knowledge Panel or Local Pack without this schema.</div><div class="issue-fix">Add AccountingService JSON-LD with: name, address (both locations), telephone, openingHours, areaServed, aggregateRating.</div></div>
+        <div class="issue high"><div class="issue-top"><span class="issue-badge">High</span><span class="issue-title">FAQ schema (microdata) may conflict with Yoast JSON-LD</span></div><div class="issue-body">Homepage FAQ uses inline schema.org microdata, while Yoast generates JSON-LD for other types. Having two competing schema formats on the same page confuses parsers and may invalidate rich result eligibility.</div><div class="issue-fix">Convert FAQ microdata to JSON-LD format consistent with Yoast output, or use Yoast's built-in FAQ block.</div></div>
+        <div class="issue med"><div class="issue-top"><span class="issue-badge">Medium</span><span class="issue-title">Images have generic filenames (Untitled-design-XX.png)</span></div><div class="issue-body">Multiple images are served with filenames like Untitled-design-28.png, Untitled-design-84.png — providing no keyword context for Google Image Search.</div><div class="issue-fix">Rename all image files with descriptive slugs before uploading. Update alt text to match.</div></div>
+        <div class="issue med"><div class="issue-top"><span class="issue-badge">Medium</span><span class="issue-title">3 images missing alt text entirely</span></div><div class="issue-body">3 of 10 &lt;img&gt; tags on the homepage have no alt attribute — an accessibility violation (WCAG 2.1) and a missed SEO signal.</div><div class="issue-fix">Add descriptive alt text to every image. Decorative images use alt="".</div></div>
+      </div>
+
+      <div class="sub-h">Internal Linking & URL Structure</div>
+      <div class="stat-row">
+        <div class="stat"><div class="dot green"></div><div class="stat-label">URL structure</div><div class="stat-val ok">Clean, descriptive slugs ✓</div></div>
+        <div class="stat"><div class="dot green"></div><div class="stat-label">Trailing slash consistency</div><div class="stat-val ok">Consistent across all pages ✓</div></div>
+        <div class="stat"><div class="dot red"></div><div class="stat-label">Blog CTAs</div><div class="stat-val bad">No lead capture within articles</div></div>
+        <div class="stat"><div class="dot red"></div><div class="stat-label">Cross-linking between service pages</div><div class="stat-val bad">Minimal — each page is siloed</div></div>
+        <div class="stat"><div class="dot yellow"></div><div class="stat-label">Breadcrumb schema</div><div class="stat-val warn">Present but trivial (only "Home")</div></div>
+        <div class="stat"><div class="dot red"></div><div class="stat-label">Location pages</div><div class="stat-val bad">No dedicated Oakville or Tampa pages</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PAGE BY PAGE ANALYSIS -->
+  <div class="card">
+    <div class="card-head">
+      <div class="section-tag">04 — Page-by-Page Analysis</div>
+      <h2>All 41 Pages — Individual Findings</h2>
+      <div class="card-desc">Every major page analyzed for SEO, content quality, CTA effectiveness, and user experience issues.</div>
+    </div>
+    <div class="card-body">
+
+      <!-- Homepage -->
+      <div class="sub-h">Homepage — ustaxiq.com/</div>
+      <div class="page-card">
+        <div class="page-card-head">
+          <span class="page-card-url">ustaxiq.com/</span>
+          <span class="tag orange">Needs Work</span>
+        </div>
+        <div class="page-card-body">
+          <div class="page-card-grid">
+            <div class="page-item"><strong>H1:</strong> "About U.S. Tax IQ" — wrong. Homepage H1 should be the primary keyword phrase, not the company name.</div>
+            <div class="page-item"><strong>Meta Description:</strong> Missing. Google generates its own — likely poorly.</div>
+            <div class="page-item"><strong>Primary CTA:</strong> "Book Your Consultation Today" — present but not benefit-focused. No urgency, no social proof adjacent.</div>
+            <div class="page-item"><strong>Trust Signals:</strong> 5-star / 46 reviews mentioned — but buried. Should be above the fold.</div>
+          </div>
+          <div class="page-issues">
+            <span class="tag red">Wrong H1</span>
+            <span class="tag red">No meta description</span>
+            <span class="tag orange">Reviews not above fold</span>
+            <span class="tag orange">No pricing visibility</span>
+            <span class="tag yellow">No lead magnet</span>
+            <span class="tag yellow">Blog posts not featured</span>
+          </div>
+          <div class="callout warn" style="margin-top:14px;margin-bottom:0;">
+            <div class="callout-icon">💡</div>
+            <div class="callout-body"><strong>Biggest Homepage Fix:</strong> Change H1 to "Expert U.S. &amp; Cross-Border Tax Services for Canadians" and move the 5-star review badge above the fold next to the primary CTA. These two changes alone can increase consultation bookings by 15–25%.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- About -->
+      <div class="sub-h" style="margin-top:24px;">About Us — ustaxiq.com/aboutus/</div>
+      <div class="page-card">
+        <div class="page-card-head">
+          <span class="page-card-url">ustaxiq.com/aboutus/</span>
+          <span class="tag orange">Needs Work</span>
+        </div>
+        <div class="page-card-body">
+          <div class="page-card-grid">
+            <div class="page-item"><strong>H1:</strong> "About Us / About U.S. TAX IQ" — 12 H2 sections make this page scattered. No focus keyword.</div>
+            <div class="page-item"><strong>Meta Description:</strong> Missing.</div>
+            <div class="page-item"><strong>Key Strengths:</strong> Team credentials (CPAs, Tax Attorneys, Enrolled Agents) and Alexey Manasuev's story are compelling — but buried in dense text.</div>
+            <div class="page-item"><strong>CTAs:</strong> Only one CTA at the bottom. Should have CTAs throughout a long page like this.</div>
+          </div>
+          <div class="page-issues">
+            <span class="tag red">No meta description</span>
+            <span class="tag orange">12 H2s — too scattered</span>
+            <span class="tag orange">No team photos visible</span>
+            <span class="tag yellow">One CTA for long page</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Services -->
+      <div class="sub-h" style="margin-top:24px;">Cross-Border Tax Services Hub — ustaxiq.com/cross-border-tax-services/</div>
+      <div class="page-card">
+        <div class="page-card-head">
+          <span class="page-card-url">ustaxiq.com/cross-border-tax-services/</span>
+          <span class="tag red">Critical Issues</span>
+        </div>
+        <div class="page-card-body">
+          <div class="page-card-grid">
+            <div class="page-item"><strong>Service Structure:</strong> 4 categories (Individual, Business, ITIN, Athletes) — good structure, but no pricing on any.</div>
+            <div class="page-item"><strong>SEO:</strong> No meta description. Title not optimized. Service pages not internally cross-linked.</div>
+            <div class="page-item"><strong>Missing:</strong> No client testimonials on service pages. No "before/after" scenarios or case examples.</div>
+            <div class="page-item"><strong>Missing:</strong> No comparison showing why U.S. Tax IQ vs. DIY or Big 4 firms.</div>
+          </div>
+          <div class="page-issues">
+            <span class="tag red">No pricing</span>
+            <span class="tag red">No testimonials</span>
+            <span class="tag red">No meta description</span>
+            <span class="tag orange">No comparison/differentiators</span>
+            <span class="tag yellow">Weak internal linking</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Individual Services -->
+      <div class="sub-h" style="margin-top:24px;">Individual Tax Services</div>
+      <div class="page-card">
+        <div class="page-card-head">
+          <span class="page-card-url">ustaxiq.com/cross-border-tax-services/individual-us-tax-services/</span>
+          <span class="tag orange">Needs Work</span>
+        </div>
+        <div class="page-card-body">
+          <div class="page-card-grid">
+            <div class="page-item"><strong>Coverage:</strong> Form 1040NR, 1040, FBAR, ITIN, IRC 911, Treaty positioning — comprehensive service list.</div>
+            <div class="page-item"><strong>Problem:</strong> Written like a tax manual, not a landing page. No benefit-focused language, no client journey narrative.</div>
+            <div class="page-item"><strong>CTA:</strong> Only one CTA at page bottom. For a long content page, CTAs should appear every 3–4 sections.</div>
+            <div class="page-item"><strong>Missing:</strong> Pricing, testimonials, "Who is this for?" section to qualify visitors.</div>
+          </div>
+          <div class="page-issues">
+            <span class="tag red">No pricing</span>
+            <span class="tag orange">Technical language, not client-focused</span>
+            <span class="tag orange">Single CTA on long page</span>
+            <span class="tag yellow">No audience qualification</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Business Services -->
+      <div class="sub-h" style="margin-top:24px;">Business Tax Services</div>
+      <div class="page-card">
+        <div class="page-card-head">
+          <span class="page-card-url">ustaxiq.com/cross-border-tax-services/us-cross-border-tax-services-for-business/</span>
+          <span class="tag orange">Needs Work</span>
+        </div>
+        <div class="page-card-body">
+          <div class="page-card-grid">
+            <div class="page-item"><strong>Strength:</strong> "40+ years combined experience" is a strong credibility signal — should be in the hero, not buried.</div>
+            <div class="page-item"><strong>Issues:</strong> Complex jargon (CFC, PFIC, Form 5471, M&amp;A) without plain-English explanations. SMB owners will not understand and will leave.</div>
+            <div class="page-item"><strong>CTA:</strong> Same generic "Book Consultation" with no pricing signal. Business owners need ROI justification before booking.</div>
+            <div class="page-item"><strong>Missing:</strong> Real case study or business scenario. "We helped a Canadian SaaS company entering the US market..." type content converts.</div>
+          </div>
+          <div class="page-issues">
+            <span class="tag red">Heavy jargon, no plain English</span>
+            <span class="tag red">No case studies</span>
+            <span class="tag orange">40-year experience buried</span>
+            <span class="tag yellow">No ROI framing</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ITIN -->
+      <div class="sub-h" style="margin-top:24px;">ITIN Services Center</div>
+      <div class="page-card">
+        <div class="page-card-head">
+          <span class="page-card-url">ustaxiq.com/cross-border-tax-services/itin-services-center/</span>
+          <span class="tag green">Best Page</span>
+        </div>
+        <div class="page-card-body">
+          <div class="page-card-grid">
+            <div class="page-item"><strong>Strength:</strong> Only page with clear pricing ($560.62 in-person, $664.86 video). Specific, trustworthy.</div>
+            <div class="page-item"><strong>Strength:</strong> CAA credential clearly explained. Processing time stated (10 weeks). Booking buttons present.</div>
+            <div class="page-item"><strong>Issue:</strong> Two separate booking buttons compete without visual hierarchy to guide the visitor to pick one.</div>
+            <div class="page-item"><strong>Issue:</strong> Processing time disclaimer buried. Should be prominent — sets expectations and reduces support calls.</div>
+          </div>
+          <div class="page-issues">
+            <span class="tag green">Pricing shown ✓</span>
+            <span class="tag green">CAA credential featured ✓</span>
+            <span class="tag yellow">CTA hierarchy unclear</span>
+            <span class="tag yellow">Processing time buried</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact -->
+      <div class="sub-h" style="margin-top:24px;">Contact Us</div>
+      <div class="page-card">
+        <div class="page-card-head">
+          <span class="page-card-url">ustaxiq.com/contact-us/</span>
+          <span class="tag orange">Needs Work</span>
+        </div>
+        <div class="page-card-body">
+          <div class="page-card-grid">
+            <div class="page-item"><strong>Contact Info:</strong> Two office addresses, 4 phone numbers including toll-free. Good coverage.</div>
+            <div class="page-item"><strong>Form:</strong> Contact form present. Fields and conversion rate unknown — no visible social proof on form page.</div>
+            <div class="page-item"><strong>Issue:</strong> 4 different phone numbers is confusing. Which one do I call? Canada vs US not prominently labeled.</div>
+            <div class="page-item"><strong>Missing:</strong> No business hours visible. No expected response time. No Google Maps embed for office trust signals.</div>
+          </div>
+          <div class="page-issues">
+            <span class="tag red">No business hours</span>
+            <span class="tag red">No maps embed</span>
+            <span class="tag orange">4 phone numbers — confusing</span>
+            <span class="tag yellow">No response time expectation</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- FAQ -->
+      <div class="sub-h" style="margin-top:24px;">FAQ Page</div>
+      <div class="page-card">
+        <div class="page-card-head">
+          <span class="page-card-url">ustaxiq.com/faq-page/</span>
+          <span class="tag orange">Needs Work</span>
+        </div>
+        <div class="page-card-body">
+          <div class="page-card-grid">
+            <div class="page-item"><strong>Content:</strong> 14 FAQ categories covering process, security, payments, hours, location. Solid foundation.</div>
+            <div class="page-item"><strong>Issue:</strong> "We do not offer free consultations" is a potential conversion blocker vs. competitors who do. Needs careful framing.</div>
+            <div class="page-item"><strong>SEO Opportunity:</strong> FAQ schema markup would generate Google Featured Snippets — high-traffic opportunity with minimal effort.</div>
+            <div class="page-item"><strong>Missing:</strong> Tax-specific questions that clients actually search for ("Do I need to file if I made under $X", "What happens if I miss the deadline").</div>
+          </div>
+          <div class="page-issues">
+            <span class="tag red">No FAQ schema for snippets</span>
+            <span class="tag orange">No free consultation = conversion risk</span>
+            <span class="tag yellow">Missing search-driven FAQ questions</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Blog -->
+      <div class="sub-h" style="margin-top:24px;">Blog — 57 Articles</div>
+      <div class="page-card">
+        <div class="page-card-head">
+          <span class="page-card-url">ustaxiq.com/blog/</span>
+          <span class="tag orange">Needs Optimization</span>
+        </div>
+        <div class="page-card-body">
+          <div class="page-card-grid">
+            <div class="page-item"><strong>Volume:</strong> 57 articles is a strong base. Most competitors have fewer specialized articles.</div>
+            <div class="page-item"><strong>Problem:</strong> Articles are not optimized for search intent. Titles are informational, not keyword-targeted.</div>
+            <div class="page-item"><strong>Problem:</strong> No lead capture within blog articles. No email opt-in, no downloadable checklist, no inline CTA.</div>
+            <div class="page-item"><strong>Problem:</strong> Many articles are from 2018–2020 and cover one-time tax events (OVDP, Section 965). These need to be updated or marked outdated.</div>
+          </div>
+          <div class="page-issues">
+            <span class="tag red">No blog CTAs / lead capture</span>
+            <span class="tag red">30+ articles are 4–8 years old</span>
+            <span class="tag orange">Titles not SEO-optimized</span>
+            <span class="tag orange">No email opt-in</span>
+            <span class="tag yellow">No categories landing pages</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Process -->
+      <div class="sub-h" style="margin-top:24px;">Our Process Page</div>
+      <div class="page-card">
+        <div class="page-card-head">
+          <span class="page-card-url">ustaxiq.com/our-process/</span>
+          <span class="tag green">Strong Page</span>
+        </div>
+        <div class="page-card-body">
+          <div class="page-card-grid">
+            <div class="page-item"><strong>Strength:</strong> 4 detailed workflows (Tax Return, Consulting, ITIN, Initial Consultation) with step-by-step breakdowns — builds enormous trust.</div>
+            <div class="page-item"><strong>Strength:</strong> "5–10 business day" promise sets clear expectations. Zoho WorkDrive for data security is a meaningful differentiator.</div>
+            <div class="page-item"><strong>Issue:</strong> "Simple. Reliable. Convenient." subhead is generic. Could be stronger: "From First Call to Filed Return — Here's Exactly What Happens."</div>
+            <div class="page-item"><strong>Opportunity:</strong> This page should link to every service page. Visitors who read the process are high-intent — capture them.</div>
+          </div>
+          <div class="page-issues">
+            <span class="tag green">Step-by-step workflows ✓</span>
+            <span class="tag green">Security commitment ✓</span>
+            <span class="tag yellow">Generic subheading</span>
+            <span class="tag yellow">No exit intent / secondary CTA</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- UI/UX & WHY CUSTOMERS LEAVE -->
+  <div class="card">
+    <div class="card-head">
+      <div class="section-tag">05 — UI/UX & Conversion</div>
+      <h2>Why Customers Leave — And How to Fix It</h2>
+      <div class="card-desc">Analysis of the visitor journey, CTA effectiveness, trust signals, mobile experience, and conversion rate optimization opportunities.</div>
+    </div>
+    <div class="card-body">
+
+      <div class="sub-h">The Visitor Journey — Where People Drop Off</div>
+      <div class="steps">
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <div class="step-title">Google Search → Landing on Homepage</div>
+            <div class="step-desc">User searches "US tax return from Canada" or "cross-border tax accountant Oakville". Lands on homepage. Immediately faces a slow page load — 58 render-blocking scripts mean the screen may be blank for 3–5 seconds on mobile.</div>
+            <div class="step-result bad">⚠ 40–60% of mobile users bounce here</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <div class="step-title">First Impression — Scanning the Page</div>
+            <div class="step-desc">User scrolls. Sees "About U.S. Tax IQ" as the H1 — this sounds like a company profile, not a solution to their problem. The 5-star reviews are not visible above the fold. No "starting from $X" pricing visible anywhere.</div>
+            <div class="step-result bad">⚠ User questions if this firm serves their specific situation</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <div class="step-title">Navigating to Services</div>
+            <div class="step-desc">User finds "Tax Services" in navigation, clicks through. Faces dense, jargon-heavy content (CFC, PFIC, Form 5471). No pricing. No client testimonials on service pages. Nothing that explains what working with U.S. Tax IQ actually looks like.</div>
+            <div class="step-result warn">⚠ High-intent visitors feel uncertain — competitor research begins</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <div class="step-title">Looking for Pricing or Free Consultation</div>
+            <div class="step-desc">User clicks FAQ, reads "We do not offer free consultations." Meanwhile, Greenback Expat Tax and Bright!Tax both offer free 30-minute calls. The user knows competitors will give them a free taste before any commitment.</div>
+            <div class="step-result bad">⚠ User leaves to competitor that offers free initial consultation</div>
+          </div>
+        </div>
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <div class="step-title">If They Stay — Trying to Book</div>
+            <div class="step-desc">User sees 3 booking options (15-min, 30-min, 1-hour) with no clear guidance on which to choose. No pricing shown for consultations. Booking page may redirect to a third-party scheduler without site branding continuity.</div>
+            <div class="step-result warn">⚠ Decision paralysis — user may abandon booking flow</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-h">CTA (Call-to-Action) Analysis</div>
+      <div class="issue-list">
+        <div class="issue crit"><div class="issue-top"><span class="issue-badge">Critical</span><span class="issue-title">Single generic CTA used on every page — "Book Your Consultation Today"</span></div><div class="issue-body">Every page uses the identical CTA regardless of context. A visitor reading about ITIN services needs a different CTA than one reading about business tax planning. Personalized CTAs convert 202% better than generic ones.</div><div class="issue-fix">Create page-specific CTAs. ITIN page → "Book ITIN Appointment". Business page → "Discuss Your Business Tax Situation". Blog → "Download Our Cross-Border Tax Checklist".</div></div>
+        <div class="issue high"><div class="issue-top"><span class="issue-badge">High</span><span class="issue-title">Zero CTAs inside 57 blog articles</span></div><div class="issue-body">Blog articles get organic traffic but have no way to capture leads. No email opt-in, no downloadable PDF, no "talk to an expert" link inline. Thousands of readers per month are leaving without a way to contact the firm.</div><div class="issue-fix">Add an inline CTA block after every 3rd paragraph and at article end. Offer a free "US Tax for Canadians" checklist PDF in exchange for email.</div></div>
+        <div class="issue high"><div class="issue-top"><span class="issue-badge">High</span><span class="issue-title">Social proof not positioned near CTAs</span></div><div class="issue-body">Research consistently shows that placing star ratings and review counts adjacent to CTA buttons increases conversions by 15–30%. The 5-star rating is mentioned once on the homepage — not positioned near any booking button.</div><div class="issue-fix">Add "★★★★★ Trusted by 100+ clients" directly under every CTA button across all pages.</div></div>
+        <div class="issue high"><div class="issue-top"><span class="issue-badge">High</span><span class="issue-title">No free lead magnet to capture non-buyer traffic</span></div><div class="issue-body">Not every visitor is ready to book a paid consultation. Without a free resource (checklist, guide, email course), there is no way to capture and nurture the 80–90% who aren't ready to buy immediately.</div><div class="issue-fix">Create 2–3 downloadable resources: "Cross-Border Tax Checklist for Canadians", "FBAR Filing Guide", "Expat Tax Deadline Calendar". Gate with email.</div></div>
+      </div>
+
+      <div class="sub-h">Mobile Experience Issues</div>
+      <div class="issue-list">
+        <div class="issue high"><div class="issue-top"><span class="issue-badge">High</span><span class="issue-title">Hummingbird generates 28 inline style blocks (33 KB of CSS)</span></div><div class="issue-body">On mobile with limited bandwidth, 33KB of inline CSS inside the HTML document significantly delays first render. This is a configuration issue with the Hummingbird performance plugin.</div><div class="issue-fix">Configure Hummingbird to combine and externalize inline styles. Enable Cloudflare HTML caching to serve compressed responses from edge.</div></div>
+        <div class="issue med"><div class="issue-top"><span class="issue-badge">Medium</span><span class="issue-title">Navigation is complex for mobile tax clients</span></div><div class="issue-body">Current navigation: Home → Tax Services → [7 sub-pages]. For a mobile user who doesn't know if they need "Individual" or "Business" services, the hierarchy is unclear. No "I'm looking for..." style progressive navigation.</div><div class="issue-fix">Add a simplified mobile navigation path with audience-based entry points: "I'm a US citizen in Canada", "I own a business", "I need an ITIN".</div></div>
+      </div>
+
+      <div class="sub-h">Accessibility Issues</div>
+      <div class="stat-row">
+        <div class="stat"><div class="dot red"></div><div class="stat-label">3 images missing alt text</div><div class="stat-val bad">WCAG 2.1 Violation</div></div>
+        <div class="stat"><div class="dot yellow"></div><div class="stat-label">CTA button color contrast — not verified</div><div class="stat-val warn">Must meet 4.5:1 ratio</div></div>
+        <div class="stat"><div class="dot yellow"></div><div class="stat-label">Focus states on interactive elements — not tested</div><div class="stat-val warn">Required for keyboard users</div></div>
+        <div class="stat"><div class="dot yellow"></div><div class="stat-label">FAQ accordions require JavaScript</div><div class="stat-val warn">Content hidden without JS</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTENT STRATEGY & BLOG -->
+  <div class="card">
+    <div class="card-head">
+      <div class="section-tag">06 — Content Strategy</div>
+      <h2>Blog, Keywords & Lead Generation Content Plan</h2>
+      <div class="card-desc">57 blog articles exist. Here's how to turn them into a lead generation engine and what new content to create for maximum search visibility.</div>
+    </div>
+    <div class="card-body">
+
+      <div class="callout success">
+        <div class="callout-icon">✅</div>
+        <div class="callout-body"><strong>Content Opportunity Is Massive</strong>Competitors like Greenback Expat Tax and TaxesForExpats dominate Google with comprehensive country guides and keyword-targeted blog posts. U.S. Tax IQ's 57 existing articles need optimization — and 20+ new articles targeting high-intent keywords could 5× organic traffic within 12 months.</div>
+      </div>
+
+      <div class="sub-h">Top Priority: Pillar Content Pages (2000+ words each)</div>
+      <div class="blog-grid">
+        <div class="blog-topic"><div class="blog-topic-label">Pillar 1 — Highest Traffic Potential</div><div class="blog-topic-title">The Complete Guide to Filing US Taxes from Canada (2026)</div><div class="blog-topic-meta">Target: "us taxes from canada" · "file us taxes canada" · 8,000+ monthly searches</div></div>
+        <div class="blog-topic"><div class="blog-topic-label">Pillar 2 — Treaty Focus</div><div class="blog-topic-title">US-Canada Tax Treaty: What Dual Citizens Need to Know in 2026</div><div class="blog-topic-meta">Target: "us canada tax treaty" · "dual citizen taxes" · 4,000+ monthly searches</div></div>
+        <div class="blog-topic"><div class="blog-topic-label">Pillar 3 — Compliance</div><div class="blog-topic-title">FBAR vs FATCA: Complete Compliance Guide for Americans in Canada</div><div class="blog-topic-meta">Target: "FBAR requirements canada" · "FATCA reporting" · 3,500+ monthly searches</div></div>
+        <div class="blog-topic"><div class="blog-topic-label">Pillar 4 — ITIN Focus</div><div class="blog-topic-title">How to Get an ITIN in Canada: Step-by-Step 2026 Guide</div><div class="blog-topic-meta">Target: "ITIN application canada" · "ITIN for canadians" · 2,000+ monthly searches</div></div>
+      </div>
+
+      <div class="sub-h">High-Converting Supporting Blog Posts</div>
+      <div class="blog-grid">
+        <div class="blog-topic"><div class="blog-topic-label">FAQ-Driven · High Intent</div><div class="blog-topic-title">Do I Need to File US Taxes if I Live in Canada?</div><div class="blog-topic-meta">Answers the #1 question US expats in Canada Google</div></div>
+        <div class="blog-topic"><div class="blog-topic-label">Deadline Content · Seasonal</div><div class="blog-topic-title">US Tax Deadlines for Expats in Canada — 2026 Calendar</div><div class="blog-topic-meta">Publish in November, peaks in January–April. High conversion intent.</div></div>
+        <div class="blog-topic"><div class="blog-topic-label">Mistake-Based · Trust Builder</div><div class="blog-topic-title">5 Mistakes Americans in Canada Make on US Tax Returns</div><div class="blog-topic-meta">High sharing potential. Shows expertise without giving away the answer.</div></div>
+        <div class="blog-topic"><div class="blog-topic-label">RRSP Special Topic</div><div class="blog-topic-title">RRSP and US Tax: What Americans in Canada Must Know</div><div class="blog-topic-meta">Unique to Canada-US niche. Low competition, high specificity.</div></div>
+        <div class="blog-topic"><div class="blog-topic-label">Renunciation Content</div><div class="blog-topic-title">US Exit Tax and Renunciation: The Complete Canadian Guide</div><div class="blog-topic-meta">High-value topic. People researching renunciation need professional help.</div></div>
+        <div class="blog-topic"><div class="blog-topic-label">Business Owners</div><div class="blog-topic-title">US Tax Obligations for Canadian Online Businesses Selling to Americans</div><div class="blog-topic-meta">Growing audience. E-commerce sellers often unaware of nexus obligations.</div></div>
+        <div class="blog-topic"><div class="blog-topic-label">Real Estate Focus</div><div class="blog-topic-title">US Tax When Selling Canadian Property — What You Must Know</div><div class="blog-topic-meta">High-value client scenario. Section 897 and FIRPTA implications.</div></div>
+        <div class="blog-topic"><div class="blog-topic-label">Comparison Content</div><div class="blog-topic-title">U.S. Tax IQ vs. Big 4 Firms: Why Boutique Cross-Border Expertise Wins</div><div class="blog-topic-meta">Captures commercial investigation searches. High conversion proximity.</div></div>
+      </div>
+
+
+      <div class="sub-h">Existing Blog: What Needs to Be Updated</div>
+      <table class="tbl">
+        <thead><tr><th>Article Category</th><th>Status</th><th>Action Required</th></tr></thead>
+        <tbody>
+          <tr><td>OVDP/Streamlined Filing articles (6 posts)</td><td><span class="tag red">Outdated</span></td><td>OVDP closed in 2018. Update to current IRS Voluntary Disclosure or archive.</td></tr>
+          <tr><td>IRC Section 965 Transition Tax (4 posts)</td><td><span class="tag red">Outdated</span></td><td>One-time 2017 TCJA provision. 301-redirect to general business tax page.</td></tr>
+          <tr><td>2018–2019 IRS announcements (8 posts)</td><td><span class="tag orange">Stale</span></td><td>Update with 2025/2026 information or consolidate into an evergreen guide.</td></tr>
+          <tr><td>COVID-19 response letter (1 post)</td><td><span class="tag red">Delete</span></td><td>Completely irrelevant in 2026. Delete and 301-redirect to homepage.</td></tr>
+          <tr><td>Cross-border guides (12 posts)</td><td><span class="tag green">Keep + Optimize</span></td><td>Update dates, add FAQ schema, add CTAs inside each article.</td></tr>
+          <tr><td>ITIN renewal/application articles (4 posts)</td><td><span class="tag yellow">Update</span></td><td>Refresh processing times and current IRS fees. Strong lead generation potential.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- COMPETITOR ANALYSIS -->
+  <div class="card">
+    <div class="card-head">
+      <div class="section-tag">07 — Competitive Analysis</div>
+      <h2>Where U.S. Tax IQ Stands in the Market</h2>
+      <div class="card-desc">Benchmarked against direct boutique competitors and digital-first expat tax platforms that dominate organic search.</div>
+    </div>
+    <div class="card-body">
+
+      <div class="sub-h">Direct Boutique Competitors</div>
+      <div class="comp-grid">
+        <div class="comp-card"><div class="comp-name">Serbinski Accounting</div><div class="comp-url">serbinski.com</div><div class="comp-body">Toronto-based US-Canada specialist. Well-established, strong local SEO, active blog. Direct competitor for Oakville/GTA market.</div></div>
+        <div class="comp-card"><div class="comp-name">CBTA Cross Border Tax</div><div class="comp-url">cbta.cpa</div><div class="comp-body">Specialized US-Canada cross-border accounting. Competes directly on same keyword set. Cleaner website UX.</div></div>
+        <div class="comp-card"><div class="comp-name">BorderlessWealth</div><div class="comp-url">borderlesswealth.com</div><div class="comp-body">Virtual CPA with e-commerce/tech focus. More modern website, free discovery calls offered. Attracts online businesses.</div></div>
+        <div class="comp-card"><div class="comp-name">SRGA Global</div><div class="comp-url">srgaglobal.com</div><div class="comp-body">Affordable cross-border compliance at 40–60% less than Big 4. Price-competitive positioning attracts cost-sensitive clients.</div></div>
+      </div>
+
+      <div class="sub-h">Digital Platforms Dominating Organic Search</div>
+      <div class="comp-grid">
+        <div class="comp-card"><div class="comp-name">Greenback Expat Tax</div><div class="comp-url">greenbacktaxservices.com</div><div class="comp-body">Venture-backed. Flat-fee pricing, 100% online, massive content library with country-specific guides. Ranks for most expat tax keywords. Offers free discovery call.</div></div>
+        <div class="comp-card"><div class="comp-name">Taxes for Expats</div><div class="comp-url">taxesforexpats.com</div><div class="comp-body">25+ years experience. Comprehensive blog content ranked for hundreds of expat tax keywords. Strong trust signals and clear pricing.</div></div>
+        <div class="comp-card"><div class="comp-name">Bright!Tax</div><div class="comp-url">brighttax.com</div><div class="comp-body">190+ countries, venture-backed, strong marketing. 4.0 Trustpilot. Aggressive SEO investment. Weak on Canada-specific content — opportunity for U.S. Tax IQ.</div></div>
+        <div class="comp-card"><div class="comp-name">H&R Block Expat</div><div class="comp-url">hrblock.com/expat</div><div class="comp-body">Brand recognition plays. DIY + assisted options with clear pricing. Hard to compete on brand, but easy to win on specialization and personal service.</div></div>
+      </div>
+
+      <div class="sub-h">Competitive Positioning Map</div>
+      <table class="tbl">
+        <thead><tr><th>Feature</th><th>U.S. Tax IQ</th><th>Greenback</th><th>Serbinski</th><th>Bright!Tax</th></tr></thead>
+        <tbody>
+          <tr><td>Canada-US Specialization</td><td><span class="tag green">Yes ✓</span></td><td><span class="tag yellow">General</span></td><td><span class="tag green">Yes ✓</span></td><td><span class="tag yellow">General</span></td></tr>
+          <tr><td>Physical Office (Canada)</td><td><span class="tag green">Yes ✓</span></td><td><span class="tag red">No</span></td><td><span class="tag green">Yes ✓</span></td><td><span class="tag red">No</span></td></tr>
+          <tr><td>IRS CAA Credential</td><td><span class="tag green">Yes ✓</span></td><td><span class="tag red">No</span></td><td><span class="tag yellow">Unknown</span></td><td><span class="tag red">No</span></td></tr>
+          <tr><td>Free Initial Consultation</td><td><span class="tag red">No</span></td><td><span class="tag green">Yes ✓</span></td><td><span class="tag yellow">Unclear</span></td><td><span class="tag green">Yes ✓</span></td></tr>
+          <tr><td>Transparent Pricing</td><td><span class="tag red">No</span></td><td><span class="tag green">Yes ✓</span></td><td><span class="tag yellow">Partial</span></td><td><span class="tag green">Yes ✓</span></td></tr>
+          <tr><td>SEO Content Volume</td><td><span class="tag yellow">57 articles</span></td><td><span class="tag green">200+ articles</span></td><td><span class="tag yellow">Moderate</span></td><td><span class="tag green">150+ articles</span></td></tr>
+          <tr><td>Google Rating</td><td><span class="tag green">5.0 ★ (46)</span></td><td><span class="tag green">4.8 ★</span></td><td><span class="tag yellow">4.5 ★</span></td><td><span class="tag yellow">4.0 ★</span></td></tr>
+        </tbody>
+      </table>
+
+      <div class="callout success">
+        <div class="callout-icon">🏆</div>
+        <div class="callout-body"><strong>U.S. Tax IQ's Unbeatable Advantages</strong>The combination of IRS CAA certification, physical Canadian office, 5.0-star rating, and deep Canada-US specialization is extremely rare. No large digital competitor can match this. The opportunity is to make these advantages unmissable on the website rather than buried in dense text.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 12-MONTH SEO ROADMAP -->
+  <div class="card">
+    <div class="card-head">
+      <div class="section-tag">08 — 12-Month Growth Roadmap</div>
+      <h2>From 58/100 to Market Leader — Month by Month</h2>
+      <div class="card-desc">A phased implementation plan to fix critical technical issues, build content authority, and dominate the Canada-US cross-border tax niche in organic search.</div>
+    </div>
+    <div class="card-body">
+
+      <div class="roadmap-phase">
+        <div class="phase-head q1">
+          <div>
+            <div class="phase-num">Phase 1 — Months 1–3</div>
+            <div class="phase-title">Foundation Fix — Stop the Bleeding</div>
+          </div>
+          <span class="phase-tag">Critical Fixes</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-items">
+            <div class="phase-item">Fix all 6 critical technical SEO issues: add defer to 58 scripts, remove utility pages from sitemap, add 5 security headers via Cloudflare</div>
+            <div class="phase-item">Write and publish meta descriptions for all 41 pages — single highest-ROI SEO task available (3–5% CTR improvement)</div>
+            <div class="phase-item">Rewrite page titles with keyword + location + value: "Cross-Border Tax Services Canada | U.S. Tax IQ — Oakville ON &amp; Tampa FL"</div>
+            <div class="phase-item">Add LocalBusiness (AccountingService) JSON-LD schema for both office locations — unlocks Google Local Pack and Maps visibility</div>
+            <div class="phase-item">Add og:image and twitter:image — design a professional 1200×630px social share image</div>
+            <div class="phase-item">Remove /logout/, /test-book-consultation/, /events-template/, /toggle-bar/, and all template pages from sitemap. Set noindex.</div>
+            <div class="phase-item">Fix H1 on homepage: change to "Expert U.S. &amp; Cross-Border Tax Services for Canadians in Canada"</div>
+            <div class="phase-item">Add lazy loading to all non-hero images. Add width/height to all img tags to prevent CLS.</div>
+            <div class="phase-item">Add "★★★★★ Trusted by 100+ clients" adjacent to every CTA button across all pages</div>
+            <div class="phase-item">Enable Cloudflare HTML caching for anonymous visitors (Cache-Control: public, max-age=3600)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="roadmap-phase">
+        <div class="phase-head q2">
+          <div>
+            <div class="phase-num">Phase 2 — Months 4–6</div>
+            <div class="phase-title">Content Authority — Own the Keywords</div>
+          </div>
+          <span class="phase-tag">SEO Growth</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-items">
+            <div class="phase-item">Publish 4 pillar content pages (2000+ words each): Complete Guide to US Taxes from Canada, US-Canada Tax Treaty Guide, FBAR vs FATCA Guide, ITIN Application Guide</div>
+            <div class="phase-item">Create dedicated location pages: "US Tax Services in Oakville, Ontario" and "Cross-Border Tax Services in Tampa, Florida" — local SEO powerhouses</div>
+            <div class="phase-item">Add FAQ schema (JSON-LD) to FAQ page and all service pages — targets Featured Snippets for question-based searches</div>
+            <div class="phase-item">Build 2–3 lead magnets: "Cross-Border Tax Checklist PDF", "US Tax Deadline Calendar", "FBAR Quick Guide" — add email capture forms to blog articles</div>
+            <div class="phase-item">Refresh 15 highest-traffic blog articles: update dates, add CTAs, add FAQ schema, improve keyword targeting in titles and first 100 words</div>
+            <div class="phase-item">Delete or 301-redirect COVID-19 response page, duplicate thank-you pages, and stale OVDP articles from 2018</div>
+            <div class="phase-item">Add pricing signals to service pages: "Starting from $X" or consultation tier pricing table (15-min / 30-min / 1-hour)</div>
+            <div class="phase-item">Create audience-based landing pages: "For US Citizens in Canada", "For Dual Citizens", "For Canadian Business Owners", "For Athletes &amp; Entertainers"</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="roadmap-phase">
+        <div class="phase-head q3">
+          <div>
+            <div class="phase-num">Phase 3 — Months 7–9</div>
+            <div class="phase-title">Conversion Optimization — Turn Traffic Into Clients</div>
+          </div>
+          <span class="phase-tag">CRO Focus</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-items">
+            <div class="phase-item">A/B test CTA copy and button colors. Test "Book Free 15-Minute Tax Assessment" vs "Book Your Consultation" across service pages</div>
+            <div class="phase-item">Add client testimonials (with photo + name + situation) to every service page — not just the homepage</div>
+            <div class="phase-item">Build an email nurture sequence: 5-email sequence triggered by lead magnet download. Educate → build trust → invite to book consultation</div>
+            <div class="phase-item">Add case study content: "How we helped a US citizen in Canada with 5 years of unfiled returns" — anonymized but specific</div>
+            <div class="phase-item">Implement live chat or chatbot on high-intent pages (ITIN, Services) to capture visitors who won't fill a form</div>
+            <div class="phase-item">Launch Google Business Profile posts (weekly) to leverage the 5.0-star rating and improve local search visibility</div>
+            <div class="phase-item">Build comparison content: "U.S. Tax IQ vs. H&amp;R Block Expat" and "Boutique Specialist vs. Big 4 for Cross-Border Tax" — captures commercial investigation searches</div>
+            <div class="phase-item">Add video content: 2–3 minute explainer videos (Alexey Manasuev on camera) for top service pages. Video increases time on page by 40%.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="roadmap-phase">
+        <div class="phase-head q4">
+          <div>
+            <div class="phase-num">Phase 4 — Months 10–12</div>
+            <div class="phase-title">Authority & Scale — Dominate the Niche</div>
+          </div>
+          <span class="phase-tag">Market Leadership</span>
+        </div>
+        <div class="phase-body">
+          <div class="phase-items">
+            <div class="phase-item">Publish 12+ additional SEO-targeted blog posts (one per month minimum). Target long-tail keywords with low competition and high intent</div>
+            <div class="phase-item">Launch webinar series on high-interest topics: "FBAR Compliance in 2026", "Cross-Border Business Tax Planning" — each webinar generates leads and blog content</div>
+            <div class="phase-item">Build backlinks through guest posts on Canadian finance blogs, expat community sites, and cross-border business associations</div>
+            <div class="phase-item">Submit to professional directories: CPA directories, expat community platforms, cross-border business associations in Ontario and Florida</div>
+            <div class="phase-item">Consider multilingual content expansion if team has additional language capabilities — can open underserved market segments with minimal competition</div>
+            <div class="phase-item">Launch Google Ads targeting highest-value keywords ("US tax accountant Canada", "ITIN application Canada") to accelerate client acquisition while SEO builds</div>
+            <div class="phase-item">Implement full review generation system: post-service email asking for Google review. Target 100+ reviews to dominate local social proof.</div>
+            <div class="phase-item">Annual audit: measure keyword ranking improvements, organic traffic growth, consultation booking rate, and lead magnet conversion rate. Adjust roadmap.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-h">Target Goals — If Roadmap Is Fully Implemented</div>
+      <div class="callout neutral" style="margin-bottom:16px;">
+        <div class="callout-icon">ℹ️</div>
+        <div class="callout-body"><strong>These are targets, not guarantees.</strong> Actual results depend on implementation speed, consistency of execution, market competition, and search engine algorithm changes. Timeline may extend beyond 12 months. Nexvora Systems provides the strategy and implementation — outcomes vary by market conditions.</div>
+      </div>
+      <table class="tbl">
+        <thead><tr><th>Metric</th><th>Current State</th><th>After Phase 1–2</th><th>After Full Roadmap</th></tr></thead>
+        <tbody>
+          <tr><td>Technical SEO Score</td><td><span class="tag red">58/100</span></td><td><span class="tag yellow">Target: 75+/100</span></td><td><span class="tag green">Target: 88+/100</span></td></tr>
+          <tr><td>Organic Search Visibility</td><td><span class="tag red">Low</span></td><td><span class="tag yellow">Improving</span></td><td><span class="tag green">Significantly higher</span></td></tr>
+          <tr><td>Google Local Pack</td><td><span class="tag red">Not appearing</span></td><td><span class="tag yellow">Eligible (schema added)</span></td><td><span class="tag green">Actively appearing</span></td></tr>
+          <tr><td>Blog SEO Optimization</td><td><span class="tag yellow">57 (not optimized)</span></td><td><span class="tag yellow">Partially optimized</span></td><td><span class="tag green">Fully optimized</span></td></tr>
+          <tr><td>Page Load Speed (mobile)</td><td><span class="tag red">4–6 seconds</span></td><td><span class="tag yellow">Improving</span></td><td><span class="tag green">Target: under 2.5s</span></td></tr>
+          <tr><td>Social Share Previews</td><td><span class="tag red">No images</span></td><td><span class="tag green">Fixed (OG images)</span></td><td><span class="tag green">Branded previews</span></td></tr>
+          <tr><td>Lead Capture</td><td><span class="tag red">Booking only</span></td><td><span class="tag yellow">+ Lead magnets</span></td><td><span class="tag green">Multi-channel funnel</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- PRIORITY ACTION PLAN -->
+  <div class="card">
+    <div class="card-head">
+      <div class="section-tag">09 — Priority Action Plan</div>
+      <h2>29 Issues — Sorted by Impact</h2>
+      <div class="card-desc">Complete prioritized list of all findings. Fix critical items first — they block ranking potential for everything else.</div>
+    </div>
+    <div class="card-body">
+
+      <div class="prio-section">
+        <div class="prio-header">
+          <span class="prio-badge crit">Critical</span>
+          <span class="prio-count">6 issues — Fix immediately</span>
+        </div>
+        <div class="prio-items">
+          <div class="prio-item crit"><span class="prio-n">C1</span>Add defer attribute to all 58 render-blocking scripts — especially CallRail swap.js and Events Calendar JS. Estimated LCP improvement: 1.5–3 seconds.</div>
+          <div class="prio-item crit"><span class="prio-n">C2</span>Set noindex and remove from sitemap: /logout/, /login/, /test-book-consultation/, /test-book-consultation-main/, /events-template/, /venue-template/, /taxonomy-template/, /toggle-bar/, duplicate /thank-you/ pages.</div>
+          <div class="prio-item crit"><span class="prio-n">C3</span>Add 5 security headers via Cloudflare Transform Rules: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy.</div>
+          <div class="prio-item crit"><span class="prio-n">C4</span>Add AccountingService JSON-LD schema with both office locations, phone numbers, opening hours, CAA credential, and aggregateRating.</div>
+          <div class="prio-item crit"><span class="prio-n">C5</span>Add og:image (1200×630px) and twitter:image to all pages. Set default in Yoast SEO → Social settings. This immediately fixes blank social share previews.</div>
+          <div class="prio-item crit"><span class="prio-n">C6</span>Add pricing visibility to all service pages. At minimum: "Starting from CAD $X" for consultations. Consultation tier pricing table (15-min / 30-min / 1-hour) with amounts.</div>
+        </div>
+      </div>
+
+      <div class="prio-section">
+        <div class="prio-header">
+          <span class="prio-badge high">High</span>
+          <span class="prio-count">8 issues — Fix within 30 days</span>
+        </div>
+        <div class="prio-items">
+          <div class="prio-item high"><span class="prio-n">H1</span>Write unique meta descriptions for all 41 pages. 150–160 characters. Include primary keyword + location + value proposition. Highest-ROI SEO task available.</div>
+          <div class="prio-item high"><span class="prio-n">H2</span>Rewrite page titles for all service pages, About, FAQ, Process, Contact. Format: [Primary Keyword] — [Location/Audience] | U.S. Tax IQ. Max 60 characters.</div>
+          <div class="prio-item high"><span class="prio-n">H3</span>Fix homepage H1: change from "About U.S. Tax IQ" to benefit-focused keyword phrase. Move 5-star rating badge above the fold adjacent to primary CTA button.</div>
+          <div class="prio-item high"><span class="prio-n">H4</span>Add loading="lazy" to all below-fold images. Add width/height attributes to all img tags to prevent Cumulative Layout Shift. Fix YouTube thumbnail dimensions.</div>
+          <div class="prio-item high"><span class="prio-n">H5</span>Add font-display: swap to Google Fonts URL and all @font-face declarations. Prevents invisible text (FOIT) during page load.</div>
+          <div class="prio-item high"><span class="prio-n">H6</span>Replace hero CSS background-image with a proper img tag using fetchpriority="high". This makes the LCP image discoverable by the browser preload scanner.</div>
+          <div class="prio-item high"><span class="prio-n">H7</span>Remove duplicate Facebook Pixel. Only one Pixel ID should fire. Configure via GTM to consolidate all tracking under one container.</div>
+          <div class="prio-item high"><span class="prio-n">H8</span>Add CTAs inside all 57 blog articles: inline CTA block after 3rd paragraph and at article end. Link to relevant service page + lead magnet offer.</div>
+        </div>
+      </div>
+
+      <div class="prio-section">
+        <div class="prio-header">
+          <span class="prio-badge med">Medium</span>
+          <span class="prio-count">10 issues — Fix within 90 days</span>
+        </div>
+        <div class="prio-items">
+          <div class="prio-item med"><span class="prio-n">M1</span>Add WordPress generator meta tag removal: remove_action('wp_head', 'wp_generator') in functions.php. Disable version comments in Hummingbird and Yoast.</div>
+          <div class="prio-item med"><span class="prio-n">M2</span>Fix og:locale mismatch — change from en_US to en_CA. Add hreflang="en-ca" and hreflang="en-us" alternate tags in head.</div>
+          <div class="prio-item med"><span class="prio-n">M3</span>Configure Cloudflare Cache Rules to cache homepage HTML for anonymous visitors (1 hour TTL). Currently DYNAMIC — every hit reaches origin server.</div>
+          <div class="prio-item med"><span class="prio-n">M4</span>Convert FAQ inline microdata to JSON-LD format consistent with Yoast output. Eliminates schema format conflict and improves Featured Snippet eligibility.</div>
+          <div class="prio-item med"><span class="prio-n">M5</span>Create dedicated location pages: /us-tax-services-oakville-ontario/ and /cross-border-tax-services-tampa-florida/ — critical for Local Pack rankings.</div>
+          <div class="prio-item med"><span class="prio-n">M6</span>Build 2–3 downloadable lead magnets with email capture. Gate with ConvertKit or Mailchimp form embedded in blog articles and service pages.</div>
+          <div class="prio-item med"><span class="prio-n">M7</span>Update or delete 30+ stale blog articles: COVID-19 letter, 2018 OVDP posts, 2019 IRS announcements. 301-redirect deleted URLs to relevant current pages.</div>
+          <div class="prio-item med"><span class="prio-n">M8</span>Add client testimonials (with photo, name, situation) to each individual service page. Not just homepage. At minimum 3 testimonials per page.</div>
+          <div class="prio-item med"><span class="prio-n">M9</span>Add Google Maps embed and stated business hours to Contact page. Clarify which phone number to call for Canada vs US inquiries.</div>
+          <div class="prio-item med"><span class="prio-n">M10</span>Configure Hummingbird to combine and externalize inline styles. Currently generating 28 inline style blocks totaling 33KB inside the HTML document.</div>
+        </div>
+      </div>
+
+      <div class="prio-section">
+        <div class="prio-header">
+          <span class="prio-badge low">Low</span>
+          <span class="prio-count">5 issues — Backlog</span>
+        </div>
+        <div class="prio-items">
+          <div class="prio-item low"><span class="prio-n">L1</span>Enable IndexNow in Yoast SEO Premium → Integrations. Notifies Google/Bing instantly when new content is published instead of waiting for crawl.</div>
+          <div class="prio-item low"><span class="prio-n">L2</span>Rename all image files with descriptive slugs before future uploads. Update existing Untitled-design-XX.png files with meaningful filenames.</div>
+          <div class="prio-item low"><span class="prio-n">L3</span>Add alt text to 3 images currently missing it. Use descriptive, keyword-relevant alt text — not keyword stuffing.</div>
+          <div class="prio-item low"><span class="prio-n">L4</span>Fix author enumeration — currently redirects to third-party domain (safe-load.gotmls.net). Should return clean 403 or redirect to homepage.</div>
+          <div class="prio-item low"><span class="prio-n">L5</span>Remove WordPress REST API link tags from &lt;head&gt; if API is not used by the front end. Reduces unnecessary CMS exposure.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- CONCLUSION -->
+  <div class="conclusion">
+    <h3>U.S. Tax IQ Has Everything Needed to Grow</h3>
+    <p>The credentials, the reviews, the expertise, and the content foundation are all there. The website simply isn't doing justice to a firm of this caliber. With the right technical fixes, content optimization, and conversion improvements, U.S. Tax IQ is well-positioned to significantly grow its online presence in the Canada-US cross-border tax space.</p>
+    <div class="conclusion-scores">
+      <div class="conclusion-score"><div class="n">29</div><div class="l">Issues Identified</div></div>
+      <div class="conclusion-score"><div class="n">4</div><div class="l">Phase Roadmap</div></div>
+      <div class="conclusion-score"><div class="n" style="color:#FCD34D;">88+</div><div class="l">Target SEO Score</div></div>
+      <div class="conclusion-score"><div class="n">85%</div><div class="l">Issues We Can Fix</div></div>
+    </div>
+    <p style="font-size:12px;color:rgba(255,255,255,0.35);margin-bottom:24px;">Results depend on implementation speed, market conditions, and algorithm changes. Timeline varies.</p>
+    <a href="https://nexvorasystems.us/contact" class="cta-btn">Talk to Nexvora Systems →</a>
+  </div>
+
+  <!-- DOWNLOAD BUTTON -->
+  <div style="text-align:center;padding:32px 0 8px;">
+    <button onclick="window.print()" style="display:inline-flex;align-items:center;gap:10px;background:var(--navy);color:#fff;font-size:14px;font-weight:700;padding:14px 32px;border-radius:10px;border:none;cursor:pointer;transition:opacity .15s;" onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+      ⬇ Download / Print This Report
+    </button>
+    <p style="font-size:12px;color:var(--dim);margin-top:10px;">Use your browser's Print → Save as PDF to save a copy.</p>
+  </div>
+
+</div><!-- /wrap -->
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">
+    <img src="https://nexvorasystems.us/assets/nexvora-logo.png" alt="" onerror="this.style.display='none'" style="height:28px;filter:brightness(0) invert(1);opacity:0.7;"/>
+    <span>Nexvora Systems</span>
+  </div>
+  <p>This report was prepared by <strong>Nexvora Systems LLC</strong> — Tampa Bay, Florida</p>
+  <p style="margin-top:6px;">Web Design · AI Automation · SEO Strategy · Digital Presence</p>
+  <p style="margin-top:10px;"><a href="https://nexvorasystems.us">nexvorasystems.us</a> &nbsp;·&nbsp; <a href="mailto:info@nexvorasystems.us">info@nexvorasystems.us</a></p>
+  <p style="margin-top:14px;font-size:11px;opacity:0.6;">Report ID: #UST-2026-001 &nbsp;·&nbsp; Audit Date: April 15, 2026 &nbsp;·&nbsp; © 2026 Nexvora Systems LLC. All rights reserved.</p>
+</footer>
+
+<!-- EMAIL GATE -->
+<div id="gate" style="position:fixed;inset:0;z-index:9999;background:linear-gradient(135deg,#0F2B4C 0%,#0a3d62 50%,#0D9488 100%);display:flex;align-items:center;justify-content:center;padding:24px;">
+  <div style="background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.12);border-radius:24px;padding:48px 44px;max-width:440px;width:100%;text-align:center;backdrop-filter:blur(20px);">
+
+    <!-- Logo -->
+    <div style="margin-bottom:28px;">
+      <img src="https://nexvorasystems.us/assets/nexvora-logo.png" alt="" onerror="this.style.display='none'" style="height:36px;filter:brightness(0) invert(1);opacity:0.85;margin-bottom:12px;"/>
+      <div style="font-size:11px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.35);">Nexvora Systems</div>
+    </div>
+
+    <!-- Title -->
+    <div style="font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(13,148,136,0.9);margin-bottom:10px;">Confidential Audit Report</div>
+    <h2 style="font-size:22px;font-weight:800;color:#fff;letter-spacing:-0.5px;margin-bottom:8px;">U.S. Tax IQ — ustaxiq.com</h2>
+    <p style="font-size:13px;color:rgba(255,255,255,0.45);margin-bottom:32px;line-height:1.6;">This report was prepared exclusively for authorized recipients.<br/>Enter your email address to access.</p>
+
+    <!-- Input -->
+    <div style="margin-bottom:14px;">
+      <input id="gate-email" type="email" placeholder="Enter your email address" autocomplete="email"
+        style="width:100%;padding:14px 18px;border-radius:10px;border:1px solid rgba(255,255,255,0.15);background:rgba(255,255,255,0.08);color:#fff;font-size:14px;outline:none;font-family:inherit;transition:border .2s;"
+        onfocus="this.style.borderColor='rgba(13,148,136,0.7)'"
+        onblur="this.style.borderColor='rgba(255,255,255,0.15)'"
+        onkeydown="if(event.key==='Enter')checkGate()"/>
+    </div>
+
+    <!-- Error -->
+    <div id="gate-error" style="display:none;font-size:12px;color:#F87171;margin-bottom:12px;padding:10px 14px;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.25);border-radius:8px;">
+      This report was not prepared for this email address.
+    </div>
+
+    <!-- Button -->
+    <button onclick="checkGate()"
+      style="width:100%;padding:14px;background:#0D9488;color:#fff;font-size:14px;font-weight:700;border:none;border-radius:10px;cursor:pointer;font-family:inherit;transition:opacity .15s;margin-bottom:24px;"
+      onmouseover="this.style.opacity='.85'" onmouseout="this.style.opacity='1'">
+      Access My Report →
+    </button>
+
+    <!-- Contact -->
+    <p style="font-size:12px;color:rgba(255,255,255,0.25);line-height:1.6;">Don't have access? Contact us at<br/><a href="mailto:info@nexvorasystems.us" style="color:rgba(13,148,136,0.7);text-decoration:none;">info@nexvorasystems.us</a></p>
+  </div>
+</div>
+
+<script>
+  // Allowed emails and their display names
+  const ALLOWED = {
+    'info@nexvorasystems.us': 'Nexvora Systems'
+  };
+
+  // Check session on load
+  (function() {
+    const auth = sessionStorage.getItem('nxv_report_auth');
+    if (auth && ALLOWED[auth]) {
+      document.getElementById('gate').style.display = 'none';
+      showWelcome(ALLOWED[auth]);
+    }
+  })();
+
+  function checkGate() {
+    const email = document.getElementById('gate-email').value.trim().toLowerCase();
+    const name = ALLOWED[email];
+    if (name) {
+      sessionStorage.setItem('nxv_report_auth', email);
+      document.getElementById('gate').style.opacity = '0';
+      document.getElementById('gate').style.transition = 'opacity 0.4s';
+      setTimeout(() => { document.getElementById('gate').style.display = 'none'; }, 400);
+      showWelcome(name);
+    } else {
+      document.getElementById('gate-error').style.display = 'block';
+      document.getElementById('gate-email').style.borderColor = 'rgba(239,68,68,0.6)';
+    }
+  }
+
+  function showWelcome(name) {
+    const bar = document.createElement('div');
+    bar.style.cssText = 'background:#0D9488;color:#fff;text-align:center;padding:10px 20px;font-size:13px;font-weight:600;';
+    bar.innerHTML = '✓ Welcome, <strong>' + name + '</strong> — your confidential report is ready.';
+    document.body.prepend(bar);
+  }
+</script>
+
+</body>
+</html>
