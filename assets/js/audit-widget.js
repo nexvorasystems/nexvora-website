@@ -4,7 +4,7 @@
    ===================================================== */
 (function () {
   const FREE_UNTIL = new Date('2026-05-01T04:00:00Z'); // midnight EDT
-  const PRICE = '$0.99';
+  const PRICE = '$4.99';
   const AUDIT_PAGE = window.location.origin + '/website-audit';
   const API_BASE = 'https://nexvorasystems.us';
   const isFree = () => new Date() < FREE_UNTIL;
