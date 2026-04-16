@@ -1,6 +1,6 @@
 /* =====================================================
    Nexvora Systems — Free Website Audit Widget
-   Floating tab + modal + countdown timer + GHL CRM
+   Pulsing circle button + modal + countdown + GHL CRM
    ===================================================== */
 (function () {
   const FREE_UNTIL = new Date('2026-05-01T04:00:00Z'); // midnight EDT
@@ -11,29 +11,63 @@
 
   // ── CSS ─────────────────────────────────────────────
   const css = `
+  /* PULSING CIRCLE BUTTON */
   .nx-tab {
-    position: fixed; right: 0; top: 50%;
-    transform: translateY(-50%);
-    z-index: 9000; cursor: pointer; user-select: none;
+    position: fixed;
+    right: 28px;
+    bottom: 32px;
+    z-index: 9000;
+    cursor: pointer;
+    user-select: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  /* outer ripple rings */
+  .nx-tab::before,
+  .nx-tab::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(13,148,136,0.25);
+    animation: nxRipple 2.4s ease-out infinite;
+  }
+  .nx-tab::before { width: 80px; height: 80px; animation-delay: 0s; }
+  .nx-tab::after  { width: 80px; height: 80px; animation-delay: 1.2s; }
+  @keyframes nxRipple {
+    0%   { transform: scale(1);    opacity: .7; }
+    100% { transform: scale(2.2);  opacity: 0;  }
   }
   .nx-tab-inner {
-    background: #0D9488; color: #fff;
-    writing-mode: vertical-rl; text-orientation: mixed;
-    transform: rotate(180deg);
-    padding: 22px 11px;
-    border-radius: 12px 0 0 12px;
-    font-size: 11px; font-weight: 800; letter-spacing: 1.8px;
-    text-transform: uppercase;
-    display: flex; flex-direction: column; align-items: center; gap: 10px;
-    box-shadow: -4px 0 24px rgba(13,148,136,0.4);
-    transition: background .2s, box-shadow .2s;
+    position: relative;
+    width: 80px; height: 80px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #0D9488, #0f766e);
+    color: #fff;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 2px;
+    box-shadow: 0 8px 32px rgba(13,148,136,0.55);
+    animation: nxBreath 3s ease-in-out infinite;
+    transition: box-shadow .2s;
   }
-  .nx-tab-inner:hover { background: #0f766e; box-shadow: -6px 0 32px rgba(13,148,136,0.55); }
+  .nx-tab:hover .nx-tab-inner {
+    box-shadow: 0 12px 40px rgba(13,148,136,0.75);
+    animation-play-state: paused;
+    transform: scale(1.08);
+  }
+  @keyframes nxBreath {
+    0%,100% { transform: scale(1);    box-shadow: 0 8px 32px rgba(13,148,136,0.55); }
+    50%      { transform: scale(1.12); box-shadow: 0 12px 44px rgba(13,148,136,0.7); }
+  }
+  .nx-tab-label {
+    font-size: 9px; font-weight: 900; letter-spacing: 1.2px;
+    text-transform: uppercase; text-align: center; line-height: 1.3;
+  }
   .nx-tab-badge {
-    font-size: 8px; font-weight: 900; letter-spacing: 1px; padding: 3px 6px;
-    border-radius: 4px; writing-mode: vertical-rl; transform: rotate(180deg);
+    font-size: 8px; font-weight: 900; letter-spacing: .5px;
+    padding: 2px 6px; border-radius: 4px; margin-top: 2px;
   }
-  .nx-tab-badge.free { background: #fff; color: #0D9488; animation: nxPulse 2.5s ease infinite; }
+  .nx-tab-badge.free { background: #fff; color: #0D9488; }
   .nx-tab-badge.paid { background: rgba(255,255,255,0.2); color: #fff; }
   @keyframes nxPulse { 0%,100%{opacity:1} 50%{opacity:.65} }
 
@@ -157,7 +191,9 @@
   @keyframes nxSpin { to { transform: rotate(360deg); } }
 
   @media(max-width:480px) {
-    .nx-tab-inner { padding: 16px 9px; font-size: 10px; }
+    .nx-tab { right: 16px; bottom: 20px; }
+    .nx-tab-inner { width: 68px; height: 68px; }
+    .nx-tab::before,.nx-tab::after { width: 68px; height: 68px; }
     .nx-card { border-radius: 16px; }
     .nx-head { padding: 20px 20px 16px; }
     .nx-body { padding: 18px 18px 22px; }
@@ -174,9 +210,8 @@
   tab.setAttribute('aria-label', 'Get Free Website Audit');
   tab.innerHTML = `
     <div class="nx-tab-inner">
+      <span class="nx-tab-label">Website<br>Audit</span>
       <span class="nx-tab-badge ${isFree() ? 'free' : 'paid'}">${isFree() ? 'FREE' : PRICE}</span>
-      <span>Website</span>
-      <span>Audit</span>
     </div>`;
   document.body.appendChild(tab);
 
