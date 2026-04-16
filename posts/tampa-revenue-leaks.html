@@ -91,7 +91,7 @@ footer{background:var(--navy);color:#FAF8F5;padding:60px 44px 32px;}
 .footer-links{display:flex;flex-direction:column;gap:8px;}
 .footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;transition:color .15s;}
 .footer-links a:hover{color:#FAF8F5;}
-.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:24px;display:flex;justify-content:space-between;align-items:center;font-size:12px;color:rgba(250,248,245,0.35);flex-wrap:wrap;gap:10px;}
+.footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:28px;padding-bottom:32px;display:flex;flex-direction:column;gap:24px;font-size:12px;}
 @media(max-width:768px){
   :root{--nav-h:56px;}
   nav{padding:0 20px;}
@@ -103,7 +103,7 @@ footer{background:var(--navy);color:#FAF8F5;padding:60px 44px 32px;}
   .footer-grid{grid-template-columns:1fr;gap:28px;}
   footer{padding:40px 20px 24px;}
 }
-.ft-legal-link{color:rgba(250,248,245,0.55);font-size:13.5px;font-weight:500;text-decoration:none;transition:color .25s,opacity .25s;letter-spacing:.01em;}.ft-legal-link:hover{color:#44CAA2;}</style>
+.ft-legal-link{color:rgba(250,248,245,0.55);font-size:13.5px;font-weight:500;text-decoration:none;transition:color .25s,opacity .25s;letter-spacing:.01em;}.ft-legal-link:hover{color:#44CAA2;}.fbc-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;}.fbc-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:10px;}.fbc-links{display:flex;flex-direction:column;gap:7px;}.fbc-links a{font-size:12.5px;color:rgba(250,248,245,0.5);text-decoration:none;transition:color .15s;}.fbc-links a:hover{color:#FAF8F5;}.fbc-copy{font-size:11px;color:rgba(250,248,245,0.3);text-align:center;padding-top:16px;border-top:1px solid rgba(255,255,255,0.06);}@media(max-width:640px){.fbc-grid{grid-template-columns:1fr 1fr;gap:20px;}}@media(max-width:400px){.fbc-grid{grid-template-columns:1fr;}}</style>
 </head>
 <body>
 
@@ -295,14 +295,39 @@ footer{background:var(--navy);color:#FAF8F5;padding:60px 44px 32px;}
       </div>
     </div>
   </div>
-  <div class="footer-bottom" style="flex-direction:column;align-items:center;gap:10px;text-align:center;">
-    <span>© 2025 Nexvora Systems LLC. All rights reserved.</span>
-    <span style="display:flex;gap:16px;flex-wrap:wrap;">
-      <a href="../legal/terms.html" class="ft-legal-link">Terms &amp; Conditions</a>
-      <a href="../legal/privacy.html" class="ft-legal-link">Privacy Policy</a>
-      <a href="../legal/cookies.html" class="ft-legal-link">Cookie Policy</a>
-      <a href="../legal/disclaimer.html" class="ft-legal-link">Disclaimer</a>
-    </span>
+  <div class="footer-bottom">
+      <div class="fbc-grid">
+        <div>
+          <p class="fbc-title">Company</p>
+          <div class="fbc-links">
+            <a href="../about.html">About</a>
+            <a href="../services.html">Services</a>
+            <a href="../blog.html">Insights</a>
+            <a href="../contact.html">Contact</a>
+            <a href="../faq.html">FAQ</a>
+          </div>
+        </div>
+        <div>
+          <p class="fbc-title">Services</p>
+          <div class="fbc-links">
+            <a href="../services/operations-business-systems.html">Operations &amp; Business Systems</a>
+            <a href="../services/ai-automation.html">AI &amp; Automation</a>
+            <a href="../services/marketing-leads.html">Marketing &amp; Lead Generation</a>
+            <a href="../services/web-design.html">Web Design &amp; Digital Presence</a>
+          </div>
+        </div>
+        <div>
+          <p class="fbc-title">Policy</p>
+          <div class="fbc-links">
+            <a href="../legal/terms.html">Terms &amp; Conditions</a>
+            <a href="../legal/privacy.html">Privacy Policy</a>
+            <a href="../legal/cookies.html">Cookie Policy</a>
+            <a href="../legal/disclaimer.html">Disclaimer</a>
+          </div>
+        </div>
+      </div>
+      <span class="fbc-copy">&copy; 2026 Nexvora Systems LLC. All rights reserved.</span>
+    </div>
   </div>
 </footer>
 

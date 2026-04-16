@@ -100,24 +100,6 @@
     .nxa-tab-title { font-size: 12px; }
     .nxa-tab-sub { display: none; }
   }
-
-  /* Center footer legal links so fixed pill button never overlaps them */
-  .footer-bottom {
-    flex-direction: column !important;
-    align-items: center !important;
-    gap: 10px !important;
-    text-align: center !important;
-    justify-content: center !important;
-    padding-right: 0 !important;
-  }
-  /* The inner div holding the 4 legal links — wrap them centered */
-  .footer-bottom > div {
-    display: flex !important;
-    flex-wrap: wrap !important;
-    justify-content: center !important;
-    gap: 16px 24px !important;
-    max-width: 480px !important;
-  }
   `;
 
   // ── HTML ─────────────────────────────────────────────
