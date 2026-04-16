@@ -1,6 +1,6 @@
 /* =====================================================
    Nexvora Systems — Free Website Audit Widget
-   Pulsing circle button + modal + countdown + GHL CRM
+   Pill button + full-pill pulse + live timer + GHL
    ===================================================== */
 (function () {
   const FREE_UNTIL = new Date('2026-05-01T04:00:00Z'); // midnight EDT
@@ -11,7 +11,7 @@
 
   // ── CSS ─────────────────────────────────────────────
   const css = `
-  /* FLOATING PILL BUTTON */
+  /* WRAPPER — just positions the pill */
   .nx-tab {
     position: fixed;
     right: 24px;
@@ -19,60 +19,62 @@
     z-index: 9000;
     cursor: pointer;
     user-select: none;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0;
   }
-  /* pulsing glow ring behind the circle icon */
-  .nx-tab-ring {
-    position: absolute;
-    bottom: 36px;
-    width: 52px; height: 52px;
-    border-radius: 50%;
-    background: rgba(13,148,136,0.3);
-    animation: nxRipple 2.2s ease-out infinite;
-    pointer-events: none;
-  }
-  .nx-tab-ring2 {
-    position: absolute;
-    bottom: 36px;
-    width: 52px; height: 52px;
-    border-radius: 50%;
-    background: rgba(13,148,136,0.15);
-    animation: nxRipple 2.2s ease-out infinite;
-    animation-delay: 1.1s;
-    pointer-events: none;
-  }
-  @keyframes nxRipple {
-    0%   { transform: scale(1);   opacity: 1; }
-    100% { transform: scale(2.6); opacity: 0; }
-  }
-  /* pill card */
+
+  /* PILL — ripple radiates FROM the entire pill shape */
   .nx-tab-inner {
     position: relative;
     background: #0D9488;
     color: #fff;
     border-radius: 100px;
-    padding: 10px 18px 10px 10px;
+    padding: 11px 16px 11px 11px;
     display: flex;
     align-items: center;
     gap: 10px;
     box-shadow: 0 6px 28px rgba(13,148,136,0.5), 0 2px 8px rgba(0,0,0,0.12);
-    animation: nxBreath 3s ease-in-out infinite;
     white-space: nowrap;
+    animation: nxBreath 3s ease-in-out infinite;
+    isolation: isolate;
+  }
+  /* ripple ring 1 */
+  .nx-tab-inner::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 100px;
+    background: rgba(13,148,136,0.45);
+    z-index: -1;
+    animation: nxPillRipple 2.4s ease-out infinite;
+  }
+  /* ripple ring 2 — offset */
+  .nx-tab-inner::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 100px;
+    background: rgba(13,148,136,0.25);
+    z-index: -1;
+    animation: nxPillRipple 2.4s ease-out infinite;
+    animation-delay: 1.2s;
+  }
+  @keyframes nxPillRipple {
+    0%   { transform: scale(1);    opacity: 1; }
+    100% { transform: scale(1.35); opacity: 0; }
+  }
+  @keyframes nxBreath {
+    0%,100% { transform: scale(1);    box-shadow: 0 6px 28px rgba(13,148,136,0.5); }
+    50%      { transform: scale(1.06); box-shadow: 0 10px 36px rgba(13,148,136,0.65); }
   }
   .nx-tab:hover .nx-tab-inner {
     background: #0f766e;
-    box-shadow: 0 10px 36px rgba(13,148,136,0.7), 0 2px 8px rgba(0,0,0,0.15);
     animation-play-state: paused;
-    transform: translateY(-2px) scale(1.03);
+    transform: scale(1.04) translateY(-2px);
+    box-shadow: 0 12px 40px rgba(13,148,136,0.7);
   }
-  @keyframes nxBreath {
-    0%,100% { transform: scale(1)    translateY(0);  box-shadow: 0 6px 28px rgba(13,148,136,0.5); }
-    50%      { transform: scale(1.05) translateY(-3px); box-shadow: 0 10px 36px rgba(13,148,136,0.65); }
-  }
-  /* icon circle inside pill */
+  .nx-tab:hover .nx-tab-inner::before,
+  .nx-tab:hover .nx-tab-inner::after { animation-play-state: paused; opacity: 0; }
+
+  /* icon circle */
   .nx-tab-icon {
     width: 36px; height: 36px; border-radius: 50%;
     background: rgba(255,255,255,0.18);
@@ -80,27 +82,52 @@
     flex-shrink: 0;
   }
   .nx-tab-icon svg { width: 18px; height: 18px; }
-  /* text */
-  .nx-tab-text { display: flex; flex-direction: column; gap: 1px; }
+
+  /* text column */
+  .nx-tab-text { display: flex; flex-direction: column; gap: 3px; }
   .nx-tab-title {
     font-size: 13px; font-weight: 800; letter-spacing: -.2px;
     color: #fff; line-height: 1;
   }
-  .nx-tab-sub {
-    font-size: 10px; font-weight: 600; color: rgba(255,255,255,0.7);
-    line-height: 1;
+  /* compact timer / sub row */
+  .nx-tab-timer-row {
+    display: flex; align-items: center; gap: 5px;
   }
-  /* FREE badge */
+  .nx-tab-timer-dot {
+    width: 5px; height: 5px; border-radius: 50%;
+    background: #44CAA2; flex-shrink: 0;
+    animation: nxDotPulse 1.5s ease infinite;
+  }
+  @keyframes nxDotPulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+  .nx-tab-timer-text {
+    font-size: 10px; font-weight: 700;
+    color: rgba(255,255,255,0.8); line-height: 1;
+  }
+  .nx-tab-timer-label {
+    font-size: 10px; font-weight: 500;
+    color: rgba(255,255,255,0.5); line-height: 1;
+  }
+
+  /* badge */
   .nx-tab-badge {
-    font-size: 9px; font-weight: 900; letter-spacing: .8px;
-    text-transform: uppercase; padding: 3px 7px; border-radius: 6px;
-    flex-shrink: 0;
+    font-size: 10px; font-weight: 900; letter-spacing: .6px;
+    text-transform: uppercase; padding: 5px 10px; border-radius: 8px;
+    flex-shrink: 0; line-height: 1;
   }
-  .nx-tab-badge.free { background: rgba(255,255,255,0.22); color: #fff; border: 1px solid rgba(255,255,255,0.3); }
-  .nx-tab-badge.paid { background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.8); }
+  .nx-tab-badge.free {
+    background: rgba(255,255,255,0.2);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.35);
+  }
+  .nx-tab-badge.paid {
+    background: rgba(255,255,255,0.12);
+    color: rgba(255,255,255,0.9);
+    border: 1px solid rgba(255,255,255,0.2);
+  }
+
   @keyframes nxPulse { 0%,100%{opacity:1} 50%{opacity:.65} }
 
-  /* OVERLAY */
+  /* ── OVERLAY ── */
   .nx-overlay {
     position: fixed; inset: 0;
     background: rgba(15,43,76,0.72);
@@ -113,7 +140,7 @@
   }
   .nx-overlay.open { opacity: 1; pointer-events: auto; }
 
-  /* CARD */
+  /* ── CARD ── */
   .nx-card {
     background: #fff; border-radius: 20px;
     width: 100%; max-width: 500px; overflow: hidden;
@@ -123,7 +150,7 @@
   }
   .nx-overlay.open .nx-card { transform: translateY(0) scale(1); }
 
-  /* HEADER */
+  /* ── HEADER ── */
   .nx-head {
     background: linear-gradient(135deg, #0F2B4C 0%, #0D9488 100%);
     padding: 26px 28px 22px; color: #fff; position: relative;
@@ -136,9 +163,7 @@
     transition: background .2s; line-height: 1;
   }
   .nx-close:hover { background: rgba(255,255,255,0.28); }
-  .nx-brand {
-    display: flex; align-items: center; gap: 8px; margin-bottom: 12px;
-  }
+  .nx-brand { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
   .nx-brand-dot {
     width: 7px; height: 7px; border-radius: 50%; background: #44CAA2;
     animation: nxPulse 2.5s ease infinite;
@@ -150,7 +175,7 @@
   .nx-head h2 { font-size: 21px; font-weight: 800; letter-spacing: -.4px; margin-bottom: 4px; }
   .nx-head p { font-size: 13px; color: rgba(255,255,255,0.6); }
 
-  /* TIMER */
+  /* ── MODAL TIMER ── */
   .nx-timer { display: flex; gap: 8px; margin-top: 16px; }
   .nx-timer-box {
     background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15);
@@ -170,13 +195,10 @@
   }
   .nx-timer-paid strong { color: #fff; }
 
-  /* BODY */
+  /* ── BODY ── */
   .nx-body { padding: 22px 24px 26px; }
   .nx-field { margin-bottom: 14px; }
-  .nx-label {
-    display: block; font-size: 11px; font-weight: 700; letter-spacing: .4px;
-    color: #4A5568; margin-bottom: 6px;
-  }
+  .nx-label { display: block; font-size: 11px; font-weight: 700; letter-spacing: .4px; color: #4A5568; margin-bottom: 6px; }
   .nx-req { color: #0D9488; }
   .nx-input {
     width: 100%; padding: 11px 14px;
@@ -185,16 +207,10 @@
     outline: none; font-family: inherit;
     transition: border-color .2s, box-shadow .2s;
   }
-  .nx-input:focus {
-    border-color: #0D9488;
-    box-shadow: 0 0 0 3px rgba(13,148,136,0.12);
-    background: #fff;
-  }
+  .nx-input:focus { border-color: #0D9488; box-shadow: 0 0 0 3px rgba(13,148,136,0.12); background: #fff; }
   .nx-input.nx-err { border-color: #EF4444; }
   .nx-err-msg { font-size: 11px; color: #EF4444; margin-top: 4px; display: none; }
   .nx-err-msg.show { display: block; }
-
-  /* SUBMIT */
   .nx-submit {
     width: 100%; padding: 14px;
     background: #0D9488; color: #fff;
@@ -202,27 +218,22 @@
     font-size: 15px; font-weight: 700; cursor: pointer;
     font-family: inherit;
     display: flex; align-items: center; justify-content: center; gap: 8px;
-    transition: filter .2s, transform .2s;
-    margin-top: 6px;
+    transition: filter .2s, transform .2s; margin-top: 6px;
   }
   .nx-submit:hover { filter: brightness(1.1); transform: translateY(-1px); }
   .nx-submit:disabled { opacity: .6; cursor: not-allowed; transform: none; filter: none; }
   .nx-footer { text-align: center; font-size: 11px; color: #A0ADB8; margin-top: 12px; }
-
-  /* SPINNER inside button */
   .nx-btn-spinner {
     width: 16px; height: 16px; border-radius: 50%;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
-    animation: nxSpin .7s linear infinite;
-    display: none;
+    border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+    animation: nxSpin .7s linear infinite; display: none;
   }
   @keyframes nxSpin { to { transform: rotate(360deg); } }
 
   @media(max-width:480px) {
     .nx-tab { right: 12px; bottom: 20px; }
     .nx-tab-title { font-size: 12px; }
-    .nx-tab-sub { display: none; }
+    .nx-tab-timer-label { display: none; }
     .nx-card { border-radius: 16px; }
     .nx-head { padding: 20px 20px 16px; }
     .nx-body { padding: 18px 18px 22px; }
@@ -232,14 +243,12 @@
   styleEl.textContent = css;
   document.head.appendChild(styleEl);
 
-  // ── FLOATING TAB ─────────────────────────────────────
+  // ── BUILD PILL BUTTON ────────────────────────────────
   const tab = document.createElement('div');
   tab.className = 'nx-tab';
   tab.setAttribute('role', 'button');
   tab.setAttribute('aria-label', 'Get Free Website Audit');
   tab.innerHTML = `
-    <div class="nx-tab-ring"></div>
-    <div class="nx-tab-ring2"></div>
     <div class="nx-tab-inner">
       <div class="nx-tab-icon">
         <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -249,11 +258,41 @@
       </div>
       <div class="nx-tab-text">
         <span class="nx-tab-title">Website Audit</span>
-        <span class="nx-tab-sub">Free performance &amp; SEO scan</span>
+        <div class="nx-tab-timer-row">
+          <div class="nx-tab-timer-dot"></div>
+          <span class="nx-tab-timer-text" id="nxBtnTimer">…</span>
+          <span class="nx-tab-timer-label" id="nxBtnLabel">limited time free</span>
+        </div>
       </div>
-      <span class="nx-tab-badge ${isFree() ? 'free' : 'paid'}">${isFree() ? 'FREE' : PRICE}</span>
+      <span class="nx-tab-badge ${isFree() ? 'free' : 'paid'}" id="nxBtnBadge">${isFree() ? 'FREE' : PRICE}</span>
     </div>`;
   document.body.appendChild(tab);
+
+  // Update compact button timer every second
+  function updateBtnTimer() {
+    const timerEl = document.getElementById('nxBtnTimer');
+    const labelEl = document.getElementById('nxBtnLabel');
+    const badgeEl = document.getElementById('nxBtnBadge');
+    if (!timerEl) return;
+    const diff = FREE_UNTIL - Date.now();
+    if (diff <= 0) {
+      timerEl.textContent = 'Full audit';
+      if (labelEl) labelEl.textContent = 'instant results';
+      if (badgeEl) { badgeEl.textContent = PRICE; badgeEl.className = 'nx-tab-badge paid'; }
+    } else {
+      const d = Math.floor(diff / 86400000);
+      const h = Math.floor((diff % 86400000) / 3600000);
+      const m = Math.floor((diff % 3600000) / 60000);
+      if (d > 0) {
+        timerEl.textContent = d + 'd ' + String(h).padStart(2,'0') + 'h left';
+      } else {
+        timerEl.textContent = String(h).padStart(2,'0') + 'h ' + String(m).padStart(2,'0') + 'm left';
+      }
+      if (labelEl) labelEl.textContent = 'limited time free';
+    }
+  }
+  updateBtnTimer();
+  setInterval(updateBtnTimer, 1000);
 
   // ── MODAL ────────────────────────────────────────────
   const overlay = document.createElement('div');
@@ -273,25 +312,21 @@
         <div id="nxTimerBlock"></div>
       </div>
       <div class="nx-body">
-
         <div class="nx-field">
           <label class="nx-label" for="nxName">Full Name <span class="nx-req">*</span></label>
           <input class="nx-input" id="nxName" type="text" placeholder="Jane Smith" autocomplete="name"/>
           <div class="nx-err-msg" id="nxNameErr">Please enter your full name.</div>
         </div>
-
         <div class="nx-field">
           <label class="nx-label" for="nxEmail">Email Address <span class="nx-req">*</span></label>
           <input class="nx-input" id="nxEmail" type="email" placeholder="jane@yourbusiness.com" autocomplete="email"/>
           <div class="nx-err-msg" id="nxEmailErr">Please enter a valid email address.</div>
         </div>
-
         <div class="nx-field">
           <label class="nx-label" for="nxUrl">Website URL <span class="nx-req">*</span></label>
           <input class="nx-input" id="nxUrl" type="url" placeholder="https://yourbusiness.com" autocomplete="url"/>
           <div class="nx-err-msg" id="nxUrlErr">Please enter a valid website URL.</div>
         </div>
-
         <button class="nx-submit" id="nxSubmit">
           <span id="nxSubmitText">Run My Free Audit</span>
           <div class="nx-btn-spinner" id="nxSpinner"></div>
@@ -302,15 +337,15 @@
     </div>`;
   document.body.appendChild(overlay);
 
-  // ── TIMER ────────────────────────────────────────────
-  function renderTimer() {
+  // ── MODAL TIMER ──────────────────────────────────────
+  function renderModalTimer() {
     const block = document.getElementById('nxTimerBlock');
     if (!block) return;
     const diff = FREE_UNTIL - Date.now();
     if (diff <= 0) {
-      block.innerHTML = `<div class="nx-timer-paid"><strong>Website Audit &mdash; ${PRICE}</strong><br>The free period has ended. Still the best investment for your website.</div>`;
+      block.innerHTML = `<div class="nx-timer-paid"><strong>Website Audit &mdash; ${PRICE}</strong><br>The free period has ended.</div>`;
       const btn = document.getElementById('nxSubmitText');
-      if (btn) btn.textContent = 'Get Audit — ' + PRICE;
+      if (btn) btn.textContent = 'Get My Audit — ' + PRICE;
       return;
     }
     const d = Math.floor(diff / 86400000);
@@ -330,8 +365,8 @@
         <span class="nx-free-then">then ${PRICE}</span>
       </div>`;
   }
-  renderTimer();
-  setInterval(renderTimer, 1000);
+  renderModalTimer();
+  setInterval(renderModalTimer, 1000);
 
   // ── OPEN / CLOSE ─────────────────────────────────────
   function openModal() {
@@ -347,8 +382,6 @@
   overlay.querySelector('.nx-close').addEventListener('click', closeModal);
   overlay.addEventListener('click', e => { if (e.target === overlay) closeModal(); });
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-
-  // Allow Enter in any field
   ['nxName','nxEmail','nxUrl'].forEach(id => {
     document.getElementById(id)?.addEventListener('keydown', e => {
       if (e.key === 'Enter') document.getElementById('nxSubmit').click();
@@ -358,44 +391,37 @@
   // ── VALIDATE ─────────────────────────────────────────
   function validate() {
     let ok = true;
-
     const name = document.getElementById('nxName').value.trim();
-    const nameErr = document.getElementById('nxNameErr');
     if (!name || name.length < 2) {
       document.getElementById('nxName').classList.add('nx-err');
-      nameErr.classList.add('show');
+      document.getElementById('nxNameErr').classList.add('show');
       ok = false;
     } else {
       document.getElementById('nxName').classList.remove('nx-err');
-      nameErr.classList.remove('show');
+      document.getElementById('nxNameErr').classList.remove('show');
     }
-
     const email = document.getElementById('nxEmail').value.trim();
-    const emailErr = document.getElementById('nxEmailErr');
     if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
       document.getElementById('nxEmail').classList.add('nx-err');
-      emailErr.classList.add('show');
+      document.getElementById('nxEmailErr').classList.add('show');
       ok = false;
     } else {
       document.getElementById('nxEmail').classList.remove('nx-err');
-      emailErr.classList.remove('show');
+      document.getElementById('nxEmailErr').classList.remove('show');
     }
-
     let url = document.getElementById('nxUrl').value.trim();
-    const urlErr = document.getElementById('nxUrlErr');
     if (url && !url.startsWith('http')) url = 'https://' + url;
     document.getElementById('nxUrl').value = url;
     try {
       if (!url) throw new Error();
       new URL(url);
       document.getElementById('nxUrl').classList.remove('nx-err');
-      urlErr.classList.remove('show');
+      document.getElementById('nxUrlErr').classList.remove('show');
     } catch {
       document.getElementById('nxUrl').classList.add('nx-err');
-      urlErr.classList.add('show');
+      document.getElementById('nxUrlErr').classList.add('show');
       ok = false;
     }
-
     return ok ? { name, email, url } : null;
   }
 
@@ -403,35 +429,24 @@
   document.getElementById('nxSubmit').addEventListener('click', async function () {
     const fields = validate();
     if (!fields) return;
-
     const { name, email, url } = fields;
     const btn = document.getElementById('nxSubmit');
-    const spinner = document.getElementById('nxSpinner');
-    const arrow = document.getElementById('nxSubmitArrow');
-    const btnText = document.getElementById('nxSubmitText');
-
     btn.disabled = true;
-    spinner.style.display = 'block';
-    arrow.style.display = 'none';
-    btnText.textContent = 'Submitting…';
-
-    // Call GHL API to create lead (fire-and-forget style — don't block the redirect)
+    document.getElementById('nxSpinner').style.display = 'block';
+    document.getElementById('nxSubmitArrow').style.display = 'none';
+    document.getElementById('nxSubmitText').textContent = 'Submitting…';
     const auditParams = new URLSearchParams({ url, name, email });
     const auditUrl = `${AUDIT_PAGE}?${auditParams.toString()}`;
-
     try {
       await fetch(`${API_BASE}/api/audit-lead`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ name, email, websiteUrl: url, reportUrl: auditUrl }),
-        // Don't wait forever — if API is slow, still redirect
         signal: AbortSignal.timeout ? AbortSignal.timeout(6000) : undefined
       });
     } catch (err) {
-      // Non-fatal — still redirect to audit page
       console.warn('[audit-widget] CRM call failed (non-fatal):', err.message);
     }
-
     window.location.href = auditUrl;
   });
 
