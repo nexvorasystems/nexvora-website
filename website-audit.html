@@ -355,37 +355,46 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
     }, d);
   });
 
-  // Fetch PSI — sequential to avoid rate limit (1 QPS without API key)
-  const PSI = 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed';
-  const encoded = encodeURIComponent(siteUrl.href);
+  // Fetch PSI via server-side proxy (/api/psi) — uses PSI_API_KEY env var if set
   const sleep = ms => new Promise(r => setTimeout(r, ms));
+  let psiLastError = null;
 
-  async function fetchPSI(strategy, retries = 2) {
-    for (let i = 0; i <= retries; i++) {
-      try {
-        const res = await fetch(`${PSI}?url=${encoded}&strategy=${strategy}`);
-        if (res.status === 429) { await sleep(2000 * (i + 1)); continue; }
-        if (!res.ok) { await sleep(1000 * (i + 1)); continue; }
-        const json = await res.json();
-        if (json.lighthouseResult) return json;
-        await sleep(1000);
-      } catch (e) { await sleep(1000 * (i + 1)); }
+  async function fetchPSI(strategy) {
+    try {
+      const res = await fetch(`/api/psi?url=${encodeURIComponent(siteUrl.href)}&strategy=${strategy}`);
+      const json = await res.json().catch(() => null);
+      if (res.ok && json?.lighthouseResult) return json;
+      psiLastError = json?.detail || json?.error || null;
+      return null;
+    } catch (e) {
+      psiLastError = e.message;
+      return null;
     }
-    return null;
   }
 
   let mobile, desktop;
   try {
-    mobile = await fetchPSI('mobile');
-    await sleep(1200); // wait between requests to respect 1 QPS limit
-    desktop = await fetchPSI('desktop');
+    [mobile, desktop] = await Promise.all([
+      fetchPSI('mobile'),
+      fetchPSI('desktop')
+    ]);
   } catch (err) {
-    showError('We couldn\'t analyze this website. The site may be blocking external requests, or the URL may be incorrect. Please try again with a different URL.');
+    showError('We couldn\'t analyze this website. Please try again.');
     return;
   }
 
   if (!mobile && !desktop) {
-    showError('No data returned for this URL. Make sure the site is publicly accessible.');
+    let errMsg = 'We couldn\'t retrieve audit data for this URL.';
+    let advice = 'Make sure the site is publicly accessible (not behind a login, VPN, or IP restriction) and try again.';
+    const lowerErr = (psiLastError || '').toLowerCase();
+    if (lowerErr.includes('blocked') || lowerErr.includes('forbidden') || lowerErr.includes('403')) {
+      advice = 'This site is blocking Google\'s crawler (Cloudflare or anti-bot protection). Try a different page URL, or contact us for a manual audit.';
+    } else if (lowerErr.includes('not found') || lowerErr.includes('404') || lowerErr.includes('dns') || lowerErr.includes('could not be resolved')) {
+      advice = 'The URL could not be reached. Check that the address is correct and the site is live.';
+    } else if (lowerErr.includes('timeout') || lowerErr.includes('timed out')) {
+      advice = 'The site took too long to respond. Try again in a few minutes.';
+    }
+    showError(`${errMsg}<br><br><span style="font-size:13px;color:#94A3B8;">${advice}</span>`);
     return;
   }
 
@@ -612,7 +621,7 @@ function showError(msg) {
   document.getElementById('auditLoading').style.display = 'none';
   const e = document.getElementById('auditError');
   e.style.display = 'block';
-  if (msg) document.getElementById('auditErrorMsg').textContent = msg;
+  if (msg) document.getElementById('auditErrorMsg').innerHTML = msg;
 }
 </script>
 </body>

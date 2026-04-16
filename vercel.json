@@ -8,6 +8,9 @@
     },
     "api/create-opportunity.js": {
       "maxDuration": 30
+    },
+    "api/psi.js": {
+      "maxDuration": 45
     }
   },
   "rewrites": [
