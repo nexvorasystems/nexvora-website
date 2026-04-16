@@ -46,8 +46,8 @@ nav{
 .logo{font-size:19px;font-weight:800;letter-spacing:-0.5px;color:var(--text);text-decoration:none;}
 .logo span{color:var(--teal);}
 .nav-links{display:flex;gap:28px;list-style:none;margin:0 auto;}
-.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s;}
-.nav-links a:hover{color:var(--text);}
+.nav-links a{font-size:16px;color:var(--muted);text-decoration:none;transition:color .18s,background .18s;padding:6px 14px;border-radius:100px;}
+.nav-links a:hover{color:var(--teal);background:rgba(13,148,136,0.1);}.nav-links a.active{background:#0D9488 !important;color:#fff !important;border-radius:100px;}
 .nav-cta{
   padding:9px 22px;border-radius:9px;
   background:var(--teal);color:#fff;
@@ -556,7 +556,7 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
   <div class="footer-inner">
     <div class="footer-grid">
       <div class="footer-brand">
-        <a href="index.html" class="logo" style="color:#FAF8F5;display:block;margin-bottom:10px;">Nexvora<span style="color:#44CAA2;">.</span></a>
+        <a href="index.html"><img src="assets/Logo no background.png" alt="Nexvora Systems" style="height:44px;width:auto;display:block;margin-bottom:12px;filter:brightness(0) invert(1);"/></a>
         <p>AI-powered operational consulting for small and growing businesses.</p>
         <p style="margin-top:8px;font-size:13px;"><a href="mailto:info@nexvorasystems.us" style="color:rgba(250,248,245,0.5);text-decoration:none;">info@nexvorasystems.us</a></p>
         <p style="margin-top:4px;font-size:13px;"><a href="tel:+18136676464" style="color:rgba(250,248,245,0.5);text-decoration:none;">(813) 667-6464</a></p>
@@ -1035,5 +1035,6 @@ function cbManage(){
 </script>
 
 <script src="assets/js/assess-widget.js?v=1" defer></script>
+<script src="assets/js/social-links.js" defer></script>
 </body>
 </html>

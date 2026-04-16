@@ -27,8 +27,8 @@ html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-s
 nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:flex;align-items:center;background:rgba(250,248,245,0.92);-webkit-backdrop-filter:blur(16px);backdrop-filter:blur(16px);border-bottom:1px solid var(--border);padding:0 44px;}
 .nav-inner{display:flex;align-items:center;width:100%;}
 .nav-links{display:flex;gap:28px;list-style:none;margin:0 auto;}
-.nav-links a{font-size:14px;color:var(--muted);text-decoration:none;transition:color .15s;}
-.nav-links a:hover,.nav-links a.active{color:var(--text);}
+.nav-links a{font-size:16px;color:var(--muted);text-decoration:none;transition:color .18s,background .18s;padding:6px 14px;border-radius:100px;}
+.nav-links a:hover{color:var(--teal);background:rgba(13,148,136,0.1);}.nav-links a.active{background:#0D9488 !important;color:#fff !important;border-radius:100px;}
 .nav-cta{padding:9px 22px;border-radius:9px;background:var(--teal);color:#fff;font-size:13px;font-weight:700;border:none;cursor:pointer;transition:all .18s;text-decoration:none;white-space:nowrap;}
 .nav-cta:hover{filter:brightness(1.08);transform:translateY(-1px);}
 .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:pointer;padding:4px;margin-left:12px;}
@@ -295,5 +295,6 @@ function cbManage(){
 </script>
 <!-- End Cookie Banner -->
 <script src="../assets/js/assess-widget.js?v=1" defer></script>
+<script src="../assets/js/social-links.js" defer></script>
 </body>
 </html>
