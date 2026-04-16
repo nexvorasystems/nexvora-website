@@ -334,7 +334,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
       this.textContent = 'Checking…';
       this.disabled = true;
       try {
-        const res = await fetch(`/api/get-audit?id=${encodeURIComponent(reportId)}&email=${encodeURIComponent(email)}`);
+        const res = await fetch(`/api/get-generated-report?mode=audit&id=${encodeURIComponent(reportId)}&email=${encodeURIComponent(email)}`);
         const json = await res.json();
         if (!res.ok) {
           document.getElementById('gateErr').textContent = json.error || 'Email not found for this report.';
@@ -692,7 +692,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
   // ── Save to Supabase (fire & forget) ─────────────────────────────────────
   if (reportId && auditEmail && params.get('_saved') !== '1') {
     try {
-      await fetch('/api/save-audit', {
+      await fetch('/api/save-report', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
