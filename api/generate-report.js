@@ -580,14 +580,366 @@ async function saveReport(reportId, clientEmail, html, meta) {
   } catch (e) { console.warn('[save] Failed:', e.message); }
 }
 
+// ── 7. Assessment mode ────────────────────────────────────────────────────────
+
+async function writeAssessmentReport(a, research) {
+  const key = process.env.OPENAI_API_KEY;
+  if (!key) throw new Error('OPENAI_API_KEY not set');
+
+  const PAIN_LABELS = {cashflow:'Cash Flow',systems:'Operational Systems','owner-dep':'Owner Dependency',team:'Team & Retention',operations:'Capacity & Operations',growth:'Growth Plateau',survival:'Business Survival',healthy:'Well-Positioned'};
+  const REV_LABELS = {lt50k:'Under $50K','50k-150k':'$50K–$150K','150k-300k':'$150K–$300K','300k-500k':'$300K–$500K','500k-750k':'$500K–$750K','750k-1.5m':'$750K–$1.5M','1.5m-3m':'$1.5M–$3M',gt3m:'$3M+',unknown:'Not provided'};
+  const SIZE_LABELS = {solo:'Solo owner','2-5':'2–5 people','6-15':'6–15 people','16-30':'16–30 people','30plus':'30+ people'};
+
+  const prompt = `You are a senior business consultant at Nexvora Systems writing a personalized business health assessment report. Be direct, specific, and use the owner's REAL data — never make up facts. Reference their actual answers throughout. Use plain, confident language — no corporate fluff.
+
+OWNER: ${a.contact?.name || 'Business Owner'}
+BUSINESS: ${a.contact?.company || 'Their business'} — ${a.q1b_label || a.q1} in ${a.q2_city || ''}, ${a.q2 || ''}
+YEARS IN BUSINESS: ${a.q3}
+REVENUE: Last year ${a.q4_lastyear||'not provided'} / This year ${a.q4_thisyear||'not provided'} / Goal ${a.q4_goal||'not provided'}
+TEAM SIZE: ${SIZE_LABELS[a.q5]||a.q5}
+PRIMARY PAIN POINT DIAGNOSED: ${PAIN_LABELS[a.primaryPain]||a.primaryPain}
+Pain votes breakdown: ${JSON.stringify(a.painVotes||{})}
+
+PAIN POINT ANSWERS:
+- 50% more customers tomorrow → breaks: ${a.pain1}
+- End-of-day feeling: ${a.pain2}
+- Vacation blocker: ${a.pain3}
+
+OPERATIONS:
+- SOPs/processes: ${(a.q6||[]).join(', ')}
+- SOP scenario (2-week absence): ${a.q6_scenario||'not asked'}
+- Repeat customers: ${a.q7}
+- Lead follow-up system: ${a.q8}
+- Lead sources: ${(a.q9||[]).join(', ')}
+- Ad spend: ${a.q9_adspend ? '$'+a.q9_adspend+'/mo' : 'N/A'}
+- Leads from ads: ${a.q9_leads||'not tracked'}
+- Closing rate: ${a.q9_close ? a.q9_close+'%' : 'not tracked'}
+- Online review rating: ${a.q10||'not provided'}
+- Manual tasks: ${(a.q11||[]).join(', ')}
+- Task management tool: ${a.q11b||'N/A'}
+- Follow-up tracking: ${a.q11c||'N/A'}
+- Team performance management: ${(a.q12||[]).join(', ')}
+- Financial review frequency: ${a.q13}
+- KPI dashboard: ${a.q14}
+
+GOALS:
+- 12-month: ${a.q15}
+- 5-year: ${a.q15b}
+- Biggest pain in their words: "${a.q_pain||'(skipped)'}"
+
+OWNER ECONOMICS:
+- Monthly salary: $${a.q16||0}
+- Hours/week: ${a.q17||0}
+- Work slots: ${JSON.stringify(a.q17_slots||{})}
+- Team payroll: $${a.q19_total||0}/mo (${a.q19_headcount||0} people)
+
+WHAT WE FOUND ONLINE:
+Business search: ${research.business?.answer||'No data found'}
+Reviews/reputation: ${research.reviews?.answer||'No data found'}
+Social/LinkedIn: ${research.social?.answer||'No data found'}
+Industry benchmarks: ${research.benchmarks?.answer||'No data found'}
+
+Return ONLY valid JSON with these exact keys:
+
+{
+  "ownerFirstName": "string",
+  "businessName": "string",
+  "industry": "string",
+  "location": "string — City, State",
+  "primaryPainLabel": "string — human-readable label for their #1 pain",
+  "painDiagnosis": "string — 2-3 sentences explaining exactly what pain point we diagnosed and why, using their specific answers as evidence",
+  "executiveSummary": "string — 3-4 sentences: what they're doing well, their single biggest risk, and what to focus on first. Use their real data.",
+  "onlinePresence": "string — what we found: reviews, social media, online reputation. Be specific about what was/wasn't found.",
+  "industryBenchmark": "string — 2-3 sentences comparing their situation to real industry benchmarks for their specific business type and location. Use the research data.",
+  "keyStrengths": ["string x3 — specific to their answers, not generic"],
+  "criticalGaps": ["string x3 — specific problems found, each referencing their actual data"],
+  "ownerEconomics": "string — analyze their hours vs salary. Calculate and show their effective hourly rate. Be direct about what this means.",
+  "revenueAnalysis": "string — analyze their revenue data (last year/this year/goal). Show growth rate if calculable. Compare to industry. Direct.",
+  "operationsScore": "string — 1-10 score with one sentence explanation, based on SOPs, tools, follow-up tracking",
+  "marketingScore": "string — 1-10 score with one sentence, based on lead sources, closing rate, follow-up system",
+  "teamScore": "string — 1-10 score with one sentence, based on team size, management, retention",
+  "financialScore": "string — 1-10 score with one sentence, based on review frequency, dashboard, self-pay",
+  "top3Actions": [
+    {"title":"string","why":"string — 1 sentence on why this is #1 priority for THEM specifically","how":"string — 2-3 concrete first steps","impact":"string — what changes when they do this"}
+  ],
+  "90dayPlan": "string — specific 90-day action plan broken into 3 phases of 30 days each. Reference their actual situation.",
+  "closingNote": "string — 2 sentences. Direct, personal, from Murat and Alexandr. Not generic."
+}`;
+
+  const res = await fetch('https://api.openai.com/v1/chat/completions', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${key}` },
+    body: JSON.stringify({
+      model: 'gpt-4o',
+      messages: [{ role: 'user', content: prompt }],
+      temperature: 0.4,
+      max_tokens: 3500,
+      response_format: { type: 'json_object' }
+    })
+  });
+  if (!res.ok) throw new Error(`OpenAI ${res.status}: ${await res.text()}`);
+  const json = await res.json();
+  return JSON.parse(json.choices[0].message.content);
+}
+
+function renderAssessmentHTML(r, a, research) {
+  const scoreColor = n => { const v=parseInt(n); return v>=7?'#10B981':v>=5?'#F59E0B':'#EF4444'; };
+  const scoreNum   = s => parseInt((s||'').match(/\d+/)?.[0])||0;
+  const PAIN_ICONS = {cashflow:'💰','owner-dep':'🔗',systems:'⚙️',team:'👥',operations:'🚀',growth:'📈',survival:'⚠️',healthy:'✅'};
+  const icon = PAIN_ICONS[a.primaryPain]||'🔍';
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>${r.businessName} — Business Assessment | Nexvora Systems</title>
+<meta name="robots" content="noindex"/>
+<link rel="icon" href="${SITE_URL}/assets/nexvora-logo.png"/>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-TY0PZHVN0L"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-TY0PZHVN0L');</script>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+:root{--bg:#FAF8F5;--bg2:#F0EDE8;--card:#fff;--navy:#0F2B4C;--teal:#0D9488;--text:#1A1A2E;--muted:#4A5568;--dim:#718096;--border:#E2DDD5;--red:#EF4444;--orange:#F97316;--yellow:#F59E0B;--green:#10B981;}
+html,body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.7;}
+a{color:var(--teal);}
+.banner{background:var(--navy);color:rgba(255,255,255,0.6);text-align:center;font-size:12px;padding:8px 20px;letter-spacing:.5px;}
+.banner strong{color:#44CAA2;}
+nav{background:var(--navy);padding:16px 32px;display:flex;align-items:center;gap:16px;position:sticky;top:0;z-index:100;}
+.nav-badge{background:rgba(13,148,136,0.2);border:1px solid rgba(13,148,136,0.4);color:#44CAA2;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:4px 12px;border-radius:20px;}
+.nav-date{margin-left:auto;font-size:12px;color:rgba(255,255,255,0.4);}
+.hero{background:linear-gradient(135deg,#0F2B4C 0%,#0D9488 100%);padding:56px 32px 48px;color:#fff;text-align:center;}
+.hero-label{font-size:12px;color:rgba(255,255,255,0.5);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;}
+.hero h1{font-size:clamp(24px,4vw,36px);font-weight:900;letter-spacing:-1px;margin-bottom:6px;}
+.hero-sub{font-size:15px;color:rgba(255,255,255,0.6);margin-bottom:32px;}
+.pain-pill{display:inline-flex;align-items:center;gap:8px;background:rgba(255,255,255,0.12);border:1px solid rgba(255,255,255,0.2);border-radius:100px;padding:10px 20px;font-size:14px;font-weight:700;margin-bottom:28px;}
+.score-grid{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;}
+.score-box{background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:16px 20px;text-align:center;min-width:110px;}
+.score-n{font-size:32px;font-weight:900;line-height:1;}
+.score-l{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-top:5px;}
+.wrap{max-width:900px;margin:0 auto;padding:48px 20px 80px;}
+.section{margin-bottom:48px;}
+.sec-label{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--teal);margin-bottom:6px;}
+.sec-title{font-size:22px;font-weight:800;color:var(--text);margin-bottom:20px;letter-spacing:-.3px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:16px;padding:28px 32px;margin-bottom:16px;}
+.card-navy{background:var(--navy);border-color:transparent;color:#fff;}
+.card-teal{background:linear-gradient(135deg,var(--navy),var(--teal));border-color:transparent;color:#fff;}
+.gap-item{border-left:3px solid var(--red);padding:12px 16px;background:#FEE2E210;border-radius:0 8px 8px 0;margin-bottom:10px;}
+.strength-item{border-left:3px solid var(--green);padding:12px 16px;background:#D1FAE510;border-radius:0 8px 8px 0;margin-bottom:10px;}
+.action-card{border:1px solid var(--border);border-radius:12px;padding:20px 24px;margin-bottom:14px;}
+.action-num{width:28px;height:28px;background:var(--teal);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:800;flex-shrink:0;}
+.scorecard{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.sc-item{background:var(--bg2);border-radius:12px;padding:16px 20px;}
+.sc-score{font-size:28px;font-weight:900;line-height:1;}
+.sc-label{font-size:11px;color:var(--muted);margin-top:3px;}
+.sc-note{font-size:12px;color:var(--dim);margin-top:6px;line-height:1.5;}
+.intel-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px;}
+.intel-item .il{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:4px;}
+.intel-item .iv{font-size:14px;color:var(--muted);line-height:1.6;}
+.phase-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+.phase{background:var(--bg2);border-radius:12px;padding:18px;}
+.phase-tag{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--teal);margin-bottom:6px;}
+.cta-box{background:linear-gradient(135deg,var(--navy),var(--teal));border-radius:20px;padding:48px 36px;text-align:center;color:#fff;margin-top:48px;}
+.cta-box h2{font-size:26px;font-weight:900;margin-bottom:10px;}
+.cta-box p{font-size:14px;color:rgba(255,255,255,0.65);max-width:440px;margin:0 auto 24px;line-height:1.7;}
+.cta-btn{display:inline-flex;align-items:center;gap:8px;padding:15px 36px;background:#fff;color:var(--teal);border-radius:12px;text-decoration:none;font-size:15px;font-weight:800;}
+footer{background:var(--navy);padding:32px;text-align:center;color:rgba(255,255,255,0.4);font-size:12px;}
+footer strong{color:#44CAA2;}
+@media(max-width:640px){.score-grid{gap:8px;}.score-box{min-width:80px;padding:12px 10px;}.scorecard{grid-template-columns:1fr;}.intel-grid{grid-template-columns:1fr;}.phase-grid{grid-template-columns:1fr;}.hero{padding:40px 20px 32px;}.card{padding:20px;}}
+</style>
+</head>
+<body>
+<div class="banner">🔒 Confidential — Prepared for <strong>${r.ownerFirstName}</strong> by Nexvora Systems</div>
+<nav>
+  <img src="${SITE_URL}/assets/Logo no background.png" alt="Nexvora Systems" style="height:36px;" onerror="this.style.display='none'"/>
+  <span class="nav-badge">Business Assessment Report</span>
+  <span class="nav-date">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span>
+</nav>
+
+<div class="hero">
+  <div class="hero-label">Free Business Assessment — Nexvora Systems</div>
+  <h1>${r.ownerFirstName}'s Business Report</h1>
+  <div class="hero-sub">${r.businessName} · ${r.location}</div>
+  <div class="pain-pill">${icon} Primary Issue Diagnosed: ${r.primaryPainLabel}</div>
+  <div class="score-grid">
+    <div class="score-box"><div class="score-n" style="color:${scoreColor(scoreNum(r.operationsScore))}">${scoreNum(r.operationsScore)}<span style="font-size:16px;">/10</span></div><div class="score-l">Operations</div></div>
+    <div class="score-box"><div class="score-n" style="color:${scoreColor(scoreNum(r.marketingScore))}">${scoreNum(r.marketingScore)}<span style="font-size:16px;">/10</span></div><div class="score-l">Marketing</div></div>
+    <div class="score-box"><div class="score-n" style="color:${scoreColor(scoreNum(r.teamScore))}">${scoreNum(r.teamScore)}<span style="font-size:16px;">/10</span></div><div class="score-l">Team</div></div>
+    <div class="score-box"><div class="score-n" style="color:${scoreColor(scoreNum(r.financialScore))}">${scoreNum(r.financialScore)}<span style="font-size:16px;">/10</span></div><div class="score-l">Financial</div></div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- NEXVORA INTRO -->
+  <div class="section">
+    <div class="card card-navy">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
+        <img src="${SITE_URL}/assets/Logo no background.png" alt="Nexvora Systems" style="height:32px;" onerror="this.style.display='none'"/>
+        <div>
+          <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Prepared by</div>
+          <div style="font-size:16px;font-weight:800;color:#fff;">Murat & Alexandr — Nexvora Systems</div>
+        </div>
+      </div>
+      <p style="font-size:14px;color:rgba(255,255,255,0.65);line-height:1.75;">We read every assessment personally. This report is built from your specific answers, cross-referenced with industry data and what we found about your business online. Our goal is to give you a clear picture of where you actually stand — and what to do first.</p>
+    </div>
+  </div>
+
+  <!-- PAIN POINT DIAGNOSIS -->
+  <div class="section">
+    <div class="sec-label">Pain Point Diagnosis</div>
+    <div class="sec-title">What We Found</div>
+    <div class="card" style="border-left:4px solid var(--teal);">
+      <div style="font-size:28px;margin-bottom:10px;">${icon}</div>
+      <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:12px;">${r.primaryPainLabel}</div>
+      <p style="color:var(--muted);font-size:14px;line-height:1.8;">${r.painDiagnosis}</p>
+    </div>
+  </div>
+
+  <!-- EXECUTIVE SUMMARY -->
+  <div class="section">
+    <div class="sec-label">Executive Summary</div>
+    <div class="sec-title">The Full Picture</div>
+    <div class="card">
+      <p style="font-size:15px;color:var(--muted);line-height:1.85;margin-bottom:24px;">${r.executiveSummary}</p>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+        <div>
+          <div style="font-size:11px;font-weight:800;color:var(--green);letter-spacing:.5px;margin-bottom:10px;">WHAT'S WORKING</div>
+          ${(r.keyStrengths||[]).map(s=>`<div class="strength-item"><div style="font-size:13px;color:var(--muted);">${s}</div></div>`).join('')}
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:800;color:var(--red);letter-spacing:.5px;margin-bottom:10px;">CRITICAL GAPS</div>
+          ${(r.criticalGaps||[]).map(g=>`<div class="gap-item"><div style="font-size:13px;color:var(--muted);">${g}</div></div>`).join('')}
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WHAT WE FOUND ONLINE -->
+  <div class="section">
+    <div class="sec-label">Business Intelligence</div>
+    <div class="sec-title">What We Found Online</div>
+    <div class="card">
+      <div class="intel-grid">
+        <div class="intel-item"><div class="il">Online Presence & Reviews</div><div class="iv">${r.onlinePresence}</div></div>
+        <div class="intel-item"><div class="il">Industry Benchmark</div><div class="iv">${r.industryBenchmark}</div></div>
+      </div>
+      ${research.reviews?.results?.length ? `<div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);"><div style="font-size:11px;font-weight:800;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Sources Found</div><div style="display:flex;flex-direction:column;gap:6px;">${(research.reviews.results||[]).slice(0,3).map(r2=>`<a href="${r2.url}" target="_blank" style="font-size:12px;color:var(--dim);text-decoration:none;">→ ${r2.title}</a>`).join('')}</div></div>` : ''}
+    </div>
+  </div>
+
+  <!-- SCORECARD -->
+  <div class="section">
+    <div class="sec-label">Business Scorecard</div>
+    <div class="sec-title">4 Core Areas</div>
+    <div class="scorecard">
+      ${[['Operations',r.operationsScore],['Marketing & Sales',r.marketingScore],['Team & People',r.teamScore],['Financial Health',r.financialScore]].map(([label,score])=>{
+        const n=scoreNum(score); return `<div class="sc-item"><div class="sc-score" style="color:${scoreColor(n)}">${n}<span style="font-size:14px;color:var(--dim);">/10</span></div><div class="sc-label">${label}</div><div class="sc-note">${score.replace(/^\d+\/\d+\s*[-–—]?\s*/,'')}</div></div>`;
+      }).join('')}
+    </div>
+  </div>
+
+  <!-- OWNER ECONOMICS -->
+  <div class="section">
+    <div class="sec-label">Owner Economics</div>
+    <div class="sec-title">The Numbers Behind the Business</div>
+    <div class="card"><p style="color:var(--muted);font-size:14px;line-height:1.85;">${r.ownerEconomics}</p></div>
+    ${r.revenueAnalysis ? `<div class="card"><div style="font-size:11px;font-weight:800;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Revenue Analysis</div><p style="color:var(--muted);font-size:14px;line-height:1.85;">${r.revenueAnalysis}</p></div>` : ''}
+  </div>
+
+  <!-- TOP 3 ACTIONS -->
+  <div class="section">
+    <div class="sec-label">Priority Actions</div>
+    <div class="sec-title">What To Do First</div>
+    ${(r.top3Actions||[]).map((act,i)=>`
+    <div class="action-card">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;">
+        <div class="action-num">${i+1}</div>
+        <div style="font-size:17px;font-weight:800;color:var(--text);">${act.title}</div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;font-size:13px;color:var(--muted);">
+        <div><div style="font-size:10px;font-weight:800;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">WHY THIS FIRST</div>${act.why}</div>
+        <div><div style="font-size:10px;font-weight:800;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:6px;">IMPACT</div>${act.impact}</div>
+      </div>
+      <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:13px;color:var(--muted);"><span style="font-weight:700;color:var(--text);">How: </span>${act.how}</div>
+    </div>`).join('')}
+  </div>
+
+  <!-- 90-DAY PLAN -->
+  <div class="section">
+    <div class="sec-label">Action Plan</div>
+    <div class="sec-title">Your Next 90 Days</div>
+    <div class="card"><p style="color:var(--muted);font-size:14px;line-height:1.9;white-space:pre-line;">${r['90dayPlan']}</p></div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-box">
+    <h2>Let's Talk About Your Next Step</h2>
+    <p>${r.closingNote || 'This report gives you the full picture. A strategy call with us takes it further — we\\'ll walk you through exactly what to do first, based on your specific numbers.'}</p>
+    <a href="${SITE_URL}/contact" class="cta-btn">Book a Free Strategy Call →</a>
+  </div>
+
+</div>
+
+<footer>
+  <div style="margin-bottom:4px;"><strong>Nexvora Systems LLC</strong> · nexvorasystems.us · info@nexvorasystems.us · Tampa Bay, FL</div>
+  <div>Confidential — Prepared for ${r.ownerFirstName} · © 2026 Nexvora Systems LLC. All rights reserved.</div>
+</footer>
+
+</body>
+</html>`;
+}
+
+async function handleAssessmentReport(req, res) {
+  const a = req.body.assessment || {};
+  const email    = a.contact?.email || '';
+  const name     = a.contact?.name  || 'Business Owner';
+  const company  = a.contact?.company || name;
+  const city     = a.q2_city || '';
+  const state    = a.q2 || '';
+  const industry = a.q1b_label || a.q1 || '';
+  const reportId = randomId(10);
+
+  console.log(`[generate-report/assessment] Starting for ${company} in ${city},${state} (${reportId})`);
+
+  // 4 Tavily searches in parallel
+  const [businessRes, reviewsRes, socialRes, benchmarksRes] = await Promise.all([
+    tavilySearch(`"${company}" ${city} ${state} business`),
+    tavilySearch(`"${company}" ${city} reviews rating google yelp`),
+    tavilySearch(`"${company}" ${city} site:linkedin.com OR site:instagram.com OR site:facebook.com`),
+    tavilySearch(`${industry} small business ${city} ${state} average revenue benchmark statistics`),
+  ]);
+
+  const research = { business:businessRes, reviews:reviewsRes, social:socialRes, benchmarks:benchmarksRes };
+
+  console.log(`[generate-report/assessment] Research done. Writing with GPT-4o…`);
+
+  let reportData;
+  try {
+    reportData = await writeAssessmentReport(a, research);
+  } catch (e) {
+    console.error('[generate-report/assessment] GPT-4o failed:', e.message);
+    return res.status(500).json({ error: 'Report generation failed', detail: e.message });
+  }
+
+  const html = renderAssessmentHTML(reportData, a, research);
+  saveReport(reportId, email, html, { company, city, state, industry, primaryPain: a.primaryPain });
+
+  console.log(`[generate-report/assessment] Done. Report ID: ${reportId}`);
+  return res.json({ success: true, reportId, reportUrl: `${SITE_URL}/r/${reportId}` });
+}
+
 // ── Main handler ──────────────────────────────────────────────────────────────
 
 module.exports = async function handler(req, res) {
-  res.setHeader('Access-Control-Allow-Origin', SITE_URL);
+  res.setHeader('Access-Control-Allow-Origin', '*');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
   if (req.method === 'OPTIONS') return res.status(200).end();
   if (req.method !== 'POST') return res.status(405).json({ error: 'Method not allowed' });
+
+  // Route to assessment handler
+  if (req.body?.mode === 'assessment') return handleAssessmentReport(req, res);
 
   const { url, name, email, reportId: existingId } = req.body || {};
 
