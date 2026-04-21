@@ -277,7 +277,7 @@ function renderHTML(r, data) {
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>${r.companyName} — Website Audit Report | Nexvora Systems</title>
 <meta name="robots" content="noindex"/>
-<link rel="icon" href="${SITE_URL}/assets/nexvora-logo.png"/>
+<link rel="icon" href="${SITE_URL}/assets/logo-dark.png"/>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-TY0PZHVN0L"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-TY0PZHVN0L');</script>
 <style>
@@ -369,7 +369,7 @@ footer strong{color:#44CAA2;}
 <div class="pub-banner">🔒 Confidential — Prepared exclusively for <strong>${data.clientName}</strong> by Nexvora Systems</div>
 
 <nav>
-  <a href="${SITE_URL}" target="_blank" rel="noopener" style="display:flex;align-items:center;flex-shrink:0;"><img src="${SITE_URL}/assets/Logo%20no%20background.png" alt="Nexvora Systems" style="height:36px;" onerror="this.style.display='none'"/></a>
+  <a href="${SITE_URL}" target="_blank" rel="noopener" style="display:flex;align-items:center;flex-shrink:0;"><img src="${SITE_URL}/assets/logo-white.png" alt="Nexvora Systems" style="height:36px;" onerror="this.style.display='none'"/></a>
   <span class="nav-badge">Website Audit Report</span>
   <span class="nav-date">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span>
   <span style="font-size:10px;color:rgba(255,255,255,0.25);font-family:monospace;letter-spacing:.5px;">${REPORT_VERSION}</span>
@@ -401,7 +401,7 @@ footer strong{color:#44CAA2;}
   <div class="section">
     <div class="card card-navy">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-        <img src="${SITE_URL}/assets/Logo%20no%20background.png" alt="Nexvora Systems" style="height:32px;" onerror="this.style.display='none'"/>
+        <img src="${SITE_URL}/assets/logo-white.png" alt="Nexvora Systems" style="height:32px;" onerror="this.style.display='none'"/>
         <div>
           <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Prepared by</div>
           <div style="font-size:16px;font-weight:800;color:#fff;">Nexvora Systems LLC</div>
@@ -577,7 +577,7 @@ footer strong{color:#44CAA2;}
 </div><!-- /wrap -->
 
 <footer>
-  <img src="${SITE_URL}/assets/Logo%20no%20background.png" alt="Nexvora Systems" style="height:32px;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto;" onerror="this.style.display='none'"/>
+  <img src="${SITE_URL}/assets/logo-white.png" alt="Nexvora Systems" style="height:32px;margin-bottom:10px;display:block;margin-left:auto;margin-right:auto;" onerror="this.style.display='none'"/>
   <div style="margin-bottom:4px;"><strong>Nexvora Systems LLC</strong> · nexvorasystems.us · info@nexvorasystems.us</div>
   <div>Report ID: ${data.reportId} · Prepared for ${data.clientName} · © 2026 Nexvora Systems LLC. All rights reserved.</div>
 </footer>
@@ -1384,7 +1384,7 @@ function renderAssessmentHTML(r, a, research, rB = {}) {
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>${r.businessName} — Business Assessment | Nexvora Systems</title>
 <meta name="robots" content="noindex"/>
-<link rel="icon" href="${SITE_URL}/assets/nexvora-logo.png"/>
+<link rel="icon" href="${SITE_URL}/assets/logo-dark.png"/>
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-TY0PZHVN0L"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-TY0PZHVN0L');</script>
 <style>
@@ -1569,7 +1569,7 @@ function toggleSidebar(){
 
 <div class="banner">🔒 Confidential — Prepared for <strong>${r.ownerFirstName}</strong> by Nexvora Systems</div>
 <nav>
-  <a href="${SITE_URL}" target="_blank" rel="noopener" style="display:flex;align-items:center;flex-shrink:0;"><img src="${SITE_URL}/assets/Logo%20no%20background.png" alt="Nexvora Systems" style="height:36px;" onerror="this.style.display='none'"/></a>
+  <a href="${SITE_URL}" target="_blank" rel="noopener" style="display:flex;align-items:center;flex-shrink:0;"><img src="${SITE_URL}/assets/logo-white.png" alt="Nexvora Systems" style="height:36px;" onerror="this.style.display='none'"/></a>
   <span class="nav-badge">Business Assessment Report</span>
   <span class="nav-date">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span>
   <span style="font-size:10px;color:rgba(255,255,255,0.25);font-family:monospace;letter-spacing:.5px;">${REPORT_VERSION}</span>
@@ -1594,7 +1594,7 @@ function toggleSidebar(){
   <div class="section">
     <div class="card card-navy">
       <div style="display:flex;align-items:center;gap:12px;margin-bottom:16px;">
-        <img src="${SITE_URL}/assets/Logo%20no%20background.png" alt="Nexvora Systems" style="height:32px;" onerror="this.style.display='none'"/>
+        <img src="${SITE_URL}/assets/logo-white.png" alt="Nexvora Systems" style="height:32px;" onerror="this.style.display='none'"/>
         <div>
           <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.4);">Prepared by</div>
           <div style="font-size:16px;font-weight:800;color:#fff;">Murat & Alexandr — Nexvora Systems</div>

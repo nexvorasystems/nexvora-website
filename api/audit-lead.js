@@ -156,7 +156,7 @@ Contact: ${isNew ? 'NEW contact created' : 'Existing contact matched'}
     // 4. Send follow-up email via GHL
     const emailHtml = `
 <div style="font-family:-apple-system,Helvetica,sans-serif;max-width:580px;margin:0 auto;padding:32px 20px;color:#1A1A2E;background:#ffffff;">
-  <img src="${SITE_URL}/assets/Logo no background.png" alt="Nexvora Systems" style="height:40px;margin-bottom:28px;"/>
+  <img src="${SITE_URL}/assets/logo-white.png" alt="Nexvora Systems" style="height:40px;margin-bottom:28px;"/>
   <h1 style="font-size:22px;font-weight:800;margin:0 0 12px;">Your Website Audit is ready, ${firstName || name}.</h1>
   <p style="font-size:15px;color:#4A5568;line-height:1.7;margin:0 0 16px;">We ran a full performance, SEO, and mobile audit on <strong>${websiteUrl || 'your website'}</strong>.</p>
   <p style="font-size:15px;color:#4A5568;line-height:1.7;margin:0 0 24px;">Your report includes your performance score, Core Web Vitals, SEO health check, and the top issues to fix first.</p>

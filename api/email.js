@@ -43,7 +43,7 @@ module.exports = async function handler(req, res) {
           subject: `Your Nexvora Business Health Report — ${bizName || name}`,
           html: `
             <div style="font-family:-apple-system,sans-serif;max-width:560px;margin:0 auto;padding:32px 20px;color:#1A1A2E;">
-              <img src="https://nexvorasystems.us/assets/Logo no background.png" alt="Nexvora Systems" style="height:44px;margin-bottom:24px;"/>
+              <img src="https://nexvorasystems.us/assets/logo-white.png" alt="Nexvora Systems" style="height:44px;margin-bottom:24px;"/>
               <h1 style="font-size:22px;font-weight:800;margin-bottom:8px;">Your Business Health Report is ready, ${first}.</h1>
               <p style="font-size:15px;color:#4A5568;line-height:1.7;margin-bottom:20px;">Thank you for completing the Nexvora assessment. Your personalized report — including industry benchmarks, owner economics, and a full analysis of every area of your business — is ready to view.</p>
               <a href="${reportUrl}" style="display:inline-block;padding:14px 28px;background:#0D9488;color:#fff;font-weight:700;font-size:15px;border-radius:10px;text-decoration:none;">View Your Report</a>

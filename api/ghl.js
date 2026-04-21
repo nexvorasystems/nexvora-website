@@ -274,7 +274,7 @@ module.exports = async function handler(req, res) {
 
     const emailHtml = `
 <div style="font-family:-apple-system,Helvetica,sans-serif;max-width:580px;margin:0 auto;padding:32px 20px;color:#1A1A2E;background:#ffffff;">
-  <img src="${SITE_URL}/assets/Logo%20no%20background.png" alt="Nexvora Systems" style="height:40px;margin-bottom:28px;display:block;"/>
+  <img src="${SITE_URL}/assets/logo-white.png" alt="Nexvora Systems" style="height:40px;margin-bottom:28px;display:block;"/>
   <h1 style="font-size:22px;font-weight:800;margin:0 0 12px;">Your Business Health Report is ready, ${first}.</h1>
   <p style="font-size:15px;color:#4A5568;line-height:1.7;margin:0 0 8px;">Thank you for completing the Nexvora assessment for <strong>${bizLabel}</strong>${industryLabel ? ` (${industryLabel})` : ''}.</p>
   <p style="font-size:15px;color:#4A5568;line-height:1.7;margin:0 0 20px;">Your report is ready — open it to see your scores, what's working, what needs attention, and a prioritized action plan built specifically for ${bizLabel}.</p>
@@ -380,7 +380,7 @@ Report: ${reportUrl}
         // Send report email to partner
         const pEmailHtml = `
 <div style="font-family:-apple-system,Helvetica,sans-serif;max-width:580px;margin:0 auto;padding:32px 20px;color:#1A1A2E;background:#ffffff;">
-  <img src="${SITE_URL}/assets/Logo%20no%20background.png" alt="Nexvora Systems" style="height:40px;margin-bottom:28px;display:block;"/>
+  <img src="${SITE_URL}/assets/logo-white.png" alt="Nexvora Systems" style="height:40px;margin-bottom:28px;display:block;"/>
   <h1 style="font-size:22px;font-weight:800;margin:0 0 12px;">Business Health Report — ${d.contact.company||d.contact.name}</h1>
   <p style="font-size:15px;color:#4A5568;line-height:1.7;margin:0 0 12px;">Hi ${pFirst}, ${d.contact.name||'your business partner'} completed a Nexvora business assessment for <strong>${d.contact.company||'your business'}</strong> and shared this report with you.</p>
   <p style="font-size:15px;color:#4A5568;line-height:1.7;margin:0 0 20px;">The report covers scores across 9 business areas, financial analysis, and a prioritized action plan. It's worth a read before your next partner conversation.</p>

@@ -739,7 +739,7 @@ blockquote{background:var(--bg-surface);border-left:4px solid var(--teal);border
 </head>
 <body>
 <nav>
-  <a href="/"><img src="../assets/Logo no background.png" alt="Nexvora Systems" style="height:44px;width:auto;display:block;" onerror="this.style.display='none'"/></a>
+  <a href="/"><img src="../assets/logo-white.png" alt="Nexvora Systems" style="height:44px;width:auto;display:block;" onerror="this.style.display='none'"/></a>
   <a href="/blog.html" class="nav-back">
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     Back to Insights
@@ -773,7 +773,7 @@ blockquote{background:var(--bg-surface);border-left:4px solid var(--teal);border
   "headline":"${esc(meta.title)}",
   "description":"${esc(meta.metaDescription)}",
   "author":{"@type":"Person","name":"${esc(meta.author)}","url":"https://nexvorasystems.us"},
-  "publisher":{"@type":"Organization","name":"Nexvora Systems","logo":{"@type":"ImageObject","url":"https://nexvorasystems.us/assets/nexvora-logo.png"}},
+  "publisher":{"@type":"Organization","name":"Nexvora Systems","logo":{"@type":"ImageObject","url":"https://nexvorasystems.us/assets/logo-dark.png"}},
   "datePublished":"${dateStr}",
   "dateModified":"${dateStr}",
   "url":"https://nexvorasystems.us/posts/${meta.slug}.html",
@@ -792,7 +792,7 @@ blockquote{background:var(--bg-surface);border-left:4px solid var(--teal);border
 <div id="floatAssess">
   <div id="floatLabel">Free Assessment</div>
   <a href="/assessment.html" id="floatLink" title="Free Assessment">
-    <img src="../assets/Logo no background.png" alt="Nexvora"/>
+    <img src="../assets/logo-white.png" alt="Nexvora"/>
   </a>
 </div>
 <script>

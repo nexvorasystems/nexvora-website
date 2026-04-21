@@ -168,6 +168,123 @@ Regex in `buildHTML` converts this to `.faq-item` divs (single-line match only �
 
 ---
 
+---
+
+## Assessment System (`assessment.html`)
+
+### Flow Overview
+Multi-step conversational quiz (~28 steps). Key field saved to `A.*` object, sent to `/api/generate-report` on completion.
+
+### Solo vs Team Gating (`_isSolo = A.q5 === 'solo'`)
+When owner selects solo in Q5, the following questions are **skipped or rephrased**:
+
+| Question | Solo behavior |
+|----------|--------------|
+| Q11 text | "What do **you** handle manually?" (not "your team") |
+| Q11 payroll chip | Shows "Contractor payments" instead of "Payroll processing" |
+| Q11b text | "Track **your own** tasks?" (not "your team's") |
+| Q12 team performance | **Skipped entirely** (`A.q12 = null`) |
+| Behind on payroll | **Skipped** — only shown for non-solo when `_cfNet < 0` |
+| Team salary questions | **Skipped** — replaced with solo contractor gate |
+
+### Solo Contractor Gate (added after team block)
+Solo owners get asked: "Do you hire contractors or part-time help?"
+- **Yes** → simplified: count + avg pay → stored in `A.q19_segments['contractors']`
+- **No** → `A.q19_solo_only = true` set, all team sections skipped
+
+### Revenue Question
+Multi-year entry: y0 (oldest, 3 years ago) → y1 → y2 (last full year) → y3 (current year estimate).
+Stored as `A.q4_years` (strings) and `A.q4_parsed` (numbers).
+
+### `_isSolo` scope
+Defined at Q11 section, valid for all subsequent questions in the same `runAssessment()` function.
+
+---
+
+## Report Generation (`api/generate-report.js`)
+
+### Architecture
+Two parallel GPT-4o calls (Promise.all):
+- **Call A** (`writeAssessmentReport`) — executive summary, growth opportunities, owner health, financials, capacity, marketing
+- **Call B** (`writeAssessmentReportB`) — 7 deep sections: Technology Audit, Pricing Strategy, AI Bot Opportunities, SOPs & Systems Roadmap, Risk Register, Competitive Landscape, 180-Day Cash Flow Projection
+
+### Revenue Baseline Priority (ALL THREE LOCATIONS must match)
+```
+y3 (current year estimate) → y2 (last full year) → y1 → y0 → 0
+```
+- Call A: `annualRevEst = r3 || r2 || r1 || r0 || 0` (line ~691)
+- Call B: `annualRev = r3 || r2 || r1 || r0 || 0` (line ~1021)
+- Normalization: `_pRevAnnual = y3 || y2 || y1 || y0 || 0` (line ~2257)
+
+Baseline label shown in pricing table: "Based on 2026 estimate ($100k/mo)" or "Based on 2025 (last full year)".
+
+### Year Mapping
+- y0 = `_cy - 3` = 2023 (oldest)
+- y1 = `_cy - 2` = 2024
+- y2 = `_cy - 1` = 2025 (last full year)
+- y3 = `_cy` = 2026 (current, partial/estimated — do NOT call it a confirmed decline)
+
+### Key Formulas
+```
+monthlyRevEst    = annualRevEst / 12
+expPctRaw        = sum(expense_breakdown values) / 100
+  → expense_breakdown.staff = FIELD CONTRACTORS ONLY (not back-office)
+backOfficeMo     = sum(non-field segments × count × pay_with_tax)
+  → field types excluded: ['field','contractors','field-contractors']
+allDraws         = ownerMo + partnerMo
+monthlyNet       = mo × (1 - expPctRaw) - allDraws - backOfficeMo
+breakEvenMo      = ceil((allDraws + backOfficeMo) / (1 - expPctRaw) / 100) × 100
+estCustomers     = monthlyRevEst / avgCheck
+costPerLead      = adSpend / leadsPerMonth
+closeRate        = q9_close ?? 10  (default 10% if not tracked)
+costPerCustomer  = costPerLead / (closeRate / 100)
+suggestedAdBudget = annualRevEst × 0.08 / 12
+```
+
+### Pricing Scenarios (normalization block)
+All built from pre-computed math — NEVER from GPT text. Use direct revenue multiplication (no double-rounding):
+- +1%: `_pMo × 1.01`
+- +3.5%: `_pMo × 1.035`
+- +10% / −3% jobs: `_pMo × 1.10 × 0.97`  ← use this, not `Math.round(jobs×0.97)×price×1.10`
+- +10% / −5% jobs: `_pMo × 1.10 × 0.95`
+
+### Revenue Guards
+- `_noRevenue = annualRevEst === 0` → skip all financial formulas, show warning
+- `_lowRevenue = annualRevEst > 0 && annualRevEst < 10000` → show accuracy warning
+
+### Solo Flag in Report
+`A.q19_solo_only = true` → both Call A and Call B prompts told:
+- "SOLO OPERATOR — no employees or contractors. Skip team/hiring/delegation recommendations."
+
+### No-Brand Rule
+NEVER suggest brand names in report. Never suggest tools the client already uses (check `current_software`). Both Call A and Call B prompts enforce this.
+
+### Section Headers (CSS)
+All section headers use: `<div class="section-label">CATEGORY</div><div class="section-title">Title</div>`
+Never use emoji as section headers.
+
+### pay_with_tax
+User enters FULL cost including employer taxes — never auto-add 10% or any multiplier. `pay_with_tax` = exactly what user typed.
+
+---
+
+## Supabase Tables
+
+### `generated_reports`
+| Column | Type | Notes |
+|--------|------|-------|
+| `id` | text PK | 8-char random ID |
+| `email` | text | client email |
+| `html` | text | full rendered HTML |
+| `meta` | jsonb | `{company, city, state, industry, primaryPain}` |
+| `assessment` | jsonb | **full assessment answers** (added Apr 2026) — use this to re-run reports, never manually recreate |
+| `created_at` | timestamptz | |
+
+### Report URL
+`nexvorasystems.us/r/{id}` → email-gated (user enters email to unlock)
+
+---
+
 ## Scripts
 - `scripts/generate-post.js` — Daily blog post generator
 - `scripts/generate-news-post.js` — Tue/Sat AI news roundup
