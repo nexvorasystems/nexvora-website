@@ -680,8 +680,6 @@ async function main() {
     const stateName = (ALL_STATES.find(s=>s.abbr===A.q2)||{name:A.q2}).name;
     const mapH = window.innerWidth <= 480 ? 140 : 200;
     await speak(`Here's what we found for <strong>${safeCompany}</strong> in ${safeCity}, ${stateName} — does this look like your business?<br><br><iframe src="https://maps.google.com/maps?q=${mapQ}&output=embed&iwloc=near" width="100%" height="${mapH}" style="border:0;border-radius:8px;display:block;max-height:35vh;" loading="lazy" allowfullscreen></iframe>`, 1000, true);
-    // Scroll input area into view on mobile so chips are visible above browser chrome
-    setTimeout(() => { document.getElementById('inputArea')?.scrollIntoView({behavior:'smooth', block:'end'}); }, 200);
     const confirmChoice = await askChips([{label:"Yes, that's my business", value:'yes'},{label:"Not finding it / skip", value:'no'}]);
     addBubble(confirmChoice === 'yes' ? "Yes, that's my business" : "Not finding it / skip", 'user');
     if (confirmChoice === 'yes') { A.company_confirmed = true; }
@@ -2245,11 +2243,19 @@ JSON format:
 }
 
 
-// iOS Safari fix: window.innerHeight = actual visible height, excludes browser chrome
-(function setAppH(){
-  document.documentElement.style.setProperty('--app-h', window.innerHeight + 'px');
-})();
-window.addEventListener('resize', function(){ document.documentElement.style.setProperty('--app-h', window.innerHeight + 'px'); });
+// iOS Safari viewport fix — visualViewport.height is the only reliable API
+// window.innerHeight includes browser chrome on iOS; visualViewport.height does not
+function setAppHeight() {
+  var h = (window.visualViewport ? window.visualViewport.height : window.innerHeight);
+  document.documentElement.style.setProperty('--app-h', h + 'px');
+}
+setAppHeight();
+if (window.visualViewport) {
+  window.visualViewport.addEventListener('resize', setAppHeight);
+  window.visualViewport.addEventListener('scroll', setAppHeight);
+}
+window.addEventListener('resize', setAppHeight);
+setTimeout(setAppHeight, 300);
 
 main().catch(err => {
   console.error('Assessment flow error:', err);
