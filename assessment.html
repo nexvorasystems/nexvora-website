@@ -351,6 +351,8 @@ function askChips(options) {
         };
         wrap.appendChild(chip);
       });
+      inner.innerHTML = '';
+      inner.appendChild(wrap);
       area.style.display = '';
       setTimeout(() => scrollToLast(), 80);
     }
