@@ -27,7 +27,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .prog-fill{height:100%;background:var(--teal);border-radius:99px;transition:width .6s ease;width:0%;}
 .nav-back{font-size:13px;color:var(--muted);text-decoration:none;display:flex;align-items:center;gap:5px;white-space:nowrap;transition:color .15s;}
 .nav-back:hover{color:var(--teal);}
-.chat-wrap{position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;display:flex;flex-direction:column;}
+/* dvh = dynamic viewport height — excludes iOS Safari browser chrome. Falls back to 100vh on older browsers. */
+.chat-wrap{position:fixed;top:var(--nav-h);left:0;right:0;height:calc(100vh - var(--nav-h));height:calc(100dvh - var(--nav-h));display:flex;flex-direction:column;}
 .chat-scroll{flex:1;overflow-y:auto;padding:32px 16px 20px;scroll-behavior:smooth;}
 .chat-inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:16px;}
 .brow{display:flex;align-items:flex-end;gap:10px;}
