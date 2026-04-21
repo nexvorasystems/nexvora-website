@@ -61,10 +61,24 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .multi-confirm{margin-top:8px;}
 .multi-confirm button{padding:10px 22px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;transition:all .18s;}
 .multi-confirm button:disabled{opacity:.35;cursor:not-allowed;}
-.state-search-wrap{display:flex;flex-direction:column;gap:0;}
-.state-search-input{padding:12px 14px;border:1.5px solid var(--border);border-radius:10px 10px 0 0;font-size:16px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;transition:border-color .15s;-webkit-appearance:none;}
-.state-search-input:focus{border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-lt);}
-.state-list{max-height:210px;overflow-y:auto;border:1.5px solid var(--border);border-top:none;border-radius:0 0 10px 10px;background:var(--bg-card);}
+.undo-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;border-radius:12px;border:1.5px solid var(--teal);background:var(--teal-lt);animation:fadeIn .15s ease;}
+.undo-bar-label{font-size:14px;font-weight:600;color:var(--teal);}
+.undo-bar-change{background:none;border:1.5px solid var(--teal);color:var(--teal);border-radius:8px;padding:6px 14px;font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;transition:all .15s;white-space:nowrap;}
+.undo-bar-change:hover{background:var(--teal);color:#fff;}
+.undo-bar-timer{width:100%;height:3px;border-radius:2px;background:var(--border);margin-top:6px;overflow:hidden;}
+.undo-bar-timer-fill{height:100%;background:var(--teal);border-radius:2px;animation:undoTimer 2s linear forwards;}
+@keyframes undoTimer{from{width:100%}to{width:0%}}
+.start-over-btn{position:absolute;top:8px;right:12px;background:none;border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:10px 14px;font-size:12px;font-family:inherit;cursor:pointer;opacity:.6;transition:all .15s;min-height:44px;display:inline-flex;align-items:center;}
+.start-over-btn:hover{opacity:1;border-color:var(--text-muted);color:var(--text);}
+.state-dropdown-wrap{position:relative;width:100%;}
+.state-trigger{width:100%;padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;background:var(--bg);color:var(--text);font-family:inherit;cursor:pointer;text-align:left;display:flex;align-items:center;justify-content:space-between;transition:border-color .15s;-webkit-appearance:none;}
+.state-trigger:focus{outline:none;border-color:var(--teal);box-shadow:0 0 0 3px var(--teal-lt);}
+.state-trigger-arrow{font-size:10px;color:var(--text-muted);transition:transform .2s;}
+.state-trigger-arrow.open{transform:rotate(180deg);}
+.state-panel{position:absolute;bottom:calc(100% + 6px);left:0;right:0;background:var(--bg-card);border:1.5px solid var(--teal);border-radius:14px;overflow:hidden;box-shadow:0 -8px 32px rgba(0,0,0,.18);z-index:100;display:none;flex-direction:column;}
+.state-panel.open{display:flex;}
+.state-search-input{padding:12px 14px;border:none;border-bottom:1.5px solid var(--border);font-size:16px;background:var(--bg);color:var(--text);font-family:inherit;outline:none;width:100%;box-sizing:border-box;-webkit-appearance:none;}
+.state-list{max-height:240px;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .state-list-item{display:flex;align-items:center;gap:12px;padding:11px 14px;cursor:pointer;border-bottom:1px solid var(--border);transition:background .12s;touch-action:manipulation;}
 .state-list-item:last-child{border-bottom:none;}
 @media(hover:hover){.state-list-item:hover{background:var(--teal-lt);}}
@@ -77,6 +91,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .timer-badge{font-size:12px;font-weight:700;color:var(--muted);white-space:nowrap;padding:4px 10px;border:1.5px solid var(--border);border-radius:99px;display:none;letter-spacing:.3px;}
 .timer-badge.active{display:inline-block;}
 .timer-badge.overtime{color:var(--red);border-color:var(--red);}
+@keyframes nxSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 @media(max-width:600px){nav{padding:0 16px;}.prog-label{display:none;}.bbl{font-size:14px;max-width:90%;}.chat-input-area{padding:12px 14px;}}
 </style>
 </head>
@@ -95,7 +110,8 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
   </a>
 </nav>
 <div class="chat-wrap">
-  <div class="chat-scroll" id="chatScroll">
+  <div class="chat-scroll" id="chatScroll" style="position:relative;">
+    <button class="start-over-btn" id="startOverBtn" style="display:none;" onclick="if(confirm('Start over from the beginning?')) location.reload();">↩ Start over</button>
     <div class="chat-inner" id="chatInner"></div>
   </div>
   <div class="chat-input-area" id="inputArea" style="display:none;">
@@ -206,6 +222,10 @@ function addBubble(text, type, isHtml=false) {
   if (type === 'bot') row.innerHTML = `<div class="avatar"><img src="/assets/murat.jpg" alt="Murat" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'MZ'}))"/></div><div class="bbl bot">${content}</div>`;
   else row.innerHTML = `<div class="bbl user">${content}</div>`;
   inner.appendChild(row);
+  if (type === 'user') {
+    const btn = document.getElementById('startOverBtn');
+    if (btn) btn.style.display = '';
+  }
   scrollBottom();
   return row;
 }
@@ -304,19 +324,37 @@ function askChips(options) {
   return new Promise(resolve => {
     const area = document.getElementById('inputArea');
     const inner = document.getElementById('inputInner');
-    const wrap = document.createElement('div');
-    wrap.className = 'chips';
-    options.forEach(o => {
-      const chip = document.createElement('div');
-      chip.className = 'chip';
-      chip.textContent = o.label;
-      chip.onclick = () => { clearInput(); resolve(o.value); };
-      wrap.appendChild(chip);
-    });
-    inner.innerHTML = '';
-    inner.appendChild(wrap);
-    area.style.display = '';
-    setTimeout(() => scrollToLast(), 80);
+
+    function buildChips() {
+      const wrap = document.createElement('div');
+      wrap.className = 'chips';
+      options.forEach(o => {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.textContent = o.label;
+        chip.addEventListener('mousedown', e => e.preventDefault());
+        chip.onclick = () => {
+          inner.innerHTML = '';
+          const bar = document.createElement('div');
+          bar.innerHTML = `
+            <div class="undo-bar">
+              <span class="undo-bar-label">${o.label} ✓</span>
+              <button class="undo-bar-change">↩ change</button>
+            </div>
+            <div class="undo-bar-timer"><div class="undo-bar-timer-fill"></div></div>`;
+          inner.appendChild(bar);
+          const timer = setTimeout(() => { clearInput(); resolve(o.value); }, 2000);
+          bar.querySelector('.undo-bar-change').addEventListener('mousedown', e => {
+            e.preventDefault(); clearTimeout(timer); buildChips();
+          });
+        };
+        wrap.appendChild(chip);
+      });
+      area.style.display = '';
+      setTimeout(() => scrollToLast(), 80);
+    }
+
+    buildChips();
   });
 }
 
@@ -376,14 +414,23 @@ function askState() {
     const area = document.getElementById('inputArea');
     const inner = document.getElementById('inputInner');
     inner.innerHTML = `
-      <div class="state-search-wrap">
-        <input class="state-search-input" id="stateSearch" type="text" placeholder="Search state..." autocomplete="off"/>
-        <div class="state-list" id="stateList"></div>
+      <div class="state-dropdown-wrap" id="stateWrap">
+        <button class="state-trigger" id="stateTrigger" type="button">
+          <span id="stateTriggerLabel">Select your state</span>
+          <span class="state-trigger-arrow" id="stateArrow">▼</span>
+        </button>
+        <div class="state-panel" id="statePanel">
+          <input class="state-search-input" id="stateSearch" type="text" placeholder="Search state..." autocomplete="off"/>
+          <div class="state-list" id="stateList"></div>
+        </div>
       </div>`;
     area.style.display = '';
 
-    const searchEl = document.getElementById('stateSearch');
-    const listEl = document.getElementById('stateList');
+    const triggerEl = document.getElementById('stateTrigger');
+    const panelEl   = document.getElementById('statePanel');
+    const arrowEl   = document.getElementById('stateArrow');
+    const searchEl  = document.getElementById('stateSearch');
+    const listEl    = document.getElementById('stateList');
 
     function renderList(filter) {
       const q = (filter||'').toLowerCase().trim();
@@ -395,9 +442,134 @@ function askState() {
         const item = document.createElement('div');
         item.className = 'state-list-item';
         item.innerHTML = `<span class="state-abbr">${s.abbr}</span><span class="state-name">${s.name}</span>`;
-        item.onclick = () => { clearInput(); resolve(s.abbr); };
+        item.addEventListener('mousedown', e => {
+          e.preventDefault();
+          closePanel();
+          // Show undo bar briefly before resolving
+          inner.innerHTML = '';
+          const bar = document.createElement('div');
+          bar.innerHTML = `
+            <div class="undo-bar">
+              <span class="undo-bar-label">${s.name} ✓</span>
+              <button class="undo-bar-change">↩ change</button>
+            </div>
+            <div class="undo-bar-timer"><div class="undo-bar-timer-fill"></div></div>`;
+          inner.appendChild(bar);
+          const timer = setTimeout(() => { clearInput(); resolve(s.abbr); }, 2000);
+          bar.querySelector('.undo-bar-change').addEventListener('mousedown', ev => {
+            ev.preventDefault(); clearTimeout(timer);
+            // Re-build the dropdown
+            inner.innerHTML = `
+              <div class="state-dropdown-wrap" id="stateWrap">
+                <button class="state-trigger" id="stateTrigger" type="button">
+                  <span id="stateTriggerLabel">Select your state</span>
+                  <span class="state-trigger-arrow" id="stateArrow">▼</span>
+                </button>
+                <div class="state-panel open" id="statePanel">
+                  <input class="state-search-input" id="stateSearch" type="text" placeholder="Search state..." autocomplete="off"/>
+                  <div class="state-list" id="stateList"></div>
+                </div>
+              </div>`;
+            arrowEl.classList.add('open');
+            // Re-wire events on new DOM
+            const newTrigger = document.getElementById('stateTrigger');
+            const newPanel   = document.getElementById('statePanel');
+            const newArrow   = document.getElementById('stateArrow');
+            const newSearch  = document.getElementById('stateSearch');
+            const newList    = document.getElementById('stateList');
+            function renderNew(filter) {
+              const q = (filter||'').toLowerCase().trim();
+              const filtered = q ? ALL_STATES.filter(st => st.name.toLowerCase().includes(q) || st.abbr.toLowerCase().startsWith(q)) : ALL_STATES;
+              newList.innerHTML = '';
+              filtered.forEach(st => {
+                const it = document.createElement('div');
+                it.className = 'state-list-item';
+                it.innerHTML = `<span class="state-abbr">${st.abbr}</span><span class="state-name">${st.name}</span>`;
+                it.addEventListener('mousedown', ev2 => {
+                  ev2.preventDefault();
+                  inner.innerHTML = '';
+                  const bar2 = document.createElement('div');
+                  bar2.innerHTML = `
+                    <div class="undo-bar"><span class="undo-bar-label">${st.name} ✓</span><button class="undo-bar-change">↩ change</button></div>
+                    <div class="undo-bar-timer"><div class="undo-bar-timer-fill"></div></div>`;
+                  inner.appendChild(bar2);
+                  const t2 = setTimeout(() => { clearInput(); resolve(st.abbr); }, 2000);
+                  bar2.querySelector('.undo-bar-change').addEventListener('mousedown', ev3 => {
+                    ev3.preventDefault(); clearTimeout(t2); newSearch.value = ''; renderNew(''); newPanel.classList.add('open'); newArrow.classList.add('open'); inner.innerHTML = ''; inner.appendChild(newTrigger.closest('.state-dropdown-wrap') || document.getElementById('stateWrap'));
+                  });
+                });
+                newList.appendChild(it);
+              });
+            }
+            renderNew('');
+            newSearch.addEventListener('input', () => renderNew(newSearch.value));
+            newTrigger.addEventListener('click', () => newPanel.classList.contains('open') ? (newPanel.classList.remove('open'), newArrow.classList.remove('open')) : (newPanel.classList.add('open'), newArrow.classList.add('open')));
+            setTimeout(() => newSearch.focus(), 50);
+          });
+        });
         listEl.appendChild(item);
       });
+    }
+
+    function openPanel() {
+      panelEl.classList.add('open');
+      arrowEl.classList.add('open');
+      searchEl.value = '';
+      renderList('');
+      setTimeout(() => { searchEl.focus(); }, 50);
+    }
+
+    function closePanel() {
+      panelEl.classList.remove('open');
+      arrowEl.classList.remove('open');
+    }
+
+    triggerEl.addEventListener('click', () => {
+      panelEl.classList.contains('open') ? closePanel() : openPanel();
+    });
+
+    searchEl.addEventListener('input', () => renderList(searchEl.value));
+
+    setTimeout(() => { scrollToLast(); }, 80);
+  });
+}
+
+/* ── SUBTYPE SEARCH PICKER ───────────────────────────── */
+function askSubtypeSearch(options) {
+  return new Promise(resolve => {
+    const area = document.getElementById('inputArea');
+    const inner = document.getElementById('inputInner');
+    inner.innerHTML = `
+      <div class="state-search-wrap">
+        <input class="state-search-input" id="subtypeSearch" type="text" placeholder="Search your business type..." autocomplete="off"/>
+        <div class="state-list" id="subtypeList"></div>
+      </div>`;
+    area.style.display = '';
+
+    const searchEl = document.getElementById('subtypeSearch');
+    const listEl = document.getElementById('subtypeList');
+
+    function renderList(filter) {
+      const q = (filter||'').toLowerCase().trim();
+      const filtered = q ? options.filter(o => o.label.toLowerCase().includes(q)) : options;
+      listEl.innerHTML = '';
+      filtered.forEach(o => {
+        const item = document.createElement('div');
+        item.className = 'state-list-item';
+        item.innerHTML = `<span class="state-name">${o.label}</span>`;
+        item.onclick = () => { clearInput(); resolve({label: o.label, value: o.value}); };
+        listEl.appendChild(item);
+      });
+      if (filtered.length === 0 && q.length >= 2) {
+        const item = document.createElement('div');
+        item.className = 'state-list-item';
+        item.innerHTML = `<span class="state-name">Other: "${filter}"</span>`;
+        item.onclick = () => {
+          const v = filter.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
+          clearInput(); resolve({label: filter, value: v});
+        };
+        listEl.appendChild(item);
+      }
     }
 
     renderList();
@@ -437,7 +609,7 @@ function askTextOptional(placeholder) {
 async function main() {
   setProgress(0, 'Getting started');
   await sleep(400);
-  await speak(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;"><img src="/assets/murat.jpg" alt="Murat" style="width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'"/><div><div style="font-weight:800;font-size:15px;color:var(--text);">Murat Zhandaurov</div><div style="font-size:12px;color:var(--dim);">Co-Founder, Nexvora Systems</div></div></div>Hey — I'm Murat. My partner Alexandr and I built this assessment after working with dozens of business owners who were all dealing with the same invisible problems.<br><br>Your answers come directly to us. We read every one personally. This takes about 5 minutes.`, 1200, true);
+  await speak(`<div style="display:flex;align-items:center;gap:12px;margin-bottom:10px;"><img src="/assets/murat.jpg" alt="Murat" style="width:46px;height:46px;border-radius:50%;object-fit:cover;flex-shrink:0;" onerror="this.style.display='none'"/><div><div style="font-weight:800;font-size:15px;color:var(--text);">Murat Zhandaurov</div><div style="font-size:12px;color:var(--dim);">Co-Founder, Nexvora Systems</div></div></div>Hey — I'm Murat. My partner Alexandr and I built this assessment after working with dozens of business owners who were all dealing with the same invisible problems.<br><br>Your answers come directly to us. We read every one personally. This takes about 10 minutes.`, 1200, true);
   await sleep(300);
   await speak("Let's start with a few quick contact details so we can send you the report.", 700);
 
@@ -456,7 +628,6 @@ async function main() {
   addBubble(email, 'user');
   A.contact.email = email;
 
-  // ── EARLY LEAD CAPTURE — fire and forget, capture contactId for later ──
   const timezone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
   A.contact.timezone = timezone;
 
@@ -467,25 +638,15 @@ async function main() {
   }).then(r => r.json()).then(d => {
     if (!d.contactId) { console.warn('[capture-lead] no contactId in response', d); return; }
     ghlContactId = d.contactId;
-    console.log('[capture-lead] contactId:', ghlContactId);
-    // If phone/company were already collected before this resolved, send them now
     const patch = {};
     if (A.contact.phone) patch.phone = A.contact.phone;
     if (A.contact.company) patch.company = A.contact.company;
     if (Object.keys(patch).length) {
-      console.log('[update-lead] late patch (race):', patch);
-      fetch('/api/update-lead', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email: A.contact.email, ...patch })
-      }).then(r => r.json()).then(d => console.log('[update-lead] race result:', d))
-        .catch(e => console.warn('[update-lead] race error:', e));
+      fetch('/api/update-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: A.contact.email, ...patch }) }).catch(() => {});
     }
   }).catch(e => console.warn('[capture-lead] error:', e));
 
-  // Register page-close beacon — fires immediately if user leaves
   registerCloseHandlers();
-  // Start 30-min countdown display + fallback timer
   startCountdownTimer();
   scheduleOpportunity();
 
@@ -494,17 +655,8 @@ async function main() {
   const phone = await askText("+1 (555) 000-0000", v => v.replace(/\D/g,'').length >= 7 ? null : "Please enter a valid phone number", 'tel');
   addBubble(phone, 'user');
   A.contact.phone = phone;
-  // Update GHL if contactId already arrived; otherwise .then() above will catch it
   if (ghlContactId) {
-    console.log('[update-lead] sending phone for', ghlContactId);
-    fetch('/api/update-lead', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: A.contact.email, phone })
-    }).then(r => r.json()).then(d => console.log('[update-lead] phone result:', d))
-      .catch(e => console.warn('[update-lead] phone error:', e));
-  } else {
-    console.log('[update-lead] phone queued — waiting for contactId');
+    fetch('/api/update-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: A.contact.email, phone }) }).catch(() => {});
   }
 
   setProgress(4);
@@ -517,44 +669,211 @@ async function main() {
     await speak("What state is your business in?", 500);
     A.q2 = await askState();
     addBubble((ALL_STATES.find(s=>s.abbr===A.q2)||{name:A.q2}).name, 'user');
-
     await speak("And which city?", 400);
     const bizCity = await askText("City", v => v.trim().length >= 2 ? null : "Please enter your city");
     addBubble(bizCity, 'user');
     A.q2_city = bizCity;
-
     const mapQ = encodeURIComponent(company + ' ' + bizCity + ' ' + A.q2);
     const safeCompany = company.replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const safeCity = bizCity.replace(/</g,'&lt;');
     const stateName = (ALL_STATES.find(s=>s.abbr===A.q2)||{name:A.q2}).name;
     await speak(`Here's what we found for <strong>${safeCompany}</strong> in ${safeCity}, ${stateName} — does this look like your business?<br><br><iframe src="https://maps.google.com/maps?q=${mapQ}&output=embed&iwloc=near" width="100%" height="200" style="border:0;border-radius:8px;display:block;" loading="lazy" allowfullscreen></iframe>`, 1000, true);
-    const confirmChoice = await askChips([
-      {label:"Yes, that's my business", value:'yes'},
-      {label:"Not finding it / skip", value:'no'},
-    ]);
+    const confirmChoice = await askChips([{label:"Yes, that's my business", value:'yes'},{label:"Not finding it / skip", value:'no'}]);
     addBubble(confirmChoice === 'yes' ? "Yes, that's my business" : "Not finding it / skip", 'user');
-    if (confirmChoice === 'yes') {
-      A.company_confirmed = true;
-    } else {
-      await speak("No problem — we'll skip the online lookup. You can share more details on your strategy call.", 600);
+    if (confirmChoice === 'yes') { A.company_confirmed = true; }
+    else { await speak("No problem — we'll skip the online lookup. You can share more details on your strategy call.", 600); }
+  }
+  if (ghlContactId && A.contact.company) {
+    fetch('/api/update-lead', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ email: A.contact.email, company: A.contact.company }) }).catch(() => {});
+  }
+
+  /* ── BUSINESS PARTNERS ── */
+  setProgress(5, 'Your setup');
+  await speak("Do you run this business alone, or do you have business partners?", 700);
+  const _hasPartner = await askChips([
+    {label:'Just me — I run it solo', value:'solo'},
+    {label:'I have business partner(s)', value:'yes'},
+  ]);
+  addBubble(_hasPartner === 'yes' ? 'I have business partner(s)' : 'Just me — solo', 'user');
+  A.partner = { has: _hasPartner === 'yes' };
+
+  if (_hasPartner === 'yes') {
+    await speak("How many business partners do you have? (not counting yourself)", 600);
+    const _partnerCountRaw = await askNumber('', 1, 10);
+    const _partnerCount = Math.max(1, Math.min(10, parseInt(_partnerCountRaw)||1));
+    addBubble(_partnerCount + (_partnerCount === 1 ? ' partner' : ' partners'), 'user');
+    A.partner.count = _partnerCount;
+
+    await speak("First, what is YOUR primary role in the business?", 600);
+    A.partner.userRole = await askTextOptional("e.g. CEO, Operations, Finance, Sales");
+    addBubble(A.partner.userRole || '(skipped)', 'user');
+
+    await speak("Do you have a formal operating agreement between all partners?", 500);
+    A.partner.opAgreement = await askChips([
+      {label:'Yes — we have one', value:'yes'},
+      {label:'No — we don\'t', value:'no'},
+    ]);
+    addBubble(A.partner.opAgreement === 'yes' ? 'Yes, we have one' : 'No, we don\'t', 'user');
+
+    // Collect info for each partner
+    A.partners = [];
+    for (let _pi = 1; _pi <= _partnerCount; _pi++) {
+      const _pLabel = _partnerCount === 1 ? 'your partner' : `Partner ${_pi}`;
+      await speak(`Now let's talk about ${_pLabel}. What's their name?`, 700);
+      const _pName = await askTextOptional(`Partner ${_pi} name`);
+      addBubble(_pName || `Partner ${_pi}`, 'user');
+
+      await speak(`What's ${_pName||_pLabel}'s email? We'll send them the report too. (optional — skip if you prefer)`, 500);
+      const _pEmail = await askTextOptional(`${_pName||'Partner'} email — or skip`);
+      addBubble(_pEmail || '(skipped)', 'user');
+
+      await speak(`What does ${_pName||_pLabel} mainly handle in the business?`, 600);
+      const _pRole = await askTextOptional("e.g. Sales, Marketing, Operations, Finance");
+      addBubble(_pRole || '(skipped)', 'user');
+
+      await speak(`How involved is ${_pName||_pLabel} in day-to-day operations?`, 500);
+      const _pInvolvement = await askChips([
+        {label:'Hands-on daily', value:'both'},
+        {label:'Handles a specific area', value:'specific'},
+        {label:'Mostly strategic / part-time', value:'strategic'},
+        {label:'Silent partner / investor', value:'silent'},
+      ]);
+      const _pInvL = {'both':'Hands-on daily','specific':'Specific area','strategic':'Strategic / part-time','silent':'Silent partner'};
+      addBubble(_pInvL[_pInvolvement]||_pInvolvement, 'user');
+
+      // Partner pay
+      await speak(`How does ${_pName||_pLabel} take money from the business? Select all that apply.`, 700);
+      const _ppTypesSel = await askMultiChips([
+        {label:'W2 salary — regular paycheck',               value:'w2'},
+        {label:'Distributions or owner draws',               value:'distribution'},
+        {label:'Personal expenses through the business',     value:'expenses'},
+        {label:'Other — I\'ll name it',                     value:'other'},
+        {label:'They don\'t take any pay yet',               value:'none'},
+      ], 1);
+
+      const _ppPAY_DISPLAY = {w2:'W2 salary',distribution:'Distributions / draws',expenses:'Personal expenses via business'};
+      const _ppPAY_SPEAK   = {w2:'W2 salary',distribution:'distributions or draws',expenses:'personal expenses via business'};
+      const _ppEntries = _ppTypesSel.filter(v=>v!=='other'&&v!=='none').map(v=>({ key:v, label:_ppPAY_DISPLAY[v]||v, speak:_ppPAY_SPEAK[v]||v }));
+      addBubble(_ppTypesSel.filter(v=>v!=='other'&&v!=='none').map(v=>_ppPAY_DISPLAY[v]||v).join(', ')||(_ppTypesSel.includes('none')?'No pay yet':'(selecting…)'),'user');
+
+      if (_ppTypesSel.includes('other')) {
+        await speak("What other ways? Separate with commas.", 500);
+        const _ppOtherRaw = await askTextOptional("e.g. Consulting fee, Bonus");
+        if (_ppOtherRaw) {
+          _ppOtherRaw.split(',').map(n=>n.trim()).filter(Boolean).forEach((n,i)=>{
+            const _k='other_'+n.toLowerCase().replace(/[^a-z0-9]+/g,'_').slice(0,30)+(i>0?'_'+i:'');
+            _ppEntries.push({key:_k,label:n,speak:n});
+          });
+          addBubble(_ppOtherRaw,'user');
+        }
+      }
+
+      const _partnerPayObj = {};
+      let _partnerPayTotal = 0;
+      if (!_ppTypesSel.includes('none')) {
+        for (const _ppe of _ppEntries) {
+          await speak(`For ${_pName||_pLabel}'s ${_ppe.speak} — monthly, weekly, or yearly?`, 500);
+          const _ppFreq = await askChips([{label:'Monthly',value:'monthly'},{label:'Weekly',value:'weekly'},{label:'Yearly',value:'yearly'}]);
+          addBubble(_ppFreq==='monthly'?'Monthly':_ppFreq==='weekly'?'Weekly':'Yearly','user');
+          await speak(`How much per ${_ppFreq==='yearly'?'year':_ppFreq}?`, 400);
+          const _ppAmt = await askNumber('$', 0, 9999999);
+          addBubble('$'+Number(_ppAmt).toLocaleString(),'user');
+          const _ppMonthly = _ppFreq==='weekly'?Math.round(Number(_ppAmt)*4.33):_ppFreq==='yearly'?Math.round(Number(_ppAmt)/12):Number(_ppAmt);
+          _partnerPayObj[_ppe.key] = {label:_ppe.label, amount:Number(_ppAmt), frequency:_ppFreq, monthly:_ppMonthly};
+          _partnerPayTotal += _ppMonthly;
+        }
+        if (_partnerPayTotal > 0) {
+          await speak(`Got it — ${_pName||_pLabel} takes about $${(_partnerPayTotal*12/1000).toFixed(0)}K/year from the business.`, 700);
+        }
+      }
+
+      A.partners.push({
+        name: _pName || `Partner ${_pi}`,
+        email: _pEmail || null,
+        role: _pRole || '',
+        involvement: _pInvolvement,
+        pay: _partnerPayObj,
+        pay_total: _partnerPayTotal,
+      });
+    }
+
+    // Backward compat: keep A.partner.partnerRole from first partner
+    if (A.partners.length > 0) {
+      A.partner.partnerRole = A.partners[0].role;
+      A.partner.involvement = A.partners[0].involvement;
+    }
+
+    // Legacy single-partner fields (for backward compat with generate-report.js)
+    A.partner_pay = A.partners[0]?.pay || {};
+    A.partner_pay_total = A.partners[0]?.pay_total || 0;
+
+    await speak("Great — understanding how all partners are compensated gives us a much clearer financial picture.", 700);
+  }
+
+  /* ── OWNER PAY (asked here alongside partner pay) ── */
+  await speak(`Now let's do the same for you. How do you take money from your business? Select all that apply.`, 800);
+  const _payTypesSel = await askMultiChips([
+    {label:'W2 salary — regular paycheck',                  value:'w2'},
+    {label:'Distributions or owner draws (withdrawals)',    value:'distribution'},
+    {label:'I pay personal expenses through the business',  value:'expenses'},
+    {label:'Other — I\'ll name it',                        value:'other'},
+  ], 1);
+
+  const _PAY_DISPLAY = {w2:'W2 salary',distribution:'Distributions / draws',expenses:'Personal expenses via business'};
+  const _PAY_SPEAK   = {w2:'your W2 salary',distribution:'your distributions or owner draws',expenses:'personal expenses you run through the business'};
+  const _payEntries  = _payTypesSel.filter(v=>v!=='other').map(v=>({ key:v, label:_PAY_DISPLAY[v]||v, speak:_PAY_SPEAK[v]||v }));
+  addBubble(_payTypesSel.filter(v=>v!=='other').map(v=>_PAY_DISPLAY[v]||v).join(', ')||'(selecting…)','user');
+
+  if (_payTypesSel.includes('other')) {
+    await speak("What are the other ways? You can list more than one — just separate them with commas.", 600);
+    const _otherRaw = await askTextOptional("e.g. Consulting fee, Bonus, Car allowance");
+    if (_otherRaw) {
+      const _otherNames = _otherRaw.split(',').map(n=>n.trim()).filter(Boolean);
+      _otherNames.forEach((n,i)=>{
+        const _k = 'other_'+n.toLowerCase().replace(/[^a-z0-9]+/g,'_').slice(0,30)+(i>0?'_'+i:'');
+        _payEntries.push({ key:_k, label:n, speak:n });
+      });
+      addBubble(_otherNames.join(', '),'user');
     }
   }
-  // Update GHL if contactId already arrived; otherwise .then() above will catch it
-  if (ghlContactId && A.contact.company) {
-    console.log('[update-lead] sending company for', ghlContactId);
-    fetch('/api/update-lead', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email: A.contact.email, company: A.contact.company })
-    }).then(r => r.json()).then(d => console.log('[update-lead] company result:', d))
-      .catch(e => console.warn('[update-lead] company error:', e));
-  } else if (!ghlContactId) {
-    console.log('[update-lead] company queued — waiting for contactId');
+
+  A.owner_pay = {};
+  let _totalMonthlyOwnerPay = 0;
+
+  for (const _entry of _payEntries) {
+    await speak(`For ${_entry.speak} — is this monthly, weekly, or yearly?`, 600);
+    const _payFreq = await askChips([{label:'Monthly', value:'monthly'},{label:'Weekly', value:'weekly'},{label:'Yearly', value:'yearly'}]);
+    addBubble(_payFreq === 'monthly' ? 'Monthly' : _payFreq === 'weekly' ? 'Weekly' : 'Yearly', 'user');
+    await speak(`How much per ${_payFreq === 'yearly' ? 'year' : _payFreq}?`, 400);
+    const _payAmt = await askNumber('$', 0, 9999999);
+    addBubble('$' + Number(_payAmt).toLocaleString(), 'user');
+    const _monthlyAmt = _payFreq === 'weekly' ? Math.round(Number(_payAmt) * 4.33) : _payFreq === 'yearly' ? Math.round(Number(_payAmt) / 12) : Number(_payAmt);
+    A.owner_pay[_entry.key] = { label: _entry.label, amount: Number(_payAmt), frequency: _payFreq, monthly: _monthlyAmt };
+    _totalMonthlyOwnerPay += _monthlyAmt;
+  }
+
+  A.q16 = _totalMonthlyOwnerPay;
+  const _annualOwnerPay = _totalMonthlyOwnerPay * 12;
+
+  if (_annualOwnerPay > 0) {
+    await speak(`That's about $${(_annualOwnerPay/1000).toFixed(0)}K per year you're taking from the business. We'll compare that to what's standard for your industry and business size.`, 900);
+    await speak("Is that amount enough for your personal needs?", 600);
+    A.owner_pay_enough = await askChips([
+      {label:"Yes — it covers what I need",      value:'yes'},
+      {label:"It's tight but manageable",         value:'tight'},
+      {label:"No — I need to make more",          value:'no'},
+      {label:"I'm reinvesting most back in",      value:'reinvesting'},
+    ]);
+    const _oeL = {yes:"Yes, it's enough",tight:"Tight but manageable",no:"Not enough",reinvesting:"Reinvesting most back"};
+    addBubble(_oeL[A.owner_pay_enough]||A.owner_pay_enough,'user');
+    if (A.owner_pay_enough==='no'||A.owner_pay_enough==='tight') {
+      await speak("Understood. We'll look at what the levers are — whether it's revenue growth, cutting specific expenses, or both.", 800);
+    }
   }
 
 
   /* ── PAIN POINT DISCOVERY ── */
-  setProgress(5, 'Understanding your situation');
+  setProgress(6, 'Understanding your situation');
   await speak(`Before we look at numbers — three quick questions that help us find exactly where your business needs the most help. No right or wrong answers.`, 800);
   await sleep(200);
 
@@ -568,32 +887,34 @@ async function main() {
   ]);
   addBubble({capacity:"Couldn't handle workload",cashflow:"We'd run out of cash",hiring:"Don't have the team",quality:"Quality would drop",ready:"We're ready for it"}[A.pain1]||A.pain1,'user');
 
-  await speak("When you leave work at the end of the day — what feeling can't you shake?", 700);
-  A.pain2 = await askChips([
+  await speak("When you leave work at the end of the day — what feeling can't you shake? Select all that apply.", 700);
+  A.pain2 = await askMultiChips([
     {label:"Worried about money",                    value:'cashflow'},
     {label:"Feels like I'm doing everyone's job",    value:'delegation'},
     {label:"Things are falling through the cracks",  value:'systems'},
     {label:"Working hard but not moving forward",    value:'growth'},
     {label:"Worried about keeping good people",      value:'retention'},
     {label:"Actually pretty good",                   value:'good'},
-  ]);
-  addBubble({cashflow:"Worried about money",delegation:"Doing everyone's job",systems:"Things falling through cracks",growth:"Working hard, not moving",retention:"Worried about keeping people",good:"Actually pretty good"}[A.pain2]||A.pain2,'user');
+  ], 1);
+  const _p2L = {cashflow:"Worried about money",delegation:"Doing everyone's job",systems:"Things falling through cracks",growth:"Working hard, not moving",retention:"Worried about keeping people",good:"Actually pretty good"};
+  addBubble(A.pain2.map(v=>_p2L[v]||v).join(', '),'user');
 
-  await speak("What would need to change for you to take a 2-week vacation without checking your phone?", 700);
-  A.pain3 = await askChips([
+  await speak("What would need to change for you to take a 2-week vacation without checking your phone? Select all that apply.", 700);
+  A.pain3 = await askMultiChips([
     {label:"Someone who could run things",           value:'dependency'},
     {label:"Better systems and processes",           value:'systems'},
     {label:"More stable cash flow",                  value:'cashflow'},
-    {label:"A bigger team",                          value:'team'},
+    {label:"A bigger, more reliable team",           value:'team'},
     {label:"Honestly not much",                      value:'ready'},
     {label:"I don't even think about vacations",     value:'survival'},
-  ]);
-  addBubble({dependency:"Someone to run things",systems:"Better systems",cashflow:"Stable cash flow",team:"Bigger team",ready:"Not much needed",survival:"Don't think about it"}[A.pain3]||A.pain3,'user');
+  ], 1);
+  const _p3L = {dependency:"Someone to run things",systems:"Better systems",cashflow:"Stable cash flow",team:"Bigger team",ready:"Not much needed",survival:"Don't think about it"};
+  addBubble(A.pain3.map(v=>_p3L[v]||v).join(', '),'user');
 
-  // Diagnose primary pain point from 3 answers
   const _painMap = {capacity:'operations',quality:'operations',cashflow:'cashflow',hiring:'team',team:'team',retention:'team',delegation:'owner-dep',dependency:'owner-dep',systems:'systems',growth:'growth',ready:'healthy',good:'healthy',survival:'survival'};
   const _painVotes = {};
-  [A.pain1,A.pain2,A.pain3].forEach(p=>{ const k=_painMap[p]||'other'; _painVotes[k]=(_painVotes[k]||0)+1; });
+  const _allPainAnswers = [A.pain1, ...(Array.isArray(A.pain2)?A.pain2:[A.pain2]), ...(Array.isArray(A.pain3)?A.pain3:[A.pain3])];
+  _allPainAnswers.forEach(p=>{ const k=_painMap[p]||'other'; _painVotes[k]=(_painVotes[k]||0)+1; });
   A.primaryPain = Object.entries(_painVotes).sort((a,b)=>b[1]-a[1])[0]?.[0]||'other';
   A.painVotes = _painVotes;
 
@@ -611,7 +932,7 @@ async function main() {
   await speak(_PAIN_REACT[A.primaryPain]||_PAIN_REACT.other, 800);
 
   /* ── PROFILE QUESTIONS ── */
-  setProgress(5, 'About your business');
+  setProgress(7, 'About your business');
   await speak(`Thanks, ${first}. Now a few questions about your business.`, 800);
   await sleep(200);
 
@@ -625,14 +946,11 @@ async function main() {
     {label:'Professional Services',value:'professional-services'},
     {label:'Auto Services',value:'auto'},
     {label:'Real Estate',value:'real-estate'},
+    {label:'Coaching & Digital',value:'coaching-digital'},
+    {label:'Moving & Logistics',value:'moving-logistics'},
   ]);
-  addBubble({
-    'home-services':'Home Services','construction':'Construction & Contractors','food-bev':'Food & Beverage',
-    'retail':'Retail','health-wellness':'Health & Wellness','professional-services':'Professional Services',
-    'auto':'Auto Services','real-estate':'Real Estate'
-  }[A.q1], 'user');
+  addBubble({'home-services':'Home Services','construction':'Construction & Contractors','food-bev':'Food & Beverage','retail':'Retail','health-wellness':'Health & Wellness','professional-services':'Professional Services','auto':'Auto Services','real-estate':'Real Estate','coaching-digital':'Coaching & Digital','moving-logistics':'Moving & Logistics'}[A.q1], 'user');
 
-  // Industry-specific reaction
   const INDUSTRY_REACTIONS = {
     'home-services': `Home services — high repeat potential, strong word-of-mouth market. Let's see what's holding you back.`,
     'construction': `Construction — strong revenue per job, but cash flow and ops are usually where things get tight. Let's take a look.`,
@@ -642,71 +960,111 @@ async function main() {
     'professional-services': `Professional services — time is your inventory. Billing efficiency and lead conversion are everything here.`,
     'auto': `Auto services — strong local demand, but reviews and repeat visits drive almost all revenue. We'll look at both.`,
     'real-estate': `Real estate — relationship-driven, market-dependent. Your pipeline and follow-up systems are the whole game.`,
+    'coaching-digital': `Coaching and digital — low overhead, high margin potential. The biggest lever is usually your offer and delivery systems. Let's take a look.`,
+    'moving-logistics': `Moving and logistics — high ticket per job, but crew utilization and scheduling are everything. Let's dig in.`,
   };
   await speak(INDUSTRY_REACTIONS[A.q1] || `Good. Let's dig into how your business runs.`, 700);
 
-  // Sub-type question
   const SUB_TYPES = {
     'home-services': [
-      {label:'Cleaning',value:'cleaning'},{label:'Landscaping',value:'landscaping'},
-      {label:'Plumbing',value:'plumbing'},{label:'HVAC',value:'hvac'},
-      {label:'Roofing',value:'roofing'},{label:'Pest Control',value:'pest-control'},
-      {label:'Pool Service',value:'pool'},{label:'Painting',value:'painting'},
-      {label:'Electrical',value:'electrical'},{label:'Other',value:'other'},
+      {label:'House Cleaning / Maid Service',value:'cleaning'},{label:'Commercial Cleaning / Janitorial',value:'commercial-cleaning'},
+      {label:'Window Cleaning',value:'window-cleaning'},{label:'Carpet Cleaning',value:'carpet-cleaning'},
+      {label:'Pressure Washing',value:'pressure-washing'},{label:'Landscaping / Lawn Care',value:'landscaping'},
+      {label:'Tree Service / Arborist',value:'tree-service'},{label:'Snow Removal',value:'snow-removal'},
+      {label:'Irrigation / Sprinkler Systems',value:'irrigation'},{label:'Plumbing',value:'plumbing'},
+      {label:'HVAC / Heating & Cooling',value:'hvac'},{label:'Electrical',value:'electrical'},
+      {label:'Roofing',value:'roofing'},{label:'Painting (Interior / Exterior)',value:'painting'},
+      {label:'Flooring Installation',value:'flooring'},{label:'Pest Control / Exterminator',value:'pest-control'},
+      {label:'Pool Service & Repair',value:'pool'},{label:'Handyman Services',value:'handyman'},
+      {label:'Junk Removal',value:'junk-removal'},{label:'Garage Door Service',value:'garage-door'},
+      {label:'Security Systems',value:'security'},{label:'Home Inspection',value:'home-inspection'},
+      {label:'Other Home Service',value:'other'},
     ],
     'construction': [
-      {label:'General Contractor',value:'general'},{label:'Remodeling',value:'remodeling'},
-      {label:'Concrete',value:'concrete'},{label:'Flooring',value:'flooring'},
-      {label:'Fencing',value:'fencing'},{label:'Other',value:'other'},
+      {label:'General Contractor',value:'general'},{label:'Remodeling / Renovation',value:'remodeling'},
+      {label:'Concrete / Foundation',value:'concrete'},{label:'Framing / Rough Carpentry',value:'framing'},
+      {label:'Masonry / Brickwork',value:'masonry'},{label:'Drywall / Plastering',value:'drywall'},
+      {label:'Cabinetry / Millwork',value:'cabinetry'},{label:'Tile / Stone Installation',value:'tile'},
+      {label:'Flooring',value:'flooring'},{label:'Fencing',value:'fencing'},
+      {label:'Excavation / Grading',value:'excavation'},{label:'Demolition',value:'demolition'},
+      {label:'Solar Installation',value:'solar'},{label:'Other Construction',value:'other'},
     ],
     'food-bev': [
-      {label:'Restaurant',value:'restaurant'},{label:'Café / Coffee',value:'cafe'},
-      {label:'Catering',value:'catering'},{label:'Food Truck',value:'food-truck'},
-      {label:'Bar',value:'bar'},{label:'Other',value:'other'},
+      {label:'Restaurant (dine-in)',value:'restaurant'},{label:'Café / Coffee Shop',value:'cafe'},
+      {label:'Catering Company',value:'catering'},{label:'Food Truck',value:'food-truck'},
+      {label:'Bar / Nightclub',value:'bar'},{label:'Bakery',value:'bakery'},
+      {label:'Ghost Kitchen / Virtual Brand',value:'ghost-kitchen'},{label:'Other Food & Beverage',value:'other'},
     ],
     'retail': [
-      {label:'Clothing',value:'clothing'},{label:'Furniture',value:'furniture'},
+      {label:'Clothing / Apparel',value:'clothing'},{label:'Furniture / Home Goods',value:'furniture'},
       {label:'Electronics',value:'electronics'},{label:'Specialty Store',value:'specialty'},
-      {label:'Online Retail',value:'online'},{label:'Other',value:'other'},
+      {label:'Online Retail',value:'online'},{label:'Other Retail',value:'other'},
     ],
     'health-wellness': [
-      {label:'Medical Office',value:'medical'},{label:'Dental',value:'dental'},
-      {label:'Chiropractic',value:'chiro'},{label:'Gym / Fitness',value:'gym'},
-      {label:'Spa / Massage',value:'spa'},{label:'Mental Health',value:'mental'},
-      {label:'Other',value:'other'},
+      {label:'Medical Office / Primary Care',value:'medical'},{label:'Dental Practice',value:'dental'},
+      {label:'Chiropractic',value:'chiro'},{label:'Physical Therapy',value:'physical-therapy'},
+      {label:'Gym / Fitness Center',value:'gym'},{label:'Personal Training',value:'personal-training'},
+      {label:'Yoga / Pilates Studio',value:'yoga'},{label:'Spa / Day Spa',value:'spa'},
+      {label:'Massage Therapy',value:'massage'},{label:'Mental Health / Therapy',value:'mental'},
+      {label:'Nutrition / Dietitian',value:'nutrition'},{label:'Esthetics / Skincare',value:'esthetics'},
+      {label:'Hair Salon / Barbershop',value:'salon'},{label:'Nail Salon',value:'nail-salon'},
+      {label:'Other Health & Wellness',value:'other'},
     ],
     'professional-services': [
-      {label:'Law Firm',value:'law'},{label:'Accounting / CPA',value:'accounting'},
-      {label:'Marketing Agency',value:'agency'},{label:'Consulting',value:'consulting'},
-      {label:'IT Services',value:'it'},{label:'Insurance',value:'insurance'},
-      {label:'Other',value:'other'},
+      {label:'Law Firm / Attorney',value:'law'},{label:'Accounting / CPA Firm',value:'accounting'},
+      {label:'Tax Preparation',value:'tax'},{label:'Bookkeeping',value:'bookkeeping'},
+      {label:'Financial Advisor / Wealth Management',value:'financial'},{label:'Marketing Agency',value:'agency'},
+      {label:'PR / Communications',value:'pr'},{label:'Graphic Design Studio',value:'design'},
+      {label:'Web Design / Development',value:'web-dev'},{label:'IT Services / MSP',value:'it'},
+      {label:'Consulting Firm',value:'consulting'},{label:'HR / Staffing / Recruiting',value:'staffing'},
+      {label:'Business Coaching',value:'biz-coaching'},{label:'Insurance Agency',value:'insurance'},
+      {label:'Notary / Mobile Notary',value:'notary'},{label:'Other Professional Services',value:'other'},
     ],
     'auto': [
-      {label:'Auto Repair',value:'repair'},{label:'Detailing',value:'detailing'},
-      {label:'Towing',value:'towing'},{label:'Dealership',value:'dealership'},
-      {label:'Other',value:'other'},
+      {label:'Auto Repair / Mechanic Shop',value:'repair'},{label:'Auto Detailing',value:'detailing'},
+      {label:'Towing / Roadside Assistance',value:'towing'},{label:'Auto Body / Collision Repair',value:'auto-body'},
+      {label:'Tire Shop',value:'tire'},{label:'Oil Change / Quick Lube',value:'oil-change'},
+      {label:'Car Wash',value:'car-wash'},{label:'Mobile Mechanic',value:'mobile-mechanic'},
+      {label:'Dealership',value:'dealership'},{label:'Other Auto Services',value:'other'},
     ],
     'real-estate': [
-      {label:'Property Management',value:'property-mgmt'},{label:'Real Estate Agent',value:'agent'},
-      {label:'Investor / Flipping',value:'investor'},{label:'Short-Term Rentals',value:'str'},
-      {label:'Other',value:'other'},
+      {label:'Property Management',value:'property-mgmt'},{label:'Real Estate Agent / Broker',value:'agent'},
+      {label:'Real Estate Investor / Flipping',value:'investor'},{label:'Short-Term Rentals (Airbnb / VRBO)',value:'str'},
+      {label:'Commercial Real Estate',value:'commercial-re'},{label:'Real Estate Photography',value:'re-photography'},
+      {label:'Other Real Estate',value:'other'},
+    ],
+    'coaching-digital': [
+      {label:'Business Coach',value:'biz-coach'},{label:'Life Coach',value:'life-coach'},
+      {label:'Executive / Leadership Coach',value:'exec-coach'},{label:'Health / Fitness Coach (online)',value:'health-coach'},
+      {label:'Sales / Marketing Coach',value:'sales-coach'},{label:'Online Course Creator',value:'course-creator'},
+      {label:'Membership / Community Site',value:'membership'},{label:'YouTuber / Content Creator',value:'content-creator'},
+      {label:'Podcaster',value:'podcaster'},{label:'Influencer / Brand Deals',value:'influencer'},
+      {label:'Digital Products (templates, tools)',value:'digital-products'},{label:'Paid Newsletter',value:'newsletter'},
+      {label:'Other Coaching & Digital',value:'other'},
+    ],
+    'moving-logistics': [
+      {label:'Residential Moving Company',value:'residential-moving'},{label:'Commercial Moving Company',value:'commercial-moving'},
+      {label:'Long-Distance Moving',value:'long-distance'},{label:'Junk Removal & Hauling',value:'junk-removal'},
+      {label:'Storage Facility',value:'storage'},{label:'Freight / Trucking',value:'trucking'},
+      {label:'Courier / Delivery Service',value:'courier'},{label:'Last-Mile Delivery',value:'last-mile'},
+      {label:'Other Moving & Logistics',value:'other'},
     ],
   };
   const _subTypes = SUB_TYPES[A.q1];
   if (_subTypes && _subTypes.length > 0) {
-    await speak("What type specifically?", 500);
-    const _subChoice = await askChips(_subTypes);
-    A.q1b = _subChoice;
-    A.q1b_label = (_subTypes.find(s=>s.value===_subChoice)||{label:_subChoice}).label;
+    await speak("What type specifically? Search or scroll to find yours.", 500);
+    const _stResult = await askSubtypeSearch(_subTypes);
+    A.q1b_label = _stResult.label;
+    A.q1b = _stResult.value;
     addBubble(A.q1b_label, 'user');
   } else {
     await speak("What type of business specifically?", 500);
     A.q1b_label = await askText("Describe your business type", v => v.trim().length >= 2 ? null : "Please describe your business type");
     addBubble(A.q1b_label, 'user');
-    A.q1b = A.q1b_label.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
+    A.q1b = A.q1b_label.toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'');
   }
 
-  setProgress(6);
+  setProgress(8);
   if (!A.q2) {
     await speak("What state is your business based in?", 600);
     A.q2 = await askState();
@@ -718,7 +1076,7 @@ async function main() {
     addBubble(A.q2_city, 'user');
   }
 
-  setProgress(7);
+  setProgress(9);
   await speak("How long has your business been operating?", 600);
   A.q3 = await askChips([
     {label:'Less than 1 year',value:'lt1'},
@@ -729,25 +1087,18 @@ async function main() {
   ]);
   addBubble({'lt1':'Less than 1 year','1-2':'1–2 years','3-5':'3–5 years','6-10':'6–10 years','10plus':'10+ years'}[A.q3], 'user');
 
-  setProgress(8);
-  await speak("Now let's talk revenue — these help us compare you to real benchmarks. You can type a number, a rough estimate like "$380K", or skip any you don't know.", 800);
+  /* ── REVENUE (REDESIGNED) ── */
+  setProgress(10, 'Revenue');
+  await speak("Now let's talk revenue. Which of these years do you have numbers for? Select all that apply.", 800);
+  const _revYearSel = await askMultiChips([
+    {label:'3 years ago',              value:'y3'},
+    {label:'2 years ago',              value:'y2'},
+    {label:'Last year',                value:'y1'},
+    {label:'Current year (so far)',    value:'y0'},
+    {label:'Next year — my goal',      value:'yn'},
+  ], 1);
+  addBubble(_revYearSel.map(v=>({'y3':'3 years ago','y2':'2 years ago','y1':'Last year','y0':'Current year (so far)','yn':'Next year goal'}[v]||v)).join(', '), 'user');
 
-  await speak("What was your gross revenue last year?", 600);
-  const _revLY = await askTextOptional("Last year total — e.g. $240,000 or 240k");
-  addBubble(_revLY || '(skipped)', 'user');
-  A.q4_lastyear = _revLY;
-
-  await speak("What have you made so far this year?", 500);
-  const _revTY = await askTextOptional("Year-to-date — e.g. $90,000 or skip");
-  addBubble(_revTY || '(skipped)', 'user');
-  A.q4_thisyear = _revTY;
-
-  await speak("What's your revenue goal for this full year?", 500);
-  const _revGoal = await askTextOptional("Your target — e.g. $500K or skip");
-  addBubble(_revGoal || '(skipped)', 'user');
-  A.q4_goal = _revGoal;
-
-  // Parse revenue strings into numbers
   function _parseRev(s) {
     if (!s) return null;
     const c = s.replace(/[$,\s]/g,'').toLowerCase();
@@ -758,70 +1109,106 @@ async function main() {
     if (m[2]==='m') n*=1000000;
     return Math.round(n);
   }
-  const _rLY = _parseRev(_revLY), _rTY = _parseRev(_revTY), _rG = _parseRev(_revGoal);
-  A.q4_parsed = { lastYear:_rLY, thisYear:_rTY, goal:_rG };
 
-  // Show growth insight if we have two data points
-  if (_rLY && _rTY) {
-    const _month = new Date().getMonth()+1;
-    const _ann = Math.round(_rTY/_month*12);
-    const _growth = Math.round((_ann-_rLY)/_rLY*100);
-    A.q4_growth = _growth;
-    if (_growth > 20) await speak(`You're tracking about +${_growth}% growth year-over-year. The goal now is making sure your systems can handle that pace without breaking.`, 800);
-    else if (_growth >= 0) await speak(`Tracking roughly flat to ${_growth}% growth. Your report will show where the biggest revenue levers are.`, 700);
-    else await speak(`Revenue is down about ${Math.abs(_growth)}% from last year. Important context — we'll factor that in.`, 700);
-  } else if (_rLY || _rTY) {
+  const _revYearLabels = {y3:'3 years ago',y2:'2 years ago',y1:'last year',y0:'this year so far',yn:'your revenue goal for next year'};
+  A.q4_years = {};
+  for (const yr of _revYearSel) {
+    if (yr === 'y0') {
+      await speak(`What's your total gross revenue for ${new Date().getFullYear()}? Include what you've already collected plus what you expect to collect by year end. If you're not sure — skip it and we'll use last year as your baseline.`, 500);
+    } else {
+      await speak(`What was your gross revenue ${_revYearLabels[yr]}?`, 500);
+    }
+    const _v = await askTextOptional('e.g. $240,000 or 240k — or skip');
+    addBubble(_v || '(skipped)', 'user');
+    A.q4_years[yr] = _v;
+  }
+
+  const _revParsed = {};
+  for (const [yr, val] of Object.entries(A.q4_years)) { _revParsed[yr] = _parseRev(val); }
+  A.q4_parsed = _revParsed;
+
+  const _rY3=_revParsed.y3, _rY2=_revParsed.y2, _rY1=_revParsed.y1, _rY0=_revParsed.y0, _rYN=_revParsed.yn;
+
+  // Build growth analysis + show current year number to user
+  if (_rY0) {
+    const _curYear = new Date().getFullYear();
+    const _y0Fmt = _rY0 >= 1000000
+      ? '$' + (_rY0 / 1000000).toFixed(1).replace(/\.0$/, '') + 'M'
+      : '$' + Math.round(_rY0 / 1000) + 'K';
+    if (_rY1) {
+      const g = Math.round((_rY0 - _rY1) / _rY1 * 100);
+      A.q4_growth = g;
+      const _trend = g > 0 ? `up ${g}% vs last year` : g < 0 ? `down ${Math.abs(g)}% vs last year` : `flat vs last year`;
+      await speak(`Got it — ${_y0Fmt} for ${_curYear}, ${_trend}. We'll use that in your report.`, 800);
+    } else {
+      await speak(`Got it — ${_y0Fmt} for ${_curYear}. We'll use that in your report.`, 800);
+    }
+  } else if (Object.values(_revParsed).some(v => v)) {
     await speak(`Got it — we'll use that to calibrate your industry benchmarks.`, 600);
   }
 
-  // Derive legacy bucket for backward compat
-  const _revForBucket = _rLY||_rTY||_rG;
+  const _revForBucket = _rY1||_rY0||_rYN||_rY2||_rY3;
   if (_revForBucket) {
-    if (_revForBucket<50000)       A.q4='lt50k';
-    else if (_revForBucket<150000) A.q4='50k-150k';
-    else if (_revForBucket<300000) A.q4='150k-300k';
-    else if (_revForBucket<500000) A.q4='300k-500k';
-    else if (_revForBucket<750000) A.q4='500k-750k';
+    if (_revForBucket<50000)        A.q4='lt50k';
+    else if (_revForBucket<150000)  A.q4='50k-150k';
+    else if (_revForBucket<300000)  A.q4='150k-300k';
+    else if (_revForBucket<500000)  A.q4='300k-500k';
+    else if (_revForBucket<750000)  A.q4='500k-750k';
     else if (_revForBucket<1500000) A.q4='750k-1.5m';
     else if (_revForBucket<3000000) A.q4='1.5m-3m';
     else A.q4='gt3m';
   } else { A.q4='unknown'; }
 
-  setProgress(9);
-  await speak("How many people work in your business, including you?", 600);
+  /* ── TEAM SIZE (REDESIGNED) ── */
+  setProgress(11, 'Your team');
+  await speak("How is your business structured in terms of people?", 600);
   A.q5 = await askChips([
-    {label:'Just me',value:'solo'},
-    {label:'2–5 people',value:'2-5'},
-    {label:'6–15 people',value:'6-15'},
-    {label:'16–30 people',value:'16-30'},
-    {label:'30+ people',value:'30plus'},
+    {label:'Just me — I run it solo',           value:'solo'},
+    {label:'Me and my business partner',        value:'partner'},
+    {label:'We have a team',                    value:'team'},
   ]);
-  addBubble({'solo':'Just me','2-5':'2–5 people','6-15':'6–15 people','16-30':'16–30 people','30plus':'30+ people'}[A.q5], 'user');
+  const _q5L = {'solo':'Just me — solo','partner':'Me and my business partner','team':'We have a team'};
+  addBubble(_q5L[A.q5]||A.q5, 'user');
+
+  // Growth rate target
+  setProgress(12);
+  await speak("What annual growth rate are you targeting? (% increase in gross revenue per year)", 700);
+  A.growth_target_pct = await askNumber('% per year', 1, 500);
+  addBubble(A.growth_target_pct + '% annual growth target', 'user');
+
+  const _baseRev = _rY0||_rY1;
+  if (_baseRev && A.growth_target_pct) {
+    const _addedRev = Math.round(_baseRev * A.growth_target_pct / 100);
+    await speak(`${A.growth_target_pct}% growth means roughly $${(_addedRev/1000).toFixed(0)}K more in revenue per year. We'll analyze in your report whether your current team and systems can get you there — or what would need to change.`, 900);
+  } else {
+    await speak(`Got it — we'll benchmark that against typical growth rates in your industry.`, 700);
+  }
 
   /* ── DIAGNOSTIC QUESTIONS ── */
-  setProgress(10, 'Business health');
-  await speak("Now let's look at how your business actually runs. There are no right or wrong answers — just be honest.", 900);
+  setProgress(13, 'Business health');
+  await speak("Now let's look at how your business actually runs. Be honest — no right or wrong answers here.", 900);
 
-  await speak("Do you have documented processes for how your business runs? Select all that apply.", 700);
+  // SOPs (IMPROVED)
+  await speak("How documented are your business processes? Select all that apply.", 700);
   A.q6 = await askMultiChips([
-    {label:'Nothing documented',value:'nothing'},
-    {label:'Key steps in my head',value:'head'},
-    {label:'Some basic notes',value:'notes'},
-    {label:'Written SOPs exist',value:'sops'},
-    {label:'Full SOPs + trained team',value:'full-sops'},
+    {label:'Nothing is written down',                value:'nothing'},
+    {label:"It's all in my head",                    value:'head'},
+    {label:'Basic notes or checklists',              value:'notes'},
+    {label:'Written SOPs for some key areas',        value:'sops-partial'},
+    {label:'Full SOPs covering most processes',      value:'sops'},
+    {label:'Full SOPs + team trained and using them',value:'full-sops'},
   ], 1, ['nothing']);
-  const q6Labels = {'nothing':'Nothing documented','head':'Key steps in my head','notes':'Some basic notes','sops':'Written SOPs exist','full-sops':'Full SOPs + trained team'};
+  const q6Labels = {'nothing':'Nothing written','head':'All in my head','notes':'Basic notes','sops-partial':'SOPs for some areas','sops':'Full SOPs','full-sops':'Full SOPs + trained team'};
   addBubble(A.q6.map(v=>q6Labels[v]||v).join(', '), 'user');
 
-  // SOP branching
   A.q6_scenario = null;
   if (A.q6.includes('nothing') || (A.q6.length===1 && A.q6.includes('head'))) {
     await speak("Real question — if you got sick tomorrow and couldn't work for 2 weeks, what happens to your business?", 900);
     A.q6_scenario = await askChips([
-      {label:'It would basically stop',              value:'stop'},
-      {label:'Major problems, but would survive',    value:'struggle'},
-      {label:'Someone could figure it out',          value:'manage'},
-      {label:'It would run fine',                    value:'fine'},
+      {label:'It would basically stop',           value:'stop'},
+      {label:'Major problems, but would survive', value:'struggle'},
+      {label:'Someone could figure it out',       value:'manage'},
+      {label:'It would run fine',                 value:'fine'},
     ]);
     addBubble({stop:'It would stop',struggle:'Major problems but survive',manage:'Someone could figure it out',fine:'Would run fine'}[A.q6_scenario]||A.q6_scenario,'user');
     if (A.q6_scenario==='stop'||A.q6_scenario==='struggle') {
@@ -831,12 +1218,10 @@ async function main() {
     await speak("Full SOPs with a trained team is genuinely rare. Most owners never build this. Let's see how the rest of your operations compare.", 700);
   }
 
-  setProgress(11);
-  await speak("Do you have repeat customers — people who come back to use your business more than once?", 700);
-  const q7HasRepeat = await askChips([
-    {label:'Yes', value:'yes'},
-    {label:'No', value:'no'},
-  ]);
+  // REPEAT CUSTOMERS + AVG CHECK
+  setProgress(14);
+  await speak("Do you have repeat customers — people who come back more than once?", 700);
+  const q7HasRepeat = await askChips([{label:'Yes', value:'yes'},{label:'No', value:'no'}]);
   addBubble(q7HasRepeat === 'yes' ? 'Yes' : 'No', 'user');
 
   if (q7HasRepeat === 'no') {
@@ -844,10 +1229,7 @@ async function main() {
     await speak("Got it. Most one-time service businesses still have strong referral and review opportunities — we'll cover that in your report.", 700);
   } else {
     await speak("Do you know approximately what percentage of your customers come back?", 600);
-    const q7KnowRate = await askChips([
-      {label:"Yes, I track it", value:'yes'},
-      {label:"Not sure / I don't track it", value:'no'},
-    ]);
+    const q7KnowRate = await askChips([{label:"Yes, I track it", value:'yes'},{label:"Not sure / I don't track it", value:'no'}]);
     addBubble(q7KnowRate === 'yes' ? "Yes, I track it" : "Don't track it", 'user');
     if (q7KnowRate === 'yes') {
       await speak("What percentage of your customers return for repeat business?", 600);
@@ -864,41 +1246,74 @@ async function main() {
     }
   }
 
-  setProgress(12);
-  await speak(`You're halfway through, ${first}. The next questions go deeper — this is where we find the real gaps most business owners never see.`, 800);
+  // Average check / transaction value
+  await speak("Do you know your average transaction value — how much a typical customer spends per visit or job?", 700);
+  const _knowAvgCheck = await askChips([
+    {label:"Yes — I know it",      value:'yes'},
+    {label:"Roughly / estimate",   value:'roughly'},
+    {label:"I don't track it",     value:'no'},
+  ]);
+  addBubble({yes:"Yes, I know it",roughly:"Roughly",no:"I don't track it"}[_knowAvgCheck], 'user');
+  A.avg_check = null;
+  if (_knowAvgCheck !== 'no') {
+    await speak("What's your average transaction / average check?", 500);
+    A.avg_check = await askNumber('$ per transaction', 1, 500000);
+    addBubble('$' + Number(A.avg_check).toLocaleString() + ' avg transaction', 'user');
+  } else {
+    await speak("No problem — we'll flag this in your report. Knowing your average check is one of the most powerful numbers for calculating marketing ROI.", 700);
+  }
+
+  // New vs repeat customer split
+  setProgress(15);
+  await speak("Roughly what percentage of your monthly revenue comes from new customers vs returning ones?", 700);
+  const _knowSplit = await askChips([
+    {label:"Mostly new customers (70%+ new)",    value:'mostly-new'},
+    {label:"More new than returning (60/40)",    value:'more-new'},
+    {label:"About equal (50/50)",                value:'equal'},
+    {label:"More returning than new (60/40)",    value:'more-returning'},
+    {label:"Mostly returning customers (70%+)",  value:'mostly-returning'},
+    {label:"I don't know",                       value:'unknown'},
+  ]);
+  const _splitL = {'mostly-new':'Mostly new','more-new':'More new (60/40)','equal':'About equal','more-returning':'More returning (60/40)','mostly-returning':'Mostly returning','unknown':"Don't know"};
+  addBubble(_splitL[_knowSplit]||_knowSplit,'user');
+  A.customer_split = _knowSplit;
+
+  // FOLLOW-UP
+  setProgress(16);
+  await speak(`You're about halfway through, ${first}. The next questions go deeper — this is where we find the real gaps most business owners never see.`, 800);
   await speak("What happens after someone shows interest but doesn't buy immediately?", 700);
   A.q8 = await askChips([
-    {label:"Nothing — they go cold",value:'nothing'},
-    {label:'I follow up manually sometimes',value:'manual'},
-    {label:'I have a set follow-up process',value:'process'},
-    {label:'Automated follow-up system',value:'automated'},
+    {label:"Nothing — they go cold",           value:'nothing'},
+    {label:'I follow up manually sometimes',   value:'manual'},
+    {label:'I have a set follow-up process',   value:'process'},
+    {label:'Automated follow-up system',       value:'automated'},
   ]);
   addBubble({'nothing':'Nothing — they go cold','manual':'I follow up manually sometimes','process':'I have a set follow-up process','automated':'Automated follow-up system'}[A.q8], 'user');
 
-  setProgress(13);
+  // MARKETING SOURCES
+  setProgress(17);
   await speak("How do new customers find you? Select all that apply.", 700);
   A.q9 = await askMultiChips([
-    {label:'Word of mouth',value:'word-of-mouth'},
-    {label:'Google search',value:'google'},
-    {label:'Social media',value:'social'},
-    {label:'Paid ads',value:'paid-ads'},
-    {label:'Other',value:'other'},
+    {label:'Word of mouth / referrals',             value:'word-of-mouth'},
+    {label:'Google search (organic)',               value:'google'},
+    {label:'Google Local Services Ads (LSA)',       value:'lsa'},
+    {label:'Yelp / Angi / Thumbtack / HomeAdvisor', value:'directories'},
+    {label:'Nextdoor',                              value:'nextdoor'},
+    {label:'Social media (organic)',                value:'social'},
+    {label:'Paid ads (Google/Meta)',                value:'paid-ads'},
+    {label:'Networking / events',                   value:'networking'},
+    {label:'Other',                                 value:'other'},
   ], 1);
-  addBubble(A.q9.map(v=>({'word-of-mouth':'Word of mouth','google':'Google search','social':'Social media','paid-ads':'Paid ads','other':'Other'}[v]||v)).join(', '), 'user');
+  addBubble(A.q9.map(v=>({'word-of-mouth':'Word of mouth','google':'Google search','lsa':'Google LSA','directories':'Yelp/Angi/Thumbtack','nextdoor':'Nextdoor','social':'Social media','paid-ads':'Paid ads','networking':'Networking','other':'Other'}[v]||v)).join(', '), 'user');
 
-  // Paid ads follow-up
   A.q9_adspend = null;
   A.q9_leads = null;
-  if (A.q9.includes('paid-ads')) {
-    await speak("You mentioned paid ads. How much do you spend on ads per month approximately?", 700);
+  if (A.q9.includes('paid-ads') || A.q9.includes('lsa') || A.q9.includes('directories')) {
+    await speak("You mentioned paid / directory advertising. How much do you spend on those per month approximately?", 700);
     A.q9_adspend = await askNumber('$/month', 0, 100000);
     addBubble('$' + Number(A.q9_adspend).toLocaleString() + '/month', 'user');
-
     await speak("Do you know how many leads those ads generate per month?", 600);
-    const knowLeads = await askChips([
-      {label:"Yes, I track it", value:'yes'},
-      {label:"Not sure / I don't track it", value:'no'},
-    ]);
+    const knowLeads = await askChips([{label:"Yes, I track it", value:'yes'},{label:"Not sure / I don't track it", value:'no'}]);
     addBubble(knowLeads === 'yes' ? "Yes, I track it" : "Don't track it", 'user');
     if (knowLeads === 'yes') {
       await speak("Approximately how many leads per month?", 500);
@@ -909,285 +1324,783 @@ async function main() {
     }
   }
 
-  // Closing rate
+  // CLOSING RATE
   A.q9_close = null;
   await speak("Do you know your closing rate — what percentage of leads or inquiries turn into paying customers?", 700);
-  const knowClose = await askChips([
-    {label:"Yes, I know it", value:'yes'},
-    {label:"Not sure / don't track it", value:'no'},
-  ]);
+  const knowClose = await askChips([{label:"Yes, I know it", value:'yes'},{label:"Not sure / don't track it", value:'no'}]);
   addBubble(knowClose === 'yes' ? "Yes, I know it" : "Don't track it", 'user');
   if (knowClose === 'yes') {
     await speak("What's your closing rate approximately?", 500);
     A.q9_close = await askNumber('%', 1, 100);
     addBubble(A.q9_close + '%', 'user');
+    // Calculate cost per lead / cost per customer if we have the data
+    if (A.q9_adspend && A.q9_leads && A.avg_check) {
+      const _cpl = Math.round(A.q9_adspend / A.q9_leads);
+      const _cpc = Math.round(_cpl / (A.q9_close / 100));
+      const _profitable = A.avg_check > _cpc;
+      await speak(`Quick math: your cost per lead is ~$${_cpl}, cost per new customer is ~$${_cpc}. Your average check is $${Number(A.avg_check).toLocaleString()} — that's ${_profitable ? 'profitable on ads' : 'worth watching closely'}. We'll break this down fully in your report.`, 1000);
+    }
   } else {
     const industryCloseRates = {'home-services':'20–35%','construction':'25–40%','food-bev':'N/A','retail':'N/A','health-wellness':'40–60%','professional-services':'20–35%','auto':'30–50%','real-estate':'5–15%'};
     const benchmark = industryCloseRates[A.q1] || '20–40%';
-    await speak(`No worries — most business owners don't track this either. In ${({'home-services':'home services','construction':'construction','health-wellness':'health & wellness','professional-services':'professional services','auto':'auto services','real-estate':'real estate','food-bev':'food & beverage','retail':'retail'}[A.q1]||'your industry')}, typical closing rates run ${benchmark}. We'll flag this in your report — it's one of the fastest ways to grow revenue without spending more on ads.`, 900);
+    await speak(`No worries — most business owners don't track this either. In your industry, typical closing rates run ${benchmark}. We'll compare yours against that benchmark in your report.`, 900);
   }
 
-  setProgress(14);
+  // EXPENSE BREAKDOWN
+  setProgress(18);
+  await speak("From the revenue you bring in — what are your main expense categories? Select all that apply.", 700);
+  const _expCats = await askMultiChips([
+    {label:'Operations & overhead',         value:'operations'},
+    {label:'Materials, parts & supplies',   value:'materials'},
+    {label:'Software & tools',              value:'software'},
+    {label:'Loan & debt payments',          value:'loans'},
+    {label:'Marketing & advertising',       value:'marketing'},
+    {label:'Equipment & vehicles',          value:'equipment'},
+    {label:'Other',                         value:'other'},
+  ], 1);
+  addBubble(_expCats.map(v=>({'operations':'Operations','materials':'Materials/parts','software':'Software','loans':'Loans/debt','marketing':'Marketing','equipment':'Equipment','other':'Other'}[v]||v)).join(', '),'user');
+
+  A.expense_breakdown = {};
+  if (_expCats.length > 0) {
+    await speak("For each category — enter either a % of revenue or a dollar amount (monthly or yearly). We'll convert everything to % automatically. Skip any you're not sure about.", 700);
+    const _expLabels = {operations:'Operations & overhead',materials:'Materials, parts & supplies',software:'Software & tools',loans:'Loans & debt payments',marketing:'Marketing & ads',equipment:'Equipment & vehicles',other:'Other expenses'};
+    const _annRevForExp = _rY1 || _rY0 || 0;
+    for (const cat of _expCats) {
+      await speak(`${_expLabels[cat]||cat} — enter % or $ amount (or skip):`, 400);
+      const _expInput = await askTextOptional('e.g. 25% or $4,000/mo or $48,000/yr — or skip');
+      addBubble(_expInput || '(skipped)', 'user');
+      if (!_expInput) { A.expense_breakdown[cat] = null; continue; }
+      const _clean = _expInput.replace(/[$,\s]/g,'').toLowerCase();
+      let _pctResult = null;
+      if (_clean.includes('%')) {
+        _pctResult = parseFloat(_clean.replace('%',''));
+      } else if (_annRevForExp > 0) {
+        // Dollar amount — detect if yearly or monthly
+        const _isYearly = _expInput.toLowerCase().includes('yr') || _expInput.toLowerCase().includes('year') || _expInput.toLowerCase().includes('/y');
+        const _numVal = parseFloat(_clean.replace(/[^0-9.]/g,''));
+        if (!isNaN(_numVal)) {
+          const _annual = _isYearly ? _numVal : _numVal * 12;
+          _pctResult = Math.round(_annual / _annRevForExp * 100);
+          addBubble(`≈ ${_pctResult}% of annual revenue`, 'bot', true);
+        }
+      } else {
+        // No revenue data — try to parse raw % from input
+        const _numVal = parseFloat(_clean.replace(/[^0-9.]/g,''));
+        _pctResult = isNaN(_numVal) ? null : _numVal;
+      }
+      A.expense_breakdown[cat] = isNaN(_pctResult) ? null : _pctResult;
+    }
+    const _knownPct = Object.values(A.expense_breakdown).filter(v=>v!==null).reduce((a,b)=>a+b,0);
+    if (_knownPct > 0) {
+      await speak(`Based on what you shared, about ${Math.round(_knownPct)}% of revenue goes to these categories. We'll analyze what the margins look like in your report.`, 800);
+    }
+  }
+
+  // MATERIALS FOLLOW-UP
+  A.materials_pct = null;
+  A.materials_markup_pct = null;
+  if (_expCats.includes('materials')) {
+    await speak("What percentage of your job revenue typically goes to materials, parts, or supplies? For example, type 20 for 20%.", 600);
+    A.materials_pct = await askNumber('%', 0, 100);
+    addBubble(A.materials_pct + '% to materials', 'user');
+    await speak("Do you mark up materials when billing clients?", 500);
+    const _markupQ = await askChips([
+      {label:'Yes — I add a markup', value:'yes'},
+      {label:'No — I charge cost',   value:'no'},
+    ], 0);
+    addBubble(_markupQ === 'yes' ? 'Yes, I mark up materials' : 'No markup', 'user');
+    if (_markupQ === 'yes') {
+      await speak("What markup percentage do you typically apply?", 500);
+      A.materials_markup_pct = await askNumber('% markup', 0, 200);
+      addBubble(A.materials_markup_pct + '% markup', 'user');
+    } else {
+      A.materials_markup_pct = 0;
+    }
+  }
+
+  // ONLINE REVIEWS
+  setProgress(19);
   A.q10 = null;
   if (A.company_confirmed) {
-    await speak("Since we found your business on Google Maps, we'll pull your review rating directly from there — we'll include the link in your report.", 700);
+    await speak("Since we found your business on Google Maps, we'll pull your review data directly — we'll include it in your report.", 700);
   } else {
     await speak("What is your average online review rating?", 700);
     A.q10 = await askChips([
-      {label:'No reviews yet',value:'no-reviews'},
-      {label:'1–3 stars',value:'1-3'},
-      {label:'3–4 stars',value:'3-4'},
-      {label:'4–4.5 stars',value:'4-4.5'},
-      {label:'4.5–5 stars',value:'4.5-5'},
+      {label:'No reviews yet',   value:'no-reviews'},
+      {label:'1–3 stars',        value:'1-3'},
+      {label:'3–4 stars',        value:'3-4'},
+      {label:'4–4.5 stars',      value:'4-4.5'},
+      {label:'4.5–5 stars',      value:'4.5-5'},
     ]);
     addBubble({'no-reviews':'No reviews yet','1-3':'1–3 stars','3-4':'3–4 stars','4-4.5':'4–4.5 stars','4.5-5':'4.5–5 stars'}[A.q10], 'user');
   }
 
-  setProgress(15);
-  await speak("Which tasks does your team still do manually every week? Select all that apply.", 700);
-  A.q11 = await askMultiChips([
-    {label:'Scheduling',value:'scheduling'},
-    {label:'Invoicing',value:'invoicing'},
-    {label:'Customer follow-up',value:'follow-up'},
-    {label:'Reporting',value:'reporting'},
-    {label:'Data entry',value:'data-entry'},
-    {label:'None — mostly automated',value:'none'},
-  ], 1);
-  addBubble(A.q11.includes('none') ? 'Mostly automated' : A.q11.join(', '), 'user');
+  await speak("Do you regularly check and respond to your online reviews?", 600);
+  A.review_monitoring = await askChips([
+    {label:"Yes — I check regularly",             value:'yes'},
+    {label:"Sometimes, but not consistently",     value:'sometimes'},
+    {label:"Rarely",                              value:'rarely'},
+    {label:"No — I don't check",                  value:'no'},
+  ]);
+  addBubble({yes:"Yes, regularly",sometimes:"Sometimes",rarely:"Rarely",no:"Don't check"}[A.review_monitoring]||A.review_monitoring,'user');
 
-  // Task management + follow-up follow-up questions
-  A.q11b = null;
-  A.q11c = null;
+  await speak("Do you actively ask customers for reviews?", 500);
+  A.review_requests = await askChips([
+    {label:"Yes — I ask in person",              value:'manual'},
+    {label:"Yes — automated (text or email)",    value:'automated'},
+    {label:"Sometimes, but inconsistently",      value:'sometimes'},
+    {label:"No — I don't ask",                   value:'no'},
+  ]);
+  addBubble({manual:"Ask in person",automated:"Automated requests",sometimes:"Sometimes",no:"Don't ask"}[A.review_requests]||A.review_requests,'user');
+  if (A.review_requests === 'automated') {
+    await speak("Automated review requests — that's one of the highest-ROI systems a local business can have. We'll confirm whether yours is optimized in your report.", 700);
+  } else if (A.review_requests === 'no') {
+    await speak("Not asking for reviews is one of the most common missed opportunities we see. Even a simple text request after a job can 3x your review volume. We'll cover this.", 800);
+  }
+
+  // MANUAL TASKS
+  setProgress(20);
+  const _isSolo = A.q5 === 'solo';
+  await speak(_isSolo
+    ? "Which tasks do you still handle manually yourself every week? Select all that apply."
+    : "Which tasks does your team still do manually every week? Select all that apply.", 700);
+  A.q11 = await askMultiChips([
+    {label:'Scheduling & booking',                                    value:'scheduling'},
+    {label:'Invoicing & billing',                                     value:'invoicing'},
+    {label:'Customer follow-up',                                      value:'follow-up'},
+    {label:'Reporting & tracking',                                    value:'reporting'},
+    {label:'Data entry',                                              value:'data-entry'},
+    {label: _isSolo ? 'Contractor payments' : 'Payroll processing',  value:'payroll'},
+    {label:'Other — I\'ll describe it',                              value:'other'},
+    {label:'None — mostly automated',                                 value:'none'},
+  ], 1);
+  A.q11_other = null;
+  if (A.q11.includes('other') && !A.q11.includes('none')) {
+    await speak("Describe the other manual tasks — even rough notes are helpful.", 500);
+    A.q11_other = await askTextOptional("e.g. manually sending weekly updates to clients, printing reports…");
+    addBubble(A.q11_other || '(skipped)', 'user');
+  }
+  const _q11Labels = {'scheduling':'Scheduling','invoicing':'Invoicing','follow-up':'Customer follow-up','reporting':'Reporting','data-entry':'Data entry','payroll':'Payroll','other':A.q11_other?`Other: ${A.q11_other}`:'Other'};
+  addBubble(A.q11.includes('none') ? 'Mostly automated' : A.q11.map(v=>_q11Labels[v]||v).join(', '), 'user');
+
+  A.q11b = null; A.q11c = null;
   if (!A.q11.includes('none')) {
-    await speak("Do you use any tool to manage tasks and track what your team is working on?", 600);
-    A.q11b = await askChips([
-      {label:'No — we handle it verbally',value:'verbal'},
-      {label:'Text or WhatsApp group',value:'chat'},
-      {label:'Spreadsheet or notes',value:'spreadsheet'},
-      {label:'Project management tool (Trello, Asana, etc.)',value:'pm-tool'},
-      {label:'Industry-specific software',value:'industry-software'},
-    ]);
-    const q11bLabels = {verbal:'Verbal only',chat:'Text/WhatsApp',spreadsheet:'Spreadsheet',
-      'pm-tool':'Project management tool','industry-software':'Industry software'};
-    addBubble(q11bLabels[A.q11b] || A.q11b, 'user');
+    await speak(_isSolo
+      ? "Do you use any tool to manage and track your own tasks? Select all that apply."
+      : "Do you use any tool to manage tasks and track what your team is working on? Select all that apply.", 600);
+    A.q11b = await askMultiChips([
+      {label:'No — we handle it verbally',                       value:'verbal'},
+      {label:'Text, Slack or similar chat',                      value:'chat'},
+      {label:'Spreadsheet or notes',                             value:'spreadsheet'},
+      {label:'Project management tool (Trello, Asana, etc.)',    value:'pm-tool'},
+      {label:'Industry-specific software',                       value:'industry-software'},
+    ], 1);
+    const _q11bL = {verbal:'Verbal only',chat:'Text/Slack/chat',spreadsheet:'Spreadsheet','pm-tool':'PM tool','industry-software':'Industry software'};
+    addBubble(A.q11b.map(v=>_q11bL[v]||v).join(', '),'user');
 
     await speak("How do you track customer follow-ups — making sure no one falls through the cracks?", 600);
     A.q11c = await askChips([
-      {label:"We don't — people slip through",value:'none'},
-      {label:'I remember them myself',value:'memory'},
-      {label:'Sticky notes or whiteboard',value:'physical'},
-      {label:'Spreadsheet or calendar',value:'spreadsheet'},
-      {label:'CRM or automated system',value:'crm'},
+      {label:"We don't — people slip through", value:'none'},
+      {label:'I remember them myself',          value:'memory'},
+      {label:'Sticky notes or whiteboard',      value:'physical'},
+      {label:'Spreadsheet or calendar',         value:'spreadsheet'},
+      {label:'CRM or automated system',         value:'crm'},
     ]);
-    const q11cLabels = {none:'Nothing in place',memory:'I remember them',physical:'Physical notes',
-      spreadsheet:'Spreadsheet/calendar',crm:'CRM / automated'};
-    addBubble(q11cLabels[A.q11c] || A.q11c, 'user');
+    addBubble({none:'Nothing in place',memory:'I remember them',physical:'Physical notes',spreadsheet:'Spreadsheet/calendar',crm:'CRM / automated'}[A.q11c]||A.q11c,'user');
   }
 
-  setProgress(16);
-  await speak("How do you currently manage team performance? Select all that apply.", 700);
-  A.q12 = await askMultiChips([
-    {label:'No formal process',value:'none'},
-    {label:'Informal check-ins',value:'informal'},
-    {label:'Regular 1-on-1s',value:'one-on-ones'},
-    {label:'KPIs and performance tracking',value:'kpis'},
-    {label:'Written scorecards or accountability system',value:'formal'},
-    {label:'Formal performance reviews (quarterly/annual)',value:'reviews'},
-  ], 1);
-  const q12Labels = {'none':'No formal process','informal':'Informal check-ins','one-on-ones':'Regular 1-on-1s','kpis':'KPIs and tracking','formal':'Written scorecards','reviews':'Formal reviews'};
-  addBubble(A.q12.map(v => q12Labels[v] || v).join(', '), 'user');
+  // CURRENT SOFTWARE STACK
+  await speak("What software or apps does your business currently use day-to-day? Type them separated by commas — anything counts: accounting, scheduling, communication, tracking, anything.", 700);
+  A.current_software = await askTextOptional("e.g. QuickBooks, Google Sheets, WhatsApp, Jobber, Excel…");
+  addBubble(A.current_software || 'None listed', 'user');
+  if (A.current_software) {
+    await speak("Got it — we'll analyze your current tech stack and show you what's missing and what could be working harder for you.", 600);
+  }
 
-  setProgress(17);
+  // TEAM PERFORMANCE — skip for solo operators
+  setProgress(21);
+  A.q12 = null;
+  if (!_isSolo) {
+    await speak("How do you currently manage team performance? Select all that apply.", 700);
+    A.q12 = await askMultiChips([
+      {label:'No formal process',                                  value:'none'},
+      {label:'Informal check-ins when issues come up',             value:'informal'},
+      {label:'Regular 1-on-1s with team members',                  value:'one-on-ones'},
+      {label:'KPIs and performance tracking',                      value:'kpis'},
+      {label:'Written scorecards or accountability system',        value:'formal'},
+      {label:'Formal performance reviews (quarterly/annual)',      value:'reviews'},
+    ], 1);
+    const q12Labels = {'none':'No formal process','informal':'Informal check-ins','one-on-ones':'Regular 1-on-1s','kpis':'KPIs and tracking','formal':'Written scorecards','reviews':'Formal reviews'};
+    addBubble(A.q12.map(v=>q12Labels[v]||v).join(', '), 'user');
+  }
+
+  // FINANCIAL REVIEW
+  setProgress(22);
   await speak("How often do you review your business financials?", 700);
   A.q13 = await askChips([
-    {label:'Rarely or never',value:'rarely'},
-    {label:'At tax time only',value:'tax-time'},
-    {label:'Quarterly',value:'quarterly'},
-    {label:'Monthly',value:'monthly'},
-    {label:'Weekly',value:'weekly'},
+    {label:'Rarely or never',   value:'rarely'},
+    {label:'At tax time only',  value:'tax-time'},
+    {label:'Quarterly',         value:'quarterly'},
+    {label:'Monthly',           value:'monthly'},
+    {label:'Weekly',            value:'weekly'},
   ]);
   addBubble({'rarely':'Rarely or never','tax-time':'At tax time only','quarterly':'Quarterly','monthly':'Monthly','weekly':'Weekly'}[A.q13], 'user');
 
-  setProgress(18);
-  await speak("Do you track key business numbers in a dashboard or regular report?", 700);
+  // CASH FLOW
+  await speak("Right now — would you say your business is positive or negative cash flow?", 600);
+  A.cash_flow = await askChips([
+    {label:"Positive — more coming in than going out", value:'positive'},
+    {label:"Break-even most months",                   value:'break-even'},
+    {label:"Negative — spending more than coming in",  value:'negative'},
+    {label:"It varies a lot month to month",           value:'varies'},
+    {label:"I'm honestly not sure",                    value:'unsure'},
+  ]);
+  addBubble({positive:"Positive cash flow",'break-even':"Break-even",negative:"Negative cash flow",varies:"Varies monthly",unsure:"Not sure"}[A.cash_flow]||A.cash_flow,'user');
+  if (A.cash_flow==='negative') { await speak("Cash flow negative is fixable — but it's urgent. We'll prioritize this in your report.", 700); }
+  else if (A.cash_flow==='positive') { await speak("Good — positive cash flow gives you options. Let's make sure you're maximizing them.", 600); }
+
+  await speak("How do you track your cash flow?", 500);
+  A.cashflow_tracking = await askChips([
+    {label:"Accounting software (QuickBooks, Wave, etc.)", value:'software'},
+    {label:"Manually in a spreadsheet",                   value:'spreadsheet'},
+    {label:"My accountant or bookkeeper handles it",      value:'accountant'},
+    {label:"I don't really track it",                     value:'none'},
+  ]);
+  addBubble({software:"Accounting software",spreadsheet:"Spreadsheet",accountant:"Accountant/bookkeeper",none:"Not tracking"}[A.cashflow_tracking]||A.cashflow_tracking,'user');
+
+  // P&L
+  await speak("Do you have a Profit & Loss statement for your business?", 600);
+  A.has_pl = await askChips([
+    {label:"Yes — my CPA prepares it",        value:'cpa'},
+    {label:"Yes — I track it myself",         value:'self'},
+    {label:"No — I don't have one",           value:'no'},
+    {label:"I'm not sure what that is",       value:'unsure'},
+  ]);
+  addBubble({cpa:"CPA prepares P&L",self:"Self-prepared P&L",no:"No P&L",unsure:"Not sure what P&L is"}[A.has_pl]||A.has_pl,'user');
+
+  if (A.has_pl==='cpa'||A.has_pl==='self') {
+    await speak("Do you actually use it to make decisions — like when to hire, invest in ads, or buy equipment?", 500);
+    A.pl_usage = await askChips([
+      {label:"Yes — I review it and act on it",          value:'active'},
+      {label:"I look at it but don't really act on it",  value:'passive'},
+      {label:"My accountant uses it, not really me",     value:'accountant-only'},
+    ]);
+    addBubble({active:"Uses P&L actively",passive:"Looks but doesn't act",'accountant-only':"Accountant only"}[A.pl_usage]||A.pl_usage,'user');
+  }
+
+  // BANKING SEPARATION
+  await speak("Do you keep your personal and business finances in separate bank accounts?", 600);
+  A.bank_personal_biz = await askChips([
+    {label:'Yes — completely separate', value:'yes'},
+    {label:'No — mixed together',       value:'no'},
+    {label:'Partially separated',       value:'partial'},
+  ]);
+  addBubble({'yes':'Fully separate','no':'Mixed together','partial':'Partially separated'}[A.bank_personal_biz]||A.bank_personal_biz,'user');
+  if (A.bank_personal_biz==='no') {
+    await speak("Mixing personal and business money is one of the fastest ways to lose track of profit, complicate taxes, and create liability risk. We'll flag this in your report.", 700);
+  }
+  A.bank_multi_accounts = null;
+  A.bank_account_types = null;
+  if (A.bank_personal_biz==='yes'||A.bank_personal_biz==='partial') {
+    await speak("Do you also keep separate accounts for different business purposes — like taxes, payroll, or operating expenses?", 600);
+    A.bank_multi_accounts = await askChips([
+      {label:'Yes — I have multiple purpose-specific accounts', value:'yes'},
+      {label:'No — everything goes into one business account',  value:'no'},
+    ]);
+    addBubble(A.bank_multi_accounts==='yes'?'Multiple purpose accounts':'One business account','user');
+    if (A.bank_multi_accounts==='yes') {
+      await speak("Which accounts do you have? Select all that apply.", 500);
+      A.bank_account_types = await askMultiChips([
+        {label:'Operations / main account',  value:'operations'},
+        {label:'Tax reserve account',        value:'taxes'},
+        {label:'Payroll / salaries account', value:'payroll'},
+        {label:'Marketing / ad spend',       value:'marketing'},
+        {label:'Emergency / reserve fund',   value:'reserve'},
+      ], 1);
+      addBubble(A.bank_account_types.map(v=>({'operations':'Operations','taxes':'Tax reserve','payroll':'Payroll','marketing':'Marketing','reserve':'Emergency reserve'}[v]||v)).join(', '),'user');
+      await speak("That's a strong financial foundation — multiple purpose accounts show real financial discipline.", 600);
+    } else {
+      await speak("Running everything through one account works, but separating at least a tax reserve account can protect you from a big surprise at year-end.", 700);
+    }
+  }
+
+  // DASHBOARD
+  setProgress(23);
+  await speak("How do you keep an eye on how your business is actually doing — revenue, costs, customers?", 700);
   A.q14 = await askChips([
-    {label:'No tracking',value:'none'},
-    {label:'I check occasionally',value:'occasional'},
-    {label:'Basic spreadsheet',value:'spreadsheet'},
-    {label:'Software dashboard',value:'dashboard'},
-    {label:'Real-time automated reporting',value:'automated'},
+    {label:'I go by feel — I know roughly where things stand',          value:'none'},
+    {label:'I check when something feels off',                          value:'occasional'},
+    {label:'Basic spreadsheet I update manually',                       value:'spreadsheet'},
+    {label:'Software with built-in reports (QuickBooks, HubSpot…)',    value:'dashboard'},
+    {label:'Real-time dashboard — numbers update automatically',        value:'automated'},
   ]);
-  addBubble({'none':'No tracking','occasional':'I check occasionally','spreadsheet':'Basic spreadsheet','dashboard':'Software dashboard','automated':'Real-time automated reporting'}[A.q14], 'user');
+  addBubble({'none':'By feel','occasional':'Check when something feels off','spreadsheet':'Manual spreadsheet','dashboard':'Software reports','automated':'Real-time dashboard'}[A.q14]||A.q14, 'user');
 
-  setProgress(19);
-  await speak("What is your primary goal for the next 12 months?", 700);
-  A.q15 = await askChips([
-    {label:'Survive and stabilize',value:'survive'},
-    {label:'Increase revenue',value:'revenue'},
-    {label:'Reduce owner dependency',value:'owner-dep'},
-    {label:'Build a team',value:'team'},
-    {label:'Automate and scale',value:'automate'},
-    {label:'Exit or sell',value:'exit'},
-  ]);
-  addBubble({'survive':'Survive and stabilize','revenue':'Increase revenue','owner-dep':'Reduce owner dependency','team':'Build a team','automate':'Automate and scale','exit':'Exit or sell'}[A.q15], 'user');
+  /* ── GOALS (REDESIGNED) ── */
+  setProgress(24, 'Goals');
+  await speak(`${first}, let's talk about where you want to take this.`, 800);
 
-  await speak("And thinking bigger — what's your goal for the next 5 years?", 700);
-  A.q15b = await askChips([
-    {label:'Keep growing steadily',value:'steady'},
-    {label:'Build a larger company (team, locations)',value:'scale'},
-    {label:'Remove myself — run without me day-to-day',value:'remove-self'},
-    {label:'Sell the business',value:'exit'},
-    {label:'Pass it to family',value:'legacy'},
-    {label:'Not sure yet',value:'unsure'},
-  ]);
+  await speak("What are your primary goals for the next 12 months? Pick up to 2.", 700);
+  A.q15 = await askMultiChips([
+    {label:'Survive and stabilize',                          value:'survive'},
+    {label:'Increase gross revenue',                         value:'revenue'},
+    {label:'Improve profitability (not just revenue)',        value:'profit'},
+    {label:'Reduce owner dependency',                        value:'owner-dep'},
+    {label:'Build and grow the team',                        value:'team'},
+    {label:'Automate operations and scale',                  value:'automate'},
+    {label:'Exit or sell the business',                      value:'exit'},
+  ], 1);
+  const _q15Labels = {survive:'Survive & stabilize',revenue:'Increase revenue',profit:'Improve profitability','owner-dep':'Reduce owner dependency',team:'Build the team',automate:'Automate & scale',exit:'Exit/sell'};
+  addBubble(A.q15.map(v=>_q15Labels[v]||v).join(', '), 'user');
+  A.q15_primary = A.q15[0];
+
+  await speak("And your 3-year vision — what does success look like for you in 3 years? Select all that apply.", 700);
+  A.goal_3yr = await askMultiChips([
+    {label:'Revenue over $250K',                            value:'250k'},
+    {label:'Revenue over $500K',                            value:'500k'},
+    {label:'Revenue over $1M',                              value:'1m'},
+    {label:'Revenue over $3M',                              value:'3m'},
+    {label:'Revenue over $5M+',                             value:'5mplus'},
+    {label:'A business that runs without me day-to-day',    value:'remove-self'},
+    {label:'Multiple locations or service areas',           value:'multi-location'},
+    {label:'Sell or exit the business',                     value:'exit'},
+    {label:'Keep it stable and profitable',                 value:'stable'},
+    {label:'Pass it to family',                             value:'legacy'},
+  ], 1);
+  const _g3L = {'250k':'Revenue over $250K','500k':'Revenue over $500K','1m':'Revenue over $1M','3m':'Revenue over $3M','5mplus':'Revenue over $5M+','remove-self':'Business runs without me','multi-location':'Multiple locations','exit':'Sell/exit','stable':'Stable & profitable','legacy':'Pass to family'};
+  addBubble(A.goal_3yr.map(v=>_g3L[v]||v).join(', '),'user');
+
+  await speak("And the 5-year picture? Select all that apply.", 600);
+  A.q15b = await askMultiChips([
+    {label:'Keep growing steadily',                         value:'steady'},
+    {label:'Build a larger company (team, locations)',      value:'scale'},
+    {label:'Remove myself — run without me day-to-day',    value:'remove-self'},
+    {label:'Sell the business',                             value:'exit'},
+    {label:'Pass it to family',                             value:'legacy'},
+    {label:'Not sure yet',                                  value:'unsure'},
+  ], 1);
   const q15bLabels = {'steady':'Keep growing steadily','scale':'Build a larger company','remove-self':'Remove myself from daily ops','exit':'Sell the business','legacy':'Pass to family','unsure':'Not sure yet'};
-  addBubble(q15bLabels[A.q15b] || A.q15b, 'user');
+  addBubble(A.q15b.map(v=>q15bLabels[v]||v).join(', '),'user');
 
   await speak("One last thing before we get into numbers — what's the single biggest thing holding your business back right now? Be as specific as you want.", 800);
   const pain = await askTextOptional("Type your answer (or skip)");
   if (pain) { addBubble(pain, 'user'); } else { addBubble('(skipped)', 'user'); }
   A.q_pain = pain;
 
-  /* ── OWNER ECONOMICS ── */
-  setProgress(20, 'Owner economics');
-  await speak(`Last section, ${first}. These questions help us calculate something most business owners have never seen about their own business.`, 900);
+  /* ── PAYROLL DELAY CHECK (only fires when calculated cash flow is negative) ── */
+  {
+    const _cfRevAnnual = _rY1 || _rY0 || 0;
+    const _cfRevMo = _cfRevAnnual > 0 ? Math.round(_cfRevAnnual / 12) : 0;
+    const _cfExpPct = Object.entries(A.expense_breakdown||{}).filter(([,v])=>v!=null).reduce((s,[,v])=>s+Number(v),0) / 100;
+    const _cfPartnerPay = (A.partners||[]).reduce((s,p)=>s+(p.pay_total||0), 0);
+    const _cfAllDraws = (A.q16||0) + _cfPartnerPay;
+    if (_cfRevMo > 0 && _cfExpPct > 0 && _cfAllDraws > 0) {
+      const _cfNet = Math.round(_cfRevMo * (1 - _cfExpPct) - _cfAllDraws);
+      if (_cfNet < 0 && !_isSolo) {
+        await speak(`Based on what you've shared, your expenses and owner draws currently exceed your revenue by about $${Math.abs(_cfNet).toLocaleString()}/month. One critical question — are you currently behind on paying your team members or contractors?`, 1100);
+        await speak(`By "pay date" we mean the day you normally send payment — whether that's a weekly contractor invoice, a bi-weekly payroll run, or a monthly transfer. This applies to W2 employees and 1099 contractors equally.`, 900);
+        A.behind_on_payroll = await askChips([
+          {label:'No — we always pay on time',          value:'no'},
+          {label:'Yes — sometimes a few days late',      value:'yes'},
+          {label:'Yes — usually a week or more late',    value:'yes-severe'},
+        ]);
+        const _bopLabel = {'no':'No, always on time','yes':'Yes, sometimes late','yes-severe':'Yes, usually a week+ late'};
+        addBubble(_bopLabel[A.behind_on_payroll]||A.behind_on_payroll, 'user');
+        if (A.behind_on_payroll === 'yes' || A.behind_on_payroll === 'yes-severe') {
+          await speak("On average, how many days after that scheduled pay date do your team members or contractors typically receive payment?", 700);
+          const _bDays = await askNumber('days late', 1, 90);
+          addBubble(_bDays + ' days late on average', 'user');
+          A.behind_payroll_days = Number(_bDays);
+          await speak("Understood — this will be flagged as a critical priority in your report. Being behind on payroll means you're using future revenue to cover current costs, and if revenue softens, that gap compounds fast.", 1000);
+        } else {
+          await speak("Good — staying current on payroll is important. We'll still flag the cash flow gap in your report and show you the specific steps to close it.", 700);
+        }
+      }
+    }
+  }
 
-  await speak("How much do you pay yourself per month? Enter the exact amount (enter 0 if you don't pay yourself).", 700);
-  A.q16 = await askNumber('$/month', 0, 200000);
-  addBubble('$' + Number(A.q16).toLocaleString() + '/month', 'user');
+  /* ── TEAM CAPACITY CHECK ── */
+  {
+    const _fieldQ1 = ['home-services','auto','construction'].includes(A.q1);
+    const _hasFieldStaff = Object.keys(A.q19_segments||{}).some(s => ['field','contractors','field-contractors'].includes(s) && (A.q19_segments[s].count||0) > 0);
+    const _hasTeam = (A.q19_headcount||0) > 1;
+    const _isFieldBiz = _fieldQ1 || _hasFieldStaff;
+    A.cap_team_based = _isFieldBiz;
 
-  setProgress(21);
+    if (_hasTeam && _isFieldBiz && (A.avg_check||0) > 0) {
+      await speak(`One more question about your team — on a typical working day, are your field team members fully booked?`, 700);
+      A.cap_utilization = await askChips([
+        {label:'Yes — always fully booked',   value:'full'},
+        {label:'Usually, but some gaps',       value:'mostly'},
+        {label:'Often have open slots',        value:'open'},
+        {label:'Not sure',                     value:'unknown'},
+      ]);
+      addBubble({full:'Always fully booked',mostly:'Usually, some gaps',open:'Often have open slots',unknown:'Not sure'}[A.cap_utilization]||A.cap_utilization,'user');
+      if (A.cap_utilization === 'mostly' || A.cap_utilization === 'open') {
+        const _capPrompt = A.q1 === 'home-services'
+          ? `If you had the bookings, how many additional cleaning jobs per week could your team take on across all crews?`
+          : `How many additional jobs per week could your whole team take on if you had the demand?`;
+        await speak(_capPrompt, 700);
+        const _extra = await askNumber('extra jobs/week', 0, 500);
+        addBubble(_extra + ' extra jobs per week', 'user');
+        A.cap_extra_jobs_week = Number(_extra);
+        const _extraMo = Math.round(_extra * 4.33);
+        const _extraRev = _extraMo * (A.avg_check||0);
+        if (_extraRev > 0) {
+          await speak(`Got it — that's roughly ${_extraMo} extra jobs per month, or about $${_extraRev.toLocaleString()} in potential additional revenue at your current average job value.`, 800);
+        }
+      }
+    } else if (_hasTeam && !_isFieldBiz && (A.avg_check||0) > 0) {
+      await speak(`Capacity check — roughly how many active clients or projects is your team handling right now?`, 700);
+      const _cur = await askNumber('current clients/projects', 1, 5000);
+      addBubble(_cur + ' currently', 'user');
+      A.cap_current_clients = Number(_cur);
+      await speak(`If you had the demand, how many more could your team take on without burning out or adding headcount?`, 700);
+      const _extra = await askNumber('additional capacity', 0, 2000);
+      addBubble(_extra + ' more capacity', 'user');
+      A.cap_extra_clients = Number(_extra);
+      const _headroomPct = Math.round(_extra / (_cur + _extra) * 100);
+      if (_headroomPct > 0) {
+        await speak(`That gives your team about ${_headroomPct}% capacity headroom — we'll include that in your growth analysis.`, 700);
+      }
+    } else if (!_hasTeam && (A.avg_check||0) > 0) {
+      await speak(`Since you're running lean — if you had more demand, do you personally have capacity to take on more work without hiring?`, 700);
+      A.cap_solo_headroom = await askChips([
+        {label:'Yes — I have time available',   value:'yes'},
+        {label:'Maybe 10–20% more',             value:'some'},
+        {label:'No — already at full capacity', value:'full'},
+      ]);
+      addBubble({yes:'Yes, I have time',some:'Maybe 10-20% more',full:'Already at max'}[A.cap_solo_headroom]||A.cap_solo_headroom,'user');
+    }
+  }
+
+  // WORK HOURS
+  setProgress(26);
   await speak("When do you typically work? Select all that apply.", 700);
   A.q18 = await askMultiChips([
     {label:'Early mornings (before 9am)', value:'mornings'},
-    {label:'Evenings (after 5:30pm)', value:'evenings'},
-    {label:'Weekends', value:'weekends'},
+    {label:'Evenings (after 5:30pm)',     value:'evenings'},
+    {label:'Weekends',                    value:'weekends'},
   ], 1);
-  const slotDisplayNames = {mornings:'Early mornings (before 9am)', evenings:'Evenings (after 5:30pm)', weekends:'Weekends'};
-  const slotNarrative = {mornings:'early mornings', evenings:'evenings', weekends:'weekends'};
-  addBubble(A.q18.map(s => slotDisplayNames[s]||s).join(', '), 'user');
+  addBubble(A.q18.map(s=>({mornings:'Early mornings',evenings:'Evenings',weekends:'Weekends'}[s]||s)).join(', '), 'user');
 
-  // Per-slot hours
   const slotHrs = {};
   for (const slot of A.q18) {
-    if (slot === 'mornings') {
-      await speak("On average, how many hours per day do you work in early mornings (before 9am)?", 600);
-      slotHrs[slot] = await askNumber('hrs/day', 0, 6);
-      addBubble(slotHrs[slot] + ' hrs/day', 'user');
-    } else if (slot === 'evenings') {
-      await speak("On average, how many hours per day do you work in evenings (after 5:30pm)?", 600);
-      slotHrs[slot] = await askNumber('hrs/day', 0, 6);
-      addBubble(slotHrs[slot] + ' hrs/day', 'user');
-    } else if (slot === 'weekends') {
-      await speak("How many total hours do you work on weekends?", 600);
-      slotHrs[slot] = await askNumber('hrs/week', 0, 30);
-      addBubble(slotHrs[slot] + ' hrs/week', 'user');
-    }
+    if (slot==='mornings') { await speak("On average, how many hours per day before 9am?", 600); slotHrs[slot]=await askNumber('hrs/day',0,6); addBubble(slotHrs[slot]+' hrs/day','user'); }
+    else if (slot==='evenings') { await speak("On average, how many hours per day after 5:30pm?", 600); slotHrs[slot]=await askNumber('hrs/day',0,8); addBubble(slotHrs[slot]+' hrs/day','user'); }
+    else if (slot==='weekends') { await speak("Total hours on weekends?", 600); slotHrs[slot]=await askNumber('hrs/week',0,30); addBubble(slotHrs[slot]+' hrs/week','user'); }
   }
   A.q17_slots = slotHrs;
-  A.q17_regular = 40; // 8 hrs/day × 5 days, auto
+  A.q17_regular = 40;
+  A.q17 = 40 + (slotHrs.mornings||0)*5 + (slotHrs.evenings||0)*5 + (slotHrs.weekends||0);
 
-  setProgress(22);
-  // Auto-compute total: regular 40 + mornings/evenings × 5 days + weekends as-is
-  const morningWeekly = (slotHrs.mornings || 0) * 5;
-  const eveningWeekly = (slotHrs.evenings || 0) * 5;
-  const weekendWeekly = slotHrs.weekends || 0;
-  A.q17 = 40 + morningWeekly + eveningWeekly + weekendWeekly;
   const _hourlyRate = (A.q16>0 && A.q17>0) ? Math.round(A.q16/(A.q17*4.33)) : null;
   if (_hourlyRate && A.q17>45) {
-    await speak(`${A.q17} hours a week — your time works out to roughly $${_hourlyRate}/hour based on what you pay yourself. Most business owners have never calculated this number. We'll show you what it means in your report.`, 900);
+    await speak(`${A.q17} hours a week — your time works out to roughly $${_hourlyRate}/hour based on what you take home. Most business owners have never calculated this. We'll show you what it means in your report.`, 900);
   } else if (A.q17>55) {
     await speak(`${A.q17} hours a week is a lot. Most business owners working that much are doing work that should be delegated or automated. We'll identify the biggest ones in your report.`, 800);
   } else {
-    await speak(`Got it — that works out to about ${A.q17} hours per week.`, 500);
+    await speak(`Got it — that works out to about ${A.q17} hours per week total.`, 500);
   }
 
-  setProgress(23);
+  /* ── TEAM DETAILS (REDESIGNED) ── */
+  setProgress(27);
   A.q19_segments = {};
   A.q19 = 0;
   A.q19_total = 0;
   A.q19_headcount = 0;
 
   if (A.q5 !== 'solo') {
-    await speak("What types of workers make up your team? Select all that apply.", 700);
+    await speak("What types of people make up your team? Select all that apply.", 700);
     const teamTypes = await askMultiChips([
-      {label:'Back office / admin',value:'admin'},
-      {label:'Field technicians / service workers',value:'field'},
-      {label:'Sales staff',value:'sales'},
-      {label:'Contractors / 1099',value:'contractors'},
-      {label:'Virtual assistants (VAs)',value:'va'},
-      {label:'Managers',value:'managers'},
+      {label:'Managers (on-site / location managers)', value:'managers'},
+      {label:'Admin team',                             value:'admin'},
+      {label:'Dispatcher / Scheduling coordinator',    value:'dispatcher'},
+      {label:'Sales team',                             value:'sales'},
+      {label:'Customer service team',                  value:'customer-service'},
+      {label:'Marketing team',                         value:'marketing'},
+      {label:'Finance team',                           value:'finance'},
+      {label:'Accounting team',                        value:'accounting'},
+      {label:'IT team',                                value:'it'},
+      {label:'Field team (on-site / technicians)',     value:'field'},
+      {label:'Contractors (1099)',                     value:'contractors'},
     ], 1);
-    const teamTypeLabels = {admin:'Admin',field:'Field workers',sales:'Sales',contractors:'Contractors',va:'VAs',managers:'Managers'};
-    addBubble(teamTypes.map(v => teamTypeLabels[v] || v).join(', '), 'user');
+    const ttLabels = {managers:'Managers',admin:'Admin',dispatcher:'Dispatcher',sales:'Sales',
+      'customer-service':'Customer service',marketing:'Marketing',
+      finance:'Finance',accounting:'Accounting',it:'IT',
+      field:'Field team',contractors:'Contractors'};
+    addBubble(teamTypes.map(v=>ttLabels[v]||v).join(', '),'user');
 
-    const segLabels = {admin:'back office/admin',field:'field workers',sales:'sales staff',
-      contractors:'contractors (1099)',va:'virtual assistants',managers:'managers'};
-    let totalPay = 0;
-    let totalWorkers = 0;
+    // Always enter each person individually for most accurate payroll picture
+    const _salaryMode = 'individual';
+    A.salary_mode = _salaryMode;
 
+    const _isContractorSeg = new Set(['field','contractors','field-contractors']);
+
+    let totalPay=0, totalWorkers=0;
     for (const seg of teamTypes) {
-      await speak(`How many ${segLabels[seg] || seg} do you have?`, 500);
+      await speak(`How many ${ttLabels[seg]||seg} do you have?`, 500);
       const count = await askNumber('people', 0, 500);
       addBubble(count + ' people', 'user');
-
-      let pay = 0;
       if (Number(count) > 0) {
-        await speak(`What does each ${segLabels[seg] || seg} earn on average per month?`, 500);
-        pay = await askNumber('$/month each', 0, 30000);
-        addBubble('$' + Number(pay).toLocaleString() + '/month each', 'user');
-      }
+        let pay=0, payWithTax=0, workerType='unknown', _segIndividuals=null, _contractorPct=null;
 
-      A.q19_segments[seg] = { count: Number(count), pay: Number(pay) };
-      totalPay += Number(count) * Number(pay);
-      totalWorkers += Number(count);
+        if (_salaryMode === 'individual') {
+          if (_isContractorSeg.has(seg)) {
+            // Contractor segment — fixed $ or % of gross revenue
+            workerType = 'contractor';
+            await speak(`Since these are contractors — how do you pay them?`, 500);
+            const _contractorPayMode = await askChips([
+              {label:'Fixed $ amount per month', value:'fixed'},
+              {label:'% of gross revenue',       value:'pct'},
+            ], 0);
+            addBubble(_contractorPayMode === 'pct' ? '% of gross revenue' : 'Fixed monthly amount', 'user');
+            if (_contractorPayMode === 'pct') {
+              await speak(`What % of gross revenue do you pay each contractor?`, 500);
+              _contractorPct = await askNumber('% each', 0, 100);
+              addBubble(_contractorPct + '% of revenue each', 'user');
+              const _annRevC = _rY1 || _rY0 || 0;
+              const _moRevC = _annRevC > 0 ? Math.round(_annRevC / 12) : 0;
+              pay = _moRevC > 0 ? Math.round(_moRevC * Number(_contractorPct) / 100) : 0;
+              payWithTax = pay;
+              if (pay > 0) {
+                await speak(`At your current revenue that's about $${pay.toLocaleString()}/month per contractor. We'll use that for the numbers.`, 600);
+              }
+            } else {
+              await speak(`What do you pay each contractor per month?`, 500);
+              pay = await askNumber('$/month each', 0, 50000);
+              payWithTax = Number(pay);
+              addBubble('$'+Number(pay).toLocaleString()+'/month each', 'user');
+            }
+          } else {
+            // Ask W2 vs contractor
+            await speak(`Are your ${ttLabels[seg]||seg} W2 employees or 1099 contractors?`, 500);
+            workerType = await askChips([
+              {label:'W2 employees — on our payroll',    value:'w2'},
+              {label:'1099 contractors — self-employed', value:'contractor'},
+              {label:'Mix of both',                      value:'mixed'},
+            ], 0);
+            addBubble({w2:'W2 employees',contractor:'1099 contractors',mixed:'Mix of W2 + contractors'}[workerType]||workerType, 'user');
+            const _isW2 = workerType === 'w2' || workerType === 'mixed';
+
+            // Helper: ask pay as $ or % of revenue
+            const _askPayAmount = async (label) => {
+              const _annRev = _rY0||_rY1||0;
+              const _payMode = await askChips([
+                {label:'$ amount per month', value:'fixed'},
+                {label:'% of gross revenue', value:'pct'},
+              ]);
+              addBubble(_payMode === 'fixed' ? '$ per month' : '% of revenue', 'user');
+              if (_payMode === 'pct') {
+                const _pct = await askNumber('% of gross revenue', 0, 100);
+                const _moRev = _annRev > 0 ? Math.round(_annRev / 12) : 0;
+                const _calc = _moRev > 0 ? Math.round(_moRev * _pct / 100) : 0;
+                addBubble(`${_pct}%${_calc > 0 ? ' (~$'+_calc.toLocaleString()+'/mo)' : ''}`, 'user');
+                return _calc;
+              } else {
+                const _amt = await askNumber(label || '$/month', 0, 50000);
+                addBubble('$'+Number(_amt).toLocaleString()+'/mo', 'user');
+                return Number(_amt);
+              }
+            };
+
+            if (Number(count) <= 5) {
+              // Enter each person individually
+              if (_isW2) {
+                await speak(`Enter the total monthly cost per person to your business — include their pay plus employer payroll taxes and any benefits you cover.`, 600);
+              }
+              let _segTotal = 0;
+              _segIndividuals = [];
+              for (let _pi=1; _pi<=Number(count); _pi++) {
+                await speak(`Person ${_pi} of ${count} — ${_isW2 ? 'total monthly cost to your business' : 'monthly pay'}?`, 400);
+                const _iPay = await _askPayAmount(`Person ${_pi} $/month`);
+                _segIndividuals.push(_iPay);
+                _segTotal += _iPay;
+              }
+              pay = Math.round(_segTotal / Number(count));
+              payWithTax = pay;
+            } else {
+              // Too many to enter individually — use average
+              if (_isW2) {
+                await speak(`What is the total monthly cost per person to your business? Include their pay plus employer payroll taxes and any benefits you cover.`, 600);
+              } else {
+                await speak(`What do you pay each ${ttLabels[seg]||seg} per month?`, 500);
+              }
+              pay = await _askPayAmount('$/month each');
+              payWithTax = Number(pay);
+            }
+          }
+        } else {
+          // Average mode — ask for full cost, note to include taxes if W2
+          await speak(`What is the total monthly cost per person? If they're W2 employees, include their pay plus employer payroll taxes and any benefits you cover.`, 500);
+          const _annRev = _rY0||_rY1||0;
+          const _avgMode = await askChips([
+            {label:'$ amount per month', value:'fixed'},
+            {label:'% of gross revenue', value:'pct'},
+          ]);
+          addBubble(_avgMode === 'fixed' ? '$ per month' : '% of revenue', 'user');
+          if (_avgMode === 'pct') {
+            const _pct = await askNumber('% of gross revenue', 0, 100);
+            const _moRev = _annRev > 0 ? Math.round(_annRev / 12) : 0;
+            pay = _moRev > 0 ? Math.round(_moRev * _pct / 100) : 0;
+            addBubble(`${_pct}%${pay > 0 ? ' (~$'+pay.toLocaleString()+'/mo)' : ''}`, 'user');
+          } else {
+            pay = await askNumber('$/month each', 0, 50000);
+            addBubble('$'+Number(pay).toLocaleString()+'/month each', 'user');
+          }
+          payWithTax = Number(pay);
+        }
+
+        // Tips question — only relevant for food-bev and health-wellness industries
+        let _tipsPer = 0;
+        if (['food-bev','health-wellness'].includes(A.q1)) {
+          await speak(`Do your ${ttLabels[seg]||seg} receive tips as part of their income?`, 400);
+          const _hasTips = await askChips([
+            {label:'Yes — they receive tips', value:'yes'},
+            {label:'No tips',                 value:'no'},
+          ], 0);
+          addBubble(_hasTips === 'yes' ? 'Yes, receives tips' : 'No tips', 'user');
+          if (_hasTips === 'yes') {
+            await speak(`On average, how much in tips does each ${ttLabels[seg]||seg} receive per month? Tips show up in your gross revenue, so we'll factor that into your revenue picture.`, 600);
+            _tipsPer = await askNumber('$/month in tips each', 0, 20000);
+            addBubble('$'+Number(_tipsPer).toLocaleString()+'/mo in tips each', 'user');
+            const _totalTipsSeg = Number(_tipsPer) * Number(count);
+            await speak(`Got it — about $${_totalTipsSeg.toLocaleString()}/mo in gross revenue is tips that pass through to your ${ttLabels[seg]||seg}. We'll note that in your report.`, 600);
+          }
+        }
+
+        A.q19_segments[seg] = {
+          count: Number(count),
+          pay,
+          type: workerType,
+          pay_with_tax: payWithTax,
+          payroll_tax_pct: 0,
+          tips_per_person_mo: Number(_tipsPer),
+          total_tips_mo: Number(_tipsPer) * Number(count),
+          ...(_segIndividuals ? {individuals: _segIndividuals} : {}),
+          ...(_contractorPct !== null ? {contractor_pct: _contractorPct} : {})
+        };
+
+        totalPay += Number(count) * payWithTax;
+        totalWorkers += Number(count);
+      } else {
+        A.q19_segments[seg] = {count:0, pay:0, type:'unknown', pay_with_tax:0, payroll_tax_pct:0, tips_per_person_mo:0, total_tips_mo:0};
+      }
+    }
+    A.q19=totalWorkers>0?Math.round(totalPay/totalWorkers):0;
+    A.q19_total=totalPay;
+    A.q19_headcount=totalWorkers;
+
+    if (totalPay>0 && _annualOwnerPay>0 && (_rY1||_rY0)) {
+      const _baseR=_rY1||_rY0;
+      const _totalComp=totalPay*12+_annualOwnerPay;
+      const _compPct=Math.round(_totalComp/_baseR*100);
+      await speak(`Total compensation — your pay + team — is about $${(_totalComp/1000).toFixed(0)}K/year, roughly ${_compPct}% of revenue. We'll benchmark that against your industry in your report.`, 900);
     }
 
-    A.q19 = totalWorkers > 0 ? Math.round(totalPay / totalWorkers) : 0;
-    A.q19_total = totalPay;
-    A.q19_headcount = totalWorkers;
   } else {
-    // Solo — no team
-    A.q19_segments = {};
-    A.q19_total = 0;
-    A.q19_headcount = 0;
+    // Solo operator — ask if they hire contractors or part-time help
+    await speak("Since you run things yourself — do you ever hire contractors or part-time help for jobs?", 700);
+    const _soloHasHelp = await askChips([
+      {label:'Yes — I hire contractors or part-time help', value:'yes'},
+      {label:'No — I handle everything myself',            value:'no'},
+    ], 0);
+    addBubble(_soloHasHelp === 'yes' ? 'Yes, I use contractors or part-time help' : 'No, just me', 'user');
+
+    if (_soloHasHelp === 'yes') {
+      await speak("How many contractors or part-time helpers do you work with regularly?", 600);
+      const _soloCount = await askNumber('people', 0, 500);
+      addBubble(_soloCount + ' people', 'user');
+
+      if (Number(_soloCount) > 0) {
+        await speak("What do you pay each per month on average?", 500);
+        const _soloPay = await askNumber('$/month each', 0, 30000);
+        addBubble('$' + Number(_soloPay).toLocaleString() + '/month each', 'user');
+
+        const _soloTotal = Number(_soloCount) * Number(_soloPay);
+        A.q19_segments['contractors'] = {
+          count:            Number(_soloCount),
+          pay:              Number(_soloPay),
+          pay_with_tax:     Number(_soloPay),
+          type:             'contractor',
+          payroll_tax_pct:  0,
+          tips_per_person_mo: 0,
+          total_tips_mo:    0,
+        };
+        A.q19         = Number(_soloPay);
+        A.q19_total   = _soloTotal;
+        A.q19_headcount = Number(_soloCount);
+        A.salary_mode = 'average';
+
+        await speak(`Got it — ${_soloCount} contractor${Number(_soloCount)>1?'s':''} at $${Number(_soloPay).toLocaleString()}/mo each = $${_soloTotal.toLocaleString()}/mo. We'll include that in your cost breakdown.`, 800);
+      }
+    } else {
+      // Pure solo — no staff at all
+      A.q19_solo_only = true;
+      await speak("Noted — no contractors. We'll keep your cost structure focused on your own pay and business expenses.", 600);
+    }
   }
 
   /* ── FINISH ── */
   await finishAssessment();
 }
 
+
 /* ── FINISH + AI CALL ────────────────────────────────── */
 async function finishAssessment() {
-  assessmentComplete = true; // cancel the 30-min opportunity timer
+  assessmentComplete = true;
   stopTimer();
   clearInput();
-  setProgress(23, 'Building your report');
-  await speak(`Perfect, ${A.contact.name.split(' ')[0]}. Murat and Alexandr will personally review your answers. Give us a moment to put your report together.`, 900);
+  setProgress(28, 'Building your report');
+  await speak(`Perfect, ${A.contact.name.split(' ')[0]}. Give us a moment — we're building your personalized report now.`, 900);
+
+  // Prominent "don't close" notice
+  const _noticeEl = document.createElement('div');
+  _noticeEl.innerHTML = `<div style="background:#0F2B4C;color:#fff;border-radius:16px;padding:20px 24px;display:flex;align-items:center;gap:16px;margin:4px 0;max-width:84%;">
+    <div style="font-size:28px;animation:nxSpin 1.8s linear infinite;display:inline-block;">⚙️</div>
+    <div>
+      <div style="font-size:15px;font-weight:800;margin-bottom:4px;">Preparing your report…</div>
+      <div style="font-size:13px;opacity:.75;">This takes about 30–60 seconds. <strong style="color:#44CAA2;">Do not close this page.</strong></div>
+    </div>
+  </div>`;
+  document.getElementById('chatInner').appendChild(_noticeEl);
+  const _chatScroll = document.getElementById('chatScroll');
+  _chatScroll.scrollTop = _chatScroll.scrollHeight;
+
   showTyping();
   await sleep(500);
 
-  // Build AI prompt
-  const industryLabels = {'home-services':'Home Services','construction':'Construction','food-bev':'Food & Beverage','retail':'Retail','health-wellness':'Health & Wellness','professional-services':'Professional Services','auto':'Auto Services','real-estate':'Real Estate'};
+  const industryLabels = {'home-services':'Home Services','construction':'Construction','food-bev':'Food & Beverage','retail':'Retail','health-wellness':'Health & Wellness','professional-services':'Professional Services','auto':'Auto Services','real-estate':'Real Estate','coaching-digital':'Coaching & Digital','moving-logistics':'Moving & Logistics'};
   const yearsLabels = {'lt1':'less than 1 year','1-2':'1–2 years','3-5':'3–5 years','6-10':'6–10 years','10plus':'over 10 years'};
-  const sizeLabels = {'solo':'just yourself','2-5':'2–5 people','6-15':'6–15 people','16-30':'16–30 people','30plus':'30+ people'};
+  const sizeLabels = {'solo':'just yourself','partner':'you and your business partner','team':'you and a team'};
 
-  const q7Display = A.q7 === 'none' ? 'No repeat customers' : A.q7 === 'dont-know' ? 'Has repeat customers but does not track the rate' : A.q7 + '%';
+  const q7Display = A.q7 === 'none' ? 'No repeat customers' : A.q7 === 'dont-know' ? 'Has repeat customers but does not track the rate' : typeof A.q7 === 'number' ? A.q7 + '%' : A.q7;
+  const revSummary = Object.entries(A.q4_years||{}).filter(([,v])=>v).map(([k,v])=>({'y3':'3 ago','y2':'2 ago','y1':'last yr','y0':'this yr','yn':'goal'}[k]||k)+': '+v).join(', ');
+
   const systemPrompt = `You are a direct, experienced business advisor writing for Nexvora Systems. Generate TWO short pieces of text for a business assessment report. Respond with ONLY valid JSON, no markdown.
 
 Business profile:
-- Owner: ${A.contact.name}
-- Industry: ${industryLabels[A.q1] || A.q1}
-- State: ${A.q2}
-- Years operating: ${yearsLabels[A.q3] || A.q3}
-- Annual revenue: ${A.q4}
-- Team size: ${sizeLabels[A.q5] || A.q5}
+- Owner: ${A.contact.name}${A.partner?.has?' (has business partner: '+[A.partner.userRole,A.partner.partnerRole].filter(Boolean).join(' / ')+')':''}
+- Industry: ${industryLabels[A.q1]||A.q1} — ${A.q1b_label||''}
+- Location: ${A.q2_city||''}, ${A.q2||''}
+- Years operating: ${yearsLabels[A.q3]||A.q3}
+- Revenue: ${revSummary||A.q4}${A.q4_growth!==undefined?' ('+A.q4_growth+'% YoY growth)':''}
+- Structure: ${sizeLabels[A.q5]||A.q5}
+- Growth target: ${A.growth_target_pct||''}% per year
+- Primary pain: ${A.primaryPain||''}
 - Repeat customers: ${q7Display}
-- Goal: ${A.q15}
+- Avg transaction: ${A.avg_check?'$'+A.avg_check:'unknown'}
+- Cash flow: ${A.cash_flow||'unknown'}
+- P&L: ${A.has_pl||'unknown'}
+- Owner annual pay: ${A.q16?'$'+Math.round(A.q16*12/1000)+'K':'unknown'}
+- Owner pay enough: ${A.owner_pay_enough||'unknown'}
+- Goal 12mo: ${(A.q15||[]).join(', ')}
+- Goal 3yr: ${A.goal_3yr||''}
+- Goal 5yr: ${A.q15b||''}
 
 JSON format:
 {
-  "benchmark_narrative": "2-3 sentence motivational paragraph about what surviving this long in their industry means. Reference their specific industry, state, and years. Direct and real, not fluffy.",
+  "benchmark_narrative": "2-3 sentence motivational paragraph about what surviving this long in their industry means. Reference their specific industry, location, and years. Direct and real, not fluffy.",
   "executive_summary": "3-4 sentence summary of their business situation — what they are doing well, their biggest risk area, and what the single most important priority is right now. Use their actual data. No generic advice."
 }`;
 
@@ -1209,31 +2122,80 @@ JSON format:
 
   hideTyping();
 
-  // Store everything
-  const payload = { contact: A.contact, q1:A.q1, q1b:A.q1b, q1b_label:A.q1b_label, q2:A.q2, q2_city:A.q2_city, q3:A.q3, q4:A.q4, q5:A.q5, q6:A.q6, q7:A.q7, q8:A.q8, q9:A.q9, q9_adspend:A.q9_adspend, q9_leads:A.q9_leads, q9_close:A.q9_close, q10:A.q10, q11:A.q11, q11b:A.q11b, q11c:A.q11c, q12:A.q12, q13:A.q13, q14:A.q14, q15:A.q15, q15b:A.q15b, q_pain:A.q_pain||'', company_confirmed:A.company_confirmed||false, q16:A.q16, q17:A.q17, q17_regular:A.q17_regular||0, q17_slots:A.q17_slots||{}, q18:A.q18, q19:A.q19, q19_segments:A.q19_segments, q19_total:A.q19_total, q19_headcount:A.q19_headcount, ai_benchmark: aiResult.benchmark_narrative, ai_summary: aiResult.executive_summary };
+  const payload = {
+    contact: A.contact,
+    partner: A.partner||null,
+    // Profile
+    q1: A.q1, q1b: A.q1b, q1b_label: A.q1b_label,
+    q2: A.q2, q2_city: A.q2_city, q3: A.q3,
+    // Revenue
+    q4: A.q4, q4_years: A.q4_years||{}, q4_parsed: A.q4_parsed||{}, q4_growth: A.q4_growth,
+    // Team
+    q5: A.q5, growth_target_pct: A.growth_target_pct||null,
+    // Pain
+    pain1: A.pain1, pain2: A.pain2, pain3: A.pain3, primaryPain: A.primaryPain, painVotes: A.painVotes,
+    // Diagnostics
+    q6: A.q6, q6_scenario: A.q6_scenario,
+    q7: A.q7, avg_check: A.avg_check||null, customer_split: A.customer_split||null,
+    q8: A.q8,
+    q9: A.q9, q9_adspend: A.q9_adspend, q9_leads: A.q9_leads, q9_close: A.q9_close,
+    expense_breakdown: A.expense_breakdown||{},
+    materials_pct: A.materials_pct||null, materials_markup_pct: A.materials_markup_pct||null,
+    q10: A.q10, review_monitoring: A.review_monitoring, review_requests: A.review_requests,
+    q11: A.q11, q11b: A.q11b, q11c: A.q11c, q11_other: A.q11_other||null,
+    q12: A.q12,
+    q13: A.q13, cash_flow: A.cash_flow, cashflow_tracking: A.cashflow_tracking,
+    has_pl: A.has_pl, pl_usage: A.pl_usage||null,
+    bank_personal_biz: A.bank_personal_biz||null, bank_multi_accounts: A.bank_multi_accounts||null, bank_account_types: A.bank_account_types||null,
+    q14: A.q14,
+    // Goals
+    q15: A.q15, q15_primary: A.q15_primary, goal_3yr: A.goal_3yr, q15b: A.q15b, q_pain: A.q_pain||'',
+    // Owner economics
+    owner_pay: A.owner_pay||{}, owner_pay_enough: A.owner_pay_enough||null,
+    q16: A.q16, q17: A.q17, q17_regular: A.q17_regular||0, q17_slots: A.q17_slots||{}, q18: A.q18,
+    // Partner economics (multi-partner support)
+    partners: A.partners||null,
+    partner_pay: A.partner_pay||null, partner_pay_total: A.partner_pay_total||null,
+    // Payroll health
+    behind_on_payroll: A.behind_on_payroll||null,
+    behind_payroll_days: A.behind_payroll_days||null,
+    // Team capacity
+    cap_team_based: A.cap_team_based||null,
+    cap_utilization: A.cap_utilization||null,
+    cap_extra_jobs_week: A.cap_extra_jobs_week||null,
+    cap_current_clients: A.cap_current_clients||null,
+    cap_extra_clients: A.cap_extra_clients||null,
+    cap_solo_headroom: A.cap_solo_headroom||null,
+    // Current software stack
+    current_software: A.current_software||null,
+    // Team details
+    salary_mode: A.salary_mode||'average',
+    q19: A.q19, q19_segments: A.q19_segments, q19_total: A.q19_total, q19_headcount: A.q19_headcount,
+    // Misc
+    company_confirmed: A.company_confirmed||false,
+    ai_benchmark: aiResult.benchmark_narrative,
+    ai_summary: aiResult.executive_summary
+  };
+
   localStorage.setItem('nexvora_assessment', JSON.stringify(payload));
 
-  // Encode payload into URL so the report link works from any device (email link)
-  // URL-safe base64: replace +/= so email clients don't break the link
   const encoded = btoa(unescape(encodeURIComponent(JSON.stringify(payload))))
-    .replace(/\+/g, '-').replace(/\//g, '_').replace(/=/g, '');
+    .replace(/\+/g,'-').replace(/\//g,'_').replace(/=/g,'');
   const reportUrl = `${window.location.origin}/report.html?d=${encoded}`;
 
   document.getElementById('progFill').style.width = '100%';
   document.getElementById('progLabel').textContent = 'Researching your business…';
 
-  // Show research progress steps
   async function showStep(icon, text, delay=900) {
     await sleep(300);
     addBubble(`<span style="opacity:.55;font-size:13px;">${icon} ${text}</span>`, 'bot', true);
     await sleep(delay);
   }
   await showStep('✓', 'Answers saved — starting research…', 600);
-  await showStep('🔍', `Searching for ${A.contact.company||A.contact.name+'\'s business'} online…`, 800);
+  await showStep('🔍', `Searching for ${A.contact.company||A.contact.name+"'s business"} online…`, 800);
   await showStep('📊', 'Pulling industry benchmarks for your area…', 700);
   await showStep('✍️', 'Writing your personalized report…', 500);
 
-  // Save basic data first (fast)
   let shortUrl = reportUrl;
   try {
     const saveRes = await fetch('/api/save-report', {
@@ -1247,11 +2209,10 @@ JSON format:
     }
   } catch(e) { console.warn('[save-report] failed:', e.message); }
 
-  // Call generate-report for deep research (Tavily + GPT-4o)
   let deepReportUrl = null;
   try {
     const ctrl = new AbortController();
-    const t = setTimeout(()=>ctrl.abort(), 90000); // 90s max
+    const t = setTimeout(()=>ctrl.abort(), 90000);
     const grRes = await fetch('/api/generate-report', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -1265,23 +2226,20 @@ JSON format:
     }
   } catch(e) { console.warn('[generate-report] skipped:', e.message); }
 
-  // Push to GHL
   try {
-    const ghlRes = await fetch('/api/ghl', {
+    await fetch('/api/ghl', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...payload, reportUrl: deepReportUrl||shortUrl })
     });
-    const ghlData = await ghlRes.json();
-    console.log('[GHL]', ghlData);
   } catch(e) { console.warn('[GHL] failed:', e.message); }
 
   document.getElementById('progLabel').textContent = 'Complete';
   addBubble(`Your report is ready, ${A.contact.name.split(' ')[0]}! Taking you there now…`, 'bot');
   await sleep(1000);
-  // Go to deep research report if available, else fall back to local report
   window.location.href = deepReportUrl || `report.html?d=${encoded}`;
 }
+
 
 main().catch(err => {
   console.error('Assessment flow error:', err);
@@ -1308,7 +2266,7 @@ main().catch(err => {
 #cbAccept:hover{background:#0b7a71;transform:translateY(-1px);}
 #cbManage{padding:9px 14px;background:transparent;color:#4A5568;font-size:13px;font-weight:600;border:1px solid #E2DDD5;border-radius:9px;cursor:pointer;transition:all .15s;white-space:nowrap;font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;}
 #cbManage:hover{border-color:#0D9488;color:#0D9488;}
-@media(max-width:480px){#cookieBanner{bottom:16px;left:12px;right:12px;max-width:none;width:auto;}}
+@media(max-width:480px){#cookieBanner{bottom:auto;top:16px;left:12px;right:12px;max-width:none;width:auto;transform:translateY(-120px);}#cookieBanner.show{transform:translateY(0);}}
 </style>
 <div id="cookieBanner" role="dialog" aria-label="Cookie consent">
   <div class="cb-icon">🍪</div>

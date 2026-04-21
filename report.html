@@ -128,6 +128,7 @@ footer{background:var(--navy);color:#FAF8F5;padding:48px 28px 28px;margin-top:0;
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
     Back to Home
   </a>
+  <span style="margin-left:auto;font-size:10px;color:rgba(255,255,255,0.25);font-family:monospace;letter-spacing:.5px;">v0.2.6.001.0420.nx01</span>
 </nav>
 
 <div class="report-wrap" id="reportWrap">
@@ -195,7 +196,7 @@ function scoreQ8(v){return{nothing:10,manual:30,process:65,automated:90}[v]||40;
 function scoreQ9(v){
   const arr=Array.isArray(v)?v:(v?[v]:[]);
   if(!arr.length)return 30;
-  const base={'word-of-mouth':30,google:60,social:55,'paid-ads':70,other:40};
+  const base={'word-of-mouth':30,google:60,social:55,'paid-ads':70,lsa:75,directories:65,nextdoor:50,other:40};
   const best=Math.max(...arr.map(a=>base[a]||40));
   if(arr.length>=4)return 95;
   if(arr.length>=3)return 85;
@@ -283,7 +284,9 @@ const BENCHMARKS={
   'health-wellness':{label:'Health & Wellness',fail5yr:75,revenue:{'solo':95000,'2-5':280000,'6-15':620000,'16-30':1400000,'30plus':3500000},margin:15,survival_note:'Health and wellness is competitive but rewarding for those who build loyal clientele. You are proving that.'},
   'professional-services':{label:'Professional Services',fail5yr:68,revenue:{'solo':180000,'2-5':480000,'6-15':1100000,'16-30':2800000,'30plus':7000000},margin:22,survival_note:'Professional services firms that survive past year 3 tend to have strong retention. You are building something lasting.'},
   'auto':{label:'Auto Services',fail5yr:76,revenue:{'solo':140000,'2-5':350000,'6-15':780000,'16-30':1600000,'30plus':3800000},margin:11,survival_note:'Auto services is relationship-driven. Businesses that survive are the ones their community trusts.'},
-  'real-estate':{label:'Real Estate',fail5yr:71,revenue:{'solo':90000,'2-5':320000,'6-15':750000,'16-30':2000000,'30plus':5500000},margin:18,survival_note:'Most real estate businesses stall or close when the market shifts. You have adapted and kept going.'}
+  'real-estate':{label:'Real Estate',fail5yr:71,revenue:{'solo':90000,'2-5':320000,'6-15':750000,'16-30':2000000,'30plus':5500000},margin:18,survival_note:'Most real estate businesses stall or close when the market shifts. You have adapted and kept going.'},
+  'coaching-digital':{label:'Coaching & Digital',fail5yr:72,revenue:{'solo':95000,'2-5':280000,'6-15':750000,'16-30':2000000,'30plus':5000000},margin:65,survival_note:'Most online coaching businesses never break $100K. If you are still here and growing, your offer is resonating — that is the hard part.'},
+  'moving-logistics':{label:'Moving & Logistics',fail5yr:79,revenue:{'solo':180000,'2-5':480000,'6-15':1100000,'16-30':2500000,'30plus':6000000},margin:9,survival_note:'Moving and logistics is operationally demanding. Businesses that last are the ones that built repeatable crew and dispatch systems.'}
 };
 
 const SIZE_KEY={'solo':'solo','2-5':'2-5','6-15':'6-15','16-30':'16-30','30plus':'30plus'};
@@ -447,7 +450,9 @@ function renderOwnerEcon(d,econ){
   // Team payroll segment breakdown
   const segments = d.q19_segments || {};
   const segNames = {admin:'Back Office / Admin',field:'Field Workers',sales:'Sales',
-    contractors:'Contractors (1099)',va:'Virtual Assistants',managers:'Managers'};
+    contractors:'Contractors (1099)',va:'Virtual Assistants',managers:'Managers',
+    dispatcher:'Dispatcher / Scheduling','customer-service':'Customer Service',
+    marketing:'Marketing',finance:'Finance',accounting:'Accounting',it:'IT'};
   const segEntries = Object.entries(segments);
   let segmentTableHtml = '';
   if (segEntries.length > 0) {
@@ -493,9 +498,76 @@ function renderOwnerEcon(d,econ){
       </div>`;
   }
 
+  // Expense & materials breakdown
+  let expenseBreakdownHtml='';
+  const expBreak=d.expense_breakdown||{};
+  const expEntries=Object.entries(expBreak).filter(([,v])=>v!==null&&v!==undefined&&v>0);
+  if(expEntries.length>0){
+    const expLabels={labor:'Labor / Payroll',materials:'Materials & Supplies',overhead:'Overhead & Rent',marketing:'Marketing & Ads',software:'Software & Tools',other:'Other'};
+    const expRows=expEntries.map(([k,v])=>`<tr style="border-bottom:1px solid #E2DDD5;">
+      <td style="padding:9px 12px;font-size:14px;color:#4A5568;">${expLabels[k]||k}</td>
+      <td style="padding:9px 12px;text-align:right;font-size:14px;font-weight:700;color:#1A1A2E;">${v}%</td>
+    </tr>`).join('');
+    const totalPct=expEntries.reduce((s,[,v])=>s+v,0);
+    const netPct=100-totalPct;
+    const netColor=netPct>=15?'#0D9488':netPct>=5?'#D69E2E':'#E53E3E';
+    let materialsInsight='';
+    if(d.materials_pct){
+      const markup=d.materials_markup_pct;
+      if(markup&&markup>0){
+        const grossOnMaterials=Math.round(markup/(100+markup)*100);
+        materialsInsight=`<div style="margin-top:12px;padding:12px 14px;background:rgba(13,148,136,0.05);border:1px solid #0D9488;border-radius:8px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#0D9488;margin-bottom:6px;">MATERIALS MARGIN ANALYSIS</div>
+          <p style="font-size:13px;color:#4A5568;line-height:1.6;margin:0;">Materials are <strong>${d.materials_pct}%</strong> of revenue. You charge a <strong>${markup}% markup</strong> — that's a <strong>${grossOnMaterials}% gross margin</strong> on materials. ${grossOnMaterials>=30?'Strong materials margin. Make sure this holds as supplier costs rise.':grossOnMaterials>=15?'Average materials margin. Consider consolidating suppliers for better pricing.':'Thin materials margin. At this level, any supplier price increase directly erodes your profit. Negotiate volume pricing or review your markup structure.'}</p>
+        </div>`;
+      }else if(d.materials_markup_pct===0){
+        materialsInsight=`<div style="margin-top:12px;padding:12px 14px;background:rgba(229,62,62,0.04);border:1px solid #E53E3E;border-radius:8px;">
+          <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#E53E3E;margin-bottom:6px;">MATERIALS MARKUP MISSING</div>
+          <p style="font-size:13px;color:#742A2A;line-height:1.6;margin:0;">You are not marking up materials. Every dollar of materials cost is a dollar of pure revenue lost. Industry standard is 15–35% markup. Adding even a 20% markup on materials can add thousands to your annual profit with zero extra work.</p>
+        </div>`;
+      }
+    }
+    expenseBreakdownHtml=`<div style="margin-top:20px;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#6B7280;margin-bottom:10px;">EXPENSE BREAKDOWN</div>
+      <table style="width:100%;border-collapse:collapse;border:1px solid #E2DDD5;border-radius:8px;overflow:hidden;">
+        <thead><tr style="background:#F7F5F0;border-bottom:2px solid #E2DDD5;">
+          <th style="padding:9px 12px;text-align:left;font-size:12px;font-weight:700;color:#1A1A2E;">Category</th>
+          <th style="padding:9px 12px;text-align:right;font-size:12px;font-weight:700;color:#1A1A2E;">% of Revenue</th>
+        </tr></thead>
+        <tbody>${expRows}</tbody>
+        <tfoot>
+          <tr style="background:#F7F5F0;border-top:2px solid #E2DDD5;">
+            <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#1A1A2E;">Total Expenses</td>
+            <td style="padding:9px 12px;text-align:right;font-size:13px;font-weight:700;color:#1A1A2E;">${totalPct}%</td>
+          </tr>
+          <tr style="background:#1A1A2E;">
+            <td style="padding:9px 12px;font-size:13px;font-weight:700;color:#F7F5F0;">Estimated Net Margin</td>
+            <td style="padding:9px 12px;text-align:right;font-size:14px;font-weight:800;color:${netColor};">${netPct}%</td>
+          </tr>
+        </tfoot>
+      </table>
+      ${materialsInsight}
+    </div>`;
+  }
+
+  let payrollCrisisHtml='';
+  if(d.behind_on_payroll==='yes'||d.behind_on_payroll==='yes-severe'){
+    const severe=d.behind_on_payroll==='yes-severe';
+    const daysText=d.behind_payroll_days?` — ${d.behind_payroll_days} days behind`:'';
+    const title=severe?'CRITICAL: PAYROLL CRISIS':'PAYROLL WARNING';
+    const msg=severe
+      ?'You are severely behind on payroll. This is the most urgent financial issue a business can face — it damages team trust, creates legal liability, and is a leading indicator of failure. This must be resolved before anything else in this report.'
+      :'You are behind on payroll. This is not just a cash flow issue — it erodes team trust and creates legal exposure. Fixing your cash flow rhythm is the highest-priority financial task in your business right now.';
+    payrollCrisisHtml=`<div style="background:#FEF2F2;border:2px solid #E53E3E;border-radius:10px;padding:16px 20px;margin-bottom:16px;">
+      <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#E53E3E;margin-bottom:8px;">${title}${daysText}</div>
+      <p style="font-size:14px;color:#742A2A;line-height:1.7;margin:0;">${msg}</p>
+    </div>`;
+  }
+
   const html=`
     <div class="section-body">
       <div class="section-label">Owner Economics · The Real Math</div>
+      ${payrollCrisisHtml}
       <div class="econ-grid">
         <div class="econ-card owner">
           <div class="econ-role">You (Owner)</div>
@@ -520,6 +592,7 @@ function renderOwnerEcon(d,econ){
         </div>
       </div>
       ${segmentTableHtml}
+      ${expenseBreakdownHtml}
       <div class="econ-note">We are not here to tell you that you are overpaying your team or underpaying yourself. This is just the math. And this math is exactly why building the right systems is not a nice-to-have — it is the only way to change the equation.</div>
     </div>`;
   renderSection(html);
@@ -569,6 +642,30 @@ function renderAreaAnalysis(d,scores,aiSummary){
         <div class="fix-paths">${pathsHtml}</div>
       </div>`;
     }
+    if(key==='operations' && d.cap_utilization && d.cap_utilization!=='full'){
+      const capLabels={'mostly':'are mostly booked but have room','open':'have open availability','unknown':'aren\'t sure of your current capacity'};
+      const capLabel=capLabels[d.cap_utilization]||d.cap_utilization;
+      const extraJobs=d.cap_extra_jobs_week||0;
+      const avgCheck=d.avg_check||0;
+      let revenueLine='';
+      if(extraJobs>0&&avgCheck>0){
+        const extraMonthly=Math.round(extraJobs*avgCheck*4.33/100)*100;
+        revenueLine=`<div style="margin-top:10px;display:flex;gap:24px;flex-wrap:wrap;">
+          <div><div style="font-size:22px;font-weight:800;color:#0D9488;">$${extraMonthly.toLocaleString()}/mo</div><div style="font-size:12px;color:#718096;">unrealized revenue with your current team</div></div>
+          <div><div style="font-size:22px;font-weight:800;color:#0D9488;">${extraJobs} jobs/week</div><div style="font-size:12px;color:#718096;">of untapped capacity right now</div></div>
+        </div>`;
+      }else if(extraJobs>0){
+        revenueLine=`<div style="margin-top:10px;"><div style="font-size:22px;font-weight:800;color:#0D9488;">${extraJobs} jobs/week</div><div style="font-size:12px;color:#718096;">of untapped capacity with your current team</div></div>`;
+      }
+      if(revenueLine){
+        areasHtml+=`<div style="border:1px solid #0D9488;border-radius:10px;padding:16px 20px;margin-top:12px;background:rgba(13,148,136,0.04);">
+          <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#0D9488;margin-bottom:8px;">GROWTH OPPORTUNITY — NO NEW HIRES NEEDED</div>
+          <p style="font-size:14px;color:#4A5568;line-height:1.7;margin:0 0 10px;">You ${capLabel}. Revenue growth doesn't require hiring right now — it requires filling what you already have.</p>
+          ${revenueLine}
+          <p style="font-size:13px;color:#718096;line-height:1.6;margin-top:10px;margin-bottom:0;">Better scheduling systems, automated follow-up on open slots, and a referral push can fill this capacity without adding a single employee.</p>
+        </div>`;
+      }
+    }
     if(key==='sales' && d.q8==='nothing'){
       const b=BENCHMARKS[d.q1]||BENCHMARKS['professional-services'];
       const sizeKey=SIZE_KEY[d.q5]||'solo';
@@ -616,7 +713,7 @@ function renderAreaAnalysis(d,scores,aiSummary){
       </div>`;
       areasHtml += automationHtml;
     }
-    if(key==='marketing' && d.q9 && Array.isArray(d.q9) && d.q9.includes('paid-ads') && d.q9_adspend){
+    if(key==='marketing' && d.q9 && Array.isArray(d.q9) && (d.q9.includes('paid-ads')||d.q9.includes('lsa')||d.q9.includes('directories')) && d.q9_adspend){
       const spend=d.q9_adspend;
       const leads=d.q9_leads;
       const cpl=leads?Math.round(spend/leads):null;
