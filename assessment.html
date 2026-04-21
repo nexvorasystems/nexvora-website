@@ -43,7 +43,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .typing-dots span:nth-child(2){animation-delay:.2s;}
 .typing-dots span:nth-child(3){animation-delay:.4s;}
 @keyframes td{0%,60%,100%{transform:translateY(0);opacity:.35;}30%{transform:translateY(-7px);opacity:1;}}
-.chat-input-area{border-top:1px solid var(--border);background:var(--bg-card);padding:16px;flex-shrink:0;}
+.chat-input-area{border-top:1px solid var(--border);background:var(--bg-card);padding:16px;padding-bottom:max(16px,env(safe-area-inset-bottom));flex-shrink:0;}
 .input-inner{max-width:640px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
 .input-row{display:flex;gap:10px;align-items:flex-end;}
 .chat-input{flex:1;padding:13px 16px;border:1.5px solid var(--border);border-radius:12px;font-size:16px;color:var(--text);background:var(--bg);font-family:inherit;outline:none;transition:border-color .15s;-webkit-appearance:none;}
@@ -677,7 +677,10 @@ async function main() {
     const safeCompany = company.replace(/</g,'&lt;').replace(/>/g,'&gt;');
     const safeCity = bizCity.replace(/</g,'&lt;');
     const stateName = (ALL_STATES.find(s=>s.abbr===A.q2)||{name:A.q2}).name;
-    await speak(`Here's what we found for <strong>${safeCompany}</strong> in ${safeCity}, ${stateName} — does this look like your business?<br><br><iframe src="https://maps.google.com/maps?q=${mapQ}&output=embed&iwloc=near" width="100%" height="200" style="border:0;border-radius:8px;display:block;" loading="lazy" allowfullscreen></iframe>`, 1000, true);
+    const mapH = window.innerWidth <= 480 ? 140 : 200;
+    await speak(`Here's what we found for <strong>${safeCompany}</strong> in ${safeCity}, ${stateName} — does this look like your business?<br><br><iframe src="https://maps.google.com/maps?q=${mapQ}&output=embed&iwloc=near" width="100%" height="${mapH}" style="border:0;border-radius:8px;display:block;max-height:35vh;" loading="lazy" allowfullscreen></iframe>`, 1000, true);
+    // Scroll input area into view on mobile so chips are visible above browser chrome
+    setTimeout(() => { document.getElementById('inputArea')?.scrollIntoView({behavior:'smooth', block:'end'}); }, 200);
     const confirmChoice = await askChips([{label:"Yes, that's my business", value:'yes'},{label:"Not finding it / skip", value:'no'}]);
     addBubble(confirmChoice === 'yes' ? "Yes, that's my business" : "Not finding it / skip", 'user');
     if (confirmChoice === 'yes') { A.company_confirmed = true; }
