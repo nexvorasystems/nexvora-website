@@ -18,4 +18,4 @@ jobs:
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
         run: |
           npm install -g vercel@51.8.0 --silent
-          vercel --prod --token $VERCEL_TOKEN --yes
+          vercel --prod --yes
