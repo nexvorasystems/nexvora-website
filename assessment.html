@@ -197,7 +197,7 @@ function scheduleOpportunity() {
 /* ── DRAFT SAVING ────────────────────────────────────── */
 function saveDraft() {
   if (!A.contact?.email) return;
-  fetch('/api/save-draft', {
+  fetch('/api/update-lead', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({

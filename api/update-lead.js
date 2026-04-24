@@ -1,11 +1,14 @@
 /**
- * Nexvora Systems — Update GHL Contact with phone + company
+ * Nexvora Systems — Update GHL Contact + optionally save assessment draft
  * Uses /contacts/upsert (same as capture-lead) — matched by email.
  * Called after phone and company name are collected in assessment.
+ * Also handles draft saving when `step` + `data` fields are provided.
  */
 
 const GHL_BASE = 'https://services.leadconnectorhq.com';
 const GHL_VERSION = '2021-07-28';
+const SUPABASE_URL = process.env.SUPABASE_URL;
+const SUPABASE_SERVICE_KEY = process.env.SUPABASE_SERVICE_KEY;
 
 function ghlHeaders(apiKey) {
   return {
@@ -26,9 +29,26 @@ module.exports = async function handler(req, res) {
   const locationId = process.env.GHL_LOCATION_ID?.trim();
   if (!apiKey || !locationId) return res.json({ success: true, note: 'GHL skipped — env vars not set' });
 
-  const { email, phone, company } = req.body || {};
+  const { email, phone, company, name, step, data } = req.body || {};
   if (!email) return res.status(400).json({ error: 'email required' });
-  if (!phone && !company) return res.json({ success: true, note: 'nothing to update' });
+
+  // Save assessment draft to Supabase (fire-and-forget, merged from save-draft endpoint)
+  if (step !== undefined && data && SUPABASE_URL && SUPABASE_SERVICE_KEY) {
+    fetch(`${SUPABASE_URL}/rest/v1/assessment_drafts`, {
+      method: 'POST',
+      headers: {
+        'apikey': SUPABASE_SERVICE_KEY,
+        'Authorization': `Bearer ${SUPABASE_SERVICE_KEY}`,
+        'Content-Type': 'application/json',
+        'Prefer': 'resolution=merge-duplicates'
+      },
+      body: JSON.stringify({ email, name: name || null, step, data, updated_at: new Date().toISOString() })
+    }).catch(e => console.warn('[update-lead] draft save failed:', e.message));
+  }
+
+  // GHL contact update — skip if nothing to update
+  if (!phone && !company) return res.json({ success: true, note: 'draft saved, no GHL fields to update' });
+  if (!apiKey || !locationId) return res.json({ success: true, note: 'GHL skipped — env vars not set' });
 
   // Build upsert payload — GHL finds existing contact by email and patches it
   const payload = { locationId, email };
