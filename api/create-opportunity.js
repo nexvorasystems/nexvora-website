@@ -16,6 +16,20 @@ function ghlHeaders(apiKey) {
   };
 }
 
+// sendBeacon sends a raw stream — Vercel may not auto-parse the body.
+// This helper collects raw chunks and JSON-parses them as a fallback.
+async function parseBody(req) {
+  if (req.body && typeof req.body === 'object') return req.body;
+  return new Promise((resolve) => {
+    let raw = '';
+    req.on('data', chunk => { raw += chunk; });
+    req.on('end', () => {
+      try { resolve(JSON.parse(raw)); } catch { resolve({}); }
+    });
+    req.on('error', () => resolve({}));
+  });
+}
+
 module.exports = async function handler(req, res) {
   res.setHeader('Access-Control-Allow-Origin', 'https://nexvorasystems.us');
   res.setHeader('Access-Control-Allow-Methods', 'POST, OPTIONS');
@@ -27,7 +41,8 @@ module.exports = async function handler(req, res) {
   const locationId = process.env.GHL_LOCATION_ID?.trim();
   if (!apiKey || !locationId) return res.json({ success: true, note: 'GHL skipped — env vars not set' });
 
-  let { contactId, name, email } = req.body || {};
+  const body = await parseBody(req);
+  let { contactId, name, email } = body;
   if (!contactId && !email) return res.status(400).json({ error: 'contactId or email required' });
 
   const headers = ghlHeaders(apiKey);

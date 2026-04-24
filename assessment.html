@@ -194,12 +194,28 @@ function scheduleOpportunity() {
   }, TIMER_MS);
 }
 
+/* ── DRAFT SAVING ────────────────────────────────────── */
+function saveDraft() {
+  if (!A.contact?.email) return;
+  fetch('/api/save-draft', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      email: A.contact.email,
+      name: A.contact.name || '',
+      step: currentStep,
+      data: A
+    })
+  }).catch(() => {});
+}
+
 /* ── PROGRESS ────────────────────────────────────────── */
 function setProgress(step, label) {
   currentStep = step;
   const pct = Math.min((step / TOTAL_STEPS) * 100, 99);
   document.getElementById('progFill').style.width = pct + '%';
   if (label) document.getElementById('progLabel').textContent = label;
+  saveDraft(); // auto-save previous step's answer on every transition
 }
 
 /* ── SCROLL ──────────────────────────────────────────── */
