@@ -119,6 +119,70 @@ function filterForCompany(res, company) {
   return { ...res, results: filtered.length > 0 ? filtered : res.results.slice(0, 3) };
 }
 
+// ── Data Confidence Score (pure JS — never AI-generated) ─────────────────────
+function computeConfidenceScore(a, estCustomersPerMonth, mismatchExists, mismatchPct, claimedJobsPerMonth, effectiveCloseRate) {
+  const issues = [];
+  const verifications = [];
+  let deductions = 0;
+
+  const closeRate    = a.q9_close != null ? Number(a.q9_close) : null;
+  const leadsPerMonth = Number(a.q9_leads) || 0;
+  const avgCheck     = Number(a.avg_check) || 0;
+  const expBreakdown = a.expense_breakdown || {};
+  const missingExpCount = Object.values(expBreakdown).filter(v => v == null).length;
+
+  // 1. Revenue vs leads×close rate mismatch — strongest signal (2 pts)
+  if (mismatchExists) {
+    deductions += 2;
+    issues.push(`Revenue math suggests ~${estCustomersPerMonth} completed jobs/month, but your reported leads × close rate implies ~${claimedJobsPerMonth}/month — a ${mismatchPct}% discrepancy`);
+    verifications.push('Track booked jobs separately from completed jobs and cancellations over the next 30 days');
+    verifications.push('Clarify how you count leads — phone calls received, estimates sent, or qualified inquiries');
+  }
+
+  // 2. Unrealistically high close rate (1 pt)
+  if (closeRate !== null && closeRate > 80) {
+    deductions += 1;
+    issues.push(`Reported close rate of ${closeRate}% is above the typical 20–60% range for most service businesses — worth verifying against actual bookings`);
+    verifications.push(`Count every estimate sent vs. every job booked last month to verify your ${closeRate}% close rate`);
+  }
+
+  // 3. Close rate not tracked at all (1 pt)
+  if (closeRate === null) {
+    deductions += 1;
+    issues.push('Close rate not tracked — growth projections use a 10% industry minimum placeholder instead of your real conversion rate');
+    verifications.push('Start tracking: log every inbound inquiry and every job booked, divide weekly');
+  }
+
+  // 4. Lead volume not tracked (1 pt)
+  if (!leadsPerMonth) {
+    deductions += 1;
+    issues.push('Monthly lead volume not provided — marketing ROI and funnel analysis cannot be calculated');
+    verifications.push('Log every inbound lead (calls, forms, referrals, walk-ins) for the next 30 days');
+  }
+
+  // 5. Average transaction value missing (1 pt)
+  if (!avgCheck) {
+    deductions += 1;
+    issues.push('Average transaction value not provided — job volume, capacity math, and revenue projections cannot be verified');
+    verifications.push('Calculate it now: last month\'s total revenue ÷ number of completed jobs');
+  }
+
+  // 6. Expense breakdown mostly empty (1 pt)
+  if (missingExpCount >= 3) {
+    deductions += 1;
+    issues.push(`${missingExpCount} out of ${Object.keys(expBreakdown).length} expense categories were not provided — true profit margin estimate may be off`);
+    verifications.push('Fill in your expense breakdown: materials, marketing, software, operations, and equipment costs');
+  }
+
+  // Determine level
+  let level, color, bg, border, icon;
+  if (deductions === 0)      { level = 'Verified';      color = '#059669'; bg = '#D1FAE5'; border = '#6EE7B7'; icon = '✓'; }
+  else if (deductions <= 2)  { level = 'Needs Review';  color = '#B45309'; bg = '#FEF3C7'; border = '#FCD34D'; icon = '⚠'; }
+  else                       { level = 'Unverified';    color = '#DC2626'; bg = '#FEE2E2'; border = '#FCA5A5'; icon = '!'; }
+
+  return { level, color, bg, border, icon, issues, verifications, deductions };
+}
+
 // ── 3. PSI via our proxy ──────────────────────────────────────────────────────
 
 async function runPSI(siteUrl) {
@@ -815,6 +879,7 @@ ${mismatchExists ? `⚠️ DATA MISMATCH DETECTED (${mismatchPct}% gap): Revenue
 Effective close rate implied by revenue: ~${effectiveCloseRate}% (not the reported ${closeRate}%).
 IN THE REPORT, include this explanation in plain business language: "Based on your revenue and average transaction value, your completed job volume appears closer to ${estCustomersPerMonth} per month. If you receive ${leadsPerMonth} leads per month, your effective lead-to-job conversion appears closer to ${effectiveCloseRate}%, not the reported ${closeRate}%. This gap is worth investigating — seasonality, offline payments, or how you count leads could explain part of it. But it is also possible your close rate is lower than you think, which is an opportunity."
 Frame this as an insight, not an accusation. Use the revenue-based figure (${estCustomersPerMonth} jobs/mo) for all financial calculations in the report.` : `✓ Numbers are consistent — revenue math and reported leads/close rate align within 20%. Use reported figures normally.`}
+DATA CONFIDENCE LEVEL (reference this in your executive summary and any section where you discuss data reliability): ${mismatchExists ? 'Needs Review' : (!closeRateTracked || !leadsPerMonth || !avgCheck) ? 'Needs Review' : 'Verified'}. The report already displays a dedicated Data Confidence card — your narrative sections should be consistent with this level.
 - Expense breakdown: ${expSummary}
 - Online review rating: ${a.q10||'not provided'}
 - Review monitoring: ${a.review_monitoring||'not answered'}
@@ -1345,6 +1410,21 @@ function renderAssessmentHTML(r, a, research, rB = {}) {
     const parsedForBadge = parsed;
     return {label, raw: v, parsed, parsedForBadge};
   });
+
+  // ── Data Confidence Score (computed here so HTML is always accurate) ─────────
+  const _csAnnualRev  = a.q4_parsed?.y3 || a.q4_parsed?.y2 || a.q4_parsed?.y1 || a.q4_parsed?.y0 || 0;
+  const _csMo         = _csAnnualRev > 0 ? Math.round(_csAnnualRev / 12) : 0;
+  const _csAvgCheck   = Number(a.avg_check) || 0;
+  const _csEstJobs    = (_csMo && _csAvgCheck) ? Math.round(_csMo / _csAvgCheck) : null;
+  const _csLeads      = Number(a.q9_leads) || 0;
+  const _csCloseTracked = a.q9_close != null;
+  const _csClose      = _csCloseTracked ? Number(a.q9_close) : 10;
+  const _csClaimed    = (_csLeads && _csCloseTracked) ? Math.round(_csLeads * (_csClose / 100)) : null;
+  const _csMismatchPct = (_csClaimed && _csEstJobs)
+    ? Math.round(Math.abs(_csClaimed - _csEstJobs) / Math.max(_csClaimed, _csEstJobs) * 100) : null;
+  const _csMismatch   = _csMismatchPct !== null && _csMismatchPct > 20;
+  const _csEffClose   = (_csEstJobs !== null && _csLeads > 0) ? Math.round(_csEstJobs / _csLeads * 100) : null;
+  const cs = computeConfidenceScore(a, _csEstJobs, _csMismatch, _csMismatchPct, _csClaimed, _csEffClose);
 
   // Expense chart data
   const expBreakdown = a.expense_breakdown || {};
@@ -2185,6 +2265,43 @@ function toggleSidebar(){
       </div>`).join('')}
     </div>
   </div>` : ''}
+
+  <!-- DATA CONFIDENCE SCORE -->
+  <div class="section">
+    <div class="sec-label">Data Confidence</div>
+    <div class="sec-title">How Reliable Is This Report?</div>
+    <div class="card" style="border-left:4px solid ${cs.border};background:${cs.bg};padding:24px 28px;">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:${cs.issues.length ? '20px' : '0'};">
+        <div style="width:48px;height:48px;border-radius:50%;background:${cs.color};display:flex;align-items:center;justify-content:center;flex-shrink:0;">
+          <span style="font-size:22px;color:white;font-weight:900;line-height:1;">${cs.icon}</span>
+        </div>
+        <div>
+          <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:${cs.color};margin-bottom:3px;">Data Confidence</div>
+          <div style="font-size:22px;font-weight:900;color:${cs.color};line-height:1;">${cs.level}</div>
+        </div>
+        ${cs.level === 'Verified' ? `<div style="margin-left:auto;font-size:13px;color:#059669;font-weight:600;line-height:1.6;">All key metrics are consistent and internally verified.<br>This report can be used directly for planning.</div>` : ''}
+      </div>
+      ${cs.issues.length ? `
+      <div style="margin-bottom:16px;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#374151;margin-bottom:10px;">Why This Score</div>
+        <div style="display:flex;flex-direction:column;gap:9px;">
+          ${cs.issues.map(issue => `<div style="display:flex;gap:10px;align-items:flex-start;">
+            <span style="width:18px;height:18px;border-radius:50%;background:${cs.color};color:white;font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px;">${cs.icon}</span>
+            <span style="font-size:13px;color:#374151;line-height:1.7;">${issue}</span>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div style="border-top:1px solid rgba(0,0,0,0.10);padding-top:16px;">
+        <div style="font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:#374151;margin-bottom:10px;">Verify Before Making Decisions</div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          ${cs.verifications.map((v,i) => `<div style="display:flex;gap:10px;align-items:flex-start;">
+            <span style="min-width:22px;height:22px;border-radius:6px;background:white;border:1px solid ${cs.border};color:${cs.color};font-size:11px;font-weight:800;display:flex;align-items:center;justify-content:center;flex-shrink:0;">${i+1}</span>
+            <span style="font-size:13px;color:#374151;line-height:1.7;">${v}</span>
+          </div>`).join('')}
+        </div>
+      </div>` : ''}
+    </div>
+  </div>
 
   <!-- TOP 3 ACTIONS -->
   <div class="section">
