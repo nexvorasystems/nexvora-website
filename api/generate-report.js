@@ -119,6 +119,126 @@ function filterForCompany(res, company) {
   return { ...res, results: filtered.length > 0 ? filtered : res.results.slice(0, 3) };
 }
 
+// ── Source Intelligence (pure JS — curated, labeled, filtered) ───────────────
+
+// Extract presence signals from Tavily snippet text
+function extractPresenceData(research, company) {
+  const companyTokens = (company||'').toLowerCase().split(/[\s\-&/,]+/).filter(w=>w.length>=3);
+  const hasCompanyIn = text => companyTokens.some(t=>text.toLowerCase().includes(t));
+
+  const allResults = [
+    ...(research.business?.results||[]),
+    ...(research.reviews?.results||[]),
+    ...(research.yelp?.results||[]),
+    ...(research.bbb?.results||[]),
+    ...(research.social?.results||[]),
+    ...(research.locations?.results||[]),
+  ];
+
+  // Helper: find first regex match in all snippets/titles
+  const findIn = (sources, re) => {
+    for (const r of sources) {
+      const text = (r.title||'') + ' ' + (r.snippet||'');
+      const m = text.match(re);
+      if (m) return m;
+    }
+    return null;
+  };
+
+  // Google / general rating
+  const ratingM = findIn(allResults, /(\d+\.?\d*)\s*(?:out of 5|\/5|stars?|★)[\s,]*(?:[\(\[]?\s*(\d[\d,]*)\s*(?:reviews?|ratings?)[\)\]]?)?/i);
+  const googleRating = ratingM ? ratingM[1] : null;
+  const googleReviews = ratingM?.[2] ? ratingM[2].replace(/,/g,'') : null;
+
+  // Yelp
+  const yelpResults = research.yelp?.results||[];
+  const yelpRatingM = findIn(yelpResults, /(\d+\.?\d*)\s*(?:star|★|\/5|out of)/i);
+  const yelpReviewM = findIn(yelpResults, /(\d[\d,]+)\s*(?:review|rating)/i);
+  const yelpFound = yelpResults.length > 0;
+  const yelpRating = yelpRatingM?.[1] || null;
+  const yelpReviews = yelpReviewM?.[1]?.replace(/,/g,'') || null;
+
+  // BBB
+  const bbbResults = research.bbb?.results||[];
+  const bbbFound = bbbResults.length > 0;
+  const bbbGradeM = findIn(bbbResults, /\b([A-F][+-]?)\s*(?:rating|grade|accredited|rated)/i)
+    || findIn(bbbResults, /(?:rating|grade|accredited|rated)\s*:?\s*([A-F][+-]?)\b/i);
+  const bbbAccredM = findIn(bbbResults, /accredited business/i);
+  const bbbGrade = bbbGradeM?.[1] || null;
+  const bbbAccredited = !!bbbAccredM;
+
+  // Social
+  const socialResults = research.social?.results||[];
+  const hasFacebook = socialResults.some(r=>/facebook\.com/i.test(r.url||''));
+  const hasInstagram = socialResults.some(r=>/instagram\.com/i.test(r.url||''));
+  const hasLinkedIn = socialResults.some(r=>/linkedin\.com/i.test(r.url||''));
+
+  // Website
+  const locResults = research.locations?.results||[];
+  const hasWebsite = locResults.some(r=>hasCompanyIn((r.url||'')+(r.title||'')));
+
+  return { googleRating, googleReviews, yelpFound, yelpRating, yelpReviews, bbbFound, bbbGrade, bbbAccredited, hasFacebook, hasInstagram, hasLinkedIn, hasWebsite };
+}
+
+// Classify and filter sources — returns only curated, labeled results
+function classifyAndFilterSources(research, company) {
+  const companyTokens = (company||'').toLowerCase().split(/[\s\-&/,]+/).filter(w=>w.length>=3);
+  const hasCompanyIn = text => companyTokens.length >= 1 && companyTokens.some(t=>text.toLowerCase().includes(t));
+
+  const allRaw = [
+    ...(research.business?.results||[]).slice(0,3),
+    ...(research.reviews?.results||[]).slice(0,2),
+    ...(research.yelp?.results||[]).slice(0,2),
+    ...(research.bbb?.results||[]).slice(0,1),
+    ...(research.social?.results||[]).slice(0,3),
+    ...(research.locations?.results||[]).slice(0,3),
+  ].filter((r,i,arr)=>r.url && arr.findIndex(x=>x.url===r.url)===i); // dedupe
+
+  const classify = ({url='', title='', snippet=''}) => {
+    const u = url.toLowerCase();
+    const combined = (title+' '+snippet+' '+url).toLowerCase();
+    const isCompany = hasCompanyIn(combined);
+
+    // Always skip junk
+    if (/sitemap|robots\.txt|\/feed\/|\/rss\//i.test(u)) return null;
+    if (/wikipedia\.org|wikihow\.com/i.test(u)) return null;
+    if (/reddit\.com/i.test(u) && !isCompany) return null;
+    if (/nextdoor\.com/i.test(u) && !isCompany) return null;
+    if (/\.gov\b/i.test(u) && !isCompany) return null;
+
+    // Platform sources — highest confidence
+    if (/yelp\.com/i.test(u))      return { label:'Yelp Profile',      badge:'#D92228', priority:1 };
+    if (/bbb\.org/i.test(u))       return { label:'BBB Profile',       badge:'#003087', priority:1 };
+    if (/facebook\.com/i.test(u))  return { label:'Facebook Page',     badge:'#1877F2', priority:2 };
+    if (/instagram\.com/i.test(u)) return { label:'Instagram Page',    badge:'#E1306C', priority:2 };
+    if (/linkedin\.com/i.test(u))  return { label:'LinkedIn Page',     badge:'#0A66C2', priority:2 };
+    if (/maps\.google|google\.com\/maps/i.test(u)) return { label:'Google Business', badge:'#4285F4', priority:1 };
+
+    // Company-matching sources
+    if (isCompany) return { label:'Company Source', badge:'#0D9488', priority:1 };
+
+    // Directories
+    if (/angi\.|homeadvisor\.|thumbtack\.|houzz\.|angieslist\.|yellowpages\.|manta\.|superpages\.|expertise\.com/i.test(u))
+      return { label:'Directory Listing', badge:'#6366F1', priority:3 };
+
+    // Community (only if company-relevant — already filtered above)
+    if (/reddit\.com/i.test(u))   return { label:'Community Post', badge:'#FF4500', priority:4 };
+    if (/nextdoor\.com/i.test(u)) return { label:'Community Post', badge:'#8BBF3F', priority:4 };
+
+    // Market/industry data — show only if title sounds relevant
+    if (/price|cost|rate|review|rating|best|top|vs\.|compare/i.test(title))
+      return { label:'Market Source', badge:'#78716C', priority:5 };
+
+    return null; // skip anything we can't confidently classify
+  };
+
+  return allRaw
+    .map(r => ({ ...r, _meta: classify(r) }))
+    .filter(r => r._meta !== null)
+    .sort((a,b) => (a._meta.priority - b._meta.priority))
+    .slice(0, 10); // max 10 curated sources
+}
+
 // ── Data Confidence Score (pure JS — never AI-generated) ─────────────────────
 function computeConfidenceScore(a, estCustomersPerMonth, mismatchExists, mismatchPct, claimedJobsPerMonth, effectiveCloseRate) {
   const issues = [];
@@ -1767,38 +1887,43 @@ function toggleSidebar(){
         ${a.q9_close && a.q9_adspend && a.q9_leads ? `<div class="intel-item"><div class="il">Cost Per Customer (Ads)</div><div class="iv">$${Math.round((a.q9_adspend/a.q9_leads)/(a.q9_close/100)).toLocaleString()}</div></div>` : ''}
       </div>
       ${(()=>{
-        // Collect all unique sources across all research channels
-        const _allSources = [
-          ...(research.business?.results||[]).slice(0,2),
-          ...(research.reviews?.results||[]).slice(0,2),
-          ...(research.yelp?.results||[]).slice(0,2),
-          ...(research.bbb?.results||[]).slice(0,1),
-          ...(research.social?.results||[]).slice(0,1),
-          ...(research.forums?.results||[]).slice(0,2),
-          ...(research.locations?.results||[]).slice(0,2),
-        ].filter((r2,i,arr)=>r2.url && arr.findIndex(x=>x.url===r2.url)===i); // dedupe by URL
-        if (!_allSources.length) return '';
-        // Group by platform type for display
-        const _platformLabel = url => {
-          if (/yelp\.com/i.test(url)) return '⭐ Yelp';
-          if (/bbb\.org/i.test(url)) return '🏛 BBB';
-          if (/facebook\.com/i.test(url)) return '📘 Facebook';
-          if (/instagram\.com/i.test(url)) return '📸 Instagram';
-          if (/linkedin\.com/i.test(url)) return '💼 LinkedIn';
-          if (/reddit\.com/i.test(url)) return '💬 Reddit';
-          if (/nextdoor\.com/i.test(url)) return '🏘 Nextdoor';
-          if (/google\./i.test(url)) return '🔍 Google';
-          return '🌐 Web';
-        };
-        return `<div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
-          <div style="font-size:11px;font-weight:800;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:10px;">Sources Found</div>
-          <div style="display:flex;flex-direction:column;gap:6px;">
-            ${_allSources.map(r2=>`<a href="${r2.url}" target="_blank" style="font-size:12px;color:var(--dim);text-decoration:none;display:flex;gap:8px;align-items:baseline;">
-              <span style="font-size:10px;color:var(--teal);min-width:80px;font-weight:600;">${_platformLabel(r2.url)}</span>
-              <span>→ ${r2.title}</span>
-            </a>`).join('')}
+        const _pd = extractPresenceData(research, a.contact?.company||'');
+        const _srcs = classifyAndFilterSources(research, a.contact?.company||'');
+
+        // ── Business Presence Panel ──────────────────────────────────────────
+        const _presenceItems = [
+          { label:'Website',   found: _pd.hasWebsite,   detail: _pd.hasWebsite ? 'Found' : 'Not found' },
+          { label:'Google',    found: !!_pd.googleRating, detail: _pd.googleRating ? `★${_pd.googleRating}${_pd.googleReviews?' ('+Number(_pd.googleReviews).toLocaleString()+' reviews)':''}` : 'Not found' },
+          { label:'Yelp',      found: _pd.yelpFound,    detail: _pd.yelpFound ? (_pd.yelpRating ? `★${_pd.yelpRating}${_pd.yelpReviews?' ('+Number(_pd.yelpReviews).toLocaleString()+' reviews)':''}` : 'Listed') : 'Not found' },
+          { label:'BBB',       found: _pd.bbbFound,     detail: _pd.bbbFound ? (_pd.bbbGrade ? `Grade ${_pd.bbbGrade}${_pd.bbbAccredited?' · Accredited':''}` : _pd.bbbAccredited?'Accredited':'Listed') : 'Not found' },
+          { label:'Facebook',  found: _pd.hasFacebook,  detail: _pd.hasFacebook ? 'Found' : 'Not found' },
+          { label:'Instagram', found: _pd.hasInstagram, detail: _pd.hasInstagram ? 'Found' : 'Not found' },
+          { label:'LinkedIn',  found: _pd.hasLinkedIn,  detail: _pd.hasLinkedIn ? 'Found' : 'Not found' },
+        ];
+        const _presenceHtml = `
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+          <div style="font-size:11px;font-weight:800;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Business Presence</div>
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px;">
+            ${_presenceItems.map(p=>`<div style="background:var(--bg2);border-radius:10px;padding:12px 14px;border:1px solid ${p.found?'var(--border)':'var(--border)'};opacity:${p.found?1:0.5};">
+              <div style="font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:${p.found?'var(--teal)':'var(--dim)'};margin-bottom:4px;">${p.label}</div>
+              <div style="font-size:12px;font-weight:600;color:${p.found?'var(--text)':'var(--dim)'};">${p.detail}</div>
+            </div>`).join('')}
           </div>
         </div>`;
+
+        // ── Curated Sources ──────────────────────────────────────────────────
+        const _sourcesHtml = _srcs.length ? `
+        <div style="margin-top:20px;padding-top:20px;border-top:1px solid var(--border);">
+          <div style="font-size:11px;font-weight:800;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:12px;">Sources Found</div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            ${_srcs.map(r2=>`<a href="${r2.url}" target="_blank" style="text-decoration:none;display:flex;gap:10px;align-items:flex-start;">
+              <span style="font-size:10px;font-weight:700;color:white;background:${r2._meta.badge};border-radius:4px;padding:2px 7px;white-space:nowrap;flex-shrink:0;margin-top:2px;">${r2._meta.label}</span>
+              <span style="font-size:12px;color:var(--text);line-height:1.5;">${r2.title}<span style="display:block;font-size:11px;color:var(--dim);margin-top:1px;">${(r2.url||'').replace(/^https?:\/\//,'').split('/')[0]}</span></span>
+            </a>`).join('')}
+          </div>
+        </div>` : '';
+
+        return _presenceHtml + _sourcesHtml;
       })()}
     </div>
   </div>
