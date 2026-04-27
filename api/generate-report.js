@@ -743,6 +743,19 @@ async function writeAssessmentReport(a, research) {
   const costPerCustomer  = (costPerLead && closeRate) ? Math.round(costPerLead / (closeRate / 100)) : null;
   const costPerLeadDisplay = costPerLead ? Math.round(costPerLead) : null;
   const suggestedAdBudget = annualRevEst ? Math.round(annualRevEst * 0.08 / 12) : null;
+
+  // ── DATA INTEGRITY: revenue-math vs self-reported leads/close rate ──────────
+  // Revenue-based job count is the ground truth — it's derived from actual money, not estimation
+  const claimedJobsPerMonth   = (leadsPerMonth && closeRateTracked) ? Math.round(leadsPerMonth * (closeRate / 100)) : null;
+  const mismatchPct           = (claimedJobsPerMonth && estCustomersPerMonth)
+    ? Math.round(Math.abs(claimedJobsPerMonth - estCustomersPerMonth) / Math.max(claimedJobsPerMonth, estCustomersPerMonth) * 100) : null;
+  const mismatchExists        = mismatchPct !== null && mismatchPct > 20;
+  // Effective close rate = what revenue math implies (more accurate than self-reported)
+  const effectiveCloseRate    = (estCustomersPerMonth !== null && leadsPerMonth > 0)
+    ? Math.round(estCustomersPerMonth / leadsPerMonth * 100) : null;
+  // Cost per customer corrected to use revenue-based job count (not self-reported close rate)
+  const costPerCustomerRevBased = (currentAdSpend && estCustomersPerMonth)
+    ? Math.round(currentAdSpend / estCustomersPerMonth) : null;
   const adSpendGap       = (suggestedAdBudget !== null && currentAdSpend !== null) ? suggestedAdBudget - currentAdSpend : null;
   // Referral math: 1 referral per 5 customers/month, 50% convert — guard against 0 being falsy
   const estReferralCustomersRaw = estCustomersPerMonth ? estCustomersPerMonth / 5 * 0.5 : 0;
@@ -790,9 +803,18 @@ OPERATIONS:
 - Lead sources: ${(a.q9||[]).join(', ')||'none selected'}
 - Ad spend: ${a.q9_adspend != null ? '$'+a.q9_adspend+'/mo' : '$0 — not running paid ads'}
 - Leads from ads/month: ${a.q9_leads != null ? a.q9_leads : '0 — not tracked'}
-- Closing rate: ${closeRateTracked ? a.q9_close+'%' : 'NOT TRACKED — owner skipped this question. Use 10% as conservative industry minimum baseline for all calculations. NEVER write "0% closing rate" in the report — instead say closing rate is unknown, the industry standard for home services is typically 20-40%, and they must start tracking this immediately.'}
+- Closing rate (self-reported): ${closeRateTracked ? a.q9_close+'%' : 'NOT TRACKED — owner skipped this question. Use 10% as conservative industry minimum baseline for all calculations. NEVER write "0% closing rate" in the report — instead say closing rate is unknown, the industry standard for home services is typically 20-40%, and they must start tracking this immediately.'}
 - Cost per lead: ${costPerLeadDisplay != null ? '$'+costPerLeadDisplay : (currentAdSpend > 0 ? 'not calculable — lead volume not tracked' : 'not applicable — not running paid ads')}
-- Cost per customer: ${costPerCustomer != null ? '$'+costPerCustomer : (currentAdSpend > 0 ? 'not calculable — lead volume not tracked' : 'not applicable — not running paid ads')}
+- Cost per customer (self-reported close rate): ${costPerCustomer != null ? '$'+costPerCustomer : (currentAdSpend > 0 ? 'not calculable — lead volume not tracked' : 'not applicable — not running paid ads')}
+- Cost per customer (revenue-based — more accurate): ${costPerCustomerRevBased != null ? '$'+costPerCustomerRevBased : 'not calculable'}
+
+DATA INTEGRITY CHECK — SHOW BOTH REPORTED AND CALCULATED METRICS:
+- Revenue-based jobs/month: ${estCustomersPerMonth !== null ? estCustomersPerMonth : 'not calculable'} (= $${monthlyRevEst}/mo ÷ $${avgCheck} avg check — ground truth from actual revenue)
+- Self-reported jobs/month: ${claimedJobsPerMonth !== null ? claimedJobsPerMonth : 'not calculable'} (= ${leadsPerMonth} leads × ${closeRate}% close rate)
+${mismatchExists ? `⚠️ DATA MISMATCH DETECTED (${mismatchPct}% gap): Revenue math suggests ~${estCustomersPerMonth} completed jobs/month, but reported leads×close_rate implies ~${claimedJobsPerMonth} jobs/month. The revenue-based number is more reliable since it is derived from actual money collected.
+Effective close rate implied by revenue: ~${effectiveCloseRate}% (not the reported ${closeRate}%).
+IN THE REPORT, include this explanation in plain business language: "Based on your revenue and average transaction value, your completed job volume appears closer to ${estCustomersPerMonth} per month. If you receive ${leadsPerMonth} leads per month, your effective lead-to-job conversion appears closer to ${effectiveCloseRate}%, not the reported ${closeRate}%. This gap is worth investigating — seasonality, offline payments, or how you count leads could explain part of it. But it is also possible your close rate is lower than you think, which is an opportunity."
+Frame this as an insight, not an accusation. Use the revenue-based figure (${estCustomersPerMonth} jobs/mo) for all financial calculations in the report.` : `✓ Numbers are consistent — revenue math and reported leads/close rate align within 20%. Use reported figures normally.`}
 - Expense breakdown: ${expSummary}
 - Online review rating: ${a.q10||'not provided'}
 - Review monitoring: ${a.review_monitoring||'not answered'}
@@ -1038,7 +1060,18 @@ async function writeAssessmentReportB(a, research, competitorRes) {
   const _noRevenueB = annualRev === 0;
   const _lowRevenueB = annualRev > 0 && annualRev < 10000;
   const avgCheck = Number(a.avg_check) || 0;
-  const estJobs = avgCheck > 0 && mo > 0 ? Math.round(mo / avgCheck) : null;
+  const estJobs = avgCheck > 0 && mo > 0 ? Math.round(mo / avgCheck) : null; // revenue-based (ground truth)
+
+  // Data integrity — replicate same mismatch logic as Call A
+  const _leadsB       = Number(a.q9_leads) || 0;
+  const _closeTrackedB = a.q9_close != null;
+  const _closeRateB   = _closeTrackedB ? Number(a.q9_close) : 10;
+  const _adSpendB     = Number(a.q9_adspend) || 0;
+  const _claimedJobsB = (_leadsB && _closeTrackedB) ? Math.round(_leadsB * (_closeRateB / 100)) : null;
+  const _mismatchPctB = (_claimedJobsB && estJobs) ? Math.round(Math.abs(_claimedJobsB - estJobs) / Math.max(_claimedJobsB, estJobs) * 100) : null;
+  const _mismatchB    = _mismatchPctB !== null && _mismatchPctB > 20;
+  const _effCloseB    = (estJobs !== null && _leadsB > 0) ? Math.round(estJobs / _leadsB * 100) : null;
+  const _costPerCustRevB = (_adSpendB && estJobs) ? Math.round(_adSpendB / estJobs) : null;
 
   const expPctRaw = Object.entries(a.expense_breakdown||{}).filter(([,v])=>v!=null).reduce((s,[,v])=>s+Number(v),0) / 100;
 
@@ -1135,6 +1168,12 @@ GOOD scenario (implement recommendations):
   Month 3 (+3.5% price + 5% volume): $${Math.round(mo*1.035*1.05)}/mo → net $${goodM3!=null?goodM3:'unknown'}/mo
   Month 4−6 (+10% price + 10% volume): $${Math.round(mo*1.10*1.10)}/mo → net $${goodM6!=null?goodM6:'unknown'}/mo
   ${safeDrawIncrease ? `Safe owner draw increase at Month 6: +$${safeDrawIncrease}/mo (10% raise)` : 'Owner draw increase not yet safe — reinvest surplus first'}
+
+DATA INTEGRITY — USE REVENUE-BASED FIGURES FOR ALL CALCULATIONS:
+- Revenue-based jobs/month (ground truth): ${estJobs !== null ? estJobs : 'not calculable'} (= $${mo}/mo ÷ $${avgCheck} avg check)
+- Self-reported jobs/month: ${_claimedJobsB !== null ? _claimedJobsB : 'not calculable'} (= ${_leadsB} leads × ${_closeRateB}% close rate)
+- Cost per booked customer (revenue-based): ${_costPerCustRevB !== null ? '$'+_costPerCustRevB : 'not calculable'}
+${_mismatchB ? `⚠️ MISMATCH (${_mismatchPctB}%): Use revenue-based job count (${estJobs}/mo) for all calculations — it is derived from actual money. The reported close rate (${_closeRateB}%) implies ${_claimedJobsB} jobs/mo which conflicts with revenue. Effective close rate implied by revenue: ~${_effCloseB}%. Reference this in pricing and competitive sections where job volume affects the analysis.` : `✓ Revenue math and reported close rate are consistent (within 20%). Use reported figures.`}
 
 COMPETITOR RESEARCH (industry: ${a.q1b_label||industryLabels[a.q1]||'same as this business'}):
 CRITICAL RULE: Only include competitors that operate in the EXACT SAME industry and service type as ${a.contact?.company||'this business'} (${a.q1b_label||industryLabels[a.q1]||''}). If a result is from a different industry (e.g. cleaning company listed for an appliance repair business), EXCLUDE it completely. If fewer than 3 same-industry competitors are found, list only those that are confirmed matches — do not pad with unrelated businesses. If none are found, set competitors to an empty array and note "Competitor data could not be verified for this market."
