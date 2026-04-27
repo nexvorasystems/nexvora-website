@@ -1136,8 +1136,9 @@ GOOD scenario (implement recommendations):
   Month 4−6 (+10% price + 10% volume): $${Math.round(mo*1.10*1.10)}/mo → net $${goodM6!=null?goodM6:'unknown'}/mo
   ${safeDrawIncrease ? `Safe owner draw increase at Month 6: +$${safeDrawIncrease}/mo (10% raise)` : 'Owner draw increase not yet safe — reinvest surplus first'}
 
-COMPETITOR RESEARCH:
-${competitorSnippets||'No competitor data found — use industry knowledge for this market.'}
+COMPETITOR RESEARCH (industry: ${a.q1b_label||industryLabels[a.q1]||'same as this business'}):
+CRITICAL RULE: Only include competitors that operate in the EXACT SAME industry and service type as ${a.contact?.company||'this business'} (${a.q1b_label||industryLabels[a.q1]||''}). If a result is from a different industry (e.g. cleaning company listed for an appliance repair business), EXCLUDE it completely. If fewer than 3 same-industry competitors are found, list only those that are confirmed matches — do not pad with unrelated businesses. If none are found, set competitors to an empty array and note "Competitor data could not be verified for this market."
+${competitorSnippets||'No competitor data found — use industry knowledge for this specific service type.'}
 ${competitorRes?.answer||''}
 
 GLOBAL RULE FOR THIS CALL: NEVER mention any software brand names as suggestions. The business already uses: ${a.current_software||'not provided'}. Do NOT recommend any tool in a category they already have. Describe tool categories only for any gaps.
@@ -2324,8 +2325,24 @@ async function handleAssessmentReport(req, res) {
   console.log(`[generate-report/assessment] Starting for ${company} in ${city},${state} (${reportId})`);
 
   // Derive specific industry type for more targeted searches
-  const _industryTypeMap = {'home-services':'home services cleaning','construction':'construction contractor','food-bev':'restaurant food beverage','retail':'retail store','health-wellness':'health wellness','professional-services':'professional services','auto':'auto repair','real-estate':'real estate'};
-  const _industryType = _industryTypeMap[a.q1] || industry || 'business';
+  // IMPORTANT: never assume sub-type (e.g. home-services ≠ cleaning — could be appliance repair, HVAC, etc.)
+  const _industryTypeMap = {
+    'home-services': 'home services',
+    'construction': 'construction contractor',
+    'food-bev': 'restaurant food beverage',
+    'retail': 'retail store',
+    'health-wellness': 'health wellness',
+    'professional-services': 'professional services',
+    'auto': 'auto repair automotive',
+    'real-estate': 'real estate'
+  };
+  // Use q1b_label (specific sub-industry) if it's specific enough; skip vague "Other X" labels
+  const _q1bLabel = (a.q1b_label || '').trim();
+  const _q1bIsVague = !_q1bLabel || /^other/i.test(_q1bLabel);
+  // Primary industry type: specific label wins, then category map, then raw industry
+  const _industryType = (!_q1bIsVague ? _q1bLabel : null) || _industryTypeMap[a.q1] || industry || 'business';
+  // For competitor search: when sub-industry is vague, include company name so AI can infer exact type
+  const _competitorSearchType = _q1bIsVague && company ? `${company} ${_industryType}` : _industryType;
 
   // 8 Tavily searches in parallel — targeted, specific, filtered
   const [businessRes, reviewsRes, yelpRes, bbbRes, socialRes, forumsRes, locationsRes, benchmarksRes, competitorRes] = await Promise.all([
@@ -2337,7 +2354,7 @@ async function handleAssessmentReport(req, res) {
     tavilySearch(`"${company}" ${city} site:reddit.com OR site:nextdoor.com community`, 5),
     tavilySearch(`"${company}" ${state} address locations "service area" OR "we serve" OR "serving" OR website`, 6),
     tavilySearch(`${_industryType} ${city} ${state} small business revenue profit margin benchmark average`, 5),
-    tavilySearch(`${_industryType} ${city} ${state} top rated best reviews pricing competitors`, 7),
+    tavilySearch(`${_competitorSearchType} competitors top rated ${city} ${state} reviews pricing`, 7),
   ]);
 
   // Filter results to remove wrong-business matches (e.g. "24 25 carpet" when searching "24 25 cleaners")
