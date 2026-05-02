@@ -181,9 +181,35 @@ function extractPresenceData(research, company) {
 }
 
 // Classify and filter sources — returns only curated, labeled results
-function classifyAndFilterSources(research, company) {
+function classifyAndFilterSources(research, company, ownerState) {
   const companyTokens = (company||'').toLowerCase().split(/[\s\-&/,]+/).filter(w=>w.length>=3);
   const hasCompanyIn = text => companyTokens.length >= 1 && companyTokens.some(t=>text.toLowerCase().includes(t));
+
+  // State abbreviation map — used to detect wrong-location results
+  const US_STATES = ['alabama','alaska','arizona','arkansas','california','colorado','connecticut','delaware','florida','georgia','hawaii','idaho','illinois','indiana','iowa','kansas','kentucky','louisiana','maine','maryland','massachusetts','michigan','minnesota','mississippi','missouri','montana','nebraska','nevada','new hampshire','new jersey','new mexico','new york','north carolina','north dakota','ohio','oklahoma','oregon','pennsylvania','rhode island','south carolina','south dakota','tennessee','texas','utah','vermont','virginia','washington','west virginia','wisconsin','wyoming'];
+  const US_STATE_ABBREVS = ['AL','AK','AZ','AR','CA','CO','CT','DE','FL','GA','HI','ID','IL','IN','IA','KS','KY','LA','ME','MD','MA','MI','MN','MS','MO','MT','NE','NV','NH','NJ','NM','NY','NC','ND','OH','OK','OR','PA','RI','SC','SD','TN','TX','UT','VT','VA','WA','WV','WI','WY'];
+  const ownerStateNorm = (ownerState||'').trim().toUpperCase();
+  // Check if result text mentions a US state that is NOT the owner's state
+  const isWrongLocation = (text) => {
+    if (!ownerStateNorm) return false;
+    const t = text.toLowerCase();
+    // Check state abbreviations like ", VA" or "in VA" — look for ", XX" patterns
+    const abbrevMatches = text.match(/,\s*([A-Z]{2})\b/g) || [];
+    for (const m of abbrevMatches) {
+      const abbrev = m.replace(/[,\s]/g,'');
+      if (US_STATE_ABBREVS.includes(abbrev) && abbrev !== ownerStateNorm) return true;
+    }
+    // Check state names in text — "Northern Virginia" / "in Texas"
+    for (const state of US_STATES) {
+      if (t.includes(state)) {
+        // Map state name to abbreviation to compare
+        const idx = US_STATES.indexOf(state);
+        const abbrev = US_STATE_ABBREVS[idx];
+        if (abbrev && abbrev !== ownerStateNorm) return true;
+      }
+    }
+    return false;
+  };
 
   const allRaw = [
     ...(research.business?.results||[]).slice(0,3),
@@ -205,6 +231,8 @@ function classifyAndFilterSources(research, company) {
     if (/reddit\.com/i.test(u) && !isCompany) return null;
     if (/nextdoor\.com/i.test(u) && !isCompany) return null;
     if (/\.gov\b/i.test(u) && !isCompany) return null;
+    // Skip results that mention a different state than the owner's (wrong-location business)
+    if (isCompany && isWrongLocation(title + ' ' + snippet)) return null;
 
     // Platform sources — highest confidence
     if (/yelp\.com/i.test(u))      return { label:'Yelp Profile',      badge:'#D92228', priority:1 };
@@ -556,7 +584,6 @@ footer strong{color:#44CAA2;}
   <a href="${SITE_URL}" target="_blank" rel="noopener" style="display:flex;align-items:center;flex-shrink:0;"><img src="${SITE_URL}/assets/logo-white.png" alt="Nexvora Systems" style="height:36px;" onerror="this.style.display='none'"/></a>
   <span class="nav-badge">Website Audit Report</span>
   <span class="nav-date">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span>
-  <span style="font-size:10px;color:rgba(255,255,255,0.25);font-family:monospace;letter-spacing:.5px;">${REPORT_VERSION}</span>
 </nav>
 
 <div class="hero">
@@ -953,6 +980,28 @@ async function writeAssessmentReport(a, research) {
   const improvedCloseLeads = (leadsPerMonth && closeRate) ? Math.round(leadsPerMonth * (Math.min(closeRate + 10, 95) / 100 - closeRate / 100)) : null;
   const followUpRevenue = (improvedCloseLeads && avgCheck) ? improvedCloseLeads * avgCheck : null;
 
+  // Pre-computed cash flow statement (mirrors Call B for consistent numbers in prompt)
+  const _cfExpPct_A    = Object.entries(a.expense_breakdown||{}).filter(([,v])=>v!=null).reduce((s,[,v])=>s+Number(v),0) / 100;
+  const _cfOwnerMo_A   = Object.values(a.owner_pay||{}).reduce((s,v) => {
+    const mo = v.monthly || (v.frequency==='weekly' ? Math.round(Number(v.amount)*4.33) : Number(v.amount));
+    return s + mo;
+  }, 0);
+  const _cfAllDraws_A  = _cfOwnerMo_A + _partnersArr.reduce((s,p)=>s+(p.pay_total||0), 0);
+  const _cfOpMo_A      = monthlyRevEst > 0 ? Math.round(monthlyRevEst * _cfExpPct_A) + _backOfficeMo + _fieldMo : null;
+  const _cfBefDraw_A   = (_cfOpMo_A !== null && monthlyRevEst > 0) ? monthlyRevEst - _cfOpMo_A : null;
+  const _cfAftDraw_A   = monthlyRevEst > 0 ? Math.round(monthlyRevEst * (1 - _cfExpPct_A) - _cfAllDraws_A - _backOfficeMo) : null;
+  const _cfSelf_A      = (a.cash_flow||'').toLowerCase();
+  const _cfConflict_A  = monthlyRevEst > 0 && _cfAftDraw_A !== null && (
+    (_cfSelf_A === 'positive' && _cfAftDraw_A < 0) ||
+    (_cfSelf_A === 'negative' && _cfAftDraw_A > 0)
+  );
+  const _cfDrawIssue_A = _cfBefDraw_A !== null && _cfBefDraw_A > 0 && _cfAftDraw_A !== null && _cfAftDraw_A < 0;
+  const _cfRisk_A      = !monthlyRevEst || _cfAftDraw_A === null ? 'Unknown'
+    : _cfAftDraw_A < 0 && _cfBefDraw_A !== null && _cfBefDraw_A < 0 ? 'Critical'
+    : _cfDrawIssue_A ? 'High — Draw Dependent'
+    : _cfAftDraw_A < monthlyRevEst * 0.05 ? 'Medium — Thin Margin'
+    : 'Low — Healthy Buffer';
+
   const prompt = `You are a senior business consultant at Nexvora Systems writing a personalized business health assessment report. Be direct, specific, and use the owner's REAL data — never make up facts. Reference their actual answers throughout. Use plain, confident language — no corporate fluff.
 
 OWNER: ${a.contact?.name || 'Business Owner'}
@@ -1009,8 +1058,18 @@ DATA CONFIDENCE LEVEL (reference this in your executive summary and any section 
 - Follow-up tracking: ${a.q11c||'not answered'}
 - Team performance management: ${(a.q12||[]).join(', ')||'none'}
 - Financial review frequency: ${a.q13||'not answered'}
-- Cash flow status: ${a.cash_flow||'not answered'}
+- Cash flow status (self-reported): ${a.cash_flow||'not answered'}
 - Cash flow tracking method: ${a.cashflow_tracking||'not answered'}
+
+CASH FLOW STATEMENT (pre-computed — use these exact numbers, do not recalculate):
+- Monthly Revenue: $${monthlyRevEst}/mo
+- Operating Expenses (overhead % + back-office payroll + field labor): ${_cfOpMo_A !== null ? '$'+_cfOpMo_A+'/mo' : 'unknown'}
+- Cash Flow Before Owner Draw: ${_cfBefDraw_A !== null ? '$'+_cfBefDraw_A+'/mo' : 'unknown'}
+- Owner + Partner Draws: $${_cfAllDraws_A}/mo
+- Net Cash Flow After Draw: ${_cfAftDraw_A !== null ? '$'+_cfAftDraw_A+'/mo' : 'unknown'}
+- Cash Flow Risk Level: ${_cfRisk_A}
+${_cfConflict_A ? `⚠️ CASH FLOW CONFLICT: Owner reported cash flow as "${a.cash_flow}" but math shows $${_cfAftDraw_A}/mo net. Address this directly in cashFlowAnalysis — possible causes include informal/unreported revenue, seasonal timing, or owner optimism. Do not ignore this discrepancy.` : '✓ Self-reported cash flow aligns with math.'}
+${_cfDrawIssue_A ? `⚠️ DRAW CONSTRAINT: Business generates $${_cfBefDraw_A}/mo BEFORE owner draw — which is healthy — but drops to $${_cfAftDraw_A}/mo AFTER the $${_cfAllDraws_A}/mo draw. The draw is the primary cash flow bottleneck. State this clearly in cashFlowAnalysis.` : ''}
 - P&L statement: ${a.has_pl||'not answered'} | Usage: ${a.pl_usage||'not answered'}
 - Bank separation (personal vs business): ${a.bank_personal_biz||'not answered'}${a.bank_personal_biz==='no'?' ← CRITICAL: mixed personal/business accounts, flag in report':''}
 - Separate purpose accounts: ${a.bank_multi_accounts||'not answered'} | Account types: ${(a.bank_account_types||[]).join(', ')||'not answered'}
@@ -1068,7 +1127,9 @@ PRE-COMPUTED CAPACITY & GROWTH MATH (use these exact numbers — do not recalcul
 - Capacity source: ${capacitySourceNote || 'not determined'}
 - Capacity context: ${a.cap_team_based ? 'FIELD-TECH dependent business — growth requires either more field staff or optimizing current team schedules' : (a.cap_extra_clients != null ? 'OFFICE-BASED — team capacity drives growth ceiling' : 'capacity type not determined from assessment')}
 - Current ad spend: $${currentAdSpend}/mo | Leads/mo: ${leadsPerMonth || 0} | Closing rate: ${closeRate || 0}%
-- Cost per lead: ${costPerLead !== null ? '$'+costPerLead : (currentAdSpend > 0 ? 'not calculable — lead volume not tracked' : 'not applicable — not running paid ads')} | Cost per customer (ads): ${costPerCustomer !== null ? '$'+costPerCustomer : (currentAdSpend > 0 ? 'not calculable — lead volume not tracked' : 'not applicable — not running paid ads')}
+- Cost per lead: ${costPerLead !== null ? '$'+costPerLead : (currentAdSpend > 0 ? 'not calculable — lead volume not tracked' : 'not applicable — not running paid ads')}
+- Cost per completed customer (revenue-based — USE THIS, not the self-reported close rate figure): ${costPerCustomerRevBased != null ? '$'+costPerCustomerRevBased : (currentAdSpend > 0 ? 'not calculable — revenue or lead volume data missing' : 'not applicable — not running paid ads')}
+- Cost per customer (self-reported close rate only — less reliable, do NOT lead with this number): ${costPerCustomer !== null ? '$'+costPerCustomer : 'not calculable'}
 - Industry benchmark ad budget (8% of revenue): ${suggestedAdBudget ? '$'+suggestedAdBudget+'/mo' : 'not calculable — revenue data missing'}
 - Ad spend gap: ${adSpendGap > 0 ? 'underinvesting by $'+adSpendGap+'/mo vs benchmark' : (adSpendGap !== null && adSpendGap <= 0 ? 'at or above benchmark' : 'not calculable')}
 - Referral program potential: ${estReferralCustomers !== null ? '~'+estReferralCustomers+' new customers/mo = $'+(estReferralRevenue||0).toLocaleString()+'/mo added revenue' : 'exact number not calculable — avg transaction value needed; still recommend a referral program and explain the concept using their industry'}
@@ -1121,7 +1182,7 @@ Return ONLY valid JSON with these exact keys:
   "location": "string — City, State",
   "primaryPainLabel": "string — human-readable label for their #1 pain",
   "painDiagnosis": "string — 4-5 sentences. Explain exactly which pain point scored highest from their votes, quote their specific answers to pain1/pain2/pain3, and connect it to what it reveals about the business right now. Make them feel seen.",
-  "executiveSummary": "string — 5-6 sentences: open with one honest statement about where the business stands, name 2 specific things working well using their data, name the single biggest structural risk, and end with what must change first. Use real numbers from their assessment.",
+  "executiveSummary": "string — 5-6 sentences: open with one honest statement about where the business stands, name 2 specific things working well using their data, name the single biggest structural risk, and end with what must change first. Use real numbers from their assessment. CRITICAL CLOSE RATE RULE: if the data integrity section above shows a mismatch between the self-reported close rate and the revenue-math effective close rate, you MUST use the effective close rate (not the self-reported one) in the executive summary. Never praise a high self-reported close rate as a strength when the revenue math contradicts it — instead frame it as 'reported X% close rate, but revenue math suggests the effective lead-to-completed-job rate is closer to Y%.' If the numbers are consistent, you may reference the close rate normally.",
   "onlinePresence": "string — 4-5 sentences. Detail exactly what was found online: Google rating and review count, which social platforms are active and how engaged, what their web presence looks like, and how they compare to other businesses in their city and industry. Be specific — name platforms, name gaps.",
   "industryBenchmark": "string — 4-5 sentences. Compare their revenue, team size, close rate, ad spend, and hours worked to real industry benchmarks for their specific business type. Name the benchmarks. Say where they're ahead and where they're behind. Give context for why the gaps matter.",
   "keyStrengths": ["string — specific strength #1 with their data as evidence", "string — strength #2 with evidence", "string — strength #3 with evidence"],
@@ -1129,15 +1190,15 @@ Return ONLY valid JSON with these exact keys:
   "ownerEconomics": "string — 6-8 sentences. List every compensation type they reported (salary, distribution, etc.) and the total monthly and annual figure. Calculate effective hourly rate from their hours. Compare to market rate for their industry and business size. Say directly whether they are overpaying or underpaying themselves. Analyze the relationship between what they take home and what the business produces. Flag any structural risk (e.g. taking too much when revenue is flat, or taking too little when the business could afford more).",
   "revenueAnalysis": "string — 6-8 sentences. Walk through each revenue year they reported. Calculate and state the exact YoY % change for each period. Annualize the YTD figure and compare it to last year. Assess the trend (accelerating, flat, declining). Compare growth rate to their stated target of ${a.growth_target_pct||'N/A'}% — is the business on track? What would they need to do differently to hit that target? Give a concrete number: at their current growth rate, what will revenue be in 3 years?",
   "expenseAnalysis": "string — 5-7 sentences. For each expense category reported, name the % and say whether it is in line with, above, or below industry norms for their business type. Estimate the approximate margin based on total accounted expenses. If some categories are missing, name them and explain what the unaccounted % likely contains. Flag any single category that seems disproportionate.",
-  "cashFlowAnalysis": "string — 4-5 sentences. Describe their current cash flow situation in direct terms. Assess how they track it and what risk that creates. If cash flow is tight, explain the likely cause based on their expense and revenue data. Give 2 specific steps to improve cash flow visibility within 30 days.",
+  "cashFlowAnalysis": "string — 4-5 sentences. Use the pre-computed cash flow statement provided above. State the cash flow risk level (${_cfRisk_A}) and explain concretely what it means for the business. ${_cfConflict_A ? `The owner reported cash flow as '${a.cash_flow}' but the math shows $${_cfAftDraw_A}/mo net — address this conflict directly without being accusatory.` : ''} ${_cfDrawIssue_A ? `Make clear that the business is cash-flow positive BEFORE the owner draw ($${_cfBefDraw_A}/mo) but negative AFTER the $${_cfAllDraws_A}/mo draw — the draw is the primary constraint, not the business itself.` : ''} Give 2 specific steps to improve cash flow visibility or stability within 30 days.",
   "goalsAnalysis": "string — 5-7 sentences. State their 12-month goals, 3-year vision, and 5-year goal. Assess whether the 3 timeframes are aligned with each other. Look at the gap between where they are now (current revenue, team size, hours) and where they want to be. Be direct — is the path realistic at the current growth rate, or would it require a structural shift? Name what needs to change to make the vision achievable.",
   "capacityAnalysis": {
     "currentCapacity": "string — 4-5 sentences. State exactly how many customers they are estimated to be serving per month based on revenue ÷ avg check. Show the calculation. Describe what that means for their workload given their hours. Assess whether they are near capacity or have room to grow without additional hiring.",
     "growthCapacity": "string — 4-5 sentences. Using the 25% headroom calculation, state exactly how many additional customers they could take on without hiring. Convert that to additional monthly revenue. Explain what would need to happen operationally to absorb that growth (systemization, delegation, scheduling). Give a specific first step.",
-    "adSpendOpportunity": "string — 5-6 sentences. State their current ad spend and compare to the industry benchmark of 8% of revenue. Show the exact gap in $ per month. Then model the ROI: at their current closing rate and avg check, if they spent the full benchmark amount, how many additional leads would they need and how many customers would that produce? Give a specific platform recommendation for their industry.",
+    "adSpendOpportunity": "string — 5-6 sentences. State their current ad spend and compare to the industry benchmark of 8% of revenue. Show the exact gap in $ per month. IMPORTANT: use the revenue-based cost per completed customer (not the self-reported close rate figure) when modeling ROI — if self-reported and revenue-math figures differ, say so and use the revenue-math number. Then model the ROI: at the revenue-implied conversion rate and avg check, if they spent the full benchmark amount, how many additional leads would they need and how many customers would that produce? Give a specific platform recommendation for their industry.",
     "followUpPotential": "string — 4-5 sentences. State current closing rate and leads per month. Show what a 10-percentage-point improvement in close rate would produce in additional customers and revenue per month using the pre-computed number. Explain why most service businesses lose leads in follow-up. Give a 3-step follow-up sequence they can implement this week.",
     "reactivationOpportunity": "string — 4-5 sentences. Estimate the inactive customer base based on their repeat % and monthly volume. State the reactivation revenue opportunity using the pre-computed number. Give a specific re-engagement script or offer that would work for their industry. Name the tool to use (text, email, etc.).",
-    "referralPotential": "string — 4-5 sentences. State the referral revenue opportunity using the pre-computed number. Explain the math clearly. Describe a referral mechanic that fits their industry (e.g. account credit, discount, gift card). IMPORTANT: Do NOT pick a specific dollar amount for the incentive — instead, state that industry best practice is to offer between 5% and 15% of the average transaction value as the referral reward, which in their case works out to a range of $[5% of avg_check] to $[15% of avg_check]. Let them decide the exact amount based on their margins. Give the word-for-word ask script they can use with happy customers."
+    "referralPotential": "string — 4-5 sentences. State the referral revenue opportunity using the pre-computed number. Explain the math clearly. Describe a referral mechanic that fits their industry (e.g. account credit, discount, gift card). The recommended referral incentive for this business is $${avgCheck < 300 ? 25 : avgCheck < 600 ? 50 : 75} — use this exact amount (based on their $${avgCheck} avg check: lower-ticket businesses use $25, mid-range $50, higher-ticket $75+). If the owner knows a referral is likely to lead to a large job, they can offer more — up to double the base incentive. Give the word-for-word ask script they can use with happy customers."
   },
   "operationsScore": "number 1-10 based on SOPs, tools, follow-up tracking",
   "operationsScoreNote": "string — 2 sentences: why this score, and what single change would raise it by 2 points",
@@ -1148,7 +1209,9 @@ Return ONLY valid JSON with these exact keys:
   "financialScore": "number 1-10 based on review frequency, dashboard, P&L, cash flow tracking",
   "financialScoreNote": "string — 2 sentences: why this score, and what single change would raise it by 2 points",
   "top3Actions": [
-    {"title":"string","why":"string — 2-3 sentences on exactly why this is priority #1 for THIS owner, citing their specific data and current situation","how":"string — 5-7 numbered concrete steps with enough detail to start today. Name specific tools, timelines, and what 'done' looks like.","impact":"string — 3-4 sentences describing exactly what changes when this is done: the metric that improves, the $ impact, the owner's experience."}
+    {"title":"string — Action #1 title (must be FINANCIAL category: cash flow, margins, P&L, draws, banking, or expense control)","why":"string — 2-3 sentences on exactly why this is priority #1 for THIS owner, citing their specific data and current situation","how":"string — 5-7 numbered concrete steps with enough detail to start today. Name specific tools, timelines, and what 'done' looks like.","impact":"string — 3-4 sentences describing exactly what changes when this is done: the metric that improves, the $ impact, the owner's experience."},
+    {"title":"string — Action #2 title (must be OPERATIONS category: SOPs, systems, delegation, team management, follow-up, scheduling)","why":"string — 2-3 sentences on exactly why this is priority #2 for THIS owner","how":"string — 5-7 numbered concrete steps with enough detail to start today","impact":"string — 3-4 sentences describing the measurable outcome"},
+    {"title":"string — Action #3 title (must be SALES & MARKETING category: leads, close rate, ad spend efficiency, referrals, retention)","why":"string — 2-3 sentences on exactly why this is priority #3 for THIS owner","how":"string — 5-7 numbered concrete steps with enough detail to start today","impact":"string — 3-4 sentences describing the measurable outcome"}
   ],
   "top3Actions_instructions": "CRITICAL PRIORITY ORDER: Choose the 3 actions that will have the highest real business impact for this owner. Always evaluate in this order — if there is a problem in a category, prioritize it: 1) FINANCIAL HEALTH first (cash flow, margins, P&L, banking), 2) OPERATIONS second (SOPs, systems, delegation, team management), 3) SALES & MARKETING third (leads, follow-up, close rate, ad spend). NEVER put 'establish an operating agreement' as a top action — it is a legal housekeeping item, not a business growth priority. Legal and partnership matters should be handled but are NOT in the top 3. Each of the 3 actions must come from a different category.",
   "growthPlan": [
@@ -1284,6 +1347,25 @@ async function writeAssessmentReportB(a, research, competitorRes) {
   // Variable costs include both overhead % AND field/contractor % (they scale with revenue)
   const breakEvenMo = totalVarPct < 1 ? Math.ceil((allDraws + backOfficeMo) / (1 - totalVarPct) / 100) * 100 : null;
 
+  // ── Cash Flow Statement (pre-computed, used in prompt + HTML) ────────────────
+  const _cfOperatingMo    = mo > 0 ? Math.round(mo * expPctRaw) + backOfficeMo + fieldMoB : null;
+  const _cfBeforeDraw     = (_cfOperatingMo !== null && mo > 0) ? mo - _cfOperatingMo : null;
+  const _cfAfterDraw      = monthlyNet; // revenue - operating - draws - back-office
+  // Conflict: owner self-reported cash_flow contradicts math
+  const _cfSelfReported   = (a.cash_flow||'').toLowerCase();
+  const _cfConflict       = mo > 0 && _cfAfterDraw !== null && (
+    (_cfSelfReported === 'positive' && _cfAfterDraw < 0) ||
+    (_cfSelfReported === 'negative' && _cfAfterDraw > 0)
+  );
+  // Draw is the problem: positive before draw, negative after
+  const _cfDrawIsIssue    = _cfBeforeDraw !== null && _cfBeforeDraw > 0 && _cfAfterDraw !== null && _cfAfterDraw < 0;
+  // Risk level
+  const _cfRisk = !mo || _cfAfterDraw === null ? 'Unknown'
+    : _cfAfterDraw < 0 && _cfBeforeDraw !== null && _cfBeforeDraw < 0 ? 'Critical'
+    : _cfDrawIsIssue ? 'High — Draw Dependent'
+    : _cfAfterDraw < mo * 0.05 ? 'Medium — Thin Margin'
+    : 'Low — Healthy Buffer';
+
   // Pricing scenarios
   const p1  = mo > 0 ? { gainMo: Math.round(mo*0.01),   gainYr: Math.round(mo*0.01*12),   newCheck: Math.round(avgCheck*1.01)  } : null;
   const p35 = mo > 0 ? { gainMo: Math.round(mo*0.035),  gainYr: Math.round(mo*0.035*12),  newCheck: Math.round(avgCheck*1.035) } : null;
@@ -1332,6 +1414,17 @@ PRE-COMPUTED NUMBERS (use exactly — do not recalculate):
 - Break-even revenue: ${breakEvenMo?'$'+breakEvenMo+'/mo':'unknown'}
 - Owner + partner draws: $${allDraws}/mo | Back-office payroll: $${backOfficeMo}/mo
 - Variable expense ratio: ${Math.round(expPctRaw*100)}% of revenue
+
+CASH FLOW STATEMENT (pre-computed — use these exact numbers):
+- Monthly Revenue: $${mo}/mo
+- Operating Expenses (overhead + back-office + field): ${_cfOperatingMo !== null ? '$'+_cfOperatingMo+'/mo' : 'unknown'}
+- Cash Flow Before Owner Draw: ${_cfBeforeDraw !== null ? '$'+_cfBeforeDraw+'/mo' : 'unknown'}
+- Owner + Partner Draws: $${allDraws}/mo
+- Net Cash Flow After Draw: ${monthlyNet !== null ? '$'+monthlyNet+'/mo' : 'unknown'}
+- Cash Flow Risk: ${_cfRisk}
+- Owner self-reported cash flow: ${_cfSelfReported||'not answered'}
+${_cfConflict ? `⚠️ CONFLICT: Owner reported "${_cfSelfReported}" but math shows $${monthlyNet}/mo net — reference this conflict in cashFlowProjection.currentBaseline` : '✓ Self-reported cash flow aligns with calculation'}
+${_cfDrawIsIssue ? `⚠️ DRAW CONSTRAINT: Business generates $${_cfBeforeDraw}/mo before draw (healthy) but only $${monthlyNet}/mo after — owner draw is the primary cash flow bottleneck. Emphasize in cashFlowProjection.currentBaseline.` : ''}
 
 PRICING SCENARIOS (quote these exact numbers):
 +1% price increase (0% customer loss): +$${p1?.gainMo||0}/mo | +$${p1?.gainYr||0}/yr | new avg check $${p1?.newCheck||0}
@@ -1459,7 +1552,7 @@ GENERATE EXACTLY THIS JSON STRUCTURE:
     "yourEdge": "3-4 sentences. Where does this specific business have a real competitive advantage or a clear opportunity to differentiate from what was found in research?"
   },
   "cashFlowProjection": {
-    "currentBaseline": "2-3 sentences. Describe current monthly situation using pre-computed net of $${monthlyNet!=null?monthlyNet:'unknown'}/mo. Is it sustainable? What is the buffer?",
+    "currentBaseline": "3-4 sentences. Walk through the pre-computed cash flow statement in plain language: Revenue $${mo}/mo → Operating Expenses $${_cfOperatingMo !== null ? _cfOperatingMo : '?'}/mo → Cash Before Draw $${_cfBeforeDraw !== null ? _cfBeforeDraw : '?'}/mo → Draws $${allDraws}/mo → Net $${monthlyNet !== null ? monthlyNet : '?'}/mo. Risk level is ${_cfRisk} — explain what that means. ${_cfConflict ? `The owner reported cash flow as '${_cfSelfReported}' — address this discrepancy: explain what the math shows vs what was reported and why the gap might exist.` : ''} ${_cfDrawIsIssue ? `Emphasize: the business IS generating positive cash flow before the owner draw ($${_cfBeforeDraw}/mo) — the problem is not the business, it is the draw size relative to current revenue.` : ''} Is the current net sustainable?",
     "badScenario": {
       "narrative": "4-5 sentences. Describe what happens month by month if revenue declines. Use the exact pre-computed numbers. What needs to be cut and in what order — marketing first, then back-office hours, then harder decisions. Be direct about the collapse timeline.",
       "months": [
@@ -1573,6 +1666,74 @@ function renderAssessmentHTML(r, a, research, rB = {}) {
   // Tips pass-through (gross revenue → staff, not additional business cost)
   const _totalTipsMo = Object.values(a.q19_segments||{}).reduce((s,d)=>s+(Number(d.total_tips_mo||0)),0);
 
+  // Pre-computed cash flow statement for HTML display
+  const _cfExpPct_R   = Object.entries(a.expense_breakdown||{}).filter(([,v])=>v!=null).reduce((s,[,v])=>s+Number(v),0) / 100;
+  const _cfOwnerMo_R  = Object.values(a.owner_pay||{}).reduce((s,v) => {
+    const mo = v.monthly || (v.frequency==='weekly' ? Math.round(Number(v.amount)*4.33) : Number(v.amount));
+    return s + mo;
+  }, 0);
+  const _cfPartnersR  = a.partners || (a.partner?.has && a.partner_pay ? [{ pay_total: a.partner_pay_total||0 }] : []);
+  const _cfAllDraws_R = _cfOwnerMo_R + _cfPartnersR.reduce((s,p)=>s+(p.pay_total||0), 0);
+  const _cfOpMo_R     = _renderMonthlyRev > 0 ? Math.round(_renderMonthlyRev * _cfExpPct_R) + _backOfficeMo + _fieldMoBar : null;
+  const _cfBefDraw_R  = (_cfOpMo_R !== null && _renderMonthlyRev > 0) ? _renderMonthlyRev - _cfOpMo_R : null;
+  const _cfAftDraw_R  = _renderMonthlyRev > 0 ? Math.round(_renderMonthlyRev * (1 - _cfExpPct_R) - _cfAllDraws_R - _backOfficeMo) : null;
+  const _cfSelf_R     = (a.cash_flow||'').toLowerCase();
+  const _cfConflict_R = _renderMonthlyRev > 0 && _cfAftDraw_R !== null && (
+    (_cfSelf_R === 'positive' && _cfAftDraw_R < 0) ||
+    (_cfSelf_R === 'negative' && _cfAftDraw_R > 0)
+  );
+  const _cfDrawIssue_R = _cfBefDraw_R !== null && _cfBefDraw_R > 0 && _cfAftDraw_R !== null && _cfAftDraw_R < 0;
+  const _cfRisk_R     = !_renderMonthlyRev || _cfAftDraw_R === null ? 'Unknown'
+    : _cfAftDraw_R < 0 && _cfBefDraw_R !== null && _cfBefDraw_R < 0 ? 'Critical'
+    : _cfDrawIssue_R ? 'High — Draw Dependent'
+    : _cfAftDraw_R < _renderMonthlyRev * 0.05 ? 'Medium — Thin Margin'
+    : 'Low — Healthy Buffer';
+  const _cfRiskColor_R = _cfRisk_R === 'Low — Healthy Buffer' ? '#059669'
+    : _cfRisk_R === 'Medium — Thin Margin' ? '#B45309'
+    : _cfRisk_R === 'Unknown' ? '#6B7280' : '#DC2626';
+  const _cfRiskBg_R = _cfRisk_R === 'Low — Healthy Buffer' ? '#D1FAE5'
+    : _cfRisk_R === 'Medium — Thin Margin' ? '#FEF3C7'
+    : _cfRisk_R === 'Unknown' ? '#F3F4F6' : '#FEE2E2';
+  const _showCfCard_R = _renderMonthlyRev > 0 && _cfAftDraw_R !== null;
+
+  // Seasonality — static map, no AI needed
+  const _seasonMap = {
+    'appliance-repair':    { peak:[5,6,7,11,0], slow:[1,2,8,9], peakLabel:'Summer (AC units) and December–January (holiday appliance failures)', slowLabel:'late winter and early fall' },
+    'hvac':                { peak:[5,6,7,8], slow:[1,2,10], peakLabel:'summer cooling season (June–August)', slowLabel:'late winter and early fall' },
+    'cleaning':            { peak:[2,3,4,9,10], slow:[6,7,8], peakLabel:'spring (March–May) and fall (October–November)', slowLabel:'mid-summer' },
+    'home-services':       { peak:[3,4,5,8,9], slow:[0,1,11], peakLabel:'spring and early fall', slowLabel:'January and February' },
+    'construction':        { peak:[3,4,5,6,7,8], slow:[11,0,1], peakLabel:'spring through summer', slowLabel:'winter months' },
+    'landscaping':         { peak:[3,4,5,6,7,8], slow:[11,0,1,2], peakLabel:'spring and summer growing season', slowLabel:'winter' },
+    'retail':              { peak:[10,11,0], slow:[1,2], peakLabel:'holiday season (November–January)', slowLabel:'post-holiday January–February' },
+    'food-bev':            { peak:[5,6,7,11,12], slow:[1,2], peakLabel:'summer and the holiday season', slowLabel:'January–February' },
+    'health-wellness':     { peak:[0,1,8,9], slow:[5,6,7], peakLabel:'New Year resolution season and back-to-school fall', slowLabel:'mid-summer' },
+    'auto':                { peak:[4,5,6,7], slow:[0,1,11], peakLabel:'spring and summer road trip season', slowLabel:'winter' },
+    'professional-services':{ peak:[0,1,2,8,9], slow:[6,7], peakLabel:'Q1 and back-to-business fall', slowLabel:'mid-summer' },
+    'real-estate':         { peak:[3,4,5,6], slow:[11,0,1], peakLabel:'spring buying season', slowLabel:'winter' },
+  };
+  const _mo = new Date().getMonth(); // 0-indexed
+  const _moNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const _ind = a.q1 || '';
+  const _seasonData = _seasonMap[_ind] || null;
+  const _isInPeak = _seasonData ? _seasonData.peak.includes(_mo) : null;
+  const _isInSlow = _seasonData ? _seasonData.slow.includes(_mo) : null;
+  const _seasonalNote = _seasonData ? {
+    label: _isInPeak ? 'Peak Season' : _isInSlow ? 'Slow Season' : 'Normal Season',
+    color: _isInPeak ? '#059669' : _isInSlow ? '#D97706' : '#2563EB',
+    bg: _isInPeak ? '#ECFDF5' : _isInSlow ? '#FFFBEB' : '#EFF6FF',
+    border: _isInPeak ? '#059669' : _isInSlow ? '#F59E0B' : '#3B82F6',
+    body: _isInPeak
+      ? `${_moNames[_mo]} falls in your peak season (${_seasonData.peakLabel}). This is the time to maximize capacity, avoid cash flow leaks, and pre-book ahead. Set pricing at full rate — do not discount during peak.`
+      : _isInSlow
+      ? `${_moNames[_mo]} is typically a slower period for this industry (${_seasonData.slowLabel}). Use this window to tighten operations, run promotions to fill gaps, and book ahead for the next peak season.`
+      : `${_moNames[_mo]} is a transitional month — neither peak nor slow for this industry. A good time to review operations and prepare marketing for the upcoming ${_seasonData.peakLabel}.`,
+    tip: _isInPeak
+      ? 'Action: book out as far ahead as possible, raise prices on high-demand services, and build a cash reserve for the slow season.'
+      : _isInSlow
+      ? 'Action: run a referral or reactivation campaign now, offer maintenance packages, and lock in recurring customers before peak.'
+      : 'Action: review your pricing, update your Google Business Profile, and plan your peak-season marketing now.'
+  } : null;
+
   // Partners — multi-partner support in HTML render
   const _renderPartnersArr = a.partners || (a.partner?.has && a.partner_pay ? [{
     name: 'Partner', role: a.partner.partnerRole||'', involvement: a.partner.involvement||'',
@@ -1612,10 +1773,34 @@ function renderAssessmentHTML(r, a, research, rB = {}) {
 
   // Operating agreement note is handled once inside partnerNote (GPT-generated) — no separate banner
 
-  // Goals display
-  const goals12mo = Array.isArray(a.q15) ? a.q15.join(', ') : (a.q15||'');
-  const goal3yr = Array.isArray(a.goal_3yr) ? a.goal_3yr.join(', ') : (a.goal_3yr||'');
-  const goal5yr = Array.isArray(a.q15b) ? a.q15b.join(', ') : (a.q15b||'');
+  // Goals display — map raw codes to human-readable labels
+  const _GOAL_LABELS = {
+    'cashflow':'Improve Cash Flow','owner-dep':'Reduce Owner Dependency','team':'Build & Retain Team',
+    'automate':'Automate Operations','marketing':'Grow Marketing','systems':'Build Systems & SOPs',
+    'revenue':'Grow Revenue','profit':'Improve Profitability','hire':'Hire Key People',
+    'streamline':'Streamline Operations','grow':'Grow Revenue','delegation':'Improve Delegation',
+    'customer-exp':'Improve Customer Experience','financial':'Financial Stability',
+    '1m':'Reach $1M Revenue','remove-self':'Remove Myself from Day-to-Day',
+    'multi-location':'Open Multiple Locations','stable':'Build a Stable Business',
+    'sell':'Sell the Business','franchise':'Franchise the Model',
+    'steady':'Steady Profitable Growth','scale':'Scale the Business',
+    'exit':'Exit / Sell','legacy':'Build a Legacy Business','passive':'Build Passive Income',
+    'acquisitions':'Grow Through Acquisitions','leadership':'Develop Leadership Team',
+    'survival':'Keep the Business Alive','healthy':'Maintain Healthy Operations',
+    'growth':'Accelerate Growth','operations':'Improve Operations','hiring':'Hire & Build Team',
+    'sales':'Improve Sales','training':'Train the Team','tech':'Upgrade Technology',
+    'seo':'Improve SEO','reviews':'Grow Online Reviews','referrals':'Launch Referral Program',
+    'debt':'Pay Off Debt','taxes':'Get Tax-Optimized','banking':'Set Up Proper Banking',
+    'exit-5yr':'Exit in 5 Years','franchise-5yr':'Franchise the Business',
+  };
+  const _labelGoals = (val) => {
+    const arr = Array.isArray(val) ? val : (typeof val === 'string' && val ? val.split(/[,\s]+/).filter(Boolean) : []);
+    const labeled = arr.map(v => _GOAL_LABELS[v.trim()] || v).filter(Boolean);
+    return labeled.join(' · ');
+  };
+  const goals12mo = _labelGoals(a.q15);
+  const goal3yr = _labelGoals(a.goal_3yr);
+  const goal5yr = _labelGoals(a.q15b);
 
   return `<!DOCTYPE html>
 <html lang="en">
@@ -1789,9 +1974,9 @@ body.sb-open .wrap{margin-left:0;}
         return payRows + totalRow;
       }).join('')}
       <div class="sb-qa"><div class="sb-q">Hours / Week</div><div class="sb-a">${a.q17||'—'}h/wk${a.q17_slots&&Object.keys(a.q17_slots).length?' ('+Object.entries(a.q17_slots).map(([k,v])=>k+': '+v+'h').join(', ')+')':''}</div></div>
-      <div class="sb-qa"><div class="sb-q">12-Month Goals</div><div class="sb-a">${Array.isArray(a.q15)?a.q15.join(', '):(a.q15||'—')}</div></div>
-      <div class="sb-qa"><div class="sb-q">3-Year Vision</div><div class="sb-a">${Array.isArray(a.goal_3yr)?a.goal_3yr.join(', '):(a.goal_3yr||'—')}</div></div>
-      <div class="sb-qa"><div class="sb-q">5-Year Goal</div><div class="sb-a">${Array.isArray(a.q15b)?a.q15b.join(', '):(a.q15b||'—')}</div></div>
+      <div class="sb-qa"><div class="sb-q">12-Month Goals</div><div class="sb-a">${_labelGoals(a.q15)||'—'}</div></div>
+      <div class="sb-qa"><div class="sb-q">3-Year Vision</div><div class="sb-a">${_labelGoals(a.goal_3yr)||'—'}</div></div>
+      <div class="sb-qa"><div class="sb-q">5-Year Goal</div><div class="sb-a">${_labelGoals(a.q15b)||'—'}</div></div>
     </div>
 
   </div>
@@ -1812,8 +1997,15 @@ function toggleSidebar(){
   <a href="${SITE_URL}" target="_blank" rel="noopener" style="display:flex;align-items:center;flex-shrink:0;"><img src="${SITE_URL}/assets/logo-white.png" alt="Nexvora Systems" style="height:36px;" onerror="this.style.display='none'"/></a>
   <span class="nav-badge">Business Assessment Report</span>
   <span class="nav-date">${new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'})}</span>
-  <span style="font-size:10px;color:rgba(255,255,255,0.25);font-family:monospace;letter-spacing:.5px;">${REPORT_VERSION}</span>
 </nav>
+
+<div style="background:#FFF9E6;border-bottom:3px solid #F59E0B;padding:20px 24px;text-align:center;">
+  <div style="max-width:700px;margin:0 auto;">
+    <div style="font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#92400E;margin-bottom:8px;">⚠ What This Report Is</div>
+    <div style="font-size:22px;font-weight:900;color:#1F2937;letter-spacing:-.5px;margin-bottom:8px;">Initial Business Diagnostic</div>
+    <p style="font-size:14px;color:#44403C;line-height:1.7;margin:0;">This report identifies where your business stands today based on your answers. The full strategy — priorities, action plan, and how to implement — is delivered <strong>in person during your free strategy call</strong> with Murat and Alexandr. This document is the starting point, not the full picture.</p>
+  </div>
+</div>
 
 <div class="hero">
   <div class="hero-label">Free Business Assessment — Nexvora Systems</div>
@@ -1851,6 +2043,7 @@ function toggleSidebar(){
     <div class="card" style="border-left:4px solid var(--teal);">
       <div style="font-size:28px;margin-bottom:10px;">${icon}</div>
       <div style="font-size:18px;font-weight:800;color:var(--text);margin-bottom:12px;">${r.primaryPainLabel}</div>
+      ${a.q_pain ? `<div style="background:var(--bg2);border-radius:10px;padding:14px 16px;margin-bottom:16px;display:flex;gap:10px;align-items:flex-start;"><span style="font-size:20px;line-height:1;flex-shrink:0;">"</span><p style="font-size:14px;font-style:italic;color:var(--navy);font-weight:600;line-height:1.75;margin:0;">${a.q_pain}</p></div>` : ''}
       <p style="color:var(--muted);font-size:14px;line-height:1.8;">${r.painDiagnosis}</p>
     </div>
   </div>
@@ -1884,11 +2077,12 @@ function toggleSidebar(){
         <div class="intel-item"><div class="il">Industry Benchmark</div><div class="iv">${r.industryBenchmark}</div></div>
         ${partnerHtml}
         ${a.avg_check ? `<div class="intel-item"><div class="il">Avg Transaction Value</div><div class="iv">$${Number(a.avg_check).toLocaleString()}</div></div>` : ''}
-        ${a.q9_close && a.q9_adspend && a.q9_leads ? `<div class="intel-item"><div class="il">Cost Per Customer (Ads)</div><div class="iv">$${Math.round((a.q9_adspend/a.q9_leads)/(a.q9_close/100)).toLocaleString()}</div></div>` : ''}
+        ${a.q9_adspend && a.q9_leads ? `<div class="intel-item"><div class="il">Cost Per Lead (Ads)</div><div class="iv">$${Math.round(a.q9_adspend / a.q9_leads).toLocaleString()}</div></div>` : ''}
+        ${a.q9_adspend && _csEstJobs ? `<div class="intel-item"><div class="il">Cost Per Completed Job <span style="font-size:10px;opacity:0.6;">(revenue-based)</span></div><div class="iv">$${Math.round(a.q9_adspend / _csEstJobs).toLocaleString()}</div></div>` : (a.q9_adspend && a.q9_close && a.q9_leads ? `<div class="intel-item"><div class="il">Cost Per Customer (Ads)</div><div class="iv">$${Math.round((a.q9_adspend / a.q9_leads) / (a.q9_close / 100)).toLocaleString()}</div></div>` : '')}
       </div>
       ${(()=>{
         const _pd = extractPresenceData(research, a.contact?.company||'');
-        const _srcs = classifyAndFilterSources(research, a.contact?.company||'');
+        const _srcs = classifyAndFilterSources(research, a.contact?.company||'', a.q2||'');
 
         // ── Business Presence Panel ──────────────────────────────────────────
         const _presenceItems = [
@@ -2444,6 +2638,15 @@ function toggleSidebar(){
       </div>
       <div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--border);font-size:13px;color:var(--muted);"><span style="font-weight:700;color:var(--text);">How: </span>${act.how}</div>
     </div>`).join('')}
+    ${(r.top3Actions||[]).length >= 2 ? `<div class="card" style="border-left:3px solid var(--teal);background:linear-gradient(135deg,#f0fdfa,#fff);">
+      <div style="font-size:11px;font-weight:800;color:var(--teal);letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;">Your First 30 Days — Start Here</div>
+      <div style="display:flex;flex-direction:column;gap:10px;">
+        ${(r.top3Actions||[]).map((act,i)=>`<div style="display:flex;gap:12px;align-items:flex-start;">
+          <span style="font-size:11px;font-weight:800;color:var(--teal);background:rgba(13,148,136,0.1);border:1px solid rgba(13,148,136,0.25);border-radius:6px;padding:3px 10px;flex-shrink:0;white-space:nowrap;">${i===0?'Week 1':i===1?'Weeks 2–3':'Week 4'}</span>
+          <span style="font-size:13px;color:var(--navy);font-weight:600;line-height:1.6;">${act.title}</span>
+        </div>`).join('')}
+      </div>
+    </div>` : ''}
   </div>
 
   <!-- GROWTH PLAN -->
@@ -2527,58 +2730,69 @@ function toggleSidebar(){
   <div class="section">
     <div class="section-label">FINANCIAL OUTLOOK</div>
     <div class="section-title">180-Day Cash Flow Projection</div>
+    ${_showCfCard_R ? `<div class="card" style="padding:0;overflow:hidden;">
+      <div style="background:var(--navy);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;">
+        <span style="font-size:13px;font-weight:800;color:#fff;letter-spacing:.5px;text-transform:uppercase;">Cash Flow Statement — Current Month</span>
+        <span style="font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;background:${_cfRiskBg_R};color:${_cfRiskColor_R};">${_cfRisk_R}</span>
+      </div>
+      <div style="padding:18px 20px;">
+        <div style="display:flex;flex-direction:column;gap:0;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);">
+            <span style="font-size:13px;color:var(--muted);">Monthly Revenue</span>
+            <span style="font-size:14px;font-weight:700;color:var(--navy);">$${_renderMonthlyRev.toLocaleString()}/mo</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);">
+            <span style="font-size:13px;color:var(--muted);">Operating Expenses</span>
+            <span style="font-size:14px;font-weight:600;color:#DC2626;">−$${(_cfOpMo_R||0).toLocaleString()}/mo</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);background:#f9fafb;margin:0 -4px;padding-left:4px;padding-right:4px;">
+            <span style="font-size:13px;font-weight:600;color:var(--navy);">Cash Flow Before Draw</span>
+            <span style="font-size:14px;font-weight:700;color:${(_cfBefDraw_R||0)>=0?'#059669':'#DC2626'};">${(_cfBefDraw_R||0)>=0?'+':''}\$${(_cfBefDraw_R||0).toLocaleString()}/mo</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border);">
+            <span style="font-size:13px;color:var(--muted);">Owner + Partner Draws</span>
+            <span style="font-size:14px;font-weight:600;color:#DC2626;">−$${_cfAllDraws_R.toLocaleString()}/mo</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:11px 0 0;">
+            <span style="font-size:14px;font-weight:800;color:var(--navy);">Net Cash Flow</span>
+            <span style="font-size:16px;font-weight:900;color:${(_cfAftDraw_R||0)>=0?'#059669':'#DC2626'};">${(_cfAftDraw_R||0)>=0?'+':''}\$${(_cfAftDraw_R||0).toLocaleString()}/mo</span>
+          </div>
+        </div>
+        ${_cfConflict_R ? `<div style="margin-top:14px;background:#FEF3C7;border:1px solid #F59E0B;border-radius:8px;padding:10px 14px;font-size:12px;color:#92400E;line-height:1.6;"><strong>Note:</strong> Owner reported cash flow as "${a.cash_flow||'positive'}" — this statement shows the math-based picture. A gap may indicate informal revenue, seasonal timing, or expenses not captured here.</div>` : ''}
+        ${_cfDrawIssue_R ? `<div style="margin-top:14px;background:#FEE2E2;border:1px solid #EF4444;border-radius:8px;padding:10px 14px;font-size:12px;color:#991B1B;line-height:1.6;"><strong>Draw Alert:</strong> The business generates <strong>$${(_cfBefDraw_R||0).toLocaleString()}/mo before the owner draw</strong> — the draw ($${_cfAllDraws_R.toLocaleString()}/mo) is the primary cash flow constraint, not the business itself.</div>` : ''}
+      </div>
+    </div>` : ''}
     ${rB.cashFlowProjection.currentBaseline ? `<div class="card"><p style="font-size:14px;color:var(--muted);line-height:1.8;margin:0;">${rB.cashFlowProjection.currentBaseline}</p></div>` : ''}
     ${rB.cashFlowProjection.badScenario ? `<div class="card" style="border-left:3px solid #e53935;"><h3 style="font-size:15px;font-weight:700;color:#c62828;margin:0 0 10px;">If Nothing Changes — Declining Scenario</h3>${rB.cashFlowProjection.badScenario.narrative ? `<p style="font-size:13px;color:var(--muted);line-height:1.8;margin:0 0 14px;">${rB.cashFlowProjection.badScenario.narrative}</p>` : ''}${rB.cashFlowProjection.badScenario.months?.length ? `<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;"><thead><tr style="background:#ffebee;">${['Period','Revenue','Net Cash Flow','Decision Required'].map(h=>`<th style="padding:8px 10px;text-align:left;font-weight:700;color:#c62828;white-space:nowrap;">${h}</th>`).join('')}</tr></thead><tbody>${rB.cashFlowProjection.badScenario.months.map((m,i)=>`<tr style="border-top:1px solid var(--border);background:${i%2?'#fff8f8':'white'};">${[m.month,m.revenue,m.net,m.action].map(v=>`<td style="padding:8px 10px;color:var(--muted);">${v||'—'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : ''}</div>` : ''}
     ${rB.cashFlowProjection.goodScenario ? `<div class="card" style="border-left:3px solid var(--green);"><h3 style="font-size:15px;font-weight:700;color:#2e7d32;margin:0 0 10px;">If Recommendations Are Implemented — Growth Scenario</h3>${rB.cashFlowProjection.goodScenario.narrative ? `<p style="font-size:13px;color:var(--muted);line-height:1.8;margin:0 0 14px;">${rB.cashFlowProjection.goodScenario.narrative}</p>` : ''}${rB.cashFlowProjection.goodScenario.months?.length ? `<div style="overflow-x:auto;"><table style="width:100%;border-collapse:collapse;font-size:12px;"><thead><tr style="background:#e8f5e9;">${['Period','Revenue','Net Cash Flow','Action This Month'].map(h=>`<th style="padding:8px 10px;text-align:left;font-weight:700;color:#2e7d32;white-space:nowrap;">${h}</th>`).join('')}</tr></thead><tbody>${rB.cashFlowProjection.goodScenario.months.map((m,i)=>`<tr style="border-top:1px solid var(--border);background:${i%2?'#f9fdf9':'white'};">${[m.month,m.revenue,m.net,m.action].map(v=>`<td style="padding:8px 10px;color:var(--muted);">${v||'—'}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` : ''}</div>` : ''}
     ${rB.cashFlowProjection.ownerDrawTimeline ? `<div class="card"><p style="font-size:14px;color:var(--navy);font-weight:600;line-height:1.8;margin:0;">${rB.cashFlowProjection.ownerDrawTimeline}</p></div>` : ''}
   </div>` : ''}
 
+  ${_seasonalNote ? `<!-- Seasonality Card -->
+  <div class="section">
+    <div style="background:${_seasonalNote.bg};border:1px solid ${_seasonalNote.border};border-left:4px solid ${_seasonalNote.border};border-radius:14px;padding:20px 24px;">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap;">
+        <span style="font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:${_seasonalNote.color};border:1px solid ${_seasonalNote.border};border-radius:20px;padding:3px 12px;">${_seasonalNote.label}</span>
+        <span style="font-size:12px;font-weight:600;color:#374151;">${_moNames[_mo]} Seasonal Context for Your Industry</span>
+      </div>
+      <p style="font-size:14px;color:#1F2937;line-height:1.75;margin:0 0 10px;">${_seasonalNote.body}</p>
+      <p style="font-size:13px;color:#374151;line-height:1.7;margin:0;border-top:1px solid ${_seasonalNote.border};padding-top:10px;"><strong>Recommended action:</strong> ${_seasonalNote.tip}</p>
+    </div>
+  </div>` : ''}
+
   <!-- CTA -->
   <div class="cta-box">
-    <div style="display:inline-block;background:rgba(255,87,87,0.25);border:1px solid rgba(255,120,120,0.5);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#FFB3B3;margin-bottom:16px;">🔥 Free Until May 1st — Then $899/session</div>
+    <div style="display:inline-block;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.35);border-radius:20px;padding:5px 14px;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:#fff;margin-bottom:16px;">✅ Always Free — No Catch</div>
     <h2>Book Your Free Strategy Call</h2>
-    <p>${r.closingNote || "This report gives you the full picture. A strategy call with us takes it further \u2014 we'll walk you through exactly what to do first, based on your specific numbers."}</p>
-
-    <!-- Countdown timer -->
-    <div id="cta-countdown" style="display:flex;justify-content:center;gap:8px;margin:0 auto 24px;max-width:300px;flex-wrap:wrap;">
-      <div style="background:rgba(255,255,255,0.12);border-radius:12px;padding:10px 10px;min-width:62px;text-align:center;">
-        <div id="cd-days" style="font-size:26px;font-weight:900;color:#fff;line-height:1;">--</div>
-        <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-top:4px;">Days</div>
-      </div>
-      <div style="background:rgba(255,255,255,0.12);border-radius:12px;padding:10px 10px;min-width:62px;text-align:center;">
-        <div id="cd-hours" style="font-size:26px;font-weight:900;color:#fff;line-height:1;">--</div>
-        <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-top:4px;">Hours</div>
-      </div>
-      <div style="background:rgba(255,255,255,0.12);border-radius:12px;padding:10px 10px;min-width:62px;text-align:center;">
-        <div id="cd-mins" style="font-size:26px;font-weight:900;color:#fff;line-height:1;">--</div>
-        <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-top:4px;">Mins</div>
-      </div>
-      <div style="background:rgba(255,255,255,0.12);border-radius:12px;padding:10px 10px;min-width:62px;text-align:center;">
-        <div id="cd-secs" style="font-size:26px;font-weight:900;color:#fff;line-height:1;">--</div>
-        <div style="font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.5);margin-top:4px;">Secs</div>
-      </div>
+    <p>${r.closingNote || "You've seen the full picture of your business. Now let's talk through what to do first — based on your specific numbers, your team, and your goals."}</p>
+    <div style="text-align:left;max-width:360px;margin:0 auto 28px;display:flex;flex-direction:column;gap:10px;">
+      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;margin-top:1px;">📞</span><span style="font-size:14px;color:rgba(255,255,255,0.9);line-height:1.6;"><strong>30 minutes</strong> — focused, no fluff, no sales pitch</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;margin-top:1px;">👤</span><span style="font-size:14px;color:rgba(255,255,255,0.9);line-height:1.6;">Murat &amp; Alexandr personally review your report with you</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;margin-top:1px;">🎯</span><span style="font-size:14px;color:rgba(255,255,255,0.9);line-height:1.6;">You leave with a clear action plan — what to do first, what to ignore</span></div>
+      <div style="display:flex;align-items:flex-start;gap:10px;"><span style="font-size:16px;flex-shrink:0;margin-top:1px;">🤝</span><span style="font-size:14px;color:rgba(255,255,255,0.9);line-height:1.6;">No obligation — if we can't help, we'll tell you honestly</span></div>
     </div>
-    <script>
-    (function(){
-      var deadline = new Date('2026-05-01T00:00:00').getTime();
-      function tick(){
-        var now = Date.now(), diff = deadline - now;
-        if(diff <= 0){
-          document.getElementById('cta-countdown').innerHTML = '<p style="color:#FFB3B3;font-weight:700;font-size:14px;">Free call period has ended. Book at $899/session.</p>';
-          return;
-        }
-        var d=Math.floor(diff/86400000), h=Math.floor((diff%86400000)/3600000), m=Math.floor((diff%3600000)/60000), s=Math.floor((diff%60000)/1000);
-        document.getElementById('cd-days').textContent=d;
-        document.getElementById('cd-hours').textContent=h<10?'0'+h:h;
-        document.getElementById('cd-mins').textContent=m<10?'0'+m:m;
-        document.getElementById('cd-secs').textContent=s<10?'0'+s:s;
-      }
-      tick(); setInterval(tick,1000);
-    })();
-    </script>
-
     <a href="https://api.leadconnectorhq.com/widget/booking/bGQ7oVjEW8HdbcQYTTUF" class="cta-btn">📅 Book My Free Strategy Call →</a>
-    <p style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:14px;margin-bottom:0;">No obligation. 60 minutes. Real answers based on your numbers. After May 1st: $899/session.</p>
+    <p style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:14px;margin-bottom:0;">This call is always free. No credit card, no commitment.</p>
   </div>
 
 </div>
