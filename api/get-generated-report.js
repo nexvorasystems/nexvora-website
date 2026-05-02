@@ -47,7 +47,6 @@ button:disabled{opacity:.55;cursor:not-allowed;}
 <body>
 <div class="card">
   <div class="logo">Nexvora Systems</div>
-  <div class="icon">📊</div>
   <h1>Your Business Report is Ready</h1>
   <p class="sub">Enter the email address you used to complete the assessment to access your private report.</p>
   <div id="err-wrap">${err}</div>
