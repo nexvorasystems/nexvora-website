@@ -5,7 +5,7 @@
  *
  * Pipeline:
  * 1. Crawl homepage — extract title, meta, H1s, CTAs, nav, images
- * 2. Tavily research — business info, reviews, competitors (parallel)
+ * 2. Tavily research — business info, reviews, benchmarks (parallel)
  * 3. PSI audit — Core Web Vitals, performance scores
  * 4. GPT-4o — analyzes all data, writes full structured report
  * 5. Save HTML to Supabase generated_reports table
@@ -404,9 +404,6 @@ Top sources: ${data.research.overview?.results?.map(r => r.snippet).join(' | ') 
 **Reviews & Reputation:** ${data.research.reviews?.answer || 'No data found'}
 Sources: ${data.research.reviews?.results?.map(r => r.snippet).join(' | ') || 'N/A'}
 
-**Competitors:** ${data.research.competitors?.answer || 'No data found'}
-Sources: ${data.research.competitors?.results?.map(r => r.snippet).join(' | ') || 'N/A'}
-
 **Industry Keywords:** ${data.research.keywords?.answer || 'No data found'}
 
 ## REPORT CLIENT
@@ -434,8 +431,6 @@ Return a JSON object with these exact keys (all values are HTML strings, use <st
   "performanceSummary": "string — 2-3 paragraphs analyzing the PSI scores and CWV",
   "uiUxAnalysis": "string — 2-3 paragraphs on design, CTAs, user journey, why visitors leave",
   "contentStrategy": "string — 2-3 paragraphs on content gaps and blog/content opportunities",
-  "competitorAnalysis": "string — who their main competitors are, how this site compares",
-  "competitors": [{"name": "string", "url": "string", "strength": "string"}],
   "priorityActions": [
     {"priority": "Critical|High|Medium|Low", "title": "string", "desc": "string", "impact": "string"}
   ],
@@ -724,17 +719,6 @@ footer strong{color:#44CAA2;}
     <div class="section-label">Content Strategy</div>
     <div class="section-title">Keyword & Content Opportunities</div>
     <div class="card"><div style="color:var(--muted);font-size:14px;line-height:1.8;">${r.contentStrategy}</div></div>
-  </div>
-
-  <!-- COMPETITORS -->
-  <div class="section">
-    <div class="section-label">Competitor Analysis</div>
-    <div class="section-title">How You Stack Up</div>
-    <div class="card" style="margin-bottom:16px;"><div style="color:var(--muted);font-size:14px;line-height:1.8;">${r.competitorAnalysis}</div></div>
-    ${r.competitors?.length ? `<div class="card" style="padding:0;overflow:hidden;">
-      <table><tr><th>Competitor</th><th>URL</th><th>Key Strength</th></tr>
-      ${r.competitors.map(c => `<tr><td style="font-weight:700;">${c.name}</td><td style="color:var(--teal);font-size:12px;">${c.url}</td><td style="color:var(--muted);font-size:13px;">${c.strength}</td></tr>`).join('')}
-      </table></div>` : ''}
   </div>
 
   <!-- PRIORITY ACTION PLAN -->
@@ -1292,7 +1276,7 @@ Return ONLY valid JSON with these exact keys:
 
 // ── Call B: Deep-dive strategy (pricing, automation scenarios, SOPs, risk, competitive, 180-day) ──
 
-async function writeAssessmentReportB(a, research, competitorRes) {
+async function writeAssessmentReportB(a, research) {
   const key = process.env.OPENAI_API_KEY;
   if (!key) return {};
 
@@ -1395,8 +1379,6 @@ async function writeAssessmentReportB(a, research, competitorRes) {
 
   const industryLabels = {'home-services':'Home Services','construction':'Construction','food-bev':'Food & Beverage','retail':'Retail','health-wellness':'Health & Wellness','professional-services':'Professional Services','auto':'Auto Services','real-estate':'Real Estate'};
   const manualTasks = (a.q11||[]).filter(v=>v!=='none').map(v=>({'scheduling':'Scheduling','invoicing':'Invoicing','follow-up':'Customer follow-up','reporting':'Reporting','data-entry':'Data entry','payroll':'Payroll processing','other':a.q11_other||'Other'}[v]||v));
-  const competitorSnippets = (competitorRes?.results||[]).slice(0,7).map(r=>`• ${r.title} — ${r.snippet}`).join('\n');
-
   const prompt = `You are a direct, data-driven business advisor for Nexvora Systems. Generate a deep-dive strategy report for this business. Respond with ONLY valid JSON, no markdown.
 
 BUSINESS:
@@ -1451,12 +1433,7 @@ DATA INTEGRITY — USE REVENUE-BASED FIGURES FOR ALL CALCULATIONS:
 - Revenue-based jobs/month (ground truth): ${estJobs !== null ? estJobs : 'not calculable'} (= $${mo}/mo ÷ $${avgCheck} avg check)
 - Self-reported jobs/month: ${_claimedJobsB !== null ? _claimedJobsB : 'not calculable'} (= ${_leadsB} leads × ${_closeRateB}% close rate)
 - Cost per booked customer (revenue-based): ${_costPerCustRevB !== null ? '$'+_costPerCustRevB : 'not calculable'}
-${_mismatchB ? `⚠️ MISMATCH (${_mismatchPctB}%): Use revenue-based job count (${estJobs}/mo) for all calculations — it is derived from actual money. The reported close rate (${_closeRateB}%) implies ${_claimedJobsB} jobs/mo which conflicts with revenue. Effective close rate implied by revenue: ~${_effCloseB}%. Reference this in pricing and competitive sections where job volume affects the analysis.` : `✓ Revenue math and reported close rate are consistent (within 20%). Use reported figures.`}
-
-COMPETITOR RESEARCH (industry: ${a.q1b_label||industryLabels[a.q1]||'same as this business'}):
-CRITICAL RULE: Only include competitors that operate in the EXACT SAME industry and service type as ${a.contact?.company||'this business'} (${a.q1b_label||industryLabels[a.q1]||''}). If a result is from a different industry (e.g. cleaning company listed for an appliance repair business), EXCLUDE it completely. If fewer than 3 same-industry competitors are found, list only those that are confirmed matches — do not pad with unrelated businesses. If none are found, set competitors to an empty array and note "Competitor data could not be verified for this market."
-${competitorSnippets||'No competitor data found — use industry knowledge for this specific service type.'}
-${competitorRes?.answer||''}
+${_mismatchB ? `⚠️ MISMATCH (${_mismatchPctB}%): Use revenue-based job count (${estJobs}/mo) for all calculations — it is derived from actual money. The reported close rate (${_closeRateB}%) implies ${_claimedJobsB} jobs/mo which conflicts with revenue. Effective close rate implied by revenue: ~${_effCloseB}%. Reference this in pricing sections where job volume affects the analysis.` : `✓ Revenue math and reported close rate are consistent (within 20%). Use reported figures.`}
 
 GLOBAL RULE FOR THIS CALL: NEVER mention any software brand names as suggestions. The business already uses: ${a.current_software||'not provided'}. Do NOT recommend any tool in a category they already have. Describe tool categories only for any gaps.
 
@@ -1469,7 +1446,7 @@ GENERATE EXACTLY THIS JSON STRUCTURE:
     "verdict": "2-3 sentences. Overall tech stack integration maturity score (1-10) and what that means for their growth ceiling and manual work burden."
   },
   "pricingStrategy": {
-    "summary": "3-4 sentences. Based on competitor research and their avg check of $${avgCheck}, assess whether they are underpriced, fairly priced, or premium. Reference specific competitor data if found. Explain why pricing is a lever worth pulling given their ${a.q7||70}% repeat rate.",
+    "summary": "3-4 sentences. Based on industry benchmarks and their avg check of $${avgCheck}, assess whether they are underpriced, fairly priced, or premium. Explain why pricing is a lever worth pulling given their ${a.q7||70}% repeat rate.",
     "recommendation": "3-4 sentences. Give a specific recommendation: which scenario to implement, when, and how to announce it to existing clients. No brand names."
   },
   "automationScenarios": {
@@ -1541,16 +1518,6 @@ GENERATE EXACTLY THIS JSON STRUCTURE:
     {"risk": "string", "likelihood": "Medium", "trigger": "string", "impact": "string", "mitigation": "string"},
     {"risk": "string", "likelihood": "Low", "trigger": "string", "impact": "string", "mitigation": "string"}
   ],
-  "competitiveAnalysis": {
-    "overview": "3-4 sentences. Describe the competitive landscape in ${a.q2_city||'their city'} for ${industryLabels[a.q1]||'their industry'}. How competitive is it? What separates the leaders?",
-    "competitors": [
-      {"name": "string — business name from research", "rating": "string — e.g. 4.7★ (312 reviews)", "strengths": "string — what they do well", "gap": "string — where they are vulnerable", "pricing": "string — if found in research, otherwise: 'Get a quote — call and request pricing for a standard job'"},
-      {"name": "string", "rating": "string", "strengths": "string", "gap": "string", "pricing": "string"},
-      {"name": "string", "rating": "string", "strengths": "string", "gap": "string", "pricing": "string"}
-    ],
-    "topPerformer": {"name": "string — highest rated competitor", "rating": "string", "whatTheyDoRight": "string — 2-3 sentences on what makes them the market leader based on reviews/research"},
-    "yourEdge": "3-4 sentences. Where does this specific business have a real competitive advantage or a clear opportunity to differentiate from what was found in research?"
-  },
   "cashFlowProjection": {
     "currentBaseline": "3-4 sentences. Walk through the pre-computed cash flow statement in plain language: Revenue $${mo}/mo → Operating Expenses $${_cfOperatingMo !== null ? _cfOperatingMo : '?'}/mo → Cash Before Draw $${_cfBeforeDraw !== null ? _cfBeforeDraw : '?'}/mo → Draws $${allDraws}/mo → Net $${monthlyNet !== null ? monthlyNet : '?'}/mo. Risk level is ${_cfRisk} — explain what that means. ${_cfConflict ? `The owner reported cash flow as '${_cfSelfReported}' — address this discrepancy: explain what the math shows vs what was reported and why the gap might exist.` : ''} ${_cfDrawIsIssue ? `Emphasize: the business IS generating positive cash flow before the owner draw ($${_cfBeforeDraw}/mo) — the problem is not the business, it is the draw size relative to current revenue.` : ''} Is the current net sustainable?",
     "badScenario": {
@@ -2715,16 +2682,6 @@ function toggleSidebar(){
     <div class="card"><div style="display:flex;flex-direction:column;gap:18px;">${rB.riskRegister.map(risk=>{ const lvl=risk.likelihood||risk.severity||'Medium'; const color=lvl==='High'?'#e53935':lvl==='Medium'?'#fb8c00':'#43a047'; const bg=lvl==='High'?'#ffebee':lvl==='Medium'?'#fff3e0':'#e8f5e9'; const tc=lvl==='High'?'#c62828':lvl==='Medium'?'#e65100':'#2e7d32'; return `<div style="border-left:4px solid ${color};padding-left:16px;"><div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;"><strong style="font-size:14px;color:var(--navy);">${risk.risk||risk.name||''}</strong><span style="font-size:11px;font-weight:700;padding:2px 8px;border-radius:12px;background:${bg};color:${tc};">${lvl}</span></div>${risk.trigger ? `<p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0 0 6px;"><strong style="color:var(--navy);">Trigger: </strong>${risk.trigger}</p>` : ''}${(risk.impact||risk.description) ? `<p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0 0 6px;">${risk.impact||risk.description}</p>` : ''}<p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0;"><strong style="color:var(--navy);">Action: </strong>${risk.mitigation||''}</p></div>`; }).join('')}</div></div>
   </div>` : ''}
 
-  ${rB.competitiveAnalysis ? `
-  <!-- COMPETITIVE ANALYSIS -->
-  <div class="section">
-    <div class="section-label">MARKET INTELLIGENCE</div>
-    <div class="section-title">Competitive Landscape</div>
-    ${(rB.competitiveAnalysis.overview||rB.competitiveAnalysis.summary) ? `<div class="card"><p style="font-size:14px;color:var(--muted);line-height:1.8;margin:0;">${rB.competitiveAnalysis.overview||rB.competitiveAnalysis.summary}</p></div>` : ''}
-    ${rB.competitiveAnalysis.competitors?.length ? `<div class="card"><h3 style="font-size:15px;font-weight:700;color:var(--navy);margin:0 0 14px;">Key Competitors</h3><div style="display:flex;flex-direction:column;gap:16px;">${rB.competitiveAnalysis.competitors.map(c=>`<div style="border:1px solid var(--border);border-radius:10px;padding:16px;"><div style="display:flex;justify-content:space-between;align-items:flex-start;gap:8px;flex-wrap:wrap;margin-bottom:10px;"><strong style="font-size:14px;color:var(--navy);">${c.name||''}</strong>${c.rating ? `<span style="font-size:12px;color:var(--muted);font-weight:600;">${c.rating}</span>` : ''}</div>${c.strengths ? `<p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0 0 6px;"><strong style="color:var(--navy);">Strengths: </strong>${c.strengths}</p>` : ''}${c.gap ? `<p style="font-size:13px;color:var(--muted);line-height:1.7;margin:0 0 6px;"><strong style="color:var(--navy);">Vulnerability: </strong>${c.gap}</p>` : ''}${c.pricing ? `<p style="font-size:12px;color:var(--muted);line-height:1.6;margin:0;border-top:1px solid var(--border);padding-top:8px;">${c.pricing}</p>` : ''}</div>`).join('')}</div></div>` : ''}
-    ${(rB.competitiveAnalysis.yourEdge||rB.competitiveAnalysis.topPerformer) ? `<div class="card" style="border-left:3px solid var(--green);"><h3 style="font-size:14px;font-weight:700;color:var(--navy);margin:0 0 8px;">Your Competitive Edge</h3><p style="font-size:13px;color:var(--muted);line-height:1.8;margin:0;">${rB.competitiveAnalysis.yourEdge||''}</p></div>` : ''}
-  </div>` : ''}
-
   ${rB.cashFlowProjection ? `
   <!-- 180-DAY PROJECTION -->
   <div class="section">
@@ -2836,11 +2793,8 @@ async function handleAssessmentReport(req, res) {
   const _q1bIsVague = !_q1bLabel || /^other/i.test(_q1bLabel);
   // Primary industry type: specific label wins, then category map, then raw industry
   const _industryType = (!_q1bIsVague ? _q1bLabel : null) || _industryTypeMap[a.q1] || industry || 'business';
-  // For competitor search: when sub-industry is vague, include company name so AI can infer exact type
-  const _competitorSearchType = _q1bIsVague && company ? `${company} ${_industryType}` : _industryType;
-
-  // 8 Tavily searches in parallel — targeted, specific, filtered
-  const [businessRes, reviewsRes, yelpRes, bbbRes, socialRes, forumsRes, locationsRes, benchmarksRes, competitorRes] = await Promise.all([
+  // 7 Tavily searches in parallel — targeted, specific, filtered
+  const [businessRes, reviewsRes, yelpRes, bbbRes, socialRes, forumsRes, locationsRes, benchmarksRes] = await Promise.all([
     tavilySearch(`"${company}" ${city} ${state} ${_industryType}`, 7),
     tavilySearch(`"${company}" ${city} customer reviews rating`, 7),
     tavilySearch(`"${company}" ${city} site:yelp.com`, 5),
@@ -2849,7 +2803,6 @@ async function handleAssessmentReport(req, res) {
     tavilySearch(`"${company}" ${city} site:reddit.com OR site:nextdoor.com community`, 5),
     tavilySearch(`"${company}" ${state} address locations "service area" OR "we serve" OR "serving" OR website`, 6),
     tavilySearch(`${_industryType} ${city} ${state} small business revenue profit margin benchmark average`, 5),
-    tavilySearch(`${_competitorSearchType} competitors top rated ${city} ${state} reviews pricing`, 7),
   ]);
 
   // Filter results to remove wrong-business matches (e.g. "24 25 carpet" when searching "24 25 cleaners")
@@ -2870,7 +2823,7 @@ async function handleAssessmentReport(req, res) {
   try {
     [reportData, reportDataB] = await Promise.all([
       writeAssessmentReport(a, research),
-      writeAssessmentReportB(a, research, competitorRes).catch(e => {
+      writeAssessmentReportB(a, research).catch(e => {
         console.error('[generate-report/assessment] Call B failed (non-fatal):', e.message);
         return {};
       })
@@ -2952,10 +2905,6 @@ async function handleAssessmentReport(req, res) {
     _rB.systemsAndSOPs.toolCategories  = _toArr(_rB.systemsAndSOPs.toolCategories);
   }
   if (!Array.isArray(_rB.riskRegister)) _rB.riskRegister = _toArr(_rB.riskRegister);
-  if (_rB.competitiveAnalysis) {
-    _rB.competitiveAnalysis.competitors    = _toArr(_rB.competitiveAnalysis.competitors);
-    _rB.competitiveAnalysis.differentiators = _toArr(_rB.competitiveAnalysis.differentiators);
-  }
   if (_rB.cashFlowProjection) _rB.cashFlowProjection.scenarios = _toArr(_rB.cashFlowProjection.scenarios);
 
   const html = renderAssessmentHTML(reportData, a, research, _rB);
