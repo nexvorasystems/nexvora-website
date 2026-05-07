@@ -799,7 +799,65 @@ async function saveReport(reportId, clientEmail, html, meta, assessment, upsert 
   } catch (e) { console.warn('[save] Failed:', e.message); }
 }
 
-// ── 7. Assessment mode ────────────────────────────────────────────────────────
+// ── 7. Portal account creation (silent — no invite email) ────────────────────
+
+async function createPortalAccount(email, name, company, city, state, reportId, assessment) {
+  const supaUrl = process.env.SUPABASE_URL;
+  const supaKey = process.env.SUPABASE_SERVICE_KEY;
+  if (!supaUrl || !supaKey) return;
+
+  const authHeaders = { 'apikey': supaKey, 'Authorization': `Bearer ${supaKey}`, 'Content-Type': 'application/json' };
+
+  try {
+    // 1. Create auth user silently (email_confirm=true skips confirmation email)
+    const createRes = await fetch(`${supaUrl}/auth/v1/admin/users`, {
+      method: 'POST',
+      headers: authHeaders,
+      body: JSON.stringify({ email, email_confirm: true, user_metadata: { full_name: name, role: 'client' } })
+    });
+    const created = await createRes.json();
+    let userId = created?.id;
+
+    // 2. If user already exists, look up their ID from the public users table
+    if (!userId) {
+      const lookupRes = await fetch(`${supaUrl}/rest/v1/users?email=eq.${encodeURIComponent(email)}&select=id&limit=1`, {
+        headers: { 'apikey': supaKey, 'Authorization': `Bearer ${supaKey}` }
+      });
+      const rows = await lookupRes.json();
+      userId = rows?.[0]?.id;
+    }
+
+    if (!userId) { console.warn('[portal] Could not resolve userId for', email); return; }
+
+    // 3. Upsert client profile row
+    await fetch(`${supaUrl}/rest/v1/clients`, {
+      method: 'POST',
+      headers: { ...authHeaders, 'Prefer': 'resolution=merge-duplicates,return=minimal' },
+      body: JSON.stringify({ user_id: userId, full_name: name, company, city, state })
+    });
+
+    // 4. Get client ID
+    const clientRes = await fetch(`${supaUrl}/rest/v1/clients?user_id=eq.${userId}&select=id&limit=1`, {
+      headers: { 'apikey': supaKey, 'Authorization': `Bearer ${supaKey}` }
+    });
+    const [client] = await clientRes.json();
+
+    // 5. Record assessment submission
+    if (client?.id) {
+      await fetch(`${supaUrl}/rest/v1/assessment_submissions`, {
+        method: 'POST',
+        headers: { ...authHeaders, 'Prefer': 'return=minimal' },
+        body: JSON.stringify({ client_id: client.id, email, answers: assessment, report_id: reportId })
+      });
+    }
+
+    console.log(`[portal] Account ready for ${email} (userId: ${userId})`);
+  } catch (e) {
+    console.warn('[portal] Non-fatal account setup error:', e.message);
+  }
+}
+
+// ── 8. Assessment mode ────────────────────────────────────────────────────────
 
 async function writeAssessmentReport(a, research) {
   const key = process.env.OPENAI_API_KEY;
@@ -2909,6 +2967,9 @@ async function handleAssessmentReport(req, res) {
 
   const html = renderAssessmentHTML(reportData, a, research, _rB);
   await saveReport(reportId, email, html, { company, city, state, industry, primaryPain: a.primaryPain }, a, isRegen);
+
+  // Silently create portal account — no email sent, advisor controls when to invite
+  createPortalAccount(email, name, company, city, state, reportId, a).catch(() => {});
 
   console.log(`[generate-report/assessment] Done. Report ID: ${reportId}`);
   return res.json({ success: true, reportId, reportUrl: `${SITE_URL}/r/${reportId}` });
