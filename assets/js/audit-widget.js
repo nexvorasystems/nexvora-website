@@ -1,8 +1,8 @@
 /* =====================================================
    Nexvora Systems — Free Website Audit Widget
-   Pill button + full-pill pulse + live timer + GHL
+   Disabled — website audit page removed.
    ===================================================== */
-(function () {
+(function () { return;
   const FREE_UNTIL = new Date('2026-05-01T04:00:00Z'); // midnight EDT
   const PRICE = '$4.99';
   const AUDIT_PAGE = window.location.origin + '/website-audit';
