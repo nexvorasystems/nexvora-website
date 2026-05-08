@@ -627,10 +627,6 @@ function renderAreaAnalysis(d,scores,aiSummary){
         <div class="area-green-text">This area is working well. Your systems here are above average — protect this advantage as you grow and make sure new team members are trained to the same standard.</div>
       </div>`;
     } else {
-      const paths=meta.paths||{};
-      const pathKeys=color==='red'?['time','money','scale']:['time','money'];
-      const pathLabels={time:'Save time',money:'Save money',scale:'Scale without you'};
-      const pathsHtml=pathKeys.map(k=>`<div class="fix-path"><strong>${pathLabels[k]}:</strong> ${esc(paths[k]||'')}</div>`).join('');
       areasHtml+=`<div class="area-block ${color}">
         <div class="area-header"><div class="area-name">${esc(meta.label)}</div><div class="area-score-tag ${color}">${score} · ${label}</div></div>
         <div class="area-bar-wrap"><div class="area-bar ${color}" style="width:${score}%"></div></div>
@@ -638,8 +634,10 @@ function renderAreaAnalysis(d,scores,aiSummary){
         <div class="area-text">${esc(meta.issue)}</div>
         <div class="area-issue-label" style="margin-top:4px;">Why it matters</div>
         <div class="area-text">${esc(meta.why)}</div>
-        <div class="area-issue-label" style="margin-top:4px;">How to fix it</div>
-        <div class="fix-paths">${pathsHtml}</div>
+        <div style="margin-top:14px;padding:12px 16px;background:rgba(13,148,136,0.08);border-radius:8px;border-left:3px solid var(--teal);">
+          <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--teal);margin-bottom:4px;">Nexvora can fix this</div>
+          <div style="font-size:13px;color:var(--navy);line-height:1.6;">We help service businesses resolve this exact issue. Book a free 30-min Discovery Call — we'll walk you through what we found and show you the path forward.</div>
+        </div>
       </div>`;
     }
     if(key==='operations' && d.cap_utilization && d.cap_utilization!=='full'){
@@ -662,8 +660,7 @@ function renderAreaAnalysis(d,scores,aiSummary){
           <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#0D9488;margin-bottom:8px;">GROWTH OPPORTUNITY — NO NEW HIRES NEEDED</div>
           <p style="font-size:14px;color:#4A5568;line-height:1.7;margin:0 0 10px;">You ${capLabel}. Revenue growth doesn't require hiring right now — it requires filling what you already have.</p>
           ${revenueLine}
-          <p style="font-size:13px;color:#718096;line-height:1.6;margin-top:10px;margin-bottom:0;">Better scheduling systems, automated follow-up on open slots, and a referral push can fill this capacity without adding a single employee.</p>
-        </div>`;
+            </div>`;
       }
     }
     if(key==='sales' && d.q8==='nothing'){
@@ -678,7 +675,6 @@ function renderAreaAnalysis(d,scores,aiSummary){
         <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:10px;">
           <div><div style="font-size:22px;font-weight:800;color:#E53E3E;">${fmt(lostLow)}–${fmt(lostHigh)}</div><div style="font-size:12px;color:#718096;">Estimated annual revenue lost to cold leads</div></div>
         </div>
-        <p style="font-size:14px;color:#4A5568;line-height:1.7;margin:0;">Every person who asked about your service and went quiet is revenue you already paid to generate. A 3-message automated follow-up sequence (day 1, day 3, day 7) costs almost nothing to set up and recovers 20–30% of those leads.</p>
       </div>`;
       areasHtml+=lostCallout;
     }
@@ -700,12 +696,12 @@ function renderAreaAnalysis(d,scores,aiSummary){
       if(d.q11b){
         const q11bLabels = {verbal:'Verbal only',chat:'Text/WhatsApp',spreadsheet:'Spreadsheet',
           'pm-tool':'Project management tool','industry-software':'Industry software'};
-        lines.push(`<strong>Task Management:</strong> ${q11bLabels[d.q11b] || d.q11b}${taskMgmtRisk ? ' — <span style="color:#E53E3E;">High risk.</span> Verbal task management breaks down as teams grow and is impossible to audit.' : ' — Good foundation. Next step is connecting this to automated workflows.'}`);
+        lines.push(`<strong>Task Management:</strong> ${q11bLabels[d.q11b] || d.q11b}${taskMgmtRisk ? ' — <span style="color:#E53E3E;">High risk.</span> Verbal task management breaks down as teams grow and is impossible to audit.' : ''}`);
       }
       if(d.q11c){
         const q11cLabels = {none:'Nothing in place',memory:'I remember them',physical:'Physical notes',
           spreadsheet:'Spreadsheet/calendar',crm:'CRM / automated'};
-        lines.push(`<strong>Follow-Up Tracking:</strong> ${q11cLabels[d.q11c] || d.q11c}${followUpRisk ? ' — <span style="color:#E53E3E;">Leads are slipping through.</span> When follow-up depends on memory, 40–60% of warm leads go cold.' : ' — Solid system. Automating this next saves 3–5 hours per week.'}`);
+        lines.push(`<strong>Follow-Up Tracking:</strong> ${q11cLabels[d.q11c] || d.q11c}${followUpRisk ? ' — <span style="color:#E53E3E;">Leads are slipping through.</span> When follow-up depends on memory, 40–60% of warm leads go cold.' : ''}`);
       }
       const automationHtml = `<div style="border:1px solid #0D9488;border-radius:10px;padding:16px 20px;margin-top:12px;background:rgba(13,148,136,0.04);">
         <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#0D9488;margin-bottom:10px;">AUTOMATION OPPORTUNITY</div>
@@ -721,10 +717,10 @@ function renderAreaAnalysis(d,scores,aiSummary){
       const roiNote=cpl===null
         ?'You\'re spending on ads but not tracking how many leads they generate. This is a significant blind spot — you may be spending on campaigns that aren\'t converting at all.'
         :cpl<50
-          ?'Under $50/lead is strong for local services. Focus on increasing lead volume and improving close rate.'
+          ?'Under $50/lead is strong for local services.'
           :cpl<150
-            ?'Your cost per lead is average. Optimizing your landing page and offer can typically cut this by 20–40%.'
-            :'High cost per lead. Your ads may be targeting too broadly or your landing page needs significant improvement.';
+            ?'Your cost per lead is average for your market.'
+            :'Your cost per lead is high — there are likely inefficiencies in your current campaigns.';
       const adsHtml=`<div style="border:1px solid #0D9488;border-radius:10px;padding:16px 20px;margin-top:12px;background:rgba(13,148,136,0.04);">
         <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#0D9488;margin-bottom:8px;">PAID ADS ANALYSIS</div>
         <div style="display:flex;gap:24px;flex-wrap:wrap;margin-bottom:12px;">
@@ -755,13 +751,6 @@ function renderAreaAnalysis(d,scores,aiSummary){
         </div>`;
         areasHtml+=gapHtml;
       }
-    }
-    if(score>=70 && AI_NEXT_STEPS[key]){
-      const aiBox=`<div style="border:1px solid #0D9488;border-radius:10px;padding:16px 20px;margin-top:12px;background:rgba(13,148,136,0.04);">
-  <div style="font-size:11px;font-weight:800;letter-spacing:1.5px;color:#0D9488;margin-bottom:8px;">NEXT LEVEL — STAY AHEAD WITH AI</div>
-  <p style="font-size:14px;color:#4A5568;line-height:1.75;margin:0;">${AI_NEXT_STEPS[key]}</p>
-</div>`;
-      areasHtml+=aiBox;
     }
   });
   const summaryBlock=aiSummary?`<div class="exec-summary">${esc(aiSummary)}</div>`:'';
@@ -1018,34 +1007,15 @@ async function renderOnlinePresence(d){
 
 function renderCTA(d){
   const first=d.contact.name.split(' ')[0];
-  const OFFER_END=new Date('2026-05-01T00:00:00');
-  const now=new Date();
-  const offerActive=now<OFFER_END;
-  let offerHtml='';
-  if(offerActive){
-    offerHtml=`
-      <div class="offer-box">
-        <div class="offer-tag">Limited Time — Assessment Completers Only</div>
-        <div class="offer-prices">
-          <div class="offer-old">$599 / 25 min</div>
-          <div class="offer-new">Complimentary</div>
-        </div>
-        <div class="offer-note">Standard strategy call rate is $599. Complete your assessment today and schedule at no cost.<br/>If you choose to work with us, the full call value is credited toward your engagement.</div>
-        <div class="countdown" id="countdown"></div>
-      </div>`;
-  } else {
-    offerHtml=`
-      <div class="offer-box">
-        <div class="offer-tag">Strategy Call</div>
-        <div class="offer-prices"><div class="offer-new" style="color:#44CAA2;font-size:24px;">$599 / 25 min</div></div>
-        <div class="offer-note">25-minute strategy session with Murat and Alexandr. If you choose to work with us, this call fee is credited toward your engagement.</div>
-      </div>`;
-  }
   const html=`<div class="cta-section">
-    <h2>Ready to change<br><strong>the math?</strong></h2>
-    <div class="cta-sub">Murat and Alexandr will personally review this report and will answer all your questions, ${esc(first)}.</div>
-    ${offerHtml}
-    <a href="https://api.leadconnectorhq.com/widget/booking/bGQ7oVjEW8HdbcQYTTUF" target="_blank" class="cta-btn-primary">Schedule Your ${offerActive?'Complimentary':'Strategy'} Call</a>
+    <h2>Your results are in.<br><strong>Let's talk about them.</strong></h2>
+    <div class="cta-sub">Murat and Alexandr will personally walk you through what we found and show you exactly how we can fix it — at no cost to you, ${esc(first)}.</div>
+    <div class="offer-box">
+      <div class="offer-tag">Free — No Obligation</div>
+      <div class="offer-prices"><div class="offer-new">30-Min Discovery Call</div></div>
+      <div class="offer-note">We review your assessment results together, identify your biggest issues, and show you what a path forward looks like. No pitch. No pressure. Just clarity.</div>
+    </div>
+    <a href="https://api.leadconnectorhq.com/widget/booking/bGQ7oVjEW8HdbcQYTTUF" target="_blank" class="cta-btn-primary">Book Your Free Discovery Call</a>
     <div class="cta-actions">
       <button class="cta-btn-secondary" id="pdfBtn" onclick="downloadPDF(this)">Download PDF</button>
       <a href="/" class="cta-btn-secondary">Back to Home</a>
@@ -1055,7 +1025,6 @@ function renderCTA(d){
   const wrapper=document.createElement('div');
   wrapper.innerHTML=html;
   document.getElementById('reportWrap').appendChild(wrapper.firstElementChild);
-  if(offerActive) startCountdown();
 }
 
 function startCountdown(){
@@ -1139,7 +1108,6 @@ async function main(){
   renderBenchmarks(d,d.ai_benchmark||'');
   renderOwnerEcon(d,econ);
   renderAreaAnalysis(d,scores,d.ai_summary||'');
-  renderStrategySection(d);
   await renderOnlinePresence(d);
   renderCTA(d);
 
