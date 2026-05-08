@@ -1,9 +1,8 @@
 /* =====================================================
    Nexvora Systems — Free Assessment Pill Widget
-   Same pill design as audit widget, no timer/modal.
-   Click navigates directly to /assessment.html.
+   Disabled — assessment link is in the nav header.
    ===================================================== */
-(function () {
+(function () { return;
   const ASSESS_URL = window.location.origin + '/assessment.html';
 
   // ── CSS ─────────────────────────────────────────────
