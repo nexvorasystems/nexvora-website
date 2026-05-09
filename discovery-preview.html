@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Discovery Modal — Preview</title>
+<meta name="robots" content="noindex"/>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;background:#FAF8F5;color:#1A1A2E;min-height:100vh;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:20px;padding:40px 20px;}
+.preview-note{background:#FEF3C7;border:1px solid #F59E0B;border-radius:12px;padding:16px 24px;font-size:13px;color:#92400E;max-width:500px;text-align:center;line-height:1.6;}
+.preview-buttons{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
+.btn-open{padding:16px 36px;background:#0F2B4C;color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;}
+.btn-open:hover{background:#0D9488;transform:translateY(-1px);}
+.btn-open.teal{background:#0D9488;}
+.btn-open.teal:hover{filter:brightness(1.1);}
+</style>
+</head>
+<body>
+<div class="preview-note">
+  <strong>Preview Mode</strong> — API calls are mocked (no real GHL contacts created).<br/>
+  Test both qualified and disqualified paths below.
+</div>
+<div class="preview-buttons">
+  <button class="btn-open teal" data-discovery-trigger>Open Discovery Modal</button>
+</div>
+<p style="font-size:12px;color:#718096;text-align:center;max-width:400px;line-height:1.6;">
+  To test disqualified: select <strong>$0–$100K</strong> or <strong>$100K–$250K</strong> revenue + <strong>Not ready to invest</strong>.<br/>
+  Everything else routes to the qualified booking screen.
+</p>
+
+<!-- ═══════════════════════════════════════════════
+     DISCOVERY MODAL — Self-contained
+═══════════════════════════════════════════════ -->
+<style>
+#nx-disc-overlay{position:fixed;inset:0;z-index:99999;background:rgba(15,43,76,0.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);display:flex;align-items:center;justify-content:center;padding:20px;opacity:0;transition:opacity .25s;}
+#nx-disc-overlay.show{opacity:1;}
+#nx-disc-card{background:#fff;border-radius:20px;width:100%;max-width:520px;max-height:92vh;overflow-y:auto;box-shadow:0 32px 100px rgba(0,0,0,0.3);transform:translateY(40px) scale(0.96);transition:transform .35s cubic-bezier(.16,1,.3,1),opacity .35s;opacity:0;position:relative;}
+#nx-disc-overlay.show #nx-disc-card{transform:translateY(0) scale(1);opacity:1;}
+#nx-disc-header{background:linear-gradient(135deg,#0F2B4C 0%,#0D9488 100%);border-radius:20px 20px 0 0;padding:28px 32px 22px;color:#fff;position:relative;}
+.nx-disc-close{position:absolute;top:14px;right:14px;width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,0.15);border:none;cursor:pointer;color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center;transition:background .15s;flex-shrink:0;}
+.nx-disc-close:hover{background:rgba(255,255,255,0.28);}
+#nx-disc-progress-bar{height:4px;background:rgba(255,255,255,0.2);border-radius:4px;margin-top:18px;overflow:hidden;}
+#nx-disc-progress-fill{height:100%;background:linear-gradient(90deg,#44CAA2,#22D3EE);border-radius:4px;transition:width .45s cubic-bezier(.4,0,.2,1);}
+.nx-disc-step-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.45);margin-bottom:8px;}
+#nx-disc-title{font-size:21px;font-weight:800;margin:0;line-height:1.25;}
+#nx-disc-subtitle{font-size:13px;color:rgba(255,255,255,0.6);margin-top:6px;line-height:1.5;}
+#nx-disc-body{padding:28px 32px;}
+.nx-disc-field{margin-bottom:18px;}
+.nx-disc-label{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:1.5px;color:#4A5568;margin-bottom:8px;}
+.nx-disc-input{width:100%;padding:13px 16px;border:1.5px solid #E2DDD5;border-radius:11px;font-size:15px;color:#1A1A2E;transition:border-color .15s,box-shadow .15s;outline:none;background:#FAF8F5;font-family:inherit;}
+.nx-disc-input:focus{border-color:#0D9488;box-shadow:0 0 0 3px rgba(13,148,136,0.12);background:#fff;}
+.nx-disc-input.error{border-color:#EF4444;}
+.nx-disc-select{width:100%;padding:13px 16px;border:1.5px solid #E2DDD5;border-radius:11px;font-size:15px;color:#1A1A2E;background:#FAF8F5;outline:none;cursor:pointer;transition:border-color .15s;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%234A5568' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:38px;font-family:inherit;}
+.nx-disc-select:focus{border-color:#0D9488;box-shadow:0 0 0 3px rgba(13,148,136,0.12);}
+.nx-disc-options{display:flex;flex-direction:column;gap:9px;}
+.nx-disc-option{display:flex;align-items:center;gap:14px;padding:13px 18px;border:1.5px solid #E2DDD5;border-radius:12px;cursor:pointer;transition:all .15s;background:#FAF8F5;user-select:none;}
+.nx-disc-option:hover{border-color:#0D9488;background:rgba(13,148,136,0.05);}
+.nx-disc-option.selected{border-color:#0D9488;background:rgba(13,148,136,0.09);}
+.nx-disc-option-dot{width:20px;height:20px;border-radius:50%;border:2px solid #CBD5E0;flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;}
+.nx-disc-option.selected .nx-disc-option-dot{border-color:#0D9488;background:#0D9488;}
+.nx-disc-option.selected .nx-disc-option-dot::after{content:'';width:7px;height:7px;border-radius:50%;background:#fff;}
+.nx-disc-option-label{font-size:14px;font-weight:600;color:#1A1A2E;line-height:1.3;}
+.nx-disc-btn-row{margin-top:24px;display:flex;gap:10px;}
+.nx-disc-btn-primary{flex:1;padding:14px;background:#0D9488;color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;}
+.nx-disc-btn-primary:hover:not(:disabled){filter:brightness(1.1);transform:translateY(-1px);}
+.nx-disc-btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none;}
+.nx-disc-btn-back{padding:14px 20px;background:#F0EDE8;color:#4A5568;border:none;border-radius:11px;font-size:14px;font-weight:600;cursor:pointer;transition:background .15s;font-family:inherit;}
+.nx-disc-btn-back:hover{background:#E2DDD5;}
+.nx-disc-error-msg{font-size:12px;color:#EF4444;margin-top:6px;}
+.nx-disc-result{text-align:center;padding:8px 0;}
+.nx-disc-result-icon{width:76px;height:76px;border-radius:50%;margin:0 auto 22px;display:flex;align-items:center;justify-content:center;font-size:34px;}
+.nx-disc-result-icon.success{background:#D1FAE5;}
+.nx-disc-result-icon.pending{background:#FEF3C7;}
+.nx-disc-result h2{font-size:22px;font-weight:800;color:#1A1A2E;margin:0 0 12px;}
+.nx-disc-result p{font-size:14px;color:#4A5568;line-height:1.75;margin:0 0 20px;}
+.nx-disc-disq-note{background:#FFFBEB;border-left:3px solid #F59E0B;border-radius:0 10px 10px 0;padding:14px 18px;font-size:13px;color:#92400E;line-height:1.7;margin-bottom:20px;text-align:left;}
+.nx-disc-book-btn{display:inline-block;padding:15px 34px;background:#0D9488;color:#fff;text-decoration:none;border-radius:12px;font-size:15px;font-weight:700;transition:all .15s;cursor:pointer;border:none;font-family:inherit;}
+.nx-disc-book-btn:hover{filter:brightness(1.1);transform:translateY(-1px);}
+.nx-disc-book-btn.ghost{background:transparent;border:1.5px solid #0D9488;color:#0D9488;padding:11px 22px;font-size:13px;}
+.nx-disc-book-btn.ghost:hover{background:rgba(13,148,136,0.07);}
+.nx-disc-tag{display:inline-block;padding:4px 10px;background:rgba(68,202,162,0.15);color:#0D9488;border-radius:99px;font-size:11px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-bottom:14px;}
+#nx-disc-popup{position:fixed;inset:0;z-index:100000;background:rgba(0,0,0,0.55);display:flex;align-items:center;justify-content:center;padding:20px;}
+.nx-disc-popup-card{background:#fff;border-radius:18px;padding:32px 28px;max-width:400px;width:100%;text-align:center;box-shadow:0 24px 70px rgba(0,0,0,0.35);}
+.nx-disc-popup-card h3{font-size:18px;font-weight:800;margin:0 0 10px;color:#1A1A2E;}
+.nx-disc-popup-card p{font-size:13px;color:#4A5568;line-height:1.75;margin:0 0 22px;}
+.nx-disc-popup-actions{display:flex;gap:10px;justify-content:center;flex-wrap:wrap;}
+@media(max-width:560px){#nx-disc-header{padding:22px 20px 18px;}#nx-disc-body{padding:22px 20px;}#nx-disc-title{font-size:18px;}}
+</style>
+
+<div id="nx-disc-overlay">
+  <div id="nx-disc-card">
+    <div id="nx-disc-header">
+      <button class="nx-disc-close" id="nx-disc-close-btn">&#x2715;</button>
+      <div class="nx-disc-step-label" id="nx-disc-step-label">Step 1 of 4</div>
+      <div id="nx-disc-title">Let's get to know you</div>
+      <div id="nx-disc-subtitle">We'll save your spot as soon as you enter your info.</div>
+      <div id="nx-disc-progress-bar"><div id="nx-disc-progress-fill" style="width:25%"></div></div>
+    </div>
+    <div id="nx-disc-body"></div>
+  </div>
+</div>
+
+<script>
+(function(){
+  const BOOKING_URL='https://api.leadconnectorhq.com/widget/booking/bGQ7oVjEW8HdbcQYTTUF';
+  const IS_PREVIEW=true; // set false on live site
+
+  const INDUSTRIES=['Home Services','Construction / Remodeling','Auto Services','Healthcare / Medical','Accounting / CPA','Professional Services','Legal Services','Real Estate','Insurance','Financial Services','Marketing / Creative Agency','IT / Tech Services','Business Consulting','Fitness / Wellness','Restaurant / Food','Retail','Education / Coaching','Other'];
+  const REVENUE_OPTIONS=[{v:'0-100k',l:'$0 – $100K'},{v:'100k-250k',l:'$100K – $250K'},{v:'250k-500k',l:'$250K – $500K'},{v:'500k-1mil',l:'$500K – $1M'},{v:'1mil+',l:'$1M+'}];
+  const INVESTMENT_OPTIONS=[{v:'not_ready',l:'Not ready to invest'},{v:'up_to_1k',l:'Up to $1,000'},{v:'1k_2500',l:'$1,000 – $2,500'},{v:'2500_5000',l:'$2,500 – $5,000'},{v:'5000_plus',l:'$5,000+'}];
+
+  const STEPS=[
+    {pct:25,label:'Step 1 of 4',title:"Let's get to know you",sub:'We\'ll save your spot as soon as you enter your name and email.'},
+    {pct:50,label:'Step 2 of 4',title:'Tell us about your business',sub:'A few quick details about where you\'re at right now.'},
+    {pct:75,label:'Step 3 of 4',title:'What\'s your annual revenue?',sub:'Approximate gross revenue — helps us make the most of our time together.'},
+    {pct:100,label:'Step 4 of 4',title:'Investment readiness',sub:'To grow, businesses invest in themselves. Where are you at?'}
+  ];
+
+  let S={step:0,contactId:null,name:'',email:'',phone:'',company:'',industry:'',revenue:'',investment:''};
+
+  function qualified(){
+    if(S.investment!=='not_ready')return true;
+    return S.revenue!=='0-100k'&&S.revenue!=='100k-250k';
+  }
+
+  const overlay=document.getElementById('nx-disc-overlay');
+  const card=document.getElementById('nx-disc-card');
+
+  function open(){
+    S={step:0,contactId:null,name:'',email:'',phone:'',company:'',industry:'',revenue:'',investment:''};
+    document.getElementById('nx-disc-header').style.display='';
+    document.getElementById('nx-disc-body').style.padding='';
+    overlay.style.display='flex';
+    setTimeout(()=>overlay.classList.add('show'),10);
+    render();
+  }
+
+  function close(){
+    overlay.classList.remove('show');
+    setTimeout(()=>{overlay.style.display='none';},300);
+  }
+
+  function render(){
+    const cfg=STEPS[S.step];
+    document.getElementById('nx-disc-step-label').textContent=cfg.label;
+    document.getElementById('nx-disc-title').textContent=cfg.title;
+    document.getElementById('nx-disc-subtitle').textContent=cfg.sub;
+    document.getElementById('nx-disc-progress-fill').style.width=cfg.pct+'%';
+
+    const body=document.getElementById('nx-disc-body');
+    if(S.step===0) body.innerHTML=html1();
+    if(S.step===1) body.innerHTML=html2();
+    if(S.step===2) body.innerHTML=html3();
+    if(S.step===3) body.innerHTML=html4();
+
+    const nb=document.getElementById('nx-btn-next');
+    const bb=document.getElementById('nx-btn-back');
+    if(nb)nb.addEventListener('click',next);
+
+    // Show/hide "Other" text input when industry dropdown changes
+    const indSel=document.getElementById('nx-f-industry');
+    if(indSel){
+      const wrap=document.getElementById('nx-industry-other-wrap');
+      indSel.addEventListener('change',()=>{
+        wrap.style.display=indSel.value==='Other'?'block':'none';
+        if(indSel.value!=='Other')S.industryOther='';
+      });
+      // Restore state if coming back
+      if(indSel.value==='Other')wrap.style.display='block';
+    }
+    if(bb)bb.addEventListener('click',()=>{S.step--;render();});
+
+    bindOptions('nx-rev-opts',v=>S.revenue=v);
+    bindOptions('nx-inv-opts',v=>S.investment=v);
+  }
+
+  function bindOptions(id,setter){
+    const c=document.getElementById(id);
+    if(!c)return;
+    c.querySelectorAll('.nx-disc-option').forEach(el=>{
+      if(el.classList.contains('selected'));
+      el.addEventListener('click',()=>{
+        c.querySelectorAll('.nx-disc-option').forEach(o=>o.classList.remove('selected'));
+        el.classList.add('selected');
+        setter(el.dataset.v);
+        const err=document.getElementById(id+'-err');
+        if(err)err.remove();
+      });
+    });
+  }
+
+  function html1(){
+    return `<div class="nx-disc-field"><label class="nx-disc-label">Full Name *</label><input class="nx-disc-input" id="nx-f-name" type="text" placeholder="Jane Smith" value="${esc(S.name)}"/></div>
+    <div class="nx-disc-field"><label class="nx-disc-label">Email Address *</label><input class="nx-disc-input" id="nx-f-email" type="email" placeholder="jane@yourbusiness.com" value="${esc(S.email)}"/></div>
+    <div class="nx-disc-btn-row"><button class="nx-disc-btn-primary" id="nx-btn-next">Continue &rarr;</button></div>`;
+  }
+
+  function html2(){
+    const opts=INDUSTRIES.map(i=>`<option value="${esc(i)}"${S.industry===i?' selected':''}>${esc(i)}</option>`).join('');
+    return `<div class="nx-disc-field"><label class="nx-disc-label">Phone Number</label><input class="nx-disc-input" id="nx-f-phone" type="tel" placeholder="(555) 000-0000" value="${esc(S.phone)}"/></div>
+    <div class="nx-disc-field"><label class="nx-disc-label">Company Name</label><input class="nx-disc-input" id="nx-f-company" type="text" placeholder="Your business name" value="${esc(S.company)}"/></div>
+    <div class="nx-disc-field"><label class="nx-disc-label">Industry *</label><select class="nx-disc-select" id="nx-f-industry"><option value="">Select your industry...</option>${opts}</select><div id="nx-industry-other-wrap" style="display:none;margin-top:10px;"><input class="nx-disc-input" id="nx-f-industry-other" type="text" placeholder="Please describe your industry..." value="${esc(S.industryOther||'')}"/></div></div>
+    <div class="nx-disc-btn-row"><button class="nx-disc-btn-back" id="nx-btn-back">&larr;</button><button class="nx-disc-btn-primary" id="nx-btn-next">Continue &rarr;</button></div>`;
+  }
+
+  function html3(){
+    const opts=REVENUE_OPTIONS.map(o=>`<div class="nx-disc-option${S.revenue===o.v?' selected':''}" data-v="${o.v}"><div class="nx-disc-option-dot"></div><span class="nx-disc-option-label">${o.l}</span></div>`).join('');
+    return `<div class="nx-disc-options" id="nx-rev-opts">${opts}</div>
+    <div class="nx-disc-btn-row" style="margin-top:20px;"><button class="nx-disc-btn-back" id="nx-btn-back">&larr;</button><button class="nx-disc-btn-primary" id="nx-btn-next">Continue &rarr;</button></div>`;
+  }
+
+  function html4(){
+    const opts=INVESTMENT_OPTIONS.map(o=>`<div class="nx-disc-option${S.investment===o.v?' selected':''}" data-v="${o.v}"><div class="nx-disc-option-dot"></div><span class="nx-disc-option-label">${o.l}</span></div>`).join('');
+    return `<div class="nx-disc-options" id="nx-inv-opts">${opts}</div>
+    <div class="nx-disc-btn-row" style="margin-top:20px;"><button class="nx-disc-btn-back" id="nx-btn-back">&larr;</button><button class="nx-disc-btn-primary" id="nx-btn-next">See My Result &rarr;</button></div>`;
+  }
+
+  async function next(){
+    if(S.step===0){
+      const name=document.getElementById('nx-f-name').value.trim();
+      const email=document.getElementById('nx-f-email').value.trim();
+      if(!name){fieldErr('nx-f-name','Please enter your full name');return;}
+      if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)){fieldErr('nx-f-email','Please enter a valid email');return;}
+      S.name=name;S.email=email;
+      // Capture lead in background
+      if(!IS_PREVIEW){
+        fetch('/api/discovery-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'capture',name,email})}).then(r=>r.json()).then(d=>{if(d.contactId)S.contactId=d.contactId;}).catch(()=>{});
+      } else {
+        S.contactId='preview-mock-id';
+        console.log('[PREVIEW] Would capture lead:',{name,email});
+      }
+      S.step=1;render();
+    } else if(S.step===1){
+      const industry=document.getElementById('nx-f-industry').value;
+      if(!industry){selectErr('nx-f-industry','Please select your industry');return;}
+      if(industry==='Other'){
+        const other=document.getElementById('nx-f-industry-other').value.trim();
+        if(!other){fieldErr('nx-f-industry-other','Please describe your industry');return;}
+        S.industryOther=other;
+        S.industry='Other: '+other;
+      } else {
+        S.industry=industry;S.industryOther='';
+      }
+      S.phone=document.getElementById('nx-f-phone').value.trim();
+      S.company=document.getElementById('nx-f-company').value.trim();
+      S.industry=industry;
+      S.step=2;render();
+    } else if(S.step===2){
+      if(!S.revenue){optionsErr('nx-rev-opts','Please select your revenue range');return;}
+      S.step=3;render();
+    } else if(S.step===3){
+      if(!S.investment){optionsErr('nx-inv-opts','Please select an option');return;}
+      await submit();
+    }
+  }
+
+  async function submit(){
+    const btn=document.getElementById('nx-btn-next');
+    if(btn){btn.disabled=true;btn.textContent='Processing...';}
+
+    if(!IS_PREVIEW){
+      await fetch('/api/discovery-lead',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({action:'submit',contactId:S.contactId,name:S.name,email:S.email,phone:S.phone,company:S.company,industry:S.industry,revenue:S.revenue,investment:S.investment})}).catch(()=>{});
+    } else {
+      console.log('[PREVIEW] Would submit:',{...S,qualified:qualified()});
+      await new Promise(r=>setTimeout(r,800));
+    }
+
+    document.getElementById('nx-disc-header').style.display='none';
+    const body=document.getElementById('nx-disc-body');
+    body.style.padding='32px';
+    body.innerHTML=qualified()?renderQualified():renderDisqualified();
+
+    setTimeout(()=>{
+      const ab=document.getElementById('nx-btn-anyway');
+      if(ab)ab.addEventListener('click',showPopup);
+    },50);
+  }
+
+  function renderQualified(){
+    const first=S.name.split(' ')[0]||'there';
+    return `<div class="nx-disc-result">
+      <div class="nx-disc-result-icon success">🎉</div>
+      <div class="nx-disc-tag">Free &nbsp;·&nbsp; 30 Minutes</div>
+      <h2>You're a great fit, ${esc(first)}!</h2>
+      <p>Based on your answers, a Discovery Call is the perfect next step. Murat and Alexandr will personally review your info and come ready to help.</p>
+      <p style="font-size:13px;color:#718096;margin-bottom:28px;">No pitch. No pressure. Just a focused conversation about your business and what's possible.</p>
+      <a href="${BOOKING_URL}" target="_blank" class="nx-disc-book-btn">Book My Free 30-Min Discovery Call &rarr;</a>
+      <div style="margin-top:14px;"><button class="nx-disc-book-btn ghost" onclick="window.closeDiscoveryModal()">Maybe later</button></div>
+    </div>`;
+  }
+
+  function renderDisqualified(){
+    const first=S.name.split(' ')[0]||'there';
+    return `<div class="nx-disc-result">
+      <div class="nx-disc-result-icon pending">⏳</div>
+      <h2>Not quite ready yet, ${esc(first)}</h2>
+      <div class="nx-disc-disq-note">Unfortunately, based on where your business is right now, the timing may not be ideal. Every great business goes through a growth phase — and yours might just need a little more time.</div>
+      <p>We've saved your info and will be here when you're ready to invest in your growth. <strong>Definitely come back when you're ready.</strong></p>
+      <div style="display:flex;flex-direction:column;gap:10px;align-items:center;">
+        <button id="nx-btn-anyway" class="nx-disc-book-btn ghost" style="width:100%;text-align:center;">I still want to schedule anyway &rarr;</button>
+        <button style="background:none;border:none;color:#718096;font-size:13px;cursor:pointer;padding:8px;" onclick="window.closeDiscoveryModal()">Close</button>
+      </div>
+    </div>`;
+  }
+
+  function showPopup(){
+    const p=document.createElement('div');
+    p.id='nx-disc-popup';
+    p.innerHTML=`<div class="nx-disc-popup-card">
+      <div style="font-size:32px;margin-bottom:14px;">💬</div>
+      <h3>Just one thing first...</h3>
+      <p>To get the most from a Discovery Call, we ask that you're willing to invest <strong>at least $2,500</strong> in growing your business. If you're ready for that commitment, we'd love to connect.</p>
+      <div class="nx-disc-popup-actions">
+        <button onclick="document.getElementById('nx-disc-popup').remove()" style="padding:11px 22px;background:#F0EDE8;border:none;border-radius:9px;font-size:14px;font-weight:600;cursor:pointer;color:#4A5568;font-family:inherit;">Go Back</button>
+        <a href="${BOOKING_URL}" target="_blank" class="nx-disc-book-btn" style="padding:12px 26px;font-size:14px;" onclick="document.getElementById('nx-disc-popup').remove()">I'm Ready — Book Now &rarr;</a>
+      </div>
+    </div>`;
+    document.body.appendChild(p);
+  }
+
+  function fieldErr(id,msg){
+    const el=document.getElementById(id);if(!el)return;
+    el.classList.add('error');
+    let e=el.nextElementSibling;
+    if(!e||!e.classList.contains('nx-disc-error-msg')){e=document.createElement('div');e.className='nx-disc-error-msg';el.insertAdjacentElement('afterend',e);}
+    e.textContent=msg;
+    el.addEventListener('input',()=>{el.classList.remove('error');e.remove();},{once:true});
+  }
+  function selectErr(id,msg){
+    const el=document.getElementById(id);if(!el)return;
+    el.style.borderColor='#EF4444';
+    let e=el.nextElementSibling;
+    if(!e||!e.classList.contains('nx-disc-error-msg')){e=document.createElement('div');e.className='nx-disc-error-msg';el.insertAdjacentElement('afterend',e);}
+    e.textContent=msg;
+    el.addEventListener('change',()=>{el.style.borderColor='';e.remove();},{once:true});
+  }
+  function optionsErr(cid,msg){
+    const c=document.getElementById(cid);if(!c)return;
+    let e=document.getElementById(cid+'-err');
+    if(!e){e=document.createElement('div');e.id=cid+'-err';e.className='nx-disc-error-msg';e.style.marginTop='8px';c.insertAdjacentElement('afterend',e);}
+    e.textContent=msg;
+  }
+  function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');}
+
+  // Wire up close
+  document.getElementById('nx-disc-close-btn').addEventListener('click',close);
+  overlay.addEventListener('click',e=>{if(e.target===overlay)close();});
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')close();});
+
+  // Expose globally
+  window.openDiscoveryModal=open;
+  window.closeDiscoveryModal=close;
+
+  // Auto-bind trigger buttons
+  document.addEventListener('click',e=>{
+    if(e.target.closest('[data-discovery-trigger]'))open();
+  });
+
+  overlay.style.display='none';
+})();
+</script>
+</body>
+</html>
