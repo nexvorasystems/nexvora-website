@@ -95,8 +95,65 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 @keyframes nxSpin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 @media(max-width:600px){nav{padding:0 16px;}.prog-label{display:none;}.bbl{font-size:14px;max-width:90%;}.chat-input-area{padding:12px 14px;}}
 </style>
+<style>
+#nx-gate{position:fixed;inset:0;z-index:99999;background:#FAF8F5;display:flex;align-items:center;justify-content:center;padding:24px;font-family:-apple-system,BlinkMacSystemFont,'Inter','Segoe UI',sans-serif;}
+.nx-gate-card{background:#fff;border:1px solid #E2DDD5;border-radius:20px;padding:44px 40px;max-width:420px;width:100%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,0.08);}
+.nx-gate-lock{width:64px;height:64px;border-radius:50%;background:linear-gradient(135deg,#0F2B4C,#0D9488);margin:0 auto 22px;display:flex;align-items:center;justify-content:center;font-size:26px;}
+.nx-gate-card h2{font-size:22px;font-weight:800;color:#1A1A2E;margin:0 0 8px;letter-spacing:-0.4px;}
+.nx-gate-card p{font-size:14px;color:#4A5568;line-height:1.7;margin:0 0 28px;}
+.nx-gate-label{display:block;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#4A5568;margin-bottom:8px;text-align:left;}
+.nx-gate-input{width:100%;padding:14px 18px;border:1.5px solid #E2DDD5;border-radius:11px;font-size:20px;font-weight:700;letter-spacing:6px;text-align:center;color:#1A1A2E;background:#FAF8F5;outline:none;transition:border-color .15s,box-shadow .15s;font-family:inherit;}
+.nx-gate-input:focus{border-color:#0D9488;box-shadow:0 0 0 3px rgba(13,148,136,0.12);background:#fff;}
+.nx-gate-input.shake{animation:nx-shake .35s ease;}
+@keyframes nx-shake{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px);}}
+.nx-gate-err{font-size:12px;color:#EF4444;margin-top:8px;min-height:18px;text-align:center;}
+.nx-gate-btn{width:100%;margin-top:18px;padding:15px;background:#0D9488;color:#fff;border:none;border-radius:11px;font-size:15px;font-weight:700;cursor:pointer;transition:all .15s;font-family:inherit;}
+.nx-gate-btn:hover{filter:brightness(1.08);transform:translateY(-1px);}
+.nx-gate-footer{margin-top:22px;font-size:12px;color:#718096;}
+.nx-gate-footer a{color:#0D9488;text-decoration:none;}
+</style>
 </head>
 <body>
+<!-- ACCESS GATE -->
+<div id="nx-gate">
+  <div class="nx-gate-card">
+    <div class="nx-gate-lock">🔒</div>
+    <h2>Private Access Only</h2>
+    <p>This assessment is available by invitation.<br>Enter your access code to continue.</p>
+    <label class="nx-gate-label" for="nx-gate-code">Access Code</label>
+    <input class="nx-gate-input" id="nx-gate-code" type="password" maxlength="10" placeholder="••••" autocomplete="off" inputmode="numeric"/>
+    <div class="nx-gate-err" id="nx-gate-err"></div>
+    <button class="nx-gate-btn" id="nx-gate-submit">Unlock Assessment &rarr;</button>
+    <div class="nx-gate-footer">Don't have a code? <a href="index.html" data-discovery-trigger>Book a Discovery Call</a></div>
+  </div>
+</div>
+<script>
+(function(){
+  const KEY='nx_assess_unlock';
+  const gate=document.getElementById('nx-gate');
+  if(localStorage.getItem(KEY)==='1'){gate.style.display='none';return;}
+  function attempt(){
+    const val=document.getElementById('nx-gate-code').value.trim();
+    if(val==='2425'){
+      localStorage.setItem(KEY,'1');
+      gate.style.opacity='0';
+      gate.style.transition='opacity .3s';
+      setTimeout(()=>{gate.style.display='none';},320);
+    } else {
+      const inp=document.getElementById('nx-gate-code');
+      const err=document.getElementById('nx-gate-err');
+      inp.classList.remove('shake');
+      void inp.offsetWidth;
+      inp.classList.add('shake');
+      err.textContent='Incorrect code. Please try again.';
+      inp.value='';
+      inp.focus();
+    }
+  }
+  document.getElementById('nx-gate-submit').addEventListener('click',attempt);
+  document.getElementById('nx-gate-code').addEventListener('keydown',e=>{if(e.key==='Enter')attempt();});
+})();
+</script>
 <h1 style="position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;">Free Business Health Assessment — Nexvora Systems</h1>
 <nav>
   <a href="index.html"><img src="assets/logo-dark.png" alt="Nexvora Systems" style="height:44px;width:auto;display:block;"/></a>
