@@ -247,39 +247,14 @@ module.exports = async function handler(req, res) {
       const storedEmail = (rows[0].email || '').toLowerCase().trim();
       const html = rows[0].html;
 
-      // ── Code-gated reports (all except EMAIL_GATE_ID) ──────────────────────
-      if (id !== EMAIL_GATE_ID) {
-        const unlock = req.query.unlock;
-        if (unlock === '2425') {
-          res.setHeader('Content-Type', 'text/html; charset=utf-8');
-          return res.status(200).send(html);
-        }
-        res.setHeader('Content-Type', 'text/html; charset=utf-8');
-        return res.status(200).send(codeGateHTML(id));
-      }
-
-      // ── Email-gated report (EMAIL_GATE_ID only) ───────────────────────────
-      // No email stored = legacy report, serve directly
-      if (!storedEmail) {
+      // All reports — code gate only
+      const unlock = req.query.unlock;
+      if (unlock === '2425') {
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
         return res.status(200).send(html);
       }
-
-      // Token provided — verify
-      if (token) {
-        const expected = makeToken(id, storedEmail);
-        if (token === expected) {
-          res.setHeader('Content-Type', 'text/html; charset=utf-8');
-          return res.status(200).send(html);
-        }
-        // Invalid token → show gate with message
-        res.setHeader('Content-Type', 'text/html; charset=utf-8');
-        return res.status(403).send(gateHTML(id, 'Session expired. Please enter your email again.'));
-      }
-
-      // No token → show email gate
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
-      return res.status(200).send(gateHTML(id));
+      return res.status(200).send(codeGateHTML(id));
 
     } catch (e) {
       return res.status(500).json({ error: e.message });
