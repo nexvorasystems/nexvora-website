@@ -18,6 +18,71 @@ function makeToken(id, email) {
     .slice(0, 48);
 }
 
+const EMAIL_GATE_ID = 'roypgcz1r1'; // only this report uses email gate
+
+function codeGateHTML(id) {
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>View Your Business Report — Nexvora Systems</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(135deg,#0F2B4C 0%,#0D9488 100%);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px;}
+.card{background:#fff;border-radius:20px;padding:48px 40px;max-width:440px;width:100%;text-align:center;box-shadow:0 24px 64px rgba(0,0,0,0.3);}
+.logo{font-size:11px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#0D9488;margin-bottom:28px;}
+.icon{font-size:44px;margin-bottom:18px;}
+h1{font-size:22px;font-weight:900;color:#0F2B4C;margin-bottom:10px;letter-spacing:-.5px;}
+.sub{font-size:14px;color:#6B7280;line-height:1.65;margin-bottom:28px;}
+.lbl{display:block;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:#4A5568;margin-bottom:8px;text-align:left;}
+input{width:100%;padding:14px 16px;border:2px solid #E5E7EB;border-radius:10px;font-size:22px;font-weight:700;letter-spacing:6px;text-align:center;outline:none;transition:border-color .2s,box-shadow .2s;margin-bottom:6px;font-family:inherit;}
+input:focus{border-color:#0D9488;box-shadow:0 0 0 3px rgba(13,148,136,0.12);}
+input.shake{animation:shk .35s ease;}
+@keyframes shk{0%,100%{transform:translateX(0);}20%{transform:translateX(-8px);}40%{transform:translateX(8px);}60%{transform:translateX(-5px);}80%{transform:translateX(5px)};}
+button{width:100%;margin-top:14px;padding:14px;background:linear-gradient(135deg,#0F2B4C,#0D9488);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;transition:opacity .2s;}
+button:hover{opacity:.9;}
+.error{background:#FEE2E2;border:1px solid #EF4444;border-radius:8px;padding:10px 14px;font-size:13px;color:#991B1B;margin-bottom:14px;text-align:left;}
+.hint{font-size:12px;color:#9CA3AF;margin-top:18px;}
+@media(max-width:480px){.card{padding:32px 24px;}}
+</style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">Nexvora Systems</div>
+  <div class="icon">🔒</div>
+  <h1>Private Report Access</h1>
+  <p class="sub">This report is by invitation only.<br>Enter your access code to view.</p>
+  <label class="lbl" for="nx-code">Access Code</label>
+  <div id="err-wrap"></div>
+  <input type="password" id="nx-code" placeholder="••••" maxlength="10" inputmode="numeric" autocomplete="off"/>
+  <button id="nx-btn" onclick="check()">Unlock Report &rarr;</button>
+  <p class="hint">🔒 Don't have a code? Contact your Nexvora consultant.</p>
+</div>
+<script>
+(function(){
+  var KEY='nx_report_unlock';
+  if(localStorage.getItem(KEY)==='1'){window.location.href='/r/${id}?unlock=2425';return;}
+  function check(){
+    var val=document.getElementById('nx-code').value.trim();
+    if(val==='2425'){
+      localStorage.setItem(KEY,'1');
+      window.location.href='/r/${id}?unlock=2425';
+    } else {
+      var inp=document.getElementById('nx-code');
+      inp.classList.remove('shake');void inp.offsetWidth;inp.classList.add('shake');
+      document.getElementById('err-wrap').innerHTML='<div class="error">Incorrect code. Please try again.</div>';
+      inp.value='';inp.focus();
+    }
+  }
+  window.check=check;
+  document.getElementById('nx-code').addEventListener('keydown',function(e){if(e.key==='Enter')check();});
+})();
+</script>
+</body>
+</html>`;
+}
+
 function gateHTML(id, errorMsg) {
   const err = errorMsg ? `<div class="error">${errorMsg}</div>` : '';
   return `<!DOCTYPE html>
@@ -182,6 +247,18 @@ module.exports = async function handler(req, res) {
       const storedEmail = (rows[0].email || '').toLowerCase().trim();
       const html = rows[0].html;
 
+      // ── Code-gated reports (all except EMAIL_GATE_ID) ──────────────────────
+      if (id !== EMAIL_GATE_ID) {
+        const unlock = req.query.unlock;
+        if (unlock === '2425') {
+          res.setHeader('Content-Type', 'text/html; charset=utf-8');
+          return res.status(200).send(html);
+        }
+        res.setHeader('Content-Type', 'text/html; charset=utf-8');
+        return res.status(200).send(codeGateHTML(id));
+      }
+
+      // ── Email-gated report (EMAIL_GATE_ID only) ───────────────────────────
       // No email stored = legacy report, serve directly
       if (!storedEmail) {
         res.setHeader('Content-Type', 'text/html; charset=utf-8');
@@ -200,7 +277,7 @@ module.exports = async function handler(req, res) {
         return res.status(403).send(gateHTML(id, 'Session expired. Please enter your email again.'));
       }
 
-      // No token → show gate
+      // No token → show email gate
       res.setHeader('Content-Type', 'text/html; charset=utf-8');
       return res.status(200).send(gateHTML(id));
 
