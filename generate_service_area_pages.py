@@ -551,11 +551,11 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 button.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff;font-weight:700;text-align:center;border-radius:10px;border:none;font-size:14px;cursor:pointer;font-family:inherit;}
 .page-hero{padding:calc(var(--nav-h)+72px) 44px 80px;background:linear-gradient(135deg,var(--navy) 0%,#0a3d36 100%);color:#fff;position:relative;}
 .page-hero::before{content:"";position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% -10%,rgba(13,148,136,0.3),transparent);pointer-events:none;}
-.hero-inner{max-width:900px;margin:0 auto;position:relative;z-index:1;}
+.hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1;text-align:center;}
 .hero-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:rgba(68,202,162,0.8);margin-bottom:14px;}
-.page-hero h1{font-size:clamp(2rem,3.8vw,3rem);font-weight:800;letter-spacing:-0.5px;line-height:1.15;margin-bottom:14px;}
-.page-hero .subtitle{font-size:17px;color:rgba(255,255,255,0.75);line-height:1.75;max-width:680px;margin-bottom:30px;}
-.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;}
+.page-hero h1{font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-0.5px;line-height:1.18;margin-bottom:14px;text-wrap:balance;max-width:760px;margin-left:auto;margin-right:auto;}
+.page-hero .subtitle{font-size:17px;color:rgba(255,255,255,0.75);line-height:1.75;max-width:620px;margin:0 auto 30px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:24px;justify-content:center;}
 .btn-primary{padding:14px 28px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:all .15s;font-family:inherit;}
 .btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);}
 .btn-ghost{padding:13px 26px;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.3);border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;display:inline-block;transition:all .15s;}
