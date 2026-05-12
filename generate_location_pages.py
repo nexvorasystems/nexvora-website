@@ -220,16 +220,16 @@ nav{position:fixed;top:0;left:0;right:0;z-index:200;height:var(--nav-h);display:
 .mobile-svc-list a:last-child{border-bottom:none;}
 .mobile-svc-list a:hover{color:var(--teal);}
 button.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff;font-weight:700;text-align:center;border-radius:10px;border:none;font-size:14px;cursor:pointer;font-family:inherit;}
-.page-hero{padding:calc(var(--nav-h) + 72px) 44px 64px;background:linear-gradient(135deg,var(--navy) 0%,#0a3d36 100%);color:#fff;position:relative;overflow:hidden;}
+.page-hero{padding:calc(var(--nav-h) + 112px) 44px 64px;background:linear-gradient(135deg,var(--navy) 0%,#0a3d36 100%);color:#fff;position:relative;overflow:hidden;}
 .page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% -10%,rgba(13,148,136,0.3),transparent);pointer-events:none;}
 .hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1;text-align:center;}
 .hero-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:rgba(68,202,162,0.8);margin-bottom:14px;}
 .page-hero h1{font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-0.5px;line-height:1.18;margin-bottom:28px;text-wrap:balance;max-width:760px;margin-left:auto;margin-right:auto;}
-.page-hero .subtitle{font-size:17px;color:rgba(255,255,255,0.75);line-height:1.75;max-width:620px;margin:0 auto 14px;}
+.page-hero .subtitle{font-size:17px;color:rgba(255,255,255,0.75);line-height:1.75;max-width:620px;margin:0 auto 6px;}
 .hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
-.btn-primary{padding:14px 28px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:all .15s;font-family:inherit;}
+.btn-primary{padding:11px 22px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:14px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:all .15s;font-family:inherit;}
 .btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);}
-.btn-ghost{padding:13px 26px;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.3);border-radius:10px;font-size:14px;font-weight:600;text-decoration:none;display:inline-block;transition:all .15s;}
+.btn-ghost{padding:10px 20px;background:transparent;color:#fff;border:1.5px solid rgba(255,255,255,0.3);border-radius:10px;font-size:13px;font-weight:600;text-decoration:none;display:inline-block;transition:all .15s;}
 .btn-ghost:hover{border-color:rgba(255,255,255,0.7);background:rgba(255,255,255,0.07);}
 .stats-bar{background:var(--navy);padding:22px 44px;}
 .stats-inner{max-width:900px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:24px;text-align:center;}
@@ -269,7 +269,7 @@ footer{background:var(--navy);padding:56px 44px 32px;color:rgba(250,248,245,0.65
 .footer-col-title{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:rgba(250,248,245,0.3);margin-bottom:14px;}
 .footer-links{display:flex;flex-direction:column;gap:8px;}.footer-links a{font-size:13px;color:rgba(250,248,245,0.5);text-decoration:none;transition:color .15s;}.footer-links a:hover{color:#FAF8F5;}
 .footer-bottom{border-top:1px solid rgba(255,255,255,0.08);padding-top:20px;font-size:12px;color:rgba(250,248,245,0.3);text-align:center;}
-@media(max-width:768px){:root{--nav-h:56px;}nav{padding:0 20px;}.nav-links{display:none;}.nav-cta{display:none;}.hamburger{display:flex;}section,.section-alt{padding:52px 20px;}.page-hero{padding:calc(var(--nav-h)+48px) 20px 48px;}.stats-bar{padding:18px 20px;}.stats-inner{grid-template-columns:repeat(2,1fr);}.cards-grid{grid-template-columns:1fr;}.ind-grid{grid-template-columns:1fr;}.cta-block{padding:40px 24px;}.footer-grid{grid-template-columns:1fr;gap:28px;}footer{padding:40px 20px 24px;}.hero-btns{flex-direction:column;}}'''
+@media(max-width:768px){:root{--nav-h:56px;}nav{padding:0 20px;}.nav-links{display:none;}.nav-cta{display:none;}.hamburger{display:flex;}section,.section-alt{padding:52px 20px;}.page-hero{padding:calc(var(--nav-h)+72px) 20px 52px;}.stats-bar{padding:18px 20px;}.stats-inner{grid-template-columns:repeat(2,1fr);}.cards-grid{grid-template-columns:1fr;}.ind-grid{grid-template-columns:1fr;}.cta-block{padding:40px 24px;}.footer-grid{grid-template-columns:1fr;gap:28px;}footer{padding:40px 20px 24px;}.hero-btns{flex-direction:column;}}'''
 
 def schema(s, service_name, service_type, slug, desc, faqs):
     faq_items = ','.join(['{{"@type":"Question","name":{},"acceptedAnswer":{{"@type":"Answer","text":{}}}}}'.format(json.dumps(q), json.dumps(a)) for q,a in faqs])
