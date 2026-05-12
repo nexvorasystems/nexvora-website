@@ -224,8 +224,8 @@ button.mobile-cta{margin-top:12px;padding:13px;background:var(--teal);color:#fff
 .page-hero::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 60% 55% at 50% -10%,rgba(13,148,136,0.3),transparent);pointer-events:none;}
 .hero-inner{max-width:860px;margin:0 auto;position:relative;z-index:1;text-align:center;}
 .hero-label{font-size:10px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;color:rgba(68,202,162,0.8);margin-bottom:14px;}
-.page-hero h1{font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-0.5px;line-height:1.18;margin-bottom:16px;text-wrap:balance;max-width:760px;margin-left:auto;margin-right:auto;}
-.page-hero .subtitle{font-size:17px;color:rgba(255,255,255,0.75);line-height:1.75;max-width:620px;margin:0 auto 30px;}
+.page-hero h1{font-size:clamp(1.9rem,3.5vw,2.8rem);font-weight:800;letter-spacing:-0.5px;line-height:1.18;margin-bottom:28px;text-wrap:balance;max-width:760px;margin-left:auto;margin-right:auto;}
+.page-hero .subtitle{font-size:17px;color:rgba(255,255,255,0.75);line-height:1.75;max-width:620px;margin:0 auto 14px;}
 .hero-btns{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;}
 .btn-primary{padding:14px 28px;background:var(--teal);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:700;cursor:pointer;text-decoration:none;display:inline-block;transition:all .15s;font-family:inherit;}
 .btn-primary:hover{filter:brightness(1.1);transform:translateY(-1px);}
