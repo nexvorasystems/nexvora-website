@@ -166,14 +166,13 @@ FOOTER = '''<footer>
       <div>
         <p class="footer-col-title">Service Areas</p>
         <div class="footer-links">
-          <a href="/service-areas">All 50 States &amp;rarr;</a>
+          <a href="/service-areas">All 50 States &#8594;</a>
           <a href="/service-areas/florida">Florida</a>
-          <a href="/service-areas/texas">Texas</a>
           <a href="/service-areas/california">California</a>
+          <a href="/service-areas/washington">Washington</a>
           <a href="/service-areas/new-york">New York</a>
-          <a href="/service-areas/georgia">Georgia</a>
-          <a href="/service-areas/north-carolina">North Carolina</a>
           <a href="/service-areas/illinois">Illinois</a>
+          <a href="/service-areas/texas">Texas</a>
         </div>
       </div>
     </div>
