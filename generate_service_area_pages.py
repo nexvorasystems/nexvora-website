@@ -677,7 +677,6 @@ def gen_hub():
     )
     html += f'''<div class="page-hero">
   <div class="hero-inner">
-    <div class="breadcrumb"><a href="/">Home</a><span>›</span>Service Areas</div>
     <div class="hero-label">Nexvora Systems — Nationwide Consulting</div>
     <h1>Business Operations &amp; AI Consulting Across All 50 States</h1>
     <p class="subtitle">We help service businesses build stronger operations, automate workflows, and scale revenue — from small rural markets to major metro areas. Select your state to explore our local coverage.</p>
@@ -763,7 +762,6 @@ def gen_state(loc):
     )
     html += f'''<div class="page-hero">
   <div class="hero-inner">
-    <div class="breadcrumb"><a href="/">Home</a><span>›</span><a href="/service-areas">Service Areas</a><span>›</span>{state}</div>
     <div class="hero-label">Business Consulting — {state} ({abbr})</div>
     <h1>Operations &amp; AI Consulting for {state} Businesses</h1>
     <p class="subtitle">{state} is home to {biz} small businesses contributing to a {gdp} economy. Whether you're in {", ".join(cities_preview[:3])}, or a smaller community across the state — Nexvora Systems helps service businesses build the systems, processes, and automation needed to grow without adding chaos.</p>
@@ -859,7 +857,6 @@ def gen_county(loc, county):
     )
     html += f'''<div class="page-hero">
   <div class="hero-inner">
-    <div class="breadcrumb"><a href="/">Home</a><span>›</span><a href="/service-areas">Service Areas</a><span>›</span><a href="/service-areas/{slug}">{state}</a><span>›</span>{cname}</div>
     <div class="hero-label">Service Area — {cname}, {abbr}</div>
     <h1>Business Consulting in {cname}, {state}</h1>
     <p class="subtitle">We help service businesses in {cname} streamline operations, eliminate owner dependency, and automate the manual work that drains time and money. Serving {top_cities}, and all communities throughout {cname}.</p>
