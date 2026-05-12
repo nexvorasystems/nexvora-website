@@ -62,7 +62,7 @@ NAV = '''<nav>
       <li><a href="/">Home</a></li>
       <li><a href="/about">About</a></li>
       <li class="nav-has-dropdown">
-        <a href="/services" class="active">Services</a>
+        <a href="/services">Services</a>
         <div class="nav-dropdown">
           <div class="nav-dd-inner">
             <div class="nav-dd-left">
