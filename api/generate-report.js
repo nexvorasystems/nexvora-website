@@ -785,7 +785,7 @@ footer strong{color:#44CAA2;}
 
 async function saveReport(reportId, clientEmail, html, meta, assessment, upsert = false) {
   const url = process.env.SUPABASE_URL;
-  const key = process.env.SUPABASE_SERVICE_KEY;
+  const key = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY);
   if (!url || !key) return;
   try {
     const payload = { id: reportId, email: clientEmail, html, meta, created_at: new Date().toISOString() };
@@ -803,7 +803,7 @@ async function saveReport(reportId, clientEmail, html, meta, assessment, upsert 
 
 async function createPortalAccount(email, name, company, city, state, reportId, assessment) {
   const supaUrl = process.env.SUPABASE_URL;
-  const supaKey = process.env.SUPABASE_SERVICE_KEY;
+  const supaKey = (process.env.SUPABASE_SERVICE_KEY || process.env.SUPABASE_SERVICE_ROLE_KEY);
   if (!supaUrl || !supaKey) return;
 
   const authHeaders = { 'apikey': supaKey, 'Authorization': `Bearer ${supaKey}`, 'Content-Type': 'application/json' };
