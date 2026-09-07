@@ -172,9 +172,23 @@ No git commit needed. Vercel CLI deploys directly from local files.
 
 ## Existing Reports
 
-| Report ID | Client | URL | Status |
-|-----------|--------|-----|--------|
-| UST-2026-001 | U.S. Tax IQ (ustaxiq.com) | /reports/ustaxiq-2026-001 | Live |
+| Report ID | Client | URL | Gate | Status |
+|-----------|--------|-----|------|-------|
+| UST-2026-001 | U.S. Tax IQ (ustaxiq.com) | /reports/ustaxiq-2026-001 | Email | Live |
+| UST-2026-002 | U.S. Tax IQ — Operations Audit | /reports/ustaxiq-2026-002 | Password | Live |
+
+### UST-2026-002 notes
+- **Password gate**, not email. Password is SHA-256 hashed in the page (`PW_HASH`).
+  To change it: `python3 -c "import hashlib;print(hashlib.sha256(b'NEW-PW').hexdigest())"`
+  and replace the hash. Auth stored in `sessionStorage` under `nxv_ust2026002_auth`.
+- Requires a **secure context** (https) — `crypto.subtle` is unavailable over plain
+  file:// or http, and the gate shows a message telling the reader to use the https URL.
+- The internal version of this report (with the sales-handling do/don't section) is
+  **not** on the website. It lives only in the Claude artifact and in
+  `USTAXIQ/analysis/`. Never publish that section to a client URL.
+- This report is an **operations audit**, not an SEO audit, so it does not follow the
+  16-section website-audit structure above. It follows Nexvora's 10-section Operations
+  Audit intake framework.
 
 ---
 

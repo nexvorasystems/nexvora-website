@@ -7,3 +7,9 @@ node_modules/
 .superpowers/
 debug-*.txt
 .env*.local
+
+# This repo is PUBLIC — anything under reports/ is readable unauthenticated via
+# raw.githubusercontent.com, which bypasses any on-page gate.
+# ustaxiq-2026-002.html is safe to commit ONLY because its body is AES-256-GCM
+# ciphertext (see scripts note in USTAXIQ/analysis/build-report.py). Never commit
+# a report whose content is in plaintext.
