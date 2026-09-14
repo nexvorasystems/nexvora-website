@@ -175,7 +175,8 @@ No git commit needed. Vercel CLI deploys directly from local files.
 | Report ID | Client | URL | Gate | Status |
 |-----------|--------|-----|------|-------|
 | UST-2026-001 | U.S. Tax IQ (ustaxiq.com) | /reports/ustaxiq-2026-001 | Email | Live |
-| UST-2026-002 | U.S. Tax IQ — Operations Audit | /reports/ustaxiq-2026-002 | Password | Live |
+| UST-2026-002 | U.S. Tax IQ — Operations Audit (client) | /reports/ustaxiq-2026-002 | Password · encrypted | Live |
+| UST-2026-002-int | U.S. Tax IQ — Operations Audit (**INTERNAL**, Nexvora only) | /reports/ustaxiq-2026-002-internal | Password · encrypted · DO NOT SHARE | Live |
 
 ### UST-2026-002 notes
 - **Password gate**, not email. Password is SHA-256 hashed in the page (`PW_HASH`).
@@ -241,3 +242,11 @@ Use these categories and severity levels consistently:
 
 Always end roadmap section with "Target Goals" table (not "Projected Results").
 Always include disclaimer about results depending on market conditions.
+
+
+### UST-2026-002 — encryption model (applies to both builds)
+The report body is AES-256-GCM ciphertext embedded in the page; the key is derived from the
+password with PBKDF2-SHA256 (250k iterations). There is **no plaintext and no password hash**
+in the file — a wrong password simply fails to decrypt. That is why both files are safe in this
+public repo and survive the daily bot deploy. Passwords live only in
+`USTAXIQ/analysis/build-report.py` (BUILDS dict). To rotate: change it there, rebuild, commit.
