@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 /**
  * Nexvora Systems — Daily Blog Cluster Generator v2
- * Claude Sonnet writes → GPT-4o SEO review → Flux 1.1 Pro images → Notion memory → publish
+ * OpenAI writes → OpenAI SEO review → Flux 1.1 Pro images → Notion memory → publish
  * Runs via GitHub Actions daily at 6am PST
  *
- * Output: 1 pillar article + 3 support articles, one region per day
+ * Output: 1 pillar article + 1 support article, one region per day
  * Regions: Florida (days 1-13) | Southern California (days 14-22) | Washington (days 23-31)
  */
 
@@ -15,15 +15,19 @@ const fs    = require('fs');
 const path  = require('path');
 
 // ── ENVIRONMENT ───────────────────────────────────────────────────────────────
-const ANTHROPIC_API_KEY     = process.env.ANTHROPIC_API_KEY;
-const OPENAI_API_KEY        = process.env.OPENAI_API_KEY;
+const { DEFAULT_MODEL, generateText } = require('./lib/openai-text');
+const WRITER_MODEL = process.env.OPENAI_WRITER_MODEL || DEFAULT_MODEL;
+const REVIEW_MODEL = process.env.OPENAI_REVIEW_MODEL || DEFAULT_MODEL;
 const REPLICATE_API_KEY     = process.env.REPLICATE_API_KEY;
 const NOTION_API_KEY        = process.env.NOTION_API_KEY;
 const NOTION_PARENT_PAGE_ID = (process.env.NOTION_PARENT_PAGE_ID || '').replace(/-/g, '');
 
-const REQUIRED = ['ANTHROPIC_API_KEY', 'OPENAI_API_KEY', 'REPLICATE_API_KEY', 'NOTION_API_KEY', 'NOTION_PARENT_PAGE_ID'];
-const missing  = REQUIRED.filter(k => !process.env[k]);
-if (missing.length) { console.error('Missing secrets:', missing.join(', ')); process.exit(1); }
+function validateEnvironment(dryRun) {
+  const required = dryRun ? ['OPENAI_API_KEY'] :
+    ['OPENAI_API_KEY', 'REPLICATE_API_KEY', 'NOTION_API_KEY', 'NOTION_PARENT_PAGE_ID'];
+  const missing = required.filter(key => !process.env[key]);
+  if (missing.length) throw new Error('Missing secrets: ' + missing.join(', '));
+}
 
 // ── DATE ──────────────────────────────────────────────────────────────────────
 const now        = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Los_Angeles' }));
@@ -132,54 +136,34 @@ function httpReq(options, body) {
   });
 }
 
-// ── CLAUDE SONNET ─────────────────────────────────────────────────────────────
-async function callClaude(prompt, maxTokens = 8000) {
-  console.log('  [Claude] Sending request...');
-  const body = JSON.stringify({
-    model: 'claude-sonnet-4-6',
-    max_tokens: maxTokens,
-    messages: [{ role: 'user', content: prompt }]
+// ── OPENAI DRAFT AND SEO REVIEW ───────────────────────────────────────────────
+async function writeArticle(prompt, articleType, minWords, maxTokens, reviewTokens) {
+  console.log(`  [OpenAI] Drafting with ${WRITER_MODEL}...`);
+  const draft = await generateText(prompt, { model: WRITER_MODEL, maxOutputTokens: maxTokens });
+  console.log(`  [OpenAI] SEO review with ${REVIEW_MODEL}...`);
+  // A failed review must not silently publish an unchecked or truncated draft.
+  const reviewed = await generateText(buildSEOReviewPrompt(draft, articleType, minWords), {
+    model: REVIEW_MODEL, maxOutputTokens: reviewTokens,
   });
-  const { status, body: data } = await httpReq({
-    hostname: 'api.anthropic.com',
-    path: '/v1/messages',
-    method: 'POST',
-    headers: {
-      'x-api-key': ANTHROPIC_API_KEY,
-      'anthropic-version': '2023-06-01',
-      'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(body)
-    }
-  }, body);
-  if (status !== 200) throw new Error(`Claude ${status}: ${JSON.stringify(data).slice(0,300)}`);
-  const text = data.content?.[0]?.text || '';
-  console.log(`  [Claude] Response: ${text.split(/\s+/).length} words`);
-  return text;
+  validateArticle(reviewed, articleType, minWords);
+  return reviewed;
 }
 
-// ── GPT-4o SEO REVIEW ─────────────────────────────────────────────────────────
-async function callGPT(prompt, maxTokens = 6000) {
-  console.log('  [GPT-4o] Sending SEO review...');
-  const body = JSON.stringify({
-    model: 'gpt-4o',
-    max_tokens: maxTokens,
-    messages: [{ role: 'user', content: prompt }],
-    temperature: 0.3
-  });
-  const { status, body: data } = await httpReq({
-    hostname: 'api.openai.com',
-    path: '/v1/chat/completions',
-    method: 'POST',
-    headers: {
-      'Authorization': `Bearer ${OPENAI_API_KEY}`,
-      'Content-Type': 'application/json',
-      'Content-Length': Buffer.byteLength(body)
-    }
-  }, body);
-  if (status !== 200) throw new Error(`GPT ${status}: ${JSON.stringify(data).slice(0,300)}`);
-  const text = data.choices?.[0]?.message?.content || '';
-  console.log(`  [GPT-4o] Reviewed: ${text.split(/\s+/).length} words`);
-  return text;
+function validateArticle(raw, articleType, minWords) {
+  const meta = parseMeta(raw);
+  const bodyStart = raw.indexOf('## ');
+  const body = bodyStart >= 0 ? raw.slice(bodyStart) : '';
+  const wordCount = body.trim().split(/\s+/).filter(Boolean).length;
+  for (const key of ['title', 'metaTitle', 'metaDescription', 'slug', 'primaryKeyword']) {
+    if (!meta[key]) throw new Error(`Missing article field: ${key}`);
+  }
+  if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(meta.slug)) throw new Error('Invalid article slug');
+  if (meta.articleType.toLowerCase() !== articleType.toLowerCase()) throw new Error('Wrong article type');
+  if (wordCount < minWords) throw new Error(`Article too short: ${wordCount} words; need ${minWords}`);
+  if (meta.metaTitle.length >= 60 || meta.metaDescription.length >= 155) throw new Error('SEO metadata exceeds requested length');
+  if (!body.includes('**Q:**') || !body.includes('**A:**')) throw new Error('Article is missing FAQ content');
+  if (!body.includes('https://nexvorasystems.us/assessment.html')) throw new Error('Article is missing assessment link');
+  return { meta, wordCount };
 }
 
 // ── FLUX 1.1 PRO via REPLICATE ────────────────────────────────────────────────
@@ -628,7 +612,7 @@ function esc(s) {
 
 // ── PARSE META FROM AI OUTPUT ─────────────────────────────────────────────────
 function parseMeta(raw) {
-  const get = key => { const m = raw.match(new RegExp(key + ':\\s*(.+)')); return m ? m[1].trim() : ''; };
+  const get = key => { const m = raw.match(new RegExp('^' + key + ':\\s*(.+)', 'm')); return m ? m[1].trim() : ''; };
   return {
     title:             get('Title'),
     metaTitle:         get('Meta Title') || get('Title'),
@@ -862,10 +846,29 @@ function updateSitemap(entries) {
 }
 
 // ── MAIN ──────────────────────────────────────────────────────────────────────
-(async () => {
+async function main({ previewDir } = {}) {
+  const dryRun = process.argv.includes('--dry-run') || process.env.BLOG_DRY_RUN === 'true';
+  validateEnvironment(dryRun);
   console.log('\n=== Nexvora Blog Generator v2 ===');
   console.log(`Date: ${dateStr} | Region: ${region.name} | Topic: ${topic}`);
   console.log(`Pillar author: ${pillarFounder}\n`);
+
+  if (dryRun) {
+    const outputDir = previewDir || path.join(__dirname, '..', '.preview', dateStr);
+    const usedKeywords = new Set();
+    const pillar = await writeArticle(buildPillarPrompt(region.cities, usedKeywords), 'pillar', 3200, 12000, 12000);
+    const pillarMeta = parseMeta(pillar);
+    usedKeywords.add(pillarMeta.primaryKeyword.toLowerCase());
+    const support = await writeArticle(buildSupportPrompt(region.cities[1], pillarMeta.title, pillarMeta.slug, usedKeywords, 0), 'support', 1400, 6000, 6000);
+    if (!support.includes('https://nexvorasystems.us/posts/' + pillarMeta.slug + '.html')) {
+      throw new Error('Support article is missing its pillar link');
+    }
+    fs.mkdirSync(outputDir, { recursive: true });
+    fs.writeFileSync(path.join(outputDir, 'pillar.md'), pillar);
+    fs.writeFileSync(path.join(outputDir, 'support.md'), support);
+    console.log('Dry run passed: two article previews saved. No Notion, images, or publishing calls.');
+    return;
+  }
 
   // 1. Notion setup
   console.log('[Step 1] Setting up Notion database...');
@@ -894,22 +897,8 @@ function updateSitemap(entries) {
   const notionPages  = [];
 
   // ── PILLAR ────────────────────────────────────────────────────────────────
-  console.log('\n[Step 4] Writing pillar article with Claude Sonnet...');
-  let pillarRaw;
-  try {
-    pillarRaw = await callClaude(buildPillarPrompt(region.cities, usedKeywords), 12000);
-  } catch(err) {
-    console.error('Claude pillar error:', err.message);
-    process.exit(1);
-  }
-  console.log(`  Pillar word count: ${pillarRaw.split(/\s+/).length}`);
-
-  console.log('[Step 5] GPT-4o SEO review of pillar...');
-  try {
-    pillarRaw = await callGPT(buildSEOReviewPrompt(pillarRaw, 'pillar', 3200), 8000);
-  } catch(err) {
-    console.warn('GPT review failed, using Claude output:', err.message);
-  }
+  console.log('\n[Step 4] Writing and reviewing pillar article with OpenAI...');
+  const pillarRaw = await writeArticle(buildPillarPrompt(region.cities, usedKeywords), 'pillar', 3200, 12000, 12000);
 
   const pillarMeta = parseMeta(pillarRaw);
   if (!pillarMeta.title) {
@@ -954,20 +943,12 @@ function updateSitemap(entries) {
     const city = supportCities[i];
     console.log(`\n[Step 7.${i+1}] Writing support article for ${city}...`);
 
-    let suppRaw;
-    try {
-      suppRaw = await callClaude(buildSupportPrompt(city, pillarMeta.title, pillarMeta.slug, usedKeywords, i), 6000);
-    } catch(err) {
-      console.error(`Claude support ${i+1} error:`, err.message);
-      continue;
-    }
-    console.log(`  Support word count: ${suppRaw.split(/\s+/).length}`);
-
-    console.log(`  GPT-4o SEO review for ${city}...`);
-    try {
-      suppRaw = await callGPT(buildSEOReviewPrompt(suppRaw, 'support', 1400), 4000);
-    } catch(err) {
-      console.warn('GPT review failed, using Claude output:', err.message);
+    const suppRaw = await writeArticle(
+      buildSupportPrompt(city, pillarMeta.title, pillarMeta.slug, usedKeywords, i),
+      'support', 1400, 6000, 6000
+    );
+    if (!suppRaw.includes('https://nexvorasystems.us/posts/' + pillarMeta.slug + '.html')) {
+      throw new Error('Support article is missing its pillar link');
     }
 
     const suppMeta = parseMeta(suppRaw);
@@ -1039,7 +1020,12 @@ function updateSitemap(entries) {
 
   console.log(`\n=== Done: ${written.length} article(s) published ===`);
   written.forEach(a => console.log(`  [${a.articleType}] ${a.title}`));
-})().catch(err => {
-  console.error('Fatal error:', err);
-  process.exit(1);
-});
+}
+
+module.exports = { buildPillarPrompt, buildSupportPrompt, buildSEOReviewPrompt, parseMeta, validateArticle, validateEnvironment, writeArticle, main };
+if (require.main === module) {
+  main().catch(err => {
+    console.error('Fatal error:', err.message);
+    process.exitCode = 1;
+  });
+}
