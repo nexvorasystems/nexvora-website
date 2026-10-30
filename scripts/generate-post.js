@@ -138,13 +138,25 @@ function httpReq(options, body) {
 
 // ── OPENAI DRAFT AND SEO REVIEW ───────────────────────────────────────────────
 async function writeArticle(prompt, articleType, minWords, maxTokens, reviewTokens) {
+  const maxWords = articleType === 'pillar' ? 4000 : 1800;
+  const lengthRule = `\nLENGTH CONTROL: Aim for ${minWords + 150} words in the article body. Stay between ${minWords} and ${maxWords} words. Budget each section to fit the total; do not exceed the maximum.\n`;
+  async function requestComplete(text, model, limit) {
+    for (let attempt = 0; attempt < 2; attempt++) {
+      try {
+        return await generateText(text + lengthRule + (attempt ? '\nThe previous response exceeded the output limit. Start again and keep every section within its word budget.' : ''), {
+          model, maxOutputTokens: limit,
+        });
+      } catch (error) {
+        if (error.code !== 'incomplete_output' || attempt === 1) throw error;
+        console.warn('  [OpenAI] Output limit reached; retrying once with a tighter length instruction.');
+      }
+    }
+  }
   console.log(`  [OpenAI] Drafting with ${WRITER_MODEL}...`);
-  const draft = await generateText(prompt, { model: WRITER_MODEL, maxOutputTokens: maxTokens });
+  const draft = await requestComplete(prompt, WRITER_MODEL, maxTokens);
   console.log(`  [OpenAI] SEO review with ${REVIEW_MODEL}...`);
   // A failed review must not silently publish an unchecked or truncated draft.
-  const reviewed = await generateText(buildSEOReviewPrompt(draft, articleType, minWords), {
-    model: REVIEW_MODEL, maxOutputTokens: reviewTokens,
-  });
+  const reviewed = await requestComplete(buildSEOReviewPrompt(draft, articleType, minWords), REVIEW_MODEL, reviewTokens);
   validateArticle(reviewed, articleType, minWords);
   return reviewed;
 }

@@ -33,6 +33,8 @@ quality has been reviewed. To publish manually on main, uncheck the dry-run inpu
 Failures in authentication, billing, article review, minimum length, metadata, or
 completion status stop publishing. Temporary server errors and explicit rate
 limits have at most two retries. Token usage is logged per successful API call.
+Each drafting or review stage can retry an output-limit truncation once, using a
+tighter word budget. Repeated truncation fails the job instead of publishing.
 The normal Notion history, Flux images, site formatting, and schedule are retained.
 The separate AI news roundup already uses OpenAI and is outside this migration.
 

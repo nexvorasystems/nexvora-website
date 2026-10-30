@@ -50,7 +50,9 @@ async function generateText(prompt, {
       throw error;
     }
     if (data.status !== 'completed') {
-      throw new Error(`OpenAI response ${data.status || 'unknown'}: ${data.incomplete_details?.reason || 'not complete'}; article rejected`);
+      const error = new Error(`OpenAI response ${data.status || 'unknown'}: ${data.incomplete_details?.reason || 'not complete'}; article rejected`);
+      error.code = data.incomplete_details?.reason === 'max_output_tokens' ? 'incomplete_output' : 'response_incomplete';
+      throw error;
     }
     const messages = (data.output || []).filter(item => item.type === 'message');
     if (messages.some(item => item.content?.some(part => part.type === 'refusal'))) {

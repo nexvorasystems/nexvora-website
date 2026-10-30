@@ -136,3 +136,42 @@ test('preview runs both article passes without publishing integrations', async (
   }
 });
 
+
+test('article generation retries truncated output once, then runs its review', async () => {
+  const oldFetch = globalThis.fetch;
+  const oldKey = process.env.OPENAI_API_KEY;
+  const calls = [];
+  try {
+    process.env.OPENAI_API_KEY = 'test-secret';
+    globalThis.fetch = mockFetch([
+      [200, { status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' } }],
+      [200, completed(article)],
+      [200, completed(article)],
+    ], calls);
+    const result = await require('../generate-post').writeArticle('Write a pillar.', 'pillar', 3200, 12000, 12000);
+    assert.equal(result, article.trim());
+    assert.equal(calls.length, 3);
+    assert.match(calls[1].body.input, /previous response exceeded the output limit/);
+  } finally {
+    globalThis.fetch = oldFetch;
+    if (oldKey === undefined) delete process.env.OPENAI_API_KEY;
+    else process.env.OPENAI_API_KEY = oldKey;
+  }
+});
+
+test('article generation stops after a repeated truncation', async () => {
+  const oldFetch = globalThis.fetch;
+  const oldKey = process.env.OPENAI_API_KEY;
+  const calls = [];
+  try {
+    process.env.OPENAI_API_KEY = 'test-secret';
+    globalThis.fetch = mockFetch(Array.from({ length: 2 }, () =>
+      [200, { status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' } }]), calls);
+    await assert.rejects(require('../generate-post').writeArticle('Write a pillar.', 'pillar', 3200, 12000, 12000), /article rejected/);
+    assert.equal(calls.length, 2);
+  } finally {
+    globalThis.fetch = oldFetch;
+    if (oldKey === undefined) delete process.env.OPENAI_API_KEY;
+    else process.env.OPENAI_API_KEY = oldKey;
+  }
+});
