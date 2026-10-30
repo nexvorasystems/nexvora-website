@@ -156,9 +156,25 @@ async function writeArticle(prompt, articleType, minWords, maxTokens, reviewToke
   const draft = await requestComplete(prompt, WRITER_MODEL, maxTokens);
   console.log(`  [OpenAI] SEO review with ${REVIEW_MODEL}...`);
   // A failed review must not silently publish an unchecked or truncated draft.
-  const reviewed = await requestComplete(buildSEOReviewPrompt(draft, articleType, minWords), REVIEW_MODEL, reviewTokens);
+  const reviewed = normalizeSEOMetadata(await requestComplete(
+    buildSEOReviewPrompt(draft, articleType, minWords), REVIEW_MODEL, reviewTokens
+  ));
   validateArticle(reviewed, articleType, minWords);
   return reviewed;
+}
+
+function normalizeSEOMetadata(raw) {
+  for (const [field, maxLength] of [['Meta Title', 59], ['Meta Description', 154]]) {
+    raw = raw.replace(new RegExp('^' + field + ':([^\\r\\n]*)', 'm'), (_, value) => {
+      const text = value.trim();
+      if (text.length <= maxLength) return field + ': ' + text;
+      const prefix = text.slice(0, maxLength - 1);
+      const boundary = prefix.lastIndexOf(' ');
+      const clipped = boundary > maxLength / 2 ? prefix.slice(0, boundary) : prefix;
+      return field + ': ' + clipped.trimEnd() + '…';
+    });
+  }
+  return raw;
 }
 
 function validateArticle(raw, articleType, minWords) {
@@ -1034,7 +1050,7 @@ async function main({ previewDir } = {}) {
   written.forEach(a => console.log(`  [${a.articleType}] ${a.title}`));
 }
 
-module.exports = { buildPillarPrompt, buildSupportPrompt, buildSEOReviewPrompt, parseMeta, validateArticle, validateEnvironment, writeArticle, main };
+module.exports = { buildPillarPrompt, buildSupportPrompt, buildSEOReviewPrompt, parseMeta, normalizeSEOMetadata, validateArticle, validateEnvironment, writeArticle, main };
 if (require.main === module) {
   main().catch(err => {
     console.error('Fatal error:', err.message);

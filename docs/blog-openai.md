@@ -35,6 +35,8 @@ completion status stop publishing. Temporary server errors and explicit rate
 limits have at most two retries. Token usage is logged per successful API call.
 Each drafting or review stage can retry an output-limit truncation once, using a
 tighter word budget. Repeated truncation fails the job instead of publishing.
+Overlong SEO titles and descriptions are shortened at word boundaries before
+validation; the article body is preserved.
 The normal Notion history, Flux images, site formatting, and schedule are retained.
 The separate AI news roundup already uses OpenAI and is outside this migration.
 

@@ -175,3 +175,17 @@ test('article generation stops after a repeated truncation', async () => {
     else process.env.OPENAI_API_KEY = oldKey;
   }
 });
+
+test('SEO metadata is capped at word boundaries without changing the article body', () => {
+  const { normalizeSEOMetadata } = require('../generate-post');
+  const raw = article
+    .replace('Meta Title: Local Business Marketing', 'Meta Title: ' + 'Local business marketing systems '.repeat(4))
+    .replace('Meta Description: A practical guide to improving local business marketing.', 'Meta Description: ' + 'Practical guidance for local business owners. '.repeat(8));
+  const result = normalizeSEOMetadata(raw);
+  const meta = parseMeta(result);
+  assert.ok(meta.metaTitle.length < 60);
+  assert.ok(meta.metaDescription.length < 155);
+  assert.equal(result.slice(result.indexOf('## Introduction')), raw.slice(raw.indexOf('## Introduction')));
+  assert.equal(normalizeSEOMetadata(article), article);
+  validateArticle(result, 'pillar', 3200);
+});
