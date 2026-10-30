@@ -152,6 +152,7 @@ test('article generation retries truncated output once, then runs its review', a
     assert.equal(result, article.trim());
     assert.equal(calls.length, 3);
     assert.match(calls[1].body.input, /previous response exceeded the output limit/);
+    assert.deepEqual(calls.map(call => call.body.max_output_tokens), [12000, 18000, 12000]);
   } finally {
     globalThis.fetch = oldFetch;
     if (oldKey === undefined) delete process.env.OPENAI_API_KEY;
@@ -169,6 +170,7 @@ test('article generation stops after a repeated truncation', async () => {
       [200, { status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' } }]), calls);
     await assert.rejects(require('../generate-post').writeArticle('Write a pillar.', 'pillar', 3200, 12000, 12000), /article rejected/);
     assert.equal(calls.length, 2);
+    assert.deepEqual(calls.map(call => call.body.max_output_tokens), [12000, 18000]);
   } finally {
     globalThis.fetch = oldFetch;
     if (oldKey === undefined) delete process.env.OPENAI_API_KEY;
@@ -188,4 +190,57 @@ test('SEO metadata is capped at word boundaries without changing the article bod
   assert.equal(result.slice(result.indexOf('## Introduction')), raw.slice(raw.indexOf('## Introduction')));
   assert.equal(normalizeSEOMetadata(article), article);
   validateArticle(result, 'pillar', 3200);
+});
+
+test('production support truncation causes no image, article-file, or Notion article write', async () => {
+  const fs = require('node:fs');
+  const https = require('node:https');
+  const { EventEmitter } = require('node:events');
+  const originals = { fetch: globalThis.fetch, request: https.request, write: fs.writeFileSync, mkdir: fs.mkdirSync };
+  const keys = ['OPENAI_API_KEY', 'NOTION_API_KEY', 'NOTION_PARENT_PAGE_ID', 'REPLICATE_API_KEY', 'BLOG_DRY_RUN'];
+  const oldEnv = Object.fromEntries(keys.map(key => [key, process.env[key]]));
+  const calls = [];
+  const network = [];
+  const writes = [];
+  try {
+    for (const key of keys) process.env[key] = key === 'BLOG_DRY_RUN' ? 'false' : 'test-secret';
+    globalThis.fetch = mockFetch([
+      [200, completed(article)], [200, completed(article)],
+      [200, { status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' } }],
+      [200, { status: 'incomplete', incomplete_details: { reason: 'max_output_tokens' } }],
+    ], calls);
+    https.request = (options, callback) => {
+      network.push({ host: options.hostname, path: options.path });
+      assert.equal(options.hostname, 'api.notion.com');
+      const data = options.path === '/v1/search'
+        ? { results: [{ object: 'database', id: 'test-db', title: [{ plain_text: 'Nexvora Blog History' }] }] }
+        : { results: [] };
+      assert.ok(['/v1/search', '/v1/databases/test-db/query'].includes(options.path), 'Only Notion history reads are allowed before all articles pass');
+      const request = new EventEmitter();
+      request.write = () => {};
+      request.end = () => queueMicrotask(() => {
+        const response = new EventEmitter();
+        response.statusCode = 200;
+        callback(response);
+        response.emit('data', JSON.stringify(data));
+        response.emit('end');
+      });
+      return request;
+    };
+    fs.writeFileSync = (...args) => { writes.push(args[0]); };
+    fs.mkdirSync = (...args) => { writes.push(args[0]); };
+    await assert.rejects(require('../generate-post').main(), /max_output_tokens/);
+    assert.equal(network.length, 2);
+    assert.deepEqual(writes, []);
+    assert.deepEqual(calls.map(call => call.body.max_output_tokens), [12000, 12000, 12000, 18000]);
+  } finally {
+    globalThis.fetch = originals.fetch;
+    https.request = originals.request;
+    fs.writeFileSync = originals.write;
+    fs.mkdirSync = originals.mkdir;
+    for (const [key, value] of Object.entries(oldEnv)) {
+      if (value === undefined) delete process.env[key];
+      else process.env[key] = value;
+    }
+  }
 });

@@ -144,11 +144,11 @@ async function writeArticle(prompt, articleType, minWords, maxTokens, reviewToke
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
         return await generateText(text + lengthRule + (attempt ? '\nThe previous response exceeded the output limit. Start again and keep every section within its word budget.' : ''), {
-          model, maxOutputTokens: limit,
+          model, maxOutputTokens: attempt ? Math.min(limit * 1.5, 18000) : limit,
         });
       } catch (error) {
         if (error.code !== 'incomplete_output' || attempt === 1) throw error;
-        console.warn('  [OpenAI] Output limit reached; retrying once with a tighter length instruction.');
+        console.warn('  [OpenAI] Output limit reached; retrying once with more output room and a tighter length instruction.');
       }
     }
   }
@@ -459,33 +459,33 @@ Secondary Keywords: [5 comma-separated related phrases]
 Article Type: Pillar
 Estimated Reading Time: [X min read]
 
-WORD COUNT REQUIREMENT: This article MUST be between 3,200 and 4,000 words. Count carefully. Do not stop writing until you reach 3,200 words minimum. Every section below has a minimum word count — you must hit it.
+WORD COUNT REQUIREMENT: This article MUST be between 3,200 and 4,000 words. Count carefully. Do not stop writing until you reach 3,200 words minimum. Section word counts below are targets. Keep the complete article within the total word range; do not repeat sections.
 
-Write the full article using EXACTLY these sections in this order. Each section must meet its minimum word count:
+Write the full article using EXACTLY these sections in this order. Use these section word budgets:
 
-## Introduction (minimum 200 words)
+## Introduction (target 200 words)
 Open with a direct, specific statement about the problem ${topic} causes for small business owners in ${region.name}. Name 2-3 cities. Explain who this article is for and exactly what they will learn. No fluff. No "in today's world." No "are you struggling."
 
-## The Real Problem: Why ${topic} Breaks Down for ${region.name} Small Businesses (minimum 400 words)
+## The Real Problem: Why ${topic} Breaks Down for ${region.name} Small Businesses (target 400 words)
 Explain in detail why small businesses in ${region.name} specifically struggle with ${topic}. Name real business types: HVAC companies, cleaning services, plumbing contractors, medical offices, law firms, real estate teams, auto shops. Name cities: ${cityList}. Give 3-4 specific scenarios showing exactly how the problem plays out. Use numbers where possible.
 
-## What This Is Actually Costing You Every Month (minimum 350 words)
+## What This Is Actually Costing You Every Month (target 350 words)
 Break down the real financial and operational cost of NOT having good ${topic} systems. Give specific dollar estimates. Examples: "A Tampa HVAC company with 8 technicians losing 3 leads per week at an average job value of $800 is losing $115,200 per year." Do the math. Make it real. Include at least 2 blockquotes in this format:
 > **The data:** [specific stat or calculation]
 
-## The ${topic} Systems That Actually Work for Small Businesses (minimum 500 words)
+## The ${topic} Systems That Actually Work for Small Businesses (target 500 words)
 List and explain 4-6 specific tools, systems, or processes that fix the problem. For each one: what it is, how it works, what type of business it fits, what result it produces. Be specific — name actual software tools where relevant (HubSpot, GoHighLevel, QuickBooks, Jobber, ServiceTitan, etc.). Do not be vague.
 
-## Step-by-Step: How to Build This in Your Business (minimum 500 words)
+## Step-by-Step: How to Build This in Your Business (target 500 words)
 Write a detailed numbered implementation plan. At least 6 steps. Each step must explain: what to do, how to do it, how long it takes, what it costs, and what result to expect. This is the most practical section — write it like instructions a business owner can follow starting Monday morning.
 
-## Real Results: What Happens When You Get This Right (minimum 300 words)
+## Real Results: What Happens When You Get This Right (target 300 words)
 Give 3 realistic before/after scenarios for different business types in ${region.name}. Each scenario: business type, city, problem they had, what they implemented, specific result (time saved, revenue gained, leads recovered). Make the numbers believable and specific.
 
-## Common Mistakes ${region.name} Business Owners Make With ${topic} (minimum 250 words)
+## Common Mistakes ${region.name} Business Owners Make With ${topic} (target 250 words)
 List 4-5 specific mistakes with explanation of why each one happens and what it costs. Be direct. No softening language.
 
-## How Nexvora Systems Helps ${region.name} Businesses (minimum 200 words)
+## How Nexvora Systems Helps ${region.name} Businesses (target 200 words)
 Explain specifically what Nexvora does, how the process works, what business owners get. Mention ${pillarFounder} once naturally. End with CTA: [Start Your Free Business Assessment](https://nexvorasystems.us/assessment.html)
 
 ## Related Articles
@@ -494,7 +494,7 @@ Include exactly 3 internal links in this format — these will be replaced with 
 - [SUPPORT_LINK_2]
 - [SUPPORT_LINK_3]
 
-## Frequently Asked Questions (minimum 300 words total across all answers)
+## Frequently Asked Questions (target 300 words total across all answers)
 Write 6 FAQ questions that match real Google searches about ${topic} for small businesses. Format EXACTLY like this — one Q then one A, blank line between each pair:
 
 **Q:** Question here?
@@ -503,7 +503,7 @@ Write 6 FAQ questions that match real Google searches about ${topic} for small b
 **Q:** Next question?
 **A:** Detailed answer here.
 
-## Final Thoughts (minimum 150 words)
+## Final Thoughts (target 150 words)
 Summarize the key action items. Reinforce urgency without being dramatic. End with: [Start Your Free Business Assessment](https://nexvorasystems.us/assessment.html)
 
 TONE RULES — follow these strictly:
@@ -549,27 +549,27 @@ City: ${city}
 Article Type: Support
 Estimated Reading Time: [X min read]
 
-WORD COUNT REQUIREMENT: This article MUST be between 1,400 and 1,800 words. Do not stop until you reach 1,400 words minimum. Every section has a minimum — hit it.
+WORD COUNT REQUIREMENT: This article MUST be between 1,400 and 1,800 words. Do not stop until you reach 1,400 words minimum. Section word counts below are targets. Keep the complete article within the total word range; do not repeat sections.
 
-Write the full article using EXACTLY these sections. Each section must meet its minimum word count:
+Write the full article using EXACTLY these sections. Use these section word budgets:
 
-## Introduction (minimum 150 words)
+## Introduction (target 150 words)
 Open with a specific, direct statement about the ${topic} problem facing small businesses in ${city}, ${region.state}. Name 2-3 specific business types common in ${city}. Explain what this article covers and what the reader will be able to do after reading it. Include this exact link naturally in the last paragraph: For a complete overview of ${topic} systems for ${region.name} businesses, read our full guide: [${pillarTitle}](${pillarUrl})
 
-## Why ${city} Businesses Struggle With ${topic} (minimum 250 words)
+## Why ${city} Businesses Struggle With ${topic} (target 250 words)
 Explain the specific reasons ${city} businesses have this problem. What is unique about ${city}'s business environment, industries, or market that makes this worse? Name real local business types. Give 2-3 specific scenarios. Use numbers.
 
-## What It Is Costing ${city} Business Owners (minimum 200 words)
+## What It Is Costing ${city} Business Owners (target 200 words)
 Break down the real cost — financial and operational — with specific numbers for ${city}-sized businesses. At least 1 blockquote:
 > **The data:** [specific stat or calculation relevant to ${city} businesses]
 
-## What the Fix Looks Like for a ${city} Business (minimum 250 words)
+## What the Fix Looks Like for a ${city} Business (target 250 words)
 Describe exactly what a proper ${topic} system looks like for a business the size and type common in ${city}. Name specific tools. Explain what changes, what gets easier, what results appear in the first 30-60-90 days.
 
-## Step-by-Step: Getting Started in ${city} (minimum 300 words)
+## Step-by-Step: Getting Started in ${city} (target 300 words)
 Write a numbered action plan with at least 5 steps. Each step: what to do, how long it takes, what it costs, what to expect. Written as if talking directly to a ${city} business owner who is ready to act this week.
 
-## How Nexvora Systems Works With ${city} Businesses (minimum 150 words)
+## How Nexvora Systems Works With ${city} Businesses (target 150 words)
 Explain what Nexvora does specifically for businesses like those in ${city}. Mention ${author} once naturally. Include this exact link: [Start Your Free Business Assessment](https://nexvorasystems.us/assessment.html)
 
 ## Frequently Asked Questions
@@ -581,7 +581,7 @@ Write 4 FAQ questions specific to ${city} businesses and ${topic}. Format EXACTL
 **Q:** Next question?
 **A:** Detailed answer.
 
-## Final Thoughts (minimum 100 words)
+## Final Thoughts (target 100 words)
 Short, direct close. Key takeaway. End with: [Start Your Free Business Assessment](https://nexvorasystems.us/assessment.html)
 Also include: For the complete ${region.name} guide, read: [${pillarTitle}](${pillarUrl})
 
@@ -613,13 +613,13 @@ YOUR TASKS — improve and return the COMPLETE article:
 8. Verify all internal links are present and formatted correctly
 
 STRICT OUTPUT RULES:
-- Return the COMPLETE article — every section, every word
+- Return the COMPLETE article with every section once; compress repetition rather than expanding it
 - Keep exact header format (Title:, Meta Title:, Meta Description:, Slug:, Primary Keyword:, Secondary Keywords:, City:, Article Type:, Estimated Reading Time:)
 - Keep all ## headings exactly as written
 - Keep all blockquotes (> **The data:**)
 - Keep all FAQ pairs (**Q:** / **A:**)
 - Keep all internal links exactly as written
-- Do NOT cut content — the article must stay at or above ${minWords} words
+- Keep the body at or above ${minWords} words and within the stated total word budget
 - Do NOT add commentary before or after the article
 - Do NOT add new sections`;
 }
@@ -873,6 +873,27 @@ function updateSitemap(entries) {
   console.log('sitemap.xml updated');
 }
 
+async function prepareArticles(supportCities, usedKeywords) {
+  console.log('[Articles] Writing and reviewing the pillar and support articles before publishing...');
+  const pillar = await writeArticle(buildPillarPrompt(region.cities, usedKeywords), 'pillar', 3200, 12000, 12000);
+  const pillarMeta = parseMeta(pillar);
+  usedKeywords.add(pillarMeta.primaryKeyword.toLowerCase());
+  const supports = [];
+  for (const [index, city] of supportCities.entries()) {
+    console.log(`  [Articles] Support article for ${city}`);
+    const raw = await writeArticle(
+      buildSupportPrompt(city, pillarMeta.title, pillarMeta.slug, usedKeywords, index),
+      'support', 1400, 12000, 12000
+    );
+    if (!raw.includes('https://nexvorasystems.us/posts/' + pillarMeta.slug + '.html')) {
+      throw new Error('Support article is missing its pillar link');
+    }
+    usedKeywords.add(parseMeta(raw).primaryKeyword.toLowerCase());
+    supports.push(raw);
+  }
+  return { pillar, supports };
+}
+
 // ── MAIN ──────────────────────────────────────────────────────────────────────
 async function main({ previewDir } = {}) {
   const dryRun = process.argv.includes('--dry-run') || process.env.BLOG_DRY_RUN === 'true';
@@ -884,13 +905,7 @@ async function main({ previewDir } = {}) {
   if (dryRun) {
     const outputDir = previewDir || path.join(__dirname, '..', '.preview', dateStr);
     const usedKeywords = new Set();
-    const pillar = await writeArticle(buildPillarPrompt(region.cities, usedKeywords), 'pillar', 3200, 12000, 12000);
-    const pillarMeta = parseMeta(pillar);
-    usedKeywords.add(pillarMeta.primaryKeyword.toLowerCase());
-    const support = await writeArticle(buildSupportPrompt(region.cities[1], pillarMeta.title, pillarMeta.slug, usedKeywords, 0), 'support', 1400, 6000, 6000);
-    if (!support.includes('https://nexvorasystems.us/posts/' + pillarMeta.slug + '.html')) {
-      throw new Error('Support article is missing its pillar link');
-    }
+    const { pillar, supports: [support] } = await prepareArticles([region.cities[1]], usedKeywords);
     fs.mkdirSync(outputDir, { recursive: true });
     fs.writeFileSync(path.join(outputDir, 'pillar.md'), pillar);
     fs.writeFileSync(path.join(outputDir, 'support.md'), support);
@@ -915,6 +930,10 @@ async function main({ previewDir } = {}) {
   console.log(`  Pillar region: ${region.name}`);
   console.log(`  Support cities: ${supportCities.join(', ')}`);
 
+  // Finish and validate all text before images, files, or article records are written.
+  const { pillar: pillarRaw, supports: supportRaws } = await prepareArticles(supportCities, usedKeywords);
+  const pillarMeta = parseMeta(pillarRaw);
+
   // Dirs
   const postsDir  = path.join(__dirname, '..', 'posts');
   const assetsDir = path.join(__dirname, '..', 'assets', 'blog');
@@ -923,17 +942,6 @@ async function main({ previewDir } = {}) {
 
   const written      = [];
   const notionPages  = [];
-
-  // ── PILLAR ────────────────────────────────────────────────────────────────
-  console.log('\n[Step 4] Writing and reviewing pillar article with OpenAI...');
-  const pillarRaw = await writeArticle(buildPillarPrompt(region.cities, usedKeywords), 'pillar', 3200, 12000, 12000);
-
-  const pillarMeta = parseMeta(pillarRaw);
-  if (!pillarMeta.title) {
-    console.error('Could not parse pillar meta. Saving debug file.');
-    fs.writeFileSync('debug-pillar.txt', pillarRaw);
-    process.exit(1);
-  }
 
   console.log('[Step 6] Generating Flux 1.1 Pro image for pillar...');
   let pillarImgPath = null;
@@ -959,7 +967,7 @@ async function main({ previewDir } = {}) {
   const pillarBodyStart = pillarRaw.indexOf('## ');
   const pillarBody = pillarBodyStart >= 0 ? pillarRaw.slice(pillarBodyStart) : pillarRaw;
   fs.writeFileSync(path.join(postsDir, pillarMeta.slug + '.html'), buildHTML(pillarMeta, pillarBody, pillarImgPath));
-  console.log(`  Pillar published: ${pillarMeta.slug}.html`);
+  console.log(`  Pillar prepared: ${pillarMeta.slug}.html`);
 
   const pillarNotionId = await saveToNotion(dbId, pillarMeta);
   notionPages.push({ id: pillarNotionId, slug: pillarMeta.slug });
@@ -971,20 +979,8 @@ async function main({ previewDir } = {}) {
     const city = supportCities[i];
     console.log(`\n[Step 7.${i+1}] Writing support article for ${city}...`);
 
-    const suppRaw = await writeArticle(
-      buildSupportPrompt(city, pillarMeta.title, pillarMeta.slug, usedKeywords, i),
-      'support', 1400, 6000, 6000
-    );
-    if (!suppRaw.includes('https://nexvorasystems.us/posts/' + pillarMeta.slug + '.html')) {
-      throw new Error('Support article is missing its pillar link');
-    }
-
+    const suppRaw = supportRaws[i];
     const suppMeta = parseMeta(suppRaw);
-    if (!suppMeta.title) {
-      console.warn(`  Could not parse support ${i+1} meta. Skipping.`);
-      fs.writeFileSync(`debug-support-${i}.txt`, suppRaw);
-      continue;
-    }
 
     console.log(`  Generating Flux image for ${city}...`);
     let suppImgPath = null;
@@ -1010,7 +1006,7 @@ async function main({ previewDir } = {}) {
     const suppBodyStart = suppRaw.indexOf('## ');
     const suppBody = suppBodyStart >= 0 ? suppRaw.slice(suppBodyStart) : suppRaw;
     fs.writeFileSync(path.join(postsDir, suppMeta.slug + '.html'), buildHTML(suppMeta, suppBody, suppImgPath));
-    console.log(`  Support published: ${suppMeta.slug}.html`);
+    console.log(`  Support prepared: ${suppMeta.slug}.html`);
 
     const suppNotionId = await saveToNotion(dbId, suppMeta, pillarMeta.title);
     notionPages.push({ id: suppNotionId, slug: suppMeta.slug });
@@ -1046,7 +1042,7 @@ async function main({ previewDir } = {}) {
     console.log(`  Marked: ${slug}`);
   }
 
-  console.log(`\n=== Done: ${written.length} article(s) published ===`);
+  console.log(`\n=== Done: ${written.length} article(s) prepared for Git commit ===`);
   written.forEach(a => console.log(`  [${a.articleType}] ${a.title}`));
 }
 
