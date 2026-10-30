@@ -33,8 +33,15 @@ quality has been reviewed. To publish manually on main, uncheck the dry-run inpu
 Failures in authentication, billing, article review, minimum length, metadata, or
 completion status stop publishing. Temporary server errors and explicit rate
 limits have at most two retries. Token usage is logged per successful API call.
-Each drafting or review stage can retry an output-limit truncation once, using a
-tighter word budget. Repeated truncation fails the job instead of publishing.
+Both article types start with a 12,000-token output allowance per drafting/review
+stage. A truncated response can retry once with a tighter word instruction and
+an 18,000-token ceiling. The allowance is a cap, not a fixed token charge.
+Repeated truncation fails the job instead of publishing.
+Both articles must finish validation before image generation, article-file writes,
+or Notion article records begin. This prevents a failed support article from leaving
+a new orphaned pillar record. Existing Notion database setup/history reads still
+run before text generation. Image API failures retain the existing image-free
+publishing behavior; Replicate credit is separate from OpenAI billing.
 Overlong SEO titles and descriptions are shortened at word boundaries before
 validation; the article body is preserved.
 The normal Notion history, Flux images, site formatting, and schedule are retained.
