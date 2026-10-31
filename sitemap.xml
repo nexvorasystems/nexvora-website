@@ -109,4 +109,18 @@
     <changefreq>never</changefreq>
     <priority>0.6</priority>
   </url>
+
+  <url>
+    <loc>https://nexvorasystems.us/posts/customer-experience-small-businesses-washington-state.html</loc>
+    <lastmod>2026-10-31</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://nexvorasystems.us/posts/yakima-customer-experience-systems-service-businesses.html</loc>
+    <lastmod>2026-10-31</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>
