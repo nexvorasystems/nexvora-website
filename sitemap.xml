@@ -361,4 +361,18 @@
     <changefreq>never</changefreq>
     <priority>0.6</priority>
   </url>
+
+  <url>
+    <loc>https://nexvorasystems.us/posts/operations-efficiency-small-businesses-southern-california.html</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://nexvorasystems.us/posts/chula-vista-operations-efficiency-systems.html</loc>
+    <lastmod>2026-11-18</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>
