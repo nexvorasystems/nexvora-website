@@ -375,4 +375,18 @@
     <changefreq>never</changefreq>
     <priority>0.6</priority>
   </url>
+
+  <url>
+    <loc>https://nexvorasystems.us/posts/sales-systems-small-businesses-southern-california.html</loc>
+    <lastmod>2026-11-19</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://nexvorasystems.us/posts/rancho-cucamonga-sales-systems-fix-lost-leads.html</loc>
+    <lastmod>2026-11-19</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>
