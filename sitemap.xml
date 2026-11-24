@@ -445,4 +445,18 @@
     <changefreq>never</changefreq>
     <priority>0.6</priority>
   </url>
+
+  <url>
+    <loc>https://nexvorasystems.us/posts/growth-scaling-small-businesses-washington-state.html</loc>
+    <lastmod>2026-11-24</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://nexvorasystems.us/posts/walla-walla-growth-scaling-systems.html</loc>
+    <lastmod>2026-11-24</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>
