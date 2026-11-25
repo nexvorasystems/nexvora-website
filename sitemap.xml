@@ -459,4 +459,18 @@
     <changefreq>never</changefreq>
     <priority>0.6</priority>
   </url>
+
+  <url>
+    <loc>https://nexvorasystems.us/posts/ai-automation-small-businesses-washington-state.html</loc>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.8</priority>
+  </url>
+
+  <url>
+    <loc>https://nexvorasystems.us/posts/vancouver-ai-automation-service-business-leads.html</loc>
+    <lastmod>2026-11-25</lastmod>
+    <changefreq>never</changefreq>
+    <priority>0.6</priority>
+  </url>
 </urlset>
